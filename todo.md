@@ -33,27 +33,27 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **1.1: Player State (`Player.js`)**
 
--   [ ] **Implementation:**
-    -   [ ] Create the `Player` class in `js/game/Player.js`.
-    -   [ ] Implement the constructor to initialize all default player properties (`cash`, `savings`, `happiness`, etc.).
-    -   [ ] Implement `addCash(amount)`.
-    -   [ ] Implement `spendCash(amount)` with failure condition.
-    -   [ ] Implement `updateHappiness(points)` with min/max caps (0/100).
-    -   [ ] Implement `advanceEducation()`.
-    -   [ ] Implement `advanceCareer()`.
-    -   [ ] Implement `updateTime(hours)`.
-    -   [ ] Implement `setLocation(newLocation)`.
-    -   [ ] Implement `giveCar()`.
-    -   [ ] Implement `takeLoan(amount)`.
-    -   [ ] Implement `repayLoan(amount)`.
-    -   [ ] Implement `deposit(amount)` with failure condition.
-    -   [ ] Implement `withdraw(amount)` with failure condition.
--   [ ] **Testing (`tests/Player.test.js`):**
-    -   [ ] Write a test to verify the constructor sets all default values correctly.
-    -   [ ] Test `spendCash` for both successful and failed (insufficient funds) transactions.
-    -   [ ] Test `updateHappiness` to ensure it does not go above 100 or below 0.
-    -   [ ] Test `deposit` and `withdraw` methods for success and failure cases.
-    -   [ ] Write tests for all other state-modifying methods to ensure they work as expected.
+-   [x] **Implementation:**
+    -   [x] Create the `Player` class in `js/game/Player.js`.
+    -   [x] Implement the constructor to initialize all default player properties (`cash`, `savings`, `happiness`, etc.).
+    -   [x] Implement `addCash(amount)`.
+    -   [x] Implement `spendCash(amount)` with failure condition.
+    -   [x] Implement `updateHappiness(points)` with min/max caps (0/100).
+    -   [x] Implement `advanceEducation()`.
+    -   [x] Implement `advanceCareer()`.
+    -   [x] Implement `updateTime(hours)`.
+    -   [x] Implement `setLocation(newLocation)`.
+    -   [x] Implement `giveCar()`. 
+    -   [x] Implement `takeLoan(amount)`.
+    -   [x] Implement `repayLoan(amount)` with failure condition.
+    -   [x] Implement `deposit(amount)` with failure condition.
+    -   [x] Implement `withdraw(amount)` with failure condition.
+-   [x] **Testing (`tests/Player.test.js`):**
+    -   [x] Write a test to verify the constructor sets all default values correctly.
+    -   [x] Test `spendCash` for both successful and failed (insufficient funds) transactions.
+    -   [x] Test `updateHappiness` to ensure it does not go above 100 or below 0.
+    -   [x] Test `deposit` and `withdraw` methods for success and failure cases.
+    -   [x] Write tests for all other state-modifying methods to ensure they work as expected.
 
 #### **1.2: Game State Manager (`GameState.js`)**
 
