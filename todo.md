@@ -6,11 +6,11 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 ### **Phase 0: Project Setup**
 
--   [x] Initialize a new project directory (`git init`).
--   [x] Initialize Node.js project (`npm init -y`).
--   [x] Install a testing framework (e.g., Jest: `npm install --save-dev jest`).
--   [x] Configure Jest (create `jest.config.js` or add to `package.json`).
--   [x] Create project file structure:
+-   [ ] Initialize a new project directory (`git init`).
+-   [ ] Initialize Node.js project (`npm init -y`).
+-   [ ] Install a testing framework (e.g., Jest: `npm install --save-dev jest`).
+-   [ ] Configure Jest (create `jest.config.js` or add to `package.json`).
+-   [ ] Create project file structure:
     -   `index.html`
     -   `js/`
         -   `app.js` (main entry point)
@@ -33,43 +33,43 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **1.1: Player State (`Player.js`)**
 
--   [x] **Implementation:**
-    -   [x] Create the `Player` class in `js/game/Player.js`.
-    -   [x] Implement the constructor to initialize all default player properties (`cash`, `savings`, `happiness`, etc.).
-    -   [x] Implement `addCash(amount)`.
-    -   [x] Implement `spendCash(amount)` with failure condition.
-    -   [x] Implement `updateHappiness(points)` with min/max caps (0/100).
-    -   [x] Implement `advanceEducation()`.
-    -   [x] Implement `advanceCareer()`.
-    -   [x] Implement `updateTime(hours)`.
-    -   [x] Implement `setLocation(newLocation)`.
-    -   [x] Implement `giveCar()`.
-    -   [x] Implement `takeLoan(amount)`.
-    -   [x] Implement `repayLoan(amount)`.
-    -   [x] Implement `deposit(amount)` with failure condition.
-    -   [x] Implement `withdraw(amount)` with failure condition.
--   [x] **Testing (`tests/Player.test.js`):**
-    -   [x] Write a test to verify the constructor sets all default values correctly.
-    -   [x] Test `spendCash` for both successful and failed (insufficient funds) transactions.
-    -   [x] Test `updateHappiness` to ensure it does not go above 100 or below 0.
-    -   [x] Test `deposit` and `withdraw` methods for success and failure cases.
-    -   [x] Write tests for all other state-modifying methods to ensure they work as expected.
+-   [ ] **Implementation:**
+    -   [ ] Create the `Player` class in `js/game/Player.js`.
+    -   [ ] Implement the constructor to initialize all default player properties (`cash`, `savings`, `happiness`, etc.).
+    -   [ ] Implement `addCash(amount)`.
+    -   [ ] Implement `spendCash(amount)` with failure condition.
+    -   [ ] Implement `updateHappiness(points)` with min/max caps (0/100).
+    -   [ ] Implement `advanceEducation()`.
+    -   [ ] Implement `advanceCareer()`.
+    -   [ ] Implement `updateTime(hours)`.
+    -   [ ] Implement `setLocation(newLocation)`.
+    -   [ ] Implement `giveCar()`.
+    -   [ ] Implement `takeLoan(amount)`.
+    -   [ ] Implement `repayLoan(amount)`.
+    -   [ ] Implement `deposit(amount)` with failure condition.
+    -   [ ] Implement `withdraw(amount)` with failure condition.
+-   [ ] **Testing (`tests/Player.test.js`):**
+    -   [ ] Write a test to verify the constructor sets all default values correctly.
+    -   [ ] Test `spendCash` for both successful and failed (insufficient funds) transactions.
+    -   [ ] Test `updateHappiness` to ensure it does not go above 100 or below 0.
+    -   [ ] Test `deposit` and `withdraw` methods for success and failure cases.
+    -   [ ] Write tests for all other state-modifying methods to ensure they work as expected.
 
 #### **1.2: Game State Manager (`GameState.js`)**
 
--   [x] **Implementation:**
-    -   [x] Create the `GameState` class in `js/game/GameState.js`.
-    -   [x] Implement the constructor to initialize `players` array, `currentPlayerIndex`, and `turn`.
-    -   [x] Implement the `getCurrentPlayer()` getter method.
-    -   [x] Implement the initial `endTurn()` method:
-        -   [x] It should deduct the `DAILY_EXPENSE`.
-        -   [x] It should reset the current player's time to 24.
-        -   [x] It should advance `currentPlayerIndex` and the `turn` counter correctly.
--   [x] **Testing (`tests/GameState.test.js`):**
-    -   [x] Test the constructor for both 1-player and 2-player modes.
-    -   [x] Test that `getCurrentPlayer()` returns the correct player object.
-    -   [x] Test `endTurn()` to verify expense deduction, time reset, and correct turn advancement for a 2-player game.
-    -   [x] Test that the `turn` counter increments only after all players have completed their turn.
+-   [ ] **Implementation:**
+    -   [ ] Create the `GameState` class in `js/game/GameState.js`.
+    -   [ ] Implement the constructor to initialize `players` array, `currentPlayerIndex`, and `turn`.
+    -   [ ] Implement the `getCurrentPlayer()` getter method.
+    -   [ ] Implement the initial `endTurn()` method:
+        -   [ ] It should deduct the `DAILY_EXPENSE`.
+        -   [ ] It should reset the current player's time to 24.
+        -   [ ] It should advance `currentPlayerIndex` and the `turn` counter correctly.
+-   [ ] **Testing (`tests/GameState.test.js`):**
+    -   [ ] Test the constructor for both 1-player and 2-player modes.
+    -   [ ] Test that `getCurrentPlayer()` returns the correct player object.
+    -   [ ] Test `endTurn()` to verify expense deduction, time reset, and correct turn advancement for a 2-player game.
+    -   [ ] Test that the `turn` counter increments only after all players have completed their turn.
 
 ---
 
