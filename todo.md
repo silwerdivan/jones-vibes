@@ -6,11 +6,11 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 ### **Phase 0: Project Setup**
 
--   [ ] Initialize a new project directory (`git init`).
--   [ ] Initialize Node.js project (`npm init -y`).
--   [ ] Install a testing framework (e.g., Jest: `npm install --save-dev jest`).
--   [ ] Configure Jest (create `jest.config.js` or add to `package.json`).
--   [ ] Create project file structure:
+-   [x] Initialize a new project directory (`git init`).
+-   [x] Initialize Node.js project (`npm init -y`).
+-   [x] Install a testing framework (e.g., Jest: `npm install --save-dev jest`).
+-   [x] Configure Jest (create `jest.config.js` or add to `package.json`).
+-   [x] Create project file structure:
     -   `index.html`
     -   `js/`
         -   `app.js` (main entry point)
