@@ -1,0 +1,15 @@
+{
+  "name": "250927-jones-in-the-fastlane-vibes",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "jest": "^30.1.3"
+  }
+}
