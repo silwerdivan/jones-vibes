@@ -57,19 +57,19 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **1.2: Game State Manager (`GameState.js`)**
 
--   [ ] **Implementation:**
-    -   [ ] Create the `GameState` class in `js/game/GameState.js`.
-    -   [ ] Implement the constructor to initialize `players` array, `currentPlayerIndex`, and `turn`.
-    -   [ ] Implement the `getCurrentPlayer()` getter method.
-    -   [ ] Implement the initial `endTurn()` method:
-        -   [ ] It should deduct the `DAILY_EXPENSE`.
-        -   [ ] It should reset the current player's time to 24.
-        -   [ ] It should advance `currentPlayerIndex` and the `turn` counter correctly.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Test the constructor for both 1-player and 2-player modes.
-    -   [ ] Test that `getCurrentPlayer()` returns the correct player object.
-    -   [ ] Test `endTurn()` to verify expense deduction, time reset, and correct turn advancement for a 2-player game.
-    -   [ ] Test that the `turn` counter increments only after all players have completed their turn.
+-   [x] **Implementation:**
+    -   [x] Create the `GameState` class in `js/game/GameState.js`.
+    -   [x] Implement the constructor to initialize `players` array, `currentPlayerIndex`, and `turn`.
+    -   [x] Implement the `getCurrentPlayer()` getter method.
+    -   [x] Implement the initial `endTurn()` method:
+        -   [x] It should deduct the `DAILY_EXPENSE`.
+        -   [x] It should reset the current player's time to 24.
+        -   [x] It should advance `currentPlayerIndex` and the `turn` counter correctly.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Test the constructor for both 1-player and 2-player modes.
+    -   [x] Test that `getCurrentPlayer()` returns the correct player object.
+    -   [x] Test `endTurn()` to verify expense deduction, time reset, and correct turn advancement for a 2-player game.
+    -   [x] Test that the `turn` counter increments only after all players have completed their turn.
 
 ---
 
