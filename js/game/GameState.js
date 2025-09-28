@@ -247,19 +247,36 @@ class GameState {
     endTurn() {
         const currentPlayer = this.getCurrentPlayer();
 
-        // Deduct daily expense
+        // Apply Interest:
+        // Calculate savings interest: player.savings * 0.01 (1%). Add this to savings.
+        currentPlayer.savings += currentPlayer.savings * 0.01;
+        // Calculate loan interest: player.loan * 0.05 (5%). Add this to the loan balance.
+        currentPlayer.loan += currentPlayer.loan * 0.05;
+
+        // Deduct Daily Expense:
+        // Deduct the DAILY_EXPENSE ($50) from the player's cash.
         currentPlayer.spendCash(this.DAILY_EXPENSE);
 
-        // Reset player's time to 24, not exceeding max of 48
+        // Replenish Time:
+        // Reset the player's time to 24.
         currentPlayer.updateTime(24 - currentPlayer.time);
 
-        // Switch to the next player
+        // Finally, advance to the next player.
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 
         // If all players have taken their turn, increment the turn counter
         if (this.currentPlayerIndex === 0) {
             this.turn++;
         }
+    }
+
+    checkWinCondition(player) {
+        const cashCondition = player.cash >= 10000;
+        const happinessCondition = player.happiness >= 80;
+        const educationCondition = player.educationLevel >= 3; // Completed Community College
+        const careerCondition = player.careerLevel >= 4; // Junior Manager
+
+        return cashCondition && happinessCondition && educationCondition && careerCondition;
     }
 }
 

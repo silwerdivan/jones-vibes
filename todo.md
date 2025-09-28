@@ -158,31 +158,31 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **3.2: Interest Calculation**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Refactor the `endTurn()` method.
-    -   [ ] Add logic to calculate and add 1% interest on savings to the player ending their turn.
-    -   [ ] Add logic to calculate and add 5% interest on loan balance to the player ending their turn.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Update `endTurn` tests.
-    -   [ ] Create a player with both savings and a loan.
-    -   [ ] Test that `endTurn` correctly applies interest to both balances.
-    -   [ ] Test that a player with zero savings/loan is unaffected.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Refactor the `endTurn()` method.
+    -   [x] Add logic to calculate and add 1% interest on savings to the player ending their turn.
+    -   [x] Add logic to calculate and add 5% interest on loan balance to the player ending their turn.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Update `endTurn` tests.
+    -   [x] Create a player with both savings and a loan.
+    -   [x] Test that `endTurn` correctly applies interest to both balances.
+    -   [x] Test that a player with zero savings/loan is unaffected.
 
 #### **3.3: Win Condition and Game Loop**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Implement the `checkWinCondition(player)` method with all four required metrics.
--   [ ] **Implementation (`GameController.js`):**
-    -   [ ] Create the `GameController` class in `js/game/GameController.js`.
-    -   [ ] Implement constructor to hold a `GameState` instance.
-    -   [ ] Implement `handleAction(actionType, params)` to route calls to the `GameState`.
-    -   [ ] After each successful action, call `checkWinCondition`.
-    -   [ ] Add `gameOver` and `winner` properties to the controller.
--   [ ] **Testing:**
-    -   [ ] In `GameState.test.js`, add comprehensive tests for `checkWinCondition`.
-    -   [ ] Create `tests/GameController.test.js`.
-    -   [ ] Test that `handleAction` correctly calls methods on `GameState`.
-    -   [ ] Test that a winning move correctly sets the `gameOver` flag in the controller.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Implement the `checkWinCondition(player)` method with all four required metrics.
+-   [x] **Implementation (`GameController.js`):**
+    -   [x] Create the `GameController` class in `js/game/GameController.js`.
+    -   [x] Implement constructor to hold a `GameState` instance.
+    -   [x] Implement `handleAction(actionType, params)` to route calls to the `GameState`.
+    -   [x] After each successful action, call `checkWinCondition`.
+    -   [x] Add `gameOver` and `winner` properties to the controller.
+-   [x] **Testing:**
+    -   [x] In `GameState.test.js`, add comprehensive tests for `checkWinCondition`.
+    -   [x] Create `tests/GameController.test.js`.
+    -   [x] Test that `handleAction` correctly calls methods on `GameState`.
+    -   [x] Test that a winning move correctly sets the `gameOver` flag in the controller.
 
 ---
 

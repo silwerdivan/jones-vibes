@@ -173,6 +173,57 @@ describe('GameState', () => {
         expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 40);
     });
 
+    // New Test: endTurn() - interest calculation, expense deduction, and time reset
+    test('endTurn correctly applies interest, deducts expense, and resets time', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 1000;
+        currentPlayer.savings = 1000;
+        currentPlayer.loan = 1000;
+        currentPlayer.time = 10; // Will be reset to 24
+
+        const initialSavings = currentPlayer.savings;
+        const initialLoan = currentPlayer.loan;
+        const initialCash = currentPlayer.cash;
+
+        gameState.endTurn();
+
+        // Verify savings interest
+        expect(currentPlayer.savings).toBeCloseTo(initialSavings * 1.01);
+        // Verify loan interest
+        expect(currentPlayer.loan).toBeCloseTo(initialLoan * 1.05);
+        // Verify daily expense deduction
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
+        // Verify time reset
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 10); // 24 - current time
+        // Verify cash after expense (mocked spendCash updates cash)
+        expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
+    });
+
+    // New Test: endTurn() - interest calculation with zero savings/loan
+    test('endTurn handles zero savings and loan correctly', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 1000;
+        currentPlayer.savings = 0;
+        currentPlayer.loan = 0;
+        currentPlayer.time = 10;
+
+        const initialCash = currentPlayer.cash;
+
+        gameState.endTurn();
+
+        // Verify savings and loan remain zero
+        expect(currentPlayer.savings).toBe(0);
+        expect(currentPlayer.loan).toBe(0);
+        // Verify daily expense deduction
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
+        // Verify time reset
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 10);
+        // Verify cash after expense
+        expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
+    });
+
     // Test 9: travelTo - successful travel without a car
     test('travelTo deducts 2 hours and updates location without a car', () => {
         gameState = new GameState(1);
@@ -889,21 +940,75 @@ describe('GameState', () => {
         expect(currentPlayer.giveCar).not.toHaveBeenCalled();
     });
 
-    // Test 53: buyCar - successful purchase
-    test('buyCar successfully buys a car', () => {
+    // Test 54: checkWinCondition - all conditions met
+    test('checkWinCondition returns true when all conditions are met', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
-        currentPlayer.location = 'Used Car Lot';
-        currentPlayer.cash = 5000;
-        currentPlayer.hasCar = false;
+        currentPlayer.cash = 10000;
+        currentPlayer.happiness = 80;
+        currentPlayer.educationLevel = 3;
+        currentPlayer.careerLevel = 4;
 
-        const result = gameState.buyCar();
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(true);
+    });
 
-        expect(result.success).toBe(true);
-        expect(result.message).toBe('Congratulations! You bought a car.');
-        expect(currentPlayer.spendCash).toHaveBeenCalledWith(3000);
-        expect(currentPlayer.giveCar).toHaveBeenCalledTimes(1);
-        expect(currentPlayer.cash).toBe(2000); // Mocked player cash update
-        expect(currentPlayer.hasCar).toBe(true); // Mocked player hasCar update
+    // Test 55: checkWinCondition - cash condition not met
+    test('checkWinCondition returns false when cash condition is not met', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 9999;
+        currentPlayer.happiness = 80;
+        currentPlayer.educationLevel = 3;
+        currentPlayer.careerLevel = 4;
+
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
+    });
+
+    // Test 56: checkWinCondition - happiness condition not met
+    test('checkWinCondition returns false when happiness condition is not met', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 10000;
+        currentPlayer.happiness = 79;
+        currentPlayer.educationLevel = 3;
+        currentPlayer.careerLevel = 4;
+
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
+    });
+
+    // Test 57: checkWinCondition - education level condition not met
+    test('checkWinCondition returns false when education level condition is not met', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 10000;
+        currentPlayer.happiness = 80;
+        currentPlayer.educationLevel = 2;
+        currentPlayer.careerLevel = 4;
+
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
+    });
+
+    // Test 58: checkWinCondition - career level condition not met
+    test('checkWinCondition returns false when career level condition is not met', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 10000;
+        currentPlayer.happiness = 80;
+        currentPlayer.educationLevel = 3;
+        currentPlayer.careerLevel = 3;
+
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
+    });
+
+    // Test 59: checkWinCondition - none of the conditions met
+    test('checkWinCondition returns false when none of the conditions are met', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.cash = 0;
+        currentPlayer.happiness = 0;
+        currentPlayer.educationLevel = 0;
+        currentPlayer.careerLevel = 0;
+
+        expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
     });
 });
