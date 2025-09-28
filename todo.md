@@ -77,21 +77,21 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **2.1: Data Structures and Travel**
 
--   [ ] **Implementation:**
-    -   [ ] Create `js/game/gameData.js`.
-    -   [ ] Define and export `LOCATIONS` array.
-    -   [ ] Define and export `JOBS` array of objects.
-    -   [ ] Define and export `COURSES` array of objects.
-    -   [ ] Define and export `SHOPPING_ITEMS` array of objects.
-    -   [ ] In `GameState.js`, implement the `travelTo(destination)` method.
-    -   [ ] Add logic to calculate travel time based on `hasCar` property.
-    -   [ ] Add checks for sufficient time to travel.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Add new tests for `travelTo`.
-    -   [ ] Test standard travel time deduction (2 hours).
-    -   [ ] Test travel time deduction with a car (1 hour).
-    -   [ ] Test that travel is blocked if time is insufficient.
-    -   [ ] Test that an error is thrown for invalid destinations.
+-   [x] **Implementation:**
+    -   [x] Create `js/game/gameData.js`.
+    -   [x] Define and export `LOCATIONS` array.
+    -   [x] Define and export `JOBS` array of objects.
+    -   [x] Define and export `COURSES` array of objects.
+    -   [x] Define and export `SHOPPING_ITEMS` array of objects.
+    -   [x] In `GameState.js`, implement the `travelTo(destination)` method.
+    -   [x] Add logic to calculate travel time based on `hasCar` property.
+    -   [x] Add checks for sufficient time to travel.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Add new tests for `travelTo`.
+    -   [x] Test standard travel time deduction (2 hours).
+    -   [x] Test travel time deduction with a car (1 hour).
+    -   [x] Test that travel is blocked if time is insufficient.
+    -   [x] Test that an error is thrown for invalid destinations.
 
 #### **2.2: Working at the Employment Agency**
 
