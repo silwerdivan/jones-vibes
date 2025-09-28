@@ -29,6 +29,9 @@ describe('GameState', () => {
                 setLocation: jest.fn(newLocation => {
                     player.location = newLocation;
                 }),
+                advanceEducation: jest.fn(() => {
+                    player.educationLevel++;
+                }),
                 // advanceCareer: jest.fn(), // No longer directly called by GameState.workShift
                 // Add other player properties and methods as needed for tests
             };
@@ -313,5 +316,141 @@ describe('GameState', () => {
         expect(result.success).toBe(true);
         expect(currentPlayer.careerLevel).toBe(3); // Should remain 3, not drop to 2
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
+    });
+
+    // Test 20: takeCourse - not at Community College
+    test('takeCourse fails if player is not at Community College', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.takeCourse(1);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Community College to take a course.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 21: takeCourse - course not found
+    test('takeCourse fails if courseId is invalid', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+
+        const result = gameState.takeCourse(999);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Course not found.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 22: takeCourse - already completed course
+    test('takeCourse fails if player has already completed the course or a higher level', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 1; // Player has completed Intro to Business (id:1, milestone:1)
+
+        const result = gameState.takeCourse(1);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('You have already completed Intro to Business or a higher level course.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 23: takeCourse - out of sequential order
+    test('takeCourse fails if player tries to take a course out of sequential order', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 0; // Player needs to take course for milestone 1
+
+        const result = gameState.takeCourse(2); // Marketing Fundamentals has milestone 2
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('You must take courses in sequential order. Next course is for education level 1.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 24: takeCourse - insufficient cash
+    test('takeCourse fails if player has insufficient cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 0;
+        currentPlayer.cash = 100; // Intro to Business costs 500
+        currentPlayer.time = 24;
+
+        const result = gameState.takeCourse(1);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough cash to take Intro to Business. You need $500.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 25: takeCourse - insufficient time
+    test('takeCourse fails if player has insufficient time', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 0;
+        currentPlayer.cash = 1000;
+        currentPlayer.time = 5; // Intro to Business takes 10 hours
+
+        const result = gameState.takeCourse(1);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough time to take Intro to Business. You need 10 hours.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
+    });
+
+    // Test 26: takeCourse - successful completion
+    test('takeCourse successfully completes course, updates cash, time, and education level', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 0;
+        currentPlayer.cash = 1000;
+        currentPlayer.time = 24;
+
+        const result = gameState.takeCourse(1); // Intro to Business: cost 500, time 10, milestone 1
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully completed Intro to Business! Your education level is now 1.');
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(500);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-10);
+        expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
+        expect(currentPlayer.educationLevel).toBe(1);
+    });
+
+    // Test 27: takeCourse - successful completion of a second course
+    test('takeCourse successfully completes a second sequential course', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Community College';
+        currentPlayer.educationLevel = 1;
+        currentPlayer.cash = 1000;
+        currentPlayer.time = 24;
+
+        const result = gameState.takeCourse(2); // Marketing Fundamentals: cost 750, time 15, milestone 2
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully completed Marketing Fundamentals! Your education level is now 2.');
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(750);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-15);
+        expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
+        expect(currentPlayer.educationLevel).toBe(2);
     });
 });

@@ -1,6 +1,6 @@
 
 import Player from './Player.js';
-import { LOCATIONS, JOBS } from './gameData.js';
+import { LOCATIONS, JOBS, COURSES } from './gameData.js';
 
 class GameState {
 
@@ -40,6 +40,42 @@ class GameState {
         }
 
         return { success: true, message: `Worked as a ${jobToWork.title} and earned $${earnings}.`, job: jobToWork };
+    }
+
+    takeCourse(courseId) {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Community College') {
+            return { success: false, message: 'Must be at the Community College to take a course.' };
+        }
+
+        const course = COURSES.find(c => c.id === courseId);
+
+        if (!course) {
+            return { success: false, message: 'Course not found.' };
+        }
+
+        if (currentPlayer.educationLevel >= course.educationMilestone) {
+            return { success: false, message: `You have already completed ${course.name} or a higher level course.` };
+        }
+
+        if (course.educationMilestone !== currentPlayer.educationLevel + 1) {
+            return { success: false, message: `You must take courses in sequential order. Next course is for education level ${currentPlayer.educationLevel + 1}.` };
+        }
+
+        if (currentPlayer.cash < course.cost) {
+            return { success: false, message: `Not enough cash to take ${course.name}. You need $${course.cost}.` };
+        }
+
+        if (currentPlayer.time < course.time) {
+            return { success: false, message: `Not enough time to take ${course.name}. You need ${course.time} hours.` };
+        }
+
+        currentPlayer.spendCash(course.cost);
+        currentPlayer.updateTime(-course.time);
+        currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
+
+        return { success: true, message: `Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.` };
     }
 
     travelTo(destination) {

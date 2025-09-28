@@ -111,19 +111,19 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **2.3: Studying at the Community College**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Implement the `takeCourse(courseId)` method.
-    -   [ ] Add a check to ensure the player is at the "Community College".
-    -   [ ] Add logic to prevent taking a course out of order or one that is already completed.
-    -   [ ] Add checks for sufficient cash and time.
-    -   [ ] Implement logic to deduct cost/time and update `educationLevel`.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Add tests for `takeCourse`.
-    -   [ ] Test location requirement.
-    -   [ ] Test failure cases for insufficient time or money.
-    -   [ ] Test that courses must be taken in sequential order.
-    -   [ ] Test that a completed course cannot be taken again.
-    -   [ ] Test that player stats are updated correctly upon completion.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Implement the `takeCourse(courseId)` method.
+    -   [x] Add a check to ensure the player is at the "Community College".
+    -   [x] Add logic to prevent taking a course out of order or one that is already completed.
+    -   [x] Add checks for sufficient cash and time.
+    -   [x] Implement logic to deduct cost/time and update `educationLevel`.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Add tests for `takeCourse`.
+    -   [x] Test location requirement.
+    -   [x] Test failure cases for insufficient time or money.
+    -   [x] Test that courses must be taken in sequential order.
+    -   [x] Test that a completed course cannot be taken again.
+    -   [x] Test that player stats are updated correctly upon completion.
 
 #### **2.4: Buying Happiness at the Shopping Mall**
 
