@@ -145,16 +145,16 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **3.1: Bank Actions & Car Purchase**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Implement `deposit(amount)` with location check.
-    -   [ ] Implement `withdraw(amount)` with location check.
-    -   [ ] Implement `takeLoan(amount)` with location check and $2,500 total loan cap.
-    -   [ ] Implement `repayLoan(amount)` with location check and sufficient cash check.
-    -   [ ] Implement `buyCar()` with location check, cost check, and `hasCar` check.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Test all bank actions require the player to be at the "Bank".
-    -   [ ] Test loan cap logic.
-    -   [ ] Test `buyCar` success and failure conditions.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Implement `deposit(amount)` with location check.
+    -   [x] Implement `withdraw(amount)` with location check.
+    -   [x] Implement `takeLoan(amount)` with location check and $2,500 total loan cap.
+    -   [x] Implement `repayLoan(amount)` with location check and sufficient cash check.
+    -   [x] Implement `buyCar()` with location check, cost check, and `hasCar` check.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Test all bank actions require the player to be at the "Bank".
+    -   [x] Test loan cap logic.
+    -   [x] Test `buyCar` success and failure conditions.
 
 #### **3.2: Interest Calculation**
 

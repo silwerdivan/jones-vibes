@@ -49,8 +49,35 @@ describe('GameState', () => {
                 advanceEducation: jest.fn(() => {
                     player.educationLevel++;
                 }),
-                // advanceCareer: jest.fn(), // No longer directly called by GameState.workShift
-                // Add other player properties and methods as needed for tests
+                deposit: jest.fn(amount => {
+                    if (player.cash >= amount) {
+                        player.cash -= amount;
+                        player.savings += amount;
+                        return true;
+                    }
+                    return false;
+                }),
+                withdraw: jest.fn(amount => {
+                    if (player.savings >= amount) {
+                        player.savings -= amount;
+                        player.cash += amount;
+                        return true;
+                    }
+                    return false;
+                }),
+                takeLoan: jest.fn(amount => {
+                    player.loan += amount;
+                }),
+                repayLoan: jest.fn(amount => {
+                    if (player.loan >= amount) {
+                        player.loan -= amount;
+                        return true;
+                    }
+                    return false;
+                }),
+                giveCar: jest.fn(() => {
+                    player.hasCar = true;
+                }),
             };
             return player;
         });
@@ -548,5 +575,335 @@ describe('GameState', () => {
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(concertTicket.cost);
         expect(currentPlayer.updateHappiness).toHaveBeenCalledWith(concertTicket.happinessBoost);
         expect(currentPlayer.happiness).toBe(100); // Should be capped at 100
+    });
+
+    // Test 33: deposit - not at Bank
+    test('deposit fails if player is not at Bank', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.deposit(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Bank to deposit cash.');
+        expect(currentPlayer.deposit).not.toHaveBeenCalled();
+    });
+
+    // Test 34: deposit - amount is zero or negative
+    test('deposit fails if amount is zero or negative', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+
+        let result = gameState.deposit(0);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Deposit amount must be positive.');
+        expect(currentPlayer.deposit).not.toHaveBeenCalled();
+
+        result = gameState.deposit(-50);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Deposit amount must be positive.');
+        expect(currentPlayer.deposit).not.toHaveBeenCalled();
+    });
+
+    // Test 35: deposit - insufficient cash
+    test('deposit fails if player has insufficient cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 50; // Trying to deposit 100
+
+        const result = gameState.deposit(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough cash to deposit.');
+        expect(currentPlayer.deposit).toHaveBeenCalledWith(100); // Player.deposit is called, but returns false
+    });
+
+    // Test 36: deposit - successful deposit
+    test('deposit successfully deposits cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 200;
+        currentPlayer.savings = 0;
+
+        const result = gameState.deposit(100);
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully deposited $100.');
+        expect(currentPlayer.deposit).toHaveBeenCalledWith(100);
+        expect(currentPlayer.cash).toBe(100); // Mocked player cash update
+        expect(currentPlayer.savings).toBe(100); // Mocked player savings update
+    });
+
+    // Test 37: withdraw - not at Bank
+    test('withdraw fails if player is not at Bank', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.withdraw(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Bank to withdraw cash.');
+        expect(currentPlayer.withdraw).not.toHaveBeenCalled();
+    });
+
+    // Test 38: withdraw - amount is zero or negative
+    test('withdraw fails if amount is zero or negative', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+
+        let result = gameState.withdraw(0);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Withdrawal amount must be positive.');
+        expect(currentPlayer.withdraw).not.toHaveBeenCalled();
+
+        result = gameState.withdraw(-50);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Withdrawal amount must be positive.');
+        expect(currentPlayer.withdraw).not.toHaveBeenCalled();
+    });
+
+    // Test 39: withdraw - insufficient savings
+    test('withdraw fails if player has insufficient savings', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.savings = 50; // Trying to withdraw 100
+
+        const result = gameState.withdraw(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough savings to withdraw.');
+        expect(currentPlayer.withdraw).toHaveBeenCalledWith(100); // Player.withdraw is called, but returns false
+    });
+
+    // Test 40: withdraw - successful withdrawal
+    test('withdraw successfully withdraws cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 0;
+        currentPlayer.savings = 200;
+
+        const result = gameState.withdraw(100);
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully withdrew $100.');
+        expect(currentPlayer.withdraw).toHaveBeenCalledWith(100);
+        expect(currentPlayer.cash).toBe(100); // Mocked player cash update
+        expect(currentPlayer.savings).toBe(100); // Mocked player savings update
+    });
+
+    // Test 41: takeLoan - not at Bank
+    test('takeLoan fails if player is not at Bank', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.takeLoan(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Bank to take a loan.');
+        expect(currentPlayer.takeLoan).not.toHaveBeenCalled();
+        expect(currentPlayer.addCash).not.toHaveBeenCalled();
+    });
+
+    // Test 42: takeLoan - amount is zero or negative
+    test('takeLoan fails if amount is zero or negative', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+
+        let result = gameState.takeLoan(0);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Loan amount must be positive.');
+        expect(currentPlayer.takeLoan).not.toHaveBeenCalled();
+
+        result = gameState.takeLoan(-50);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Loan amount must be positive.');
+        expect(currentPlayer.takeLoan).not.toHaveBeenCalled();
+    });
+
+    // Test 43: takeLoan - loan exceeds cap
+    test('takeLoan fails if loan exceeds $2500 cap', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.loan = 2000; // Already has a loan of 2000
+
+        const result = gameState.takeLoan(600); // 2000 + 600 = 2600 > 2500
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Cannot take a loan exceeding the $2500 cap. Current loan: $2000.');
+        expect(currentPlayer.takeLoan).not.toHaveBeenCalled();
+        expect(currentPlayer.addCash).not.toHaveBeenCalled();
+    });
+
+    // Test 44: takeLoan - successful loan
+    test('takeLoan successfully takes a loan and adds cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 100;
+        currentPlayer.loan = 0;
+
+        const result = gameState.takeLoan(500);
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully took a loan of $500. Total loan: $500.');
+        expect(currentPlayer.takeLoan).toHaveBeenCalledWith(500);
+        expect(currentPlayer.addCash).toHaveBeenCalledWith(500);
+        expect(currentPlayer.cash).toBe(600); // Mocked player cash update
+        expect(currentPlayer.loan).toBe(500); // Mocked player loan update
+    });
+
+    // Test 45: repayLoan - not at Bank
+    test('repayLoan fails if player is not at Bank', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.repayLoan(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Bank to repay a loan.');
+        expect(currentPlayer.repayLoan).not.toHaveBeenCalled();
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+    });
+
+    // Test 46: repayLoan - amount is zero or negative
+    test('repayLoan fails if amount is zero or negative', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+
+        let result = gameState.repayLoan(0);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Repayment amount must be positive.');
+        expect(currentPlayer.repayLoan).not.toHaveBeenCalled();
+
+        result = gameState.repayLoan(-50);
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Repayment amount must be positive.');
+        expect(currentPlayer.repayLoan).not.toHaveBeenCalled();
+    });
+
+    // Test 47: repayLoan - insufficient cash
+    test('repayLoan fails if player has insufficient cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 50;
+        currentPlayer.loan = 100;
+
+        const result = gameState.repayLoan(100);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough cash to repay this amount.');
+        expect(currentPlayer.repayLoan).not.toHaveBeenCalled();
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+    });
+
+    // Test 48: repayLoan - repayment exceeds outstanding loan
+    test('repayLoan fails if repayment amount exceeds outstanding loan', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 200;
+        currentPlayer.loan = 100;
+
+        const result = gameState.repayLoan(150);
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Repayment amount ($150) cannot exceed outstanding loan ($100).');
+        expect(currentPlayer.repayLoan).not.toHaveBeenCalled();
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+    });
+
+    // Test 49: repayLoan - successful repayment
+    test('repayLoan successfully repays loan and deducts cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Bank';
+        currentPlayer.cash = 200;
+        currentPlayer.loan = 150;
+
+        const result = gameState.repayLoan(100);
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Successfully repaid $100. Remaining loan: $50.');
+        expect(currentPlayer.repayLoan).toHaveBeenCalledWith(100);
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(100);
+        expect(currentPlayer.cash).toBe(100); // Mocked player cash update
+        expect(currentPlayer.loan).toBe(50); // Mocked player loan update
+    });
+
+    // Test 50: buyCar - not at Used Car Lot
+    test('buyCar fails if player is not at Used Car Lot', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.buyCar();
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Used Car Lot to buy a car.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.giveCar).not.toHaveBeenCalled();
+    });
+
+    // Test 51: buyCar - player already owns a car
+    test('buyCar fails if player already owns a car', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Used Car Lot';
+        currentPlayer.hasCar = true;
+
+        const result = gameState.buyCar();
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('You already own a car.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.giveCar).not.toHaveBeenCalled();
+    });
+
+    // Test 52: buyCar - insufficient cash
+    test('buyCar fails if player has insufficient cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Used Car Lot';
+        currentPlayer.cash = 1000; // Car costs 3000
+        currentPlayer.hasCar = false;
+
+        const result = gameState.buyCar();
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough cash to buy a car. You need $3000.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.giveCar).not.toHaveBeenCalled();
+    });
+
+    // Test 53: buyCar - successful purchase
+    test('buyCar successfully buys a car', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Used Car Lot';
+        currentPlayer.cash = 5000;
+        currentPlayer.hasCar = false;
+
+        const result = gameState.buyCar();
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe('Congratulations! You bought a car.');
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(3000);
+        expect(currentPlayer.giveCar).toHaveBeenCalledTimes(1);
+        expect(currentPlayer.cash).toBe(2000); // Mocked player cash update
+        expect(currentPlayer.hasCar).toBe(true); // Mocked player hasCar update
     });
 });

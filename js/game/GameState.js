@@ -101,6 +101,108 @@ class GameState {
         return { success: true, message: `Successfully bought ${item.name}! Your happiness increased by ${item.happinessBoost}.` };
     }
 
+    deposit(amount) {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Bank') {
+            return { success: false, message: 'Must be at the Bank to deposit cash.' };
+        }
+
+        if (amount <= 0) {
+            return { success: false, message: 'Deposit amount must be positive.' };
+        }
+
+        if (currentPlayer.deposit(amount)) {
+            return { success: true, message: `Successfully deposited $${amount}.` };
+        } else {
+            return { success: false, message: 'Not enough cash to deposit.' };
+        }
+    }
+
+    withdraw(amount) {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Bank') {
+            return { success: false, message: 'Must be at the Bank to withdraw cash.' };
+        }
+
+        if (amount <= 0) {
+            return { success: false, message: 'Withdrawal amount must be positive.' };
+        }
+
+        if (currentPlayer.withdraw(amount)) {
+            return { success: true, message: `Successfully withdrew $${amount}.` };
+        } else {
+            return { success: false, message: 'Not enough savings to withdraw.' };
+        }
+    }
+
+    takeLoan(amount) {
+        const currentPlayer = this.getCurrentPlayer();
+        const MAX_LOAN = 2500;
+
+        if (currentPlayer.location !== 'Bank') {
+            return { success: false, message: 'Must be at the Bank to take a loan.' };
+        }
+
+        if (amount <= 0) {
+            return { success: false, message: 'Loan amount must be positive.' };
+        }
+
+        if (currentPlayer.loan + amount > MAX_LOAN) {
+            return { success: false, message: `Cannot take a loan exceeding the $${MAX_LOAN} cap. Current loan: $${currentPlayer.loan}.` };
+        }
+
+        currentPlayer.takeLoan(amount);
+        currentPlayer.addCash(amount);
+        return { success: true, message: `Successfully took a loan of $${amount}. Total loan: $${currentPlayer.loan}.` };
+    }
+
+    repayLoan(amount) {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Bank') {
+            return { success: false, message: 'Must be at the Bank to repay a loan.' };
+        }
+
+        if (amount <= 0) {
+            return { success: false, message: 'Repayment amount must be positive.' };
+        }
+
+        if (currentPlayer.cash < amount) {
+            return { success: false, message: 'Not enough cash to repay this amount.' };
+        }
+
+        if (amount > currentPlayer.loan) {
+            return { success: false, message: `Repayment amount ($${amount}) cannot exceed outstanding loan ($${currentPlayer.loan}).` };
+        }
+
+        currentPlayer.spendCash(amount);
+        currentPlayer.repayLoan(amount);
+        return { success: true, message: `Successfully repaid $${amount}. Remaining loan: $${currentPlayer.loan}.` };
+    }
+
+    buyCar() {
+        const currentPlayer = this.getCurrentPlayer();
+        const CAR_COST = 3000;
+
+        if (currentPlayer.location !== 'Used Car Lot') {
+            return { success: false, message: 'Must be at the Used Car Lot to buy a car.' };
+        }
+
+        if (currentPlayer.hasCar) {
+            return { success: false, message: 'You already own a car.' };
+        }
+
+        if (currentPlayer.cash < CAR_COST) {
+            return { success: false, message: `Not enough cash to buy a car. You need $${CAR_COST}.` };
+        }
+
+        currentPlayer.spendCash(CAR_COST);
+        currentPlayer.giveCar();
+        return { success: true, message: 'Congratulations! You bought a car.' };
+    }
+
     travelTo(destination) {
         if (!LOCATIONS.includes(destination)) {
             throw new Error(`Invalid destination: ${destination}`);
