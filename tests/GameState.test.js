@@ -18,6 +18,7 @@ describe('GameState', () => {
                 location: 'Home',
                 hasCar: false,
                 educationLevel: 0,
+                careerLevel: 0,
                 spendCash: jest.fn(),
                 addCash: jest.fn(amount => {
                     player.cash += amount;
@@ -28,7 +29,7 @@ describe('GameState', () => {
                 setLocation: jest.fn(newLocation => {
                     player.location = newLocation;
                 }),
-                advanceCareer: jest.fn(),
+                // advanceCareer: jest.fn(), // No longer directly called by GameState.workShift
                 // Add other player properties and methods as needed for tests
             };
             return player;
@@ -208,59 +209,109 @@ describe('GameState', () => {
         expect(result.message).toBe('Must be at the Employment Agency to work.');
         expect(currentPlayer.addCash).not.toHaveBeenCalled();
         expect(currentPlayer.updateTime).not.toHaveBeenCalled();
-        expect(currentPlayer.advanceCareer).not.toHaveBeenCalled();
+        expect(currentPlayer.careerLevel).toBe(0);
     });
 
-    // Test 15: workShift - successful work at level 1 job
-    test('workShift successfully works at level 1 job with no education', () => {
+    // Test 15: workShift - player with no education can only work Dishwasher
+    test('workShift allows player with no education to work only Dishwasher', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.location = 'Employment Agency';
         currentPlayer.educationLevel = 0;
-        currentPlayer.time = 10;
+        currentPlayer.time = 24;
+        currentPlayer.cash = 0;
+        currentPlayer.careerLevel = 0;
 
         const result = gameState.workShift();
-        const expectedJob = JOBS[0]; // Dishwasher
+        const expectedJob = JOBS.find(job => job.title === 'Dishwasher');
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
         expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
-        expect(currentPlayer.advanceCareer).toHaveBeenCalled();
+        expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
+        expect(result.job.title).toBe('Dishwasher');
     });
 
-    // Test 16: workShift - successful work at a higher level job with sufficient education
-    test('workShift successfully works at a higher level job with sufficient education', () => {
+    // Test 16: workShift - after completing a course, player can access next level job
+    test('workShift allows player to access next level job after education advancement', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.location = 'Employment Agency';
-        currentPlayer.educationLevel = 3; // Can take Office Clerk job
-        currentPlayer.time = 10;
+        currentPlayer.educationLevel = 1; // Player can now access Fast Food Worker
+        currentPlayer.time = 24;
+        currentPlayer.cash = 0;
+        currentPlayer.careerLevel = 0;
 
         const result = gameState.workShift();
-        const expectedJob = JOBS[3]; // Office Clerk
+        const expectedJob = JOBS.find(job => job.title === 'Fast Food Worker');
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
         expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
-        expect(currentPlayer.advanceCareer).toHaveBeenCalled();
+        expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
+        expect(result.job.title).toBe('Fast Food Worker');
     });
 
-    // Test 17: workShift - not enough time for shift
-    test('workShift fails if not enough time for the shift', () => {
+    // Test 17: workShift - working successfully deducts time, adds cash, and updates career level
+    test('workShift successfully updates time, cash, and careerLevel', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Employment Agency';
+        currentPlayer.educationLevel = 2; // Retail Associate
+        currentPlayer.time = 24;
+        currentPlayer.cash = 100;
+        currentPlayer.careerLevel = 1;
+
+        const result = gameState.workShift();
+        const expectedJob = JOBS.find(job => job.title === 'Retail Associate');
+
+        expect(result.success).toBe(true);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
+        expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
+        expect(currentPlayer.careerLevel).toBe(expectedJob.level);
+        expect(currentPlayer.time).toBe(24 - expectedJob.shiftHours);
+        expect(currentPlayer.cash).toBe(100 + (expectedJob.wage * expectedJob.shiftHours));
+    });
+
+    // Test 18: workShift - player cannot work if they lack required time
+    test('workShift fails if player lacks required time for the shift', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.location = 'Employment Agency';
         currentPlayer.educationLevel = 0;
         currentPlayer.time = 5; // Dishwasher shift is 6 hours
+        currentPlayer.cash = 100;
+        currentPlayer.careerLevel = 0;
 
         const result = gameState.workShift();
+        const expectedJob = JOBS.find(job => job.title === 'Dishwasher');
 
         expect(result.success).toBe(false);
-        expect(result.message).toBe('Not enough time to work the Dishwasher shift.');
+        expect(result.message).toBe(`Not enough time to work the ${expectedJob.title} shift.`);
         expect(currentPlayer.addCash).not.toHaveBeenCalled();
         expect(currentPlayer.updateTime).not.toHaveBeenCalled();
-        expect(currentPlayer.advanceCareer).not.toHaveBeenCalled();
+        expect(currentPlayer.careerLevel).toBe(0);
+        expect(currentPlayer.time).toBe(5);
+        expect(currentPlayer.cash).toBe(100);
+    });
+
+    // Test 19: workShift - careerLevel does not decrease if working a lower level job
+    test('workShift does not decrease careerLevel if working a lower level job', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Employment Agency';
+        currentPlayer.educationLevel = 2; // Can work Retail Associate (level 3)
+        currentPlayer.time = 24;
+        currentPlayer.cash = 100;
+        currentPlayer.careerLevel = 3; // Already a higher career level
+
+        const result = gameState.workShift();
+        const expectedJob = JOBS.find(job => job.title === 'Retail Associate');
+
+        expect(result.success).toBe(true);
+        expect(currentPlayer.careerLevel).toBe(3); // Should remain 3, not drop to 2
+        expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
     });
 });

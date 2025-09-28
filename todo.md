@@ -95,19 +95,19 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **2.2: Working at the Employment Agency**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Implement the `workShift()` method.
-    -   [ ] Add a check to ensure the player is at the "Employment Agency".
-    -   [ ] Implement logic to find the best available job based on the player's `educationLevel`.
-    -   [ ] Add a check for sufficient time to work the shift.
-    -   [ ] Implement logic to add earnings, deduct time, and update `careerLevel` upon success.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Add tests for `workShift`.
-    -   [ ] Test location requirement.
-    -   [ ] Test that a player with no education gets the level 1 job.
-    -   [ ] Test that a player with sufficient education can access higher-level jobs.
-    -   [ ] Test that time, cash, and career level are updated correctly after a shift.
-    -   [ ] Test failure case when player lacks time for a shift.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Implement the `workShift()` method.
+    -   [x] Add a check to ensure the player is at the "Employment Agency".
+    -   [x] Implement logic to find the best available job based on the player's `educationLevel`.
+    -   [x] Add a check for sufficient time to work the shift.
+    -   [x] Implement logic to add earnings, deduct time, and update `careerLevel` upon success.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Add tests for `workShift`.
+    -   [x] Test location requirement.
+    -   [x] Test that a player with no education gets the level 1 job.
+    -   [x] Test that a player with sufficient education can access higher-level jobs.
+    -   [x] Test that time, cash, and career level are updated correctly after a shift.
+    -   [x] Test failure case when player lacks time for a shift.
 
 #### **2.3: Studying at the Community College**
 

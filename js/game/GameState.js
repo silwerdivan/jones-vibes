@@ -4,6 +4,10 @@ import { LOCATIONS, JOBS } from './gameData.js';
 
 class GameState {
 
+    _getAvailableJobs(player) {
+        return JOBS.filter(job => player.educationLevel >= job.educationRequired);
+    }
+
     workShift() {
         const currentPlayer = this.getCurrentPlayer();
 
@@ -11,22 +15,31 @@ class GameState {
             return { success: false, message: 'Must be at the Employment Agency to work.' };
         }
 
-        const availableJobs = JOBS.filter(job => job.educationRequired <= currentPlayer.educationLevel);
+        const availableJobs = this._getAvailableJobs(currentPlayer);
         if (availableJobs.length === 0) {
             return { success: false, message: 'No jobs available for your education level.' };
         }
 
-        // Find the highest paying job available for the player's education level
-        const bestJob = availableJobs.reduce((prev, current) => (prev.wage > current.wage) ? prev : current);
+        // Find the highest-level job from the available list
+        const jobToWork = availableJobs.reduce((prev, current) => (prev.level > current.level) ? prev : current);
 
-        if (currentPlayer.time < bestJob.shiftHours) {
-            return { success: false, message: `Not enough time to work the ${bestJob.title} shift.` };
+        if (currentPlayer.time < jobToWork.shiftHours) {
+            return { success: false, message: `Not enough time to work the ${jobToWork.title} shift.` };
         }
 
-        currentPlayer.addCash(bestJob.wage * bestJob.shiftHours);
-        currentPlayer.updateTime(-bestJob.shiftHours);
-        currentPlayer.advanceCareer();
-        return { success: true, message: `Worked as a ${bestJob.title} and earned $${bestJob.wage * bestJob.shiftHours}.` };
+        // Deduct the shiftHours from the player's time.
+        currentPlayer.updateTime(-jobToWork.shiftHours);
+
+        // Calculate earnings and add to cash.
+        const earnings = jobToWork.wage * jobToWork.shiftHours;
+        currentPlayer.addCash(earnings);
+
+        // Update the player's careerLevel to jobToWork.level if it's an advancement.
+        if (jobToWork.level > currentPlayer.careerLevel) {
+            currentPlayer.careerLevel = jobToWork.level;
+        }
+
+        return { success: true, message: `Worked as a ${jobToWork.title} and earned $${earnings}.`, job: jobToWork };
     }
 
     travelTo(destination) {
