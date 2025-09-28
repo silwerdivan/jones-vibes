@@ -190,20 +190,20 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **4.1: Basic HTML and UI Rendering**
 
--   [ ] **HTML (`index.html`):**
-    -   [ ] Create the main container divs (`#player1-status-panel`, `#player2-status-panel`, `#game-controls`, etc.).
-    -   [ ] Add placeholder elements with IDs for all player stats (`#p1-cash`, `#p1-happiness`, etc.).
-    -   [ ] Add placeholder buttons for all possible actions.
--   [ ] **JavaScript (`ui.js`):**
-    -   [ ] Create the `render(gameState)` function.
-    -   [ ] Write DOM manipulation code to update player status panels with data from `gameState`.
-    -   [ ] Write code to update the Time Tracker and Location display.
-    -   [ ] Implement logic to visually highlight the current player.
-    -   [ ] Implement logic to show/hide location-specific action buttons.
--   [ ] **Integration (`app.js`):**
-    -   [ ] Instantiate `GameState` and `GameController`.
-    -   [ ] Write an `updateUI()` function that calls `render()`.
-    -   [ ] Call `updateUI()` once to render the initial game state.
+-   [x] **HTML (`index.html`):**
+    -   [x] Create the main container divs (`#player1-status-panel`, `#player2-status-panel`, `#game-controls`, etc.).
+    -   [x] Add placeholder elements with IDs for all player stats (`#p1-cash`, `#p1-happiness`, etc.).
+    -   [x] Add placeholder buttons for all possible actions.
+-   [x] **JavaScript (`ui.js`):**
+    -   [x] Create the `render(gameState)` function.
+    -   [x] Write DOM manipulation code to update player status panels with data from `gameState`.
+    -   [x] Write code to update the Time Tracker and Location display.
+    -   [x] Implement logic to visually highlight the current player.
+    -   [x] Implement logic to show/hide location-specific action buttons.
+-   [x] **Integration (`app.js`):**
+    -   [x] Instantiate `GameState` and `GameController`.
+    -   [x] Write an `updateUI()` function that calls `render()`.
+    -   [x] Call `updateUI()` once to render the initial game state.
 
 #### **4.2: Wiring UI Controls**
 
