@@ -1,6 +1,6 @@
 
 import Player from './Player.js';
-import { LOCATIONS, JOBS, COURSES } from './gameData.js';
+import { LOCATIONS, JOBS, COURSES, SHOPPING_ITEMS } from './gameData.js';
 
 class GameState {
 
@@ -76,6 +76,29 @@ class GameState {
         currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
 
         return { success: true, message: `Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.` };
+    }
+
+    buyItem(itemName) {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Shopping Mall') {
+            return { success: false, message: 'Must be at the Shopping Mall to buy items.' };
+        }
+
+        const item = SHOPPING_ITEMS.find(i => i.name === itemName);
+
+        if (!item) {
+            return { success: false, message: 'Item not found.' };
+        }
+
+        if (currentPlayer.cash < item.cost) {
+            return { success: false, message: `Not enough cash to buy ${item.name}. You need $${item.cost}.` };
+        }
+
+        currentPlayer.spendCash(item.cost);
+        currentPlayer.updateHappiness(item.happinessBoost);
+
+        return { success: true, message: `Successfully bought ${item.name}! Your happiness increased by ${item.happinessBoost}.` };
     }
 
     travelTo(destination) {

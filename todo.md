@@ -127,16 +127,17 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **2.4: Buying Happiness at the Shopping Mall**
 
--   [ ] **Implementation (`GameState.js`):**
-    -   [ ] Implement the `buyItem(itemName)` method.
-    -   [ ] Add a check to ensure the player is at the "Shopping Mall".
-    -   [ ] Add a check for sufficient cash.
-    -   [ ] Implement logic to deduct cost and add happiness.
--   [ ] **Testing (`tests/GameState.test.js`):**
-    -   [ ] Add tests for `buyItem`.
-    -   [ ] Test location requirement.
-    -   [ ] Test failure case for insufficient cash.
-    -   [ ] Test that cash is deducted and happiness is increased correctly.
+-   [x] **Implementation (`GameState.js`):**
+    -   [x] Implement the `buyItem(itemName)` method.
+    -   [x] Add a check to ensure the player is at the "Shopping Mall".
+    -   [x] Add a check for sufficient cash.
+    -   [x] Implement logic to deduct cost and add happiness.
+-   [x] **Testing (`tests/GameState.test.js`):**
+    -   [x] Add tests for `buyItem`.
+    -   [x] Test location requirement.
+    -   [x] Test failure case for insufficient cash.
+    -   [x] Test that cash is deducted and happiness is increased correctly.
+    -   [x] Verify that happiness is correctly capped at 100 using the `Player` class method.
 
 ---
 

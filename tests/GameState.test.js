@@ -1,6 +1,6 @@
 import GameState from '../js/game/GameState.js';
 import Player from '../js/game/Player.js';
-import { LOCATIONS, JOBS } from '../js/game/gameData.js';
+import { LOCATIONS, JOBS, SHOPPING_ITEMS } from '../js/game/gameData.js';
 
 jest.mock('../js/game/Player.js'); // Mock the Player class
 
@@ -14,14 +14,31 @@ describe('GameState', () => {
         Player.mockImplementation(() => {
             const player = {
                 cash: 1000,
+                savings: 0,
+                happiness: 50,
+                educationLevel: 0,
+                careerLevel: 0,
                 time: 24,
                 location: 'Home',
                 hasCar: false,
-                educationLevel: 0,
-                careerLevel: 0,
-                spendCash: jest.fn(),
+                loan: 0,
+                spendCash: jest.fn(amount => {
+                    if (player.cash >= amount) {
+                        player.cash -= amount;
+                        return true;
+                    }
+                    return false;
+                }),
                 addCash: jest.fn(amount => {
                     player.cash += amount;
+                }),
+                updateHappiness: jest.fn(points => {
+                    player.happiness += points;
+                    if (player.happiness > 100) {
+                        player.happiness = 100;
+                    } else if (player.happiness < 0) {
+                        player.happiness = 0;
+                    }
                 }),
                 updateTime: jest.fn(hours => {
                     player.time += hours; // Correctly update the player's time
@@ -452,5 +469,84 @@ describe('GameState', () => {
         expect(currentPlayer.updateTime).toHaveBeenCalledWith(-15);
         expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
         expect(currentPlayer.educationLevel).toBe(2);
+    });
+
+    // Test 28: buyItem - not at Shopping Mall
+    test('buyItem fails if player is not at Shopping Mall', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Home';
+
+        const result = gameState.buyItem('Coffee');
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Must be at the Shopping Mall to buy items.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateHappiness).not.toHaveBeenCalled();
+    });
+
+    // Test 29: buyItem - item not found
+    test('buyItem fails if item is not found', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Shopping Mall';
+
+        const result = gameState.buyItem('NonExistentItem');
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Item not found.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateHappiness).not.toHaveBeenCalled();
+    });
+
+    // Test 30: buyItem - insufficient cash
+    test('buyItem fails if player has insufficient cash', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Shopping Mall';
+        currentPlayer.cash = 0; // Coffee costs 5
+
+        const result = gameState.buyItem('Coffee');
+
+        expect(result.success).toBe(false);
+        expect(result.message).toBe('Not enough cash to buy Coffee. You need $5.');
+        expect(currentPlayer.spendCash).not.toHaveBeenCalled();
+        expect(currentPlayer.updateHappiness).not.toHaveBeenCalled();
+    });
+
+    // Test 31: buyItem - successful purchase
+    test('buyItem successfully deducts cash and increases happiness', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Shopping Mall';
+        currentPlayer.cash = 100;
+        currentPlayer.happiness = 50;
+
+        const coffee = SHOPPING_ITEMS.find(item => item.name === 'Coffee');
+        const result = gameState.buyItem('Coffee');
+
+        expect(result.success).toBe(true);
+        expect(result.message).toBe(`Successfully bought ${coffee.name}! Your happiness increased by ${coffee.happinessBoost}.`);
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(coffee.cost);
+        expect(currentPlayer.updateHappiness).toHaveBeenCalledWith(coffee.happinessBoost);
+        expect(currentPlayer.cash).toBe(100 - coffee.cost);
+        expect(currentPlayer.happiness).toBe(50 + coffee.happinessBoost);
+    });
+
+    // Test 32: buyItem - happiness capped at 100
+    test('buyItem caps happiness at 100', () => {
+        gameState = new GameState(1);
+        const currentPlayer = gameState.getCurrentPlayer();
+        currentPlayer.location = 'Shopping Mall';
+        currentPlayer.cash = 1000;
+        currentPlayer.happiness = 90; // Buying Concert Ticket (30 happiness) would exceed 100
+
+        const concertTicket = SHOPPING_ITEMS.find(item => item.name === 'Concert Ticket');
+        const result = gameState.buyItem('Concert Ticket');
+
+        expect(result.success).toBe(true);
+        expect(currentPlayer.spendCash).toHaveBeenCalledWith(concertTicket.cost);
+        expect(currentPlayer.updateHappiness).toHaveBeenCalledWith(concertTicket.happinessBoost);
+        expect(currentPlayer.happiness).toBe(100); // Should be capped at 100
     });
 });
