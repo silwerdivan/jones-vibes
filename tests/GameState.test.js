@@ -41,7 +41,7 @@ describe('GameState', () => {
                     }
                 }),
                 updateTime: jest.fn(hours => {
-                    player.time += hours; // Correctly update the player's time
+                    player.time -= hours; // Correctly deduct hours from player's time
                 }),
                 setLocation: jest.fn(newLocation => {
                     player.location = newLocation;
@@ -235,7 +235,7 @@ describe('GameState', () => {
         const result = gameState.travelTo('Bank');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-2);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(2);
         expect(currentPlayer.setLocation).toHaveBeenCalledWith('Bank');
         expect(currentPlayer.location).toBe('Bank');
     });
@@ -251,7 +251,7 @@ describe('GameState', () => {
         const result = gameState.travelTo('Bank');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-1);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(1);
         expect(currentPlayer.setLocation).toHaveBeenCalledWith('Bank');
         expect(currentPlayer.location).toBe('Bank');
     });
@@ -325,7 +325,7 @@ describe('GameState', () => {
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
         expect(result.job.title).toBe('Dishwasher');
@@ -346,7 +346,7 @@ describe('GameState', () => {
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
         expect(result.job.title).toBe('Fast Food Worker');
@@ -366,7 +366,7 @@ describe('GameState', () => {
         const expectedJob = JOBS.find(job => job.title === 'Retail Associate');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-expectedJob.shiftHours);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(currentPlayer.time).toBe(24 - expectedJob.shiftHours);
@@ -525,7 +525,7 @@ describe('GameState', () => {
         expect(result.success).toBe(true);
         expect(result.message).toBe('Successfully completed Intro to Business! Your education level is now 1.');
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(500);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-10);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(10);
         expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
         expect(currentPlayer.educationLevel).toBe(1);
     });
@@ -544,7 +544,7 @@ describe('GameState', () => {
         expect(result.success).toBe(true);
         expect(result.message).toBe('Successfully completed Marketing Fundamentals! Your education level is now 2.');
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(750);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(-15);
+        expect(currentPlayer.updateTime).toHaveBeenCalledWith(15);
         expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
         expect(currentPlayer.educationLevel).toBe(2);
     });

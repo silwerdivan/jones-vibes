@@ -28,7 +28,7 @@ class GameState {
         }
 
         // Deduct the shiftHours from the player's time.
-        currentPlayer.updateTime(-jobToWork.shiftHours);
+        currentPlayer.updateTime(jobToWork.shiftHours);
 
         // Calculate earnings and add to cash.
         const earnings = jobToWork.wage * jobToWork.shiftHours;
@@ -72,7 +72,7 @@ class GameState {
         }
 
         currentPlayer.spendCash(course.cost);
-        currentPlayer.updateTime(-course.time);
+        currentPlayer.updateTime(course.time);
         currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
 
         return { success: true, message: `Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.` };
@@ -220,7 +220,7 @@ class GameState {
             return { success: false, message: 'Not enough time for the trip.' };
         }
 
-        currentPlayer.updateTime(-travelTime);
+        currentPlayer.updateTime(travelTime);
         currentPlayer.setLocation(destination);
         return { success: true, message: `Traveled to ${destination}.` };
     }
