@@ -314,6 +314,15 @@ Testing:
 -   Write Jest tests for the `GameController`.
 -   Simulate a series of actions (travel, work, end turn) and check that the `GameState` is updated correctly.
 -   Create a test where a player performs an action that meets the final win condition, and verify that the `gameOver` flag is set correctly.
+-   **Integration Tests for `GameController`**
+    -   Create `tests/GameController.test.js`.
+    -   Write a test that simulates a multi-step turn:
+        1.  Instantiate `GameController`.
+        2.  Call `handleAction('travel', { destination: 'Employment Agency' })`.
+        3.  Assert the player's location is now 'Employment Agency' and time has been deducted.
+        4.  Call `handleAction('workShift', {})`.
+        5.  Assert the player's cash has increased, time has been further deducted, and career level is now 1.
+    -   This test proves that the controller correctly modifies the state through a sequence of actions.
 ```
 
 ---
