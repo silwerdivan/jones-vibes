@@ -40,8 +40,12 @@ export default class Player {
         this.careerLevel++;
     }
 
-    updateTime(hours) {
+    deductTime(hours) {
         this.time -= hours;
+    }
+
+    setTime(hours) {
+        this.time = hours;
     }
 
     setLocation(newLocation) {

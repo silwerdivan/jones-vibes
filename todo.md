@@ -187,16 +187,16 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **3.4: Automated End-to-End Scenario Test (CRITICAL STEP)**
 
--   [ ] **Testing (`tests/Scenario.test.js`):**
-    -   [ ] Create a new test file: `tests/Scenario.test.js`.
-    -   [ ] Implement the "First Promotion" scenario test case.
-    -   [ ] This test should use **only** the `GameController.handleAction()` method to simulate a multi-turn game sequence involving:
-        -   [ ] Player 1 taking a loan.
-        -   [ ] Player 1 taking a course.
-        -   [ ] Player 1 ending their turn.
-        -   [ ] Player 2 ending their turn.
-        -   [ ] Player 1 working their new, higher-level job.
-    -   [ ] **Ensure this entire scenario test passes before proceeding to the UI.** This validates that the complete backend game engine is integrated and working correctly.
+-   [x] **Testing (`tests/Scenario.test.js`):**
+    -   [x] Create a new test file: `tests/Scenario.test.js`.
+    -   [x] Implement the "First Promotion" scenario test case.
+    -   [x] This test should use **only** the `GameController.handleAction()` method to simulate a multi-turn game sequence involving:
+        -   [x] Player 1 taking a loan.
+        -   [x] Player 1 taking a course.
+        -   [x] Player 1 ending their turn.
+        -   [x] Player 2 ending their turn.
+        -   [x] Player 1 working their new, higher-level job.
+    -   [x] **Ensure this entire scenario test passes before proceeding to the UI.** This validates that the complete backend game engine is integrated and working correctly.
 
 ---
 
@@ -212,20 +212,6 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
     -   [ ] Add `import` statements at the top of files where dependencies are needed (e.g., `import Player from './Player.js';`).
 -   [ ] **Verification:**
     -   [ ] Open `index.html` in a browser. Verify that the page loads (even if blank) with **zero errors** in the developer console.
-
--   [ ] **4.1: Basic HTML and UI Rendering**
-    -   [ ] **HTML (`index.html`):**
-        -   [ ] Create the main container divs and placeholder elements for all stats and controls.
-    -   [ ] **JavaScript (`ui.js` & `app.js`):**
-        -   [ ] Create the `render(gameState)` function in `ui.js`.
-        -   [ ] In `app.js`, instantiate the game and call `render()` once to display the initial state.
-
--   [ ] **4.2: Wiring UI Controls**
-    -   [ ] **JavaScript (`app.js`):**
-        -   [ ] Add event listeners to all action buttons.
-        -   [ ] Connect button clicks to `gameController.handleAction()`.
-        -   [ ] Ensure the UI is re-rendered after every action.
-        -   [ ] Implement the game-over UI state (victory message, disabled buttons).
 
 #### **4.1: Basic HTML and UI Rendering**
 

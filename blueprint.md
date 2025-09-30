@@ -325,6 +325,36 @@ Testing:
     -   This test proves that the controller correctly modifies the state through a sequence of actions.
 ```
 
+#### **Prompt 3.4: Automated End-to-End Scenario Test (CRITICAL STEP)**
+
+Goal: Create a high-level automated test that simulates a multi-turn game scenario to ensure all backend systems are integrated correctly. This is the most important test for preventing logic errors before the UI is built.
+
+Pre-requisite: A fully functional `GameController`.
+
+Specifications:
+1.  Create a new test file: `tests/Scenario.test.js`.
+2.  This test will not test individual methods, but a complete user story.
+3.  **Test Scenario: "First Promotion"**
+    -   Inside a single test case, perform the following sequence programmatically using only the `GameController`'s `handleAction` method:
+    1.  Initialize a `GameController` with a 2-player game.
+    2.  **Player 1's Turn:**
+        -   Get the initial state of Player 1.
+        -   `handleAction('travel', { destination: 'Bank' })`.
+        -   `handleAction('takeLoan', { amount: 800 })`. Assert that P1's cash is now 800 and loan is 800.
+        -   `handleAction('travel', { destination: 'Community College' })`.
+        -   `handleAction('takeCourse', { courseId: 1 })`. Assert that P1's cash is now 300 (800 - 500), educationLevel is 1, and time has been deducted.
+        -   `handleAction('endTurn', {})`. Assert the current player is now the second player.
+    3.  **Player 2's Turn:**
+        -   (Keep it simple) `handleAction('endTurn', {})`. Assert the current player is back to Player 1 and the turn count has incremented.
+    4.  **Player 1's Second Turn:**
+        -   `handleAction('travel', { destination: 'Employment Agency' })`.
+        -   `handleAction('workShift', {})`.
+        -   Assert that Player 1 was able to work the 'Retail Clerk' job (Level 2), earning $84 ($12/hr * 7 hrs).
+        -   Assert Player 1's `careerLevel` is now 2.
+
+Testing:
+-   This entire file *is* the test. If this test passes, it confirms that traveling, banking, education, working, and the turn cycle are all functioning together as a cohesive system. This will catch the majority of integration bugs.
+
 ---
 
 ### **Phase 4: User Interface**
