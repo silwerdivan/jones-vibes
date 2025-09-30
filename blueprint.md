@@ -361,6 +361,27 @@ Testing:
 
 Now we connect our tested game engine to a simple, functional user interface.
 
+#### **Prompt 4.0: Project Structure & Module Setup**
+
+Goal: Set up the HTML file and JavaScript modules correctly to prevent common browser errors.
+
+Specifications:
+1.  **HTML (`index.html`):**
+    -   In your `index.html` file, ensure you have a single entry point for your JavaScript, and that it's loaded as a module.
+    -   Add this line right before the closing `</body>` tag:
+        `<script type="module" src="js/app.js"></script>`
+2.  **JavaScript Modules (`.js` files):**
+    -   Go through all your JavaScript class files (`Player.js`, `GameState.js`, `GameController.js`, `gameData.js`, etc.).
+    -   Ensure each class or constant set is exported. Example: `export default class Player { ... }` or `export const JOBS = [...]`.
+    -   In the files that use them, make sure you import them correctly at the top.
+        -   Example in `GameState.js`: `import Player from './Player.js';`
+        -   Example in `app.js`: `import GameController from './game/GameController.js';`
+
+Task:
+-   Modify all existing JavaScript files to use `import`/`export` syntax.
+-   Create the `index.html` file with the correct module script tag. At this point, opening the file in a browser should result in a blank page but **no errors** in the developer console.
+```
+
 #### **Prompt 4.1: Basic HTML and UI Rendering**
 
 ```text

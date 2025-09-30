@@ -1,4 +1,4 @@
-import { GameState } from './game/GameState.js';
+import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
 import AIController from './game/AIController.js';
 import { render } from './ui.js';

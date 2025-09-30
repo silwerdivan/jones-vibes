@@ -204,14 +204,14 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **4.0: Project Structure & Module Setup**
 
--   [ ] **HTML (`index.html`):**
-    -   [ ] Ensure the main script tag is set to `type="module"`: `<script type="module" src="js/app.js"></script>`.
--   [ ] **JavaScript (All `.js` files):**
-    -   [ ] Go through all game logic files (`Player.js`, `GameState.js`, `GameController.js`, etc.).
-    -   [ ] Add `export default class ...` or `export const ...` to each file.
-    -   [ ] Add `import` statements at the top of files where dependencies are needed (e.g., `import Player from './Player.js';`).
--   [ ] **Verification:**
-    -   [ ] Open `index.html` in a browser. Verify that the page loads (even if blank) with **zero errors** in the developer console.
+-   [x] **HTML (`index.html`):**
+    -   [x] Ensure the main script tag is set to `type="module"`: `<script type="module" src="js/app.js"></script>`.
+-   [x] **JavaScript (All `.js` files):**
+    -   [x] Go through all game logic files (`Player.js`, `GameState.js`, `GameController.js`, etc.).
+    -   [x] Add `export default class ...` or `export const ...` to each file.
+    -   [x] Add `import` statements at the top of files where dependencies are needed (e.g., `import Player from './Player.js';`).
+-   [x] **Verification:**
+    -   [x] Open `index.html` in a browser. Verify that the page loads (even if blank) with **zero errors** in the developer console.
 
 #### **4.1: Basic HTML and UI Rendering**
 
