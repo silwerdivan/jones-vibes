@@ -207,14 +207,14 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **4.2: Wiring UI Controls**
 
--   [ ] **JavaScript (`app.js`):**
-    -   [ ] Add `DOMContentLoaded` event listener.
-    -   [ ] Get references to all interactive HTML elements (buttons, inputs).
-    -   [ ] Add `click` event listeners to all action buttons.
-    -   [ ] Each listener should call `gameController.handleAction()` with the correct parameters.
-    -   [ ] After every action, call `updateUI()` to refresh the screen.
-    -   [ ] Add a log entry to the UI after each action.
-    -   [ ] Add logic to disable controls and show a victory message when `gameController.gameOver` is true.
+-   [x] **JavaScript (`app.js`):**
+    -   [x] Add `DOMContentLoaded` event listener.
+    -   [x] Get references to all interactive HTML elements (buttons, inputs).
+    -   [x] Add `click` event listeners to all action buttons.
+    -   [x] Each listener should call `gameController.handleAction()` with the correct parameters.
+    -   [x] After every action, call `updateUI()` to refresh the screen.
+    -   [x] Add a log entry to the UI after each action.
+    -   [x] Add logic to disable controls and show a victory message when `gameController.gameOver` is true.
 
 ---
 
