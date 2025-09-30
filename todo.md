@@ -222,19 +222,19 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **5.1: AI Decision Making**
 
--   [ ] **Implementation (`AIController.js`):**
-    -   [ ] Create the `AIController` class.
-    -   [ ] Implement the `takeTurn(gameState, player)` method.
-    -   [ ] Implement the priority list as a series of `if/else if` statements.
-        -   [ ] Priority 1: Pay Loan.
-        -   [ ] Priority 2: Gain Wealth.
-        -   [ ] Priority 3: Advance Education.
-        -   [ ] Priority 4: Boost Happiness.
-        -   [ ] Priority 5: Increase Efficiency (Buy Car).
-        -   [ ] Priority 6: Catch-all (Work).
-    -   [ ] Ensure the method returns a valid action object (e.g., `{ action: 'travel', params: { ... } }`).
--   [ ] **Testing (`tests/AIController.test.js`):**
-    -   [ ] For each priority, create a specific mock player state and verify the `takeTurn` method returns the expected action.
+-   [x] **Implementation (`AIController.js`):**
+    -   [x] Create the `AIController` class.
+    -   [x] Implement the `takeTurn(gameState, player)` method.
+    -   [x] Implement the priority list as a series of `if/else if` statements.
+        -   [x] Priority 1: Pay Loan.
+        -   [x] Priority 2: Gain Wealth.
+        -   [x] Priority 3: Advance Education.
+        -   [x] Priority 4: Boost Happiness.
+        -   [x] Priority 5: Increase Efficiency (Buy Car).
+        -   [x] Priority 6: Catch-all (Work).
+    -   [x] Ensure the method returns a valid action object (e.g., `{ action: 'travel', params: { ... } }`).
+-   [x] **Testing (`tests/AIController.test.js`):**
+    -   [x] For each priority, create a specific mock player state and verify the `takeTurn` method returns the expected action.
 
 #### **5.2: Integrating the AI into the Game Loop**
 
