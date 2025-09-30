@@ -1,12 +1,11 @@
-// js/app.js
-
 import { GameState } from './game/GameState.js';
-import { GameController } from './game/GameController.js';
+import GameController from './game/GameController.js';
+import AIController from './game/AIController.js';
 import { render } from './ui.js';
 
 // Initialize GameState and GameController
-const gameState = new GameState();
-const gameController = new GameController(gameState);
+const aiController = new AIController();
+const gameController = new GameController(2, aiController, updateUI); // 2 players, with AI for player 2
 
 // Function to log messages to the UI
 function logMessage(message) {

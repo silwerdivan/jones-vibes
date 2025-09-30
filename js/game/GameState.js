@@ -225,14 +225,22 @@ class GameState {
         return { success: true, message: `Traveled to ${destination}.` };
     }
 
-    constructor(numberOfPlayers) {
+    constructor(numberOfPlayers, isPlayer2AI = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
             throw new Error("Game can only be played with 1 or 2 players.");
         }
 
         this.players = [];
         for (let i = 0; i < numberOfPlayers; i++) {
-            this.players.push(new Player());
+            const player = new Player();
+            if (i === 1 && isPlayer2AI) {
+                player.isAI = true;
+                player.name = "AI Opponent"; // Give AI a distinct name
+            } else {
+                player.isAI = false;
+                player.name = `Player ${i + 1}`;
+            }
+            this.players.push(player);
         }
 
         this.currentPlayerIndex = 0;

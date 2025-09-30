@@ -238,15 +238,15 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
 
 #### **5.2: Integrating the AI into the Game Loop**
 
--   [ ] **Implementation (`app.js` and `GameController.js`):**
-    -   [ ] Add logic to start the game in "Single Player" mode, marking player 2 as an AI.
-    -   [ ] In `GameController`, after a human player's turn ends, check if the new current player is an AI.
-    -   [ ] If the current player is an AI, create a loop that:
-        -   [ ] Calls the `AIController.takeTurn()`.
-        -   [ ] Executes the returned action via `handleAction()`.
-        -   [ ] Calls `updateUI()` to show the AI's move.
-        -   [ ] Uses a small delay (`setTimeout`) between AI actions for better UX.
-    -   [ ] The AI's turn loop should continue until it runs out of time or chooses to end its turn.
+-   [x] **Implementation (`app.js` and `GameController.js`):**
+    -   [x] Add logic to start the game in "Single Player" mode, marking player 2 as an AI.
+    -   [x] In `GameController`, after a human player's turn ends, check if the new current player is an AI.
+    -   [x] If the current player is an AI, create a loop that:
+        -   [x] Calls the `AIController.takeTurn()`.
+        -   [x] Executes the returned action via `handleAction()`.
+        -   [x] Calls `updateUI()` to show the AI's move.
+        -   [x] Uses a small delay (`setTimeout`) between AI actions for better UX.
+    -   [x] The AI's turn loop should continue until it runs out of time or chooses to end its turn.
 -   [ ] **Final Playthrough:**
     -   [ ] Play a full game against the AI from start to finish.
     -   [ ] Check for bugs, logical errors in AI decisions, and UI glitches.
