@@ -492,3 +492,96 @@ Task:
 -   Implement the logic to automatically execute the AI's turn action-by-action.
 -   Ensure the UI updates between each AI action to provide a visible turn.
 -   The game should now be fully playable in a 1-Player vs. AI "hotseat" mode.```
+
+---
+
+### **Phase 6: Interactive UI & Final Playthrough**
+
+With the core engine and a static UI in place, this final phase focuses on making the user interface dynamic. We will replace hardcoded actions with interactive modals that allow the player to make choices, making the game fully playable.
+
+#### **Prompt 6.1: Generic Choice Modal**
+
+```text
+Goal: Create a reusable, promise-based modal in the UI for presenting a list of choices to the user.
+
+Pre-requisite: `index.html` and `ui.js` from Phase 4.
+
+Specifications:
+1.  In `ui.js`, create a new function `showChoiceModal(title, options)`.
+    -   `title` is a string for the modal's header.
+    -   `options` is an array of strings, where each string is a choice (e.g., a location name or an item name).
+2.  The function should dynamically create the HTML for a modal overlay (a `<div>` that covers the screen) and a modal content box.
+3.  The content box should display the `title` and a button for each `option` in the options array. It should also include a "Cancel" button.
+4.  The function must return a `Promise`.
+    -   When a player clicks an option button, the promise resolves with the value of that option (e.g., the string "Bank").
+    -   When a player clicks the "Cancel" button, the promise rejects.
+5.  After the user makes a choice (or cancels), the modal HTML should be removed from the DOM.
+
+Task:
+-   Write the `showChoiceModal` function in `ui.js`.
+-   Add some basic CSS to your `index.html` in a `<style>` tag to make the modal functional (e.g., position: fixed, z-index, background overlay).
+-   This function will not be connected to any game logic yet.
+
+---
+
+Goal: Create a second reusable modal for prompting the user to enter a numerical amount.
+
+Pre-requisite: `index.html` and `ui.js`.
+
+Specifications:
+1.  In `ui.js`, create a function `showNumberInputModal(title)`.
+    -   `title` is a string for the modal's header.
+2.  This function should dynamically create a modal similar to the choice modal, but its content should include:
+    -   The `title`.
+    -   An `<input type="number">` field.
+    -   A "Confirm" button.
+    -   A "Cancel" button.
+3.  The function must return a `Promise`.
+    -   When the "Confirm" button is clicked, the promise resolves with the value from the input field, converted to a number. Add validation to ensure the input is not empty and is a positive number.
+    -   When "Cancel" is clicked, the promise rejects.
+4.  After confirming or canceling, the modal should be removed from the DOM.
+
+Task:
+-   Write the `showNumberInputModal` function in `ui.js`.
+
+---
+
+Goal: Replace the hardcoded UI actions for Travel, Courses, and Items with the new choice modal.
+
+Pre-requisite: The `showChoiceModal` function from prompt 6.1 and a working `app.js` from Phase 4.
+
+Specifications:
+1.  **Travel:** In `app.js`, modify the `btnTravel` event listener.
+    -   It should now call `showChoiceModal('Travel to...', <list of all locations>)`. You will need to import the `LOCATIONS` constant.
+    -   Use async/await or `.then()` to handle the promise.
+    -   On resolution, call `gameController.handleAction('travel', { destination: selectedDestination })`.
+    -   Log the result and update the UI as before. Use a `try/catch` block or `.catch()` to handle cancellation.
+2.  **Take Course:** Modify the `btnTakeCourse` event listener.
+    -   It should determine the *next available course* for the player and present only that as an option in the modal. You may need to add a helper function to `GameController` or `GameState` to expose the next available course object.
+    -   If there are no more courses, the button should ideally be disabled (this can be part of the `render` logic), but for now, just show a message if no course is available.
+    -   On confirmation, call `handleAction` with the correct `courseId`.
+3.  **Buy Item:** Modify the `btnBuyItem` event listener.
+    -   Call `showChoiceModal('Buy an Item', <list of all item names>)`. Import `SHOPPING_ITEMS` and map it to an array of names.
+    -   On resolution, call `handleAction` with the selected `itemName`.
+
+Task:
+-   Update the event listeners in `app.js` for Travel, Take Course, and Buy Item to use the interactive modal.
+-   Ensure the game state updates correctly based on user selection.
+
+---
+
+Goal: Connect the financial action buttons to the numerical input modal.
+
+Pre-requisite: The `showNumberInputModal` function from prompt 6.2 and a working `app.js`.
+
+Specifications:
+1.  In `app.js`, update the four financial event listeners (`btnDeposit`, `btnWithdraw`, `btnTakeLoan`, `btnRepayLoan`).
+2.  Each listener should now be an `async` function.
+3.  Inside each, use a `try/catch` block to call `await showNumberInputModal(...)` with an appropriate title (e.g., "Enter amount to deposit:").
+4.  In the `try` block, if the promise resolves, take the returned `amount` and call the corresponding `gameController.handleAction` (e.g., `handleAction('deposit', { amount })`).
+5.  Log the result and update the UI.
+6.  The `catch` block will handle the user canceling the modal (you can log "Action cancelled." or do nothing).
+
+Task:
+-   Refactor the event listeners for all four bank actions in `app.js` to use the numerical input modal.
+-   The game should now be fully playable with all actions requiring dynamic user input.

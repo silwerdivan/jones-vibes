@@ -272,7 +272,42 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
         -   [x] Calls `updateUI()` to show the AI's move.
         -   [x] Uses a small delay (`setTimeout`) between AI actions for better UX.
     -   [x] The AI's turn loop should continue until it runs out of time or chooses to end its turn.
--   [ ] **Final Playthrough:**
-    -   [ ] Play a full game against the AI from start to finish.
+
+### **Phase 6: Interactive UI & Final Playthrough**
+
+-   [x] **6.1: Implement a Generic Modal for User Choices**
+    -   [x] Create a reusable modal function/component in `ui.js`.
+    -   [x] The modal should accept a title, a list of options (e.g., buttons or a select list), and a callback function to handle the user's selection.
+    -   [x] Style the modal to appear as an overlay on the game screen.
+
+-   [ ] **6.2: Implement Travel Destination Selection**
+    -   [ ] Modify the `btnTravel` event listener in `app.js` to use the choice modal.
+    -   [ ] The modal should be populated with a list of all possible game locations.
+    -   [ ] The callback should pass the selected destination to `gameController.handleAction('travel', { destination: '...' })`.
+
+-   [ ] **6.3: Implement Dynamic Course Selection**
+    -   [ ] Modify the `btnTakeCourse` event listener to use the choice modal.
+    -   [ ] The modal should show only the *next available* course for the current player.
+    -   [ ] The callback should pass the correct `courseId` to `gameController.handleAction('takeCourse', { courseId: '...' })`.
+
+-   [ ] **6.4: Implement Dynamic Item Selection**
+    -   [ ] Modify the `btnBuyItem` event listener to use the choice modal.
+    -   [ ] The modal should display all available shopping items.
+    -   [ ] The callback should pass the chosen `itemName` to `gameController.handleAction('buyItem', { itemName: '...' })`.
+
+-   [ ] **6.5: Implement a Generic Modal for Numerical Input**
+    -   [ ] Create a second reusable modal in `ui.js` that contains a text input field (`type="number"`), a label, and "Confirm"/"Cancel" buttons.
+    -   [ ] This modal should accept a callback function to process the entered amount.
+
+-   [ ] **6.6: Wire Up Financial Action Modals**
+    -   [ ] Modify the `btnDeposit` listener to use the numerical input modal.
+    -   [ ] Modify the `btnWithdraw` listener to use the numerical input modal.
+    -   [ ] Modify the `btnTakeLoan` listener to use the numerical input modal.
+    -   [ ] Modify the `btnRepayLoan` listener to use the numerical input modal.
+    -   [ ] Add basic client-side validation to ensure the input is a positive number.
+
+-   [ ] **6.7: Final Playthrough & Verification**
+    -   [ ] Play a full game as a human player against the AI from start to finish.
+    -   [ ] Verify that all interactive modals work as expected for all relevant actions.
     -   [ ] Check for bugs, logical errors in AI decisions, and UI glitches.
-    -   [ ] Ensure the win condition is triggered correctly for both the player and the AI.
+    -   [ ] Ensure the win condition is triggered and announced correctly for both the player and the AI.

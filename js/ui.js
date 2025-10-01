@@ -59,3 +59,49 @@ export function render(gameState) {
     }
     document.querySelector('#btn-travel').classList.remove('hidden'); // Travel is always an option
 }
+
+export function showChoiceModal(title, options) {
+    return new Promise((resolve, reject) => {
+        // Create modal overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'choice-modal-overlay';
+        
+        // Create modal content box
+        const modal = document.createElement('div');
+        modal.id = 'choice-modal';
+
+        // Add title
+        const h2 = document.createElement('h2');
+        h2.textContent = title;
+        modal.appendChild(h2);
+
+        // Add option buttons
+        options.forEach(optionText => {
+            const button = document.createElement('button');
+            button.textContent = optionText;
+            button.addEventListener('click', () => {
+                cleanup();
+                resolve(optionText);
+            });
+            modal.appendChild(button);
+        });
+
+        // Add Cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => {
+            cleanup();
+            reject('User cancelled.');
+        });
+        modal.appendChild(cancelButton);
+
+        // Cleanup function
+        const cleanup = () => {
+            document.body.removeChild(overlay);
+        };
+
+        // Append to body
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+    });
+}
