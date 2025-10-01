@@ -524,6 +524,8 @@ Task:
 
 ---
 
+#### **Prompt 6.2: Generic Numerical Input Modal**
+
 Goal: Create a second reusable modal for prompting the user to enter a numerical amount.
 
 Pre-requisite: `index.html` and `ui.js`.
@@ -545,6 +547,8 @@ Task:
 -   Write the `showNumberInputModal` function in `ui.js`.
 
 ---
+
+#### **Prompt 6.3: Implement Dynamic Player Choices**
 
 Goal: Replace the hardcoded UI actions for Travel, Courses, and Items with the new choice modal.
 
@@ -569,6 +573,8 @@ Task:
 -   Ensure the game state updates correctly based on user selection.
 
 ---
+
+#### **Prompt 6.4: Wire Up Financial Action Modals**
 
 Goal: Connect the financial action buttons to the numerical input modal.
 

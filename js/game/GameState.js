@@ -286,6 +286,11 @@ class GameState {
 
         return cashCondition && happinessCondition && educationCondition && careerCondition;
     }
+
+    getNextAvailableCourse() {
+        const currentPlayer = this.getCurrentPlayer();
+        return COURSES.find(course => course.educationMilestone === currentPlayer.educationLevel + 1) || null;
+    }
 }
 
 export default GameState;

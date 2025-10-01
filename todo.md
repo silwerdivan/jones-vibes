@@ -280,20 +280,20 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
     -   [x] The modal should accept a title, a list of options (e.g., buttons or a select list), and a callback function to handle the user's selection.
     -   [x] Style the modal to appear as an overlay on the game screen.
 
--   [ ] **6.2: Implement Travel Destination Selection**
-    -   [ ] Modify the `btnTravel` event listener in `app.js` to use the choice modal.
-    -   [ ] The modal should be populated with a list of all possible game locations.
-    -   [ ] The callback should pass the selected destination to `gameController.handleAction('travel', { destination: '...' })`.
+-   [x] **6.2: Implement Travel Destination Selection**
+    -   [x] Modify the `btnTravel` event listener in `app.js` to use the choice modal.
+    -   [x] The modal should be populated with a list of all possible game locations.
+    -   [x] The callback should pass the selected destination to `gameController.handleAction('travel', { destination: '...' })`.
 
--   [ ] **6.3: Implement Dynamic Course Selection**
-    -   [ ] Modify the `btnTakeCourse` event listener to use the choice modal.
-    -   [ ] The modal should show only the *next available* course for the current player.
-    -   [ ] The callback should pass the correct `courseId` to `gameController.handleAction('takeCourse', { courseId: '...' })`.
+-   [x] **6.3: Implement Dynamic Course Selection**
+    -   [x] Modify the `btnTakeCourse` event listener to use the choice modal.
+    -   [x] The modal should show only the *next available* course for the current player.
+    -   [x] The callback should pass the correct `courseId` to `gameController.handleAction('takeCourse', { courseId: '...' })`.
 
--   [ ] **6.4: Implement Dynamic Item Selection**
-    -   [ ] Modify the `btnBuyItem` event listener to use the choice modal.
-    -   [ ] The modal should display all available shopping items.
-    -   [ ] The callback should pass the chosen `itemName` to `gameController.handleAction('buyItem', { itemName: '...' })`.
+-   [x] **6.4: Implement Dynamic Item Selection**
+    -   [x] Modify the `btnBuyItem` event listener to use the choice modal.
+    -   [x] The modal should display all available shopping items.
+    -   [x] The callback should pass the chosen `itemName` to `gameController.handleAction('buyItem', { itemName: '...' })`.
 
 -   [ ] **6.5: Implement a Generic Modal for Numerical Input**
     -   [ ] Create a second reusable modal in `ui.js` that contains a text input field (`type="number"`), a label, and "Confirm"/"Cancel" buttons.

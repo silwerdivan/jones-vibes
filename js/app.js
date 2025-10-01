@@ -1,7 +1,8 @@
 import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
 import AIController from './game/AIController.js';
-import { render } from './ui.js';
+import { render, showChoiceModal } from './ui.js';
+import { LOCATIONS, SHOPPING_ITEMS } from './game/gameData.js';
 
 // Initialize GameState and GameController
 const aiController = new AIController();
@@ -63,26 +64,43 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUI();
     });
 
-    // Placeholder event listeners for actions requiring dynamic input
     btnTravel.addEventListener('click', async () => {
-        // TODO: Implement dynamic destination selection
-        const result = await gameController.handleAction('travel', { destination: 'Bank' });
-        logMessage(result.message);
-        updateUI();
+        try {
+            const destination = await showChoiceModal('Travel to...', LOCATIONS);
+            const result = await gameController.handleAction('travel', { destination });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage(`Travel cancelled. ${error}`);
+        }
     });
 
     btnTakeCourse.addEventListener('click', async () => {
-        // TODO: Implement dynamic course selection
-        const result = await gameController.handleAction('takeCourse', { courseId: 'basicProgramming' });
-        logMessage(result.message);
-        updateUI();
+        const course = gameController.getNextAvailableCourse();
+        if (!course) {
+            logMessage("No more courses available.");
+            return;
+        }
+        try {
+            const choice = await showChoiceModal(`Take course: ${course.name}?`, [course.name]);
+            const result = await gameController.handleAction('takeCourse', { courseId: course.id });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage(`Course selection cancelled. ${error}`);
+        }
     });
 
     btnBuyItem.addEventListener('click', async () => {
-        // TODO: Implement dynamic item selection
-        const result = await gameController.handleAction('buyItem', { itemName: 'coffee' });
-        logMessage(result.message);
-        updateUI();
+        const itemNames = SHOPPING_ITEMS.map(item => item.name);
+        try {
+            const itemName = await showChoiceModal('Buy an Item', itemNames);
+            const result = await gameController.handleAction('buyItem', { itemName });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage(`Purchase cancelled. ${error}`);
+        }
     });
 
     btnDeposit.addEventListener('click', async () => {

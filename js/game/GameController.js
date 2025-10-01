@@ -100,6 +100,10 @@ class GameController {
         }
         this.updateUICallback(); // Final UI update after AI turn is completely over
     }
+
+    getNextAvailableCourse() {
+        return this.gameState.getNextAvailableCourse();
+    }
 }
 
 export default GameController;
