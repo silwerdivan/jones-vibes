@@ -299,12 +299,12 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
     -   [x] Create a second reusable modal in `ui.js` that contains a text input field (`type="number"`), a label, and "Confirm"/"Cancel" buttons.
     -   [x] This modal should accept a callback function to process the entered amount.
 
--   [ ] **6.6: Wire Up Financial Action Modals**
-    -   [ ] Modify the `btnDeposit` listener to use the numerical input modal.
-    -   [ ] Modify the `btnWithdraw` listener to use the numerical input modal.
-    -   [ ] Modify the `btnTakeLoan` listener to use the numerical input modal.
-    -   [ ] Modify the `btnRepayLoan` listener to use the numerical input modal.
-    -   [ ] Add basic client-side validation to ensure the input is a positive number.
+-   [x] **6.6: Wire Up Financial Action Modals**
+    -   [x] Modify the `btnDeposit` listener to use the numerical input modal.
+    -   [x] Modify the `btnWithdraw` listener to use the numerical input modal.
+    -   [x] Modify the `btnTakeLoan` listener to use the numerical input modal.
+    -   [x] Modify the `btnRepayLoan` listener to use the numerical input modal.
+    -   [x] Add basic client-side validation to ensure the input is a positive number.
 
 -   [ ] **6.7: Final Playthrough & Verification**
     -   [ ] Play a full game as a human player against the AI from start to finish.

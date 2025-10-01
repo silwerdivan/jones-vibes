@@ -1,7 +1,7 @@
 import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
 import AIController from './game/AIController.js';
-import { render, showChoiceModal } from './ui.js';
+import { render, showChoiceModal, showNumberInputModal } from './ui.js';
 import { LOCATIONS, SHOPPING_ITEMS } from './game/gameData.js';
 
 // Initialize GameState and GameController
@@ -104,30 +104,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnDeposit.addEventListener('click', async () => {
-        // TODO: Implement dynamic amount input
-        const result = await gameController.handleAction('deposit', { amount: 100 });
-        logMessage(result.message);
-        updateUI();
+        try {
+            const amount = await showNumberInputModal('Enter amount to deposit:');
+            const result = await gameController.handleAction('deposit', { amount });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage('Action cancelled.');
+        }
     });
 
     btnWithdraw.addEventListener('click', async () => {
-        // TODO: Implement dynamic amount input
-        const result = await gameController.handleAction('withdraw', { amount: 50 });
-        logMessage(result.message);
-        updateUI();
+        try {
+            const amount = await showNumberInputModal('Enter amount to withdraw:');
+            const result = await gameController.handleAction('withdraw', { amount });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage('Action cancelled.');
+        }
     });
 
     btnTakeLoan.addEventListener('click', async () => {
-        // TODO: Implement dynamic amount input
-        const result = await gameController.handleAction('takeLoan', { amount: 500 });
-        logMessage(result.message);
-        updateUI();
+        try {
+            const amount = await showNumberInputModal('Enter amount to take loan:');
+            const result = await gameController.handleAction('takeLoan', { amount });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage('Action cancelled.');
+        }
     });
 
     btnRepayLoan.addEventListener('click', async () => {
-        // TODO: Implement dynamic amount input
-        const result = await gameController.handleAction('repayLoan', { amount: 100 });
-        logMessage(result.message);
-        updateUI();
+        try {
+            const amount = await showNumberInputModal('Enter amount to repay loan:');
+            const result = await gameController.handleAction('repayLoan', { amount });
+            logMessage(result.message);
+            updateUI();
+        } catch (error) {
+            logMessage('Action cancelled.');
+        }
     });
 });
