@@ -105,3 +105,53 @@ export function showChoiceModal(title, options) {
         document.body.appendChild(overlay);
     });
 }
+
+export function showNumberInputModal(title) {
+    return new Promise((resolve, reject) => {
+        const overlay = document.createElement('div');
+        overlay.id = 'choice-modal-overlay'; // Reusing the same overlay style
+
+        const modal = document.createElement('div');
+        modal.id = 'choice-modal'; // Reusing the same modal style
+
+        const h2 = document.createElement('h2');
+        h2.textContent = title;
+        modal.appendChild(h2);
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '1';
+        input.placeholder = 'Enter amount';
+        modal.appendChild(input);
+
+        const confirmButton = document.createElement('button');
+        confirmButton.textContent = 'Confirm';
+        confirmButton.addEventListener('click', () => {
+            const value = Number(input.value);
+            if (input.value && value > 0) {
+                cleanup();
+                resolve(value);
+            } else {
+                alert('Please enter a positive number.');
+            }
+        });
+        modal.appendChild(confirmButton);
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => {
+            cleanup();
+            reject('User cancelled.');
+        });
+        modal.appendChild(cancelButton);
+
+        const cleanup = () => {
+            document.body.removeChild(overlay);
+        };
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        input.focus();
+    });
+}

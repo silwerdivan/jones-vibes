@@ -295,9 +295,9 @@ This checklist breaks down the development of the "Jones in the Fast Lane" MVP i
     -   [x] The modal should display all available shopping items.
     -   [x] The callback should pass the chosen `itemName` to `gameController.handleAction('buyItem', { itemName: '...' })`.
 
--   [ ] **6.5: Implement a Generic Modal for Numerical Input**
-    -   [ ] Create a second reusable modal in `ui.js` that contains a text input field (`type="number"`), a label, and "Confirm"/"Cancel" buttons.
-    -   [ ] This modal should accept a callback function to process the entered amount.
+-   [x] **6.5: Implement a Generic Modal for Numerical Input**
+    -   [x] Create a second reusable modal in `ui.js` that contains a text input field (`type="number"`), a label, and "Confirm"/"Cancel" buttons.
+    -   [x] This modal should accept a callback function to process the entered amount.
 
 -   [ ] **6.6: Wire Up Financial Action Modals**
     -   [ ] Modify the `btnDeposit` listener to use the numerical input modal.
