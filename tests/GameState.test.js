@@ -40,8 +40,11 @@ describe('GameState', () => {
                         player.happiness = 0;
                     }
                 }),
-                updateTime: jest.fn(hours => {
-                    player.time -= hours; // Correctly deduct hours from player's time
+                deductTime: jest.fn(hours => {
+                    player.time -= hours;
+                }),
+                setTime: jest.fn(hours => {
+                    player.time = hours;
                 }),
                 setLocation: jest.fn(newLocation => {
                     player.location = newLocation;
@@ -130,7 +133,7 @@ describe('GameState', () => {
         gameState.endTurn();
 
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(14); // 24 - 10 = 14
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
     });
 
     // Test 6: endTurn() - currentPlayerIndex advancement (2 players)
@@ -168,9 +171,8 @@ describe('GameState', () => {
         currentPlayer.time = 40; // Player has more than 24 hours
 
         gameState.endTurn();
-        // Should reset to 24, meaning updateTime is called with 24 - 40 = -16
-        // The Player.js updateTime method should handle the actual cap, but we test the input here.
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 40);
+        // Should reset to 24
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
     });
 
     // New Test: endTurn() - interest calculation, expense deduction, and time reset
@@ -195,7 +197,7 @@ describe('GameState', () => {
         // Verify daily expense deduction
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
         // Verify time reset
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 10); // 24 - current time
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
         // Verify cash after expense (mocked spendCash updates cash)
         expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
     });
@@ -219,7 +221,7 @@ describe('GameState', () => {
         // Verify daily expense deduction
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
         // Verify time reset
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(24 - 10);
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
         // Verify cash after expense
         expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
     });
@@ -235,7 +237,7 @@ describe('GameState', () => {
         const result = gameState.travelTo('Bank');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(2);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(2);
         expect(currentPlayer.setLocation).toHaveBeenCalledWith('Bank');
         expect(currentPlayer.location).toBe('Bank');
     });
@@ -251,7 +253,7 @@ describe('GameState', () => {
         const result = gameState.travelTo('Bank');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(1);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(1);
         expect(currentPlayer.setLocation).toHaveBeenCalledWith('Bank');
         expect(currentPlayer.location).toBe('Bank');
     });
@@ -268,7 +270,7 @@ describe('GameState', () => {
 
         expect(result.success).toBe(false);
         expect(result.message).toBe('Not enough time for the trip.');
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.setLocation).not.toHaveBeenCalled();
         expect(currentPlayer.location).toBe('Home');
     });
@@ -290,7 +292,7 @@ describe('GameState', () => {
 
         expect(result.success).toBe(true);
         expect(result.message).toBe('Already at this location.');
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.setLocation).not.toHaveBeenCalled();
         expect(currentPlayer.location).toBe('Home');
     });
@@ -306,7 +308,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('Must be at the Employment Agency to work.');
         expect(currentPlayer.addCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.careerLevel).toBe(0);
     });
 
@@ -325,7 +327,7 @@ describe('GameState', () => {
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
         expect(result.job.title).toBe('Dishwasher');
@@ -346,14 +348,14 @@ describe('GameState', () => {
 
         expect(result.success).toBe(true);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(result.message).toContain(`Worked as a ${expectedJob.title}`);
         expect(result.job.title).toBe('Fast Food Worker');
     });
 
     // Test 17: workShift - working successfully deducts time, adds cash, and updates career level
-    test('workShift successfully updates time, cash, and careerLevel', () => {
+    test('workShift successfully deducts time, cash, and careerLevel', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.location = 'Employment Agency';
@@ -366,7 +368,7 @@ describe('GameState', () => {
         const expectedJob = JOBS.find(job => job.title === 'Retail Associate');
 
         expect(result.success).toBe(true);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(expectedJob.shiftHours);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(expectedJob.shiftHours);
         expect(currentPlayer.addCash).toHaveBeenCalledWith(expectedJob.wage * expectedJob.shiftHours);
         expect(currentPlayer.careerLevel).toBe(expectedJob.level);
         expect(currentPlayer.time).toBe(24 - expectedJob.shiftHours);
@@ -389,7 +391,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe(`Not enough time to work the ${expectedJob.title} shift.`);
         expect(currentPlayer.addCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.careerLevel).toBe(0);
         expect(currentPlayer.time).toBe(5);
         expect(currentPlayer.cash).toBe(100);
@@ -424,7 +426,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('Must be at the Community College to take a course.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -439,7 +441,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('Course not found.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -455,7 +457,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('You have already completed Intro to Business or a higher level course.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -471,7 +473,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('You must take courses in sequential order. Next course is for education level 1.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -489,7 +491,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('Not enough cash to take Intro to Business. You need $500.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -507,7 +509,7 @@ describe('GameState', () => {
         expect(result.success).toBe(false);
         expect(result.message).toBe('Not enough time to take Intro to Business. You need 10 hours.');
         expect(currentPlayer.spendCash).not.toHaveBeenCalled();
-        expect(currentPlayer.updateTime).not.toHaveBeenCalled();
+        expect(currentPlayer.deductTime).not.toHaveBeenCalled();
         expect(currentPlayer.advanceEducation).not.toHaveBeenCalled();
     });
 
@@ -525,7 +527,7 @@ describe('GameState', () => {
         expect(result.success).toBe(true);
         expect(result.message).toBe('Successfully completed Intro to Business! Your education level is now 1.');
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(500);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(10);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(10);
         expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
         expect(currentPlayer.educationLevel).toBe(1);
     });
@@ -544,7 +546,7 @@ describe('GameState', () => {
         expect(result.success).toBe(true);
         expect(result.message).toBe('Successfully completed Marketing Fundamentals! Your education level is now 2.');
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(750);
-        expect(currentPlayer.updateTime).toHaveBeenCalledWith(15);
+        expect(currentPlayer.deductTime).toHaveBeenCalledWith(15);
         expect(currentPlayer.advanceEducation).toHaveBeenCalledTimes(1);
         expect(currentPlayer.educationLevel).toBe(2);
     });

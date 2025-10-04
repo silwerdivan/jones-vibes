@@ -66,8 +66,8 @@ describe('Player', () => {
         expect(player.careerLevel).toBe(1);
     });
 
-    test('updateTime decreases time', () => {
-        player.updateTime(5);
+    test('deductTime decreases time', () => {
+        player.deductTime(5);
         expect(player.time).toBe(19);
     });
 
