@@ -269,6 +269,9 @@ class GameState {
         // Reset the player's time to 24.
         currentPlayer.setTime(24);
 
+        // Reset Location to Home:
+        currentPlayer.setLocation('Home');
+
         // Finally, advance to the next player.
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 

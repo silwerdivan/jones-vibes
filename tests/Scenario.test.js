@@ -68,4 +68,29 @@ describe('First Promotion Scenario', () => {
         // - Assert Player 1's careerLevel is now 2, as it matches the job level.
         expect(player1.careerLevel).toBe(2);
     });
+
+    it('should reset player location to Home at the start of a new turn', async () => {
+        // 1. Initialize game
+        const gameController = new GameController(2);
+        const gameState = gameController.gameState;
+        let player1 = gameState.players[0];
+
+        // 2. Player 1 moves to the Mall
+        await gameController.handleAction('travel', { destination: 'Shopping Mall' });
+        player1 = gameState.players[0];
+        expect(player1.location).toBe('Shopping Mall');
+
+        // 3. Player 1 ends their turn
+        await gameController.handleAction('endTurn', {});
+        expect(gameState.currentPlayerIndex).toBe(1);
+
+        // 4. Player 2 ends their turn
+        await gameController.handleAction('endTurn', {});
+        expect(gameState.currentPlayerIndex).toBe(0);
+        expect(gameState.turn).toBe(2);
+
+        // 5. Assert Player 1's location is now 'Home'
+        player1 = gameState.players[0];
+        expect(player1.location).toBe('Home');
+    });
 });

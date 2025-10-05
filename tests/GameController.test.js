@@ -179,7 +179,7 @@ describe('GameController', () => {
         expect(mockGameStateInstance.checkWinCondition).toHaveBeenCalledWith(mockPlayerInstance);
     });
 
-    // Test 11: handleAction calls endTurn for 'endTurn' action
+    // Test 11: handleAction calls endTurn for \'endTurn\' action
     test('handleAction calls endTurn for \'endTurn\' action', async () => {
         // Mock getCurrentPlayer to ensure the next player is NOT an AI for this test
         mockGameStateInstance.getCurrentPlayer.mockReturnValueOnce(mockPlayerInstance); // Human player
