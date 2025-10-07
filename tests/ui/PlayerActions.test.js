@@ -54,4 +54,23 @@ describe('Player Actions and UI Updates', () => {
             expect(player2Panel).toHaveClass('current-player');
         });
     });
+
+    test('It should add a message to the game log after an action', async () => {
+        const gameLog = screen.getByTestId('game-log');
+        const initialLogCount = gameLog.children.length;
+
+        const travelButton = screen.getByRole('button', { name: /Travel/i });
+        fireEvent.click(travelButton);
+
+        const travelModal = await screen.findByText('Travel to...');
+        const modalContainer = travelModal.parentElement;
+
+        const agencyButton = within(modalContainer).getByRole('button', { name: /Employment Agency/i });
+        fireEvent.click(agencyButton);
+
+        await waitFor(() => {
+            expect(gameLog.children.length).toBeGreaterThan(initialLogCount);
+            expect(gameLog.textContent).toContain('Traveled to Employment Agency.');
+        });
+    });
 });

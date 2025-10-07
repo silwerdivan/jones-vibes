@@ -31,7 +31,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
             *   *Simulates a player action (e.g., working a shift) and verifies that the cash and time displays are updated in the correct player\'s panel.*
         *   - [x] **It should switch the highlighted player after a turn ends.**
             *   *Verifies that after the "Rest / End Turn" button is clicked, the `current-player` class moves from the Player 1 panel to the Player 2 panel.*
-        *   - [ ] **It should add a message to the game log after an action.**
+        *   - [x] **It should add a message to the game log after an action.**
             *   *Verifies that performing an action (e.g., traveling) adds a new entry to the game log display.*
         *   - [ ] **It should update the turn counter after a full round.**
             *   *Verifies that after both Player 1 and the AI end their turns, the "Turn" counter increments to "2".*
