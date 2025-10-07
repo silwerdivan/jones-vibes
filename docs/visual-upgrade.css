@@ -1,0 +1,65 @@
+body {
+    background-color: #0D0221; /* Deep Space Blue */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top for the header */
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Roboto Mono', monospace; /* Fallback for other text */
+    color: #E0E0E0; /* Off-White for general text */
+    overflow: hidden; /* Prevent scrollbars from background grid/scanlines */
+    position: relative;
+}
+
+/* Background grid effect (simplified for this example, can be more complex) */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(to right, #00FFFF1A 1px, transparent 1px), /* Faint cyan vertical lines */
+        linear-gradient(to bottom, #00FFFF1A 1px, transparent 1px); /* Faint cyan horizontal lines */
+    background-size: 25px 25px; /* Adjust grid density */
+    z-index: 0;
+    opacity: 0.1; /* Very subtle glow */
+}
+
+/* Header Container for centering and spacing */
+.header-container {
+    width: 100%;
+    text-align: center;
+    padding-top: 50px; /* Space from the top */
+    position: relative;
+    z-index: 1; /* Ensure header is above background effects */
+}
+
+.game-title {
+    font-family: 'VT323', monospace;
+    font-size: 4.5em;
+    font-weight: normal;
+    color: #FF66FF; /* Lighter Magenta */
+    text-shadow:
+        0 0 5px #FF66FF,    /* Primary crisp glow */
+        0 0 10px rgba(255, 102, 255, 0.5); /* Wider, softer halo */
+    letter-spacing: 0.05em;
+    margin: 0;
+    animation: neon-flicker 1.5s infinite alternate;
+}
+
+@keyframes neon-flicker {
+    0%, 100% {
+        opacity: 1;
+        text-shadow:
+            0 0 5px #FF66FF,
+            0 0 10px rgba(255, 102, 255, 0.5);
+    }
+    50% {
+        opacity: 0.96; /* Slightly more noticeable flicker */
+        text-shadow:
+            0 0 3px #FF66FF,
+            0 0 8px rgba(255, 102, 255, 0.4);
+    }
+}
