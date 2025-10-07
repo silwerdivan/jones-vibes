@@ -11,11 +11,11 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
 *   **Suite: Game Initialization and Player Status**
     *   **Description:** Tests to ensure the game loads correctly, player information is displayed, and the UI reflects the initial game state.
     *   **Test Cases:**
-        *   - [ ] **It should display the main game title.**
+        *   - [x] **It should display the main game title.**
             *   *Verifies that the `<h1>` heading "Jones in the Fast Lane" is visible on page load.*
-        *   - [ ] **It should render both player status panels.**
+        *   - [x] **It should render both player status panels.**
             *   *Verifies that the panels for "Player 1" and "Player 2 (AI)" are present in the document.*
-        *   - [ ] **It should display the correct initial stats for both players.**
+        *   - [x] **It should display the correct initial stats for both players.**
             *   *Verifies that initial values for Cash, Savings, Loan, Happiness, etc., are all rendered correctly as '0' or their default state.*
         *   - [ ] **It should highlight Player 1 as the current player on an initial load.**
             *   *Verifies that the Player 1 panel has the `current-player` class and the Player 2 panel does not.*
