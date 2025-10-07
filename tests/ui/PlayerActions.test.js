@@ -73,4 +73,19 @@ describe('Player Actions and UI Updates', () => {
             expect(gameLog.textContent).toContain('Traveled to Employment Agency.');
         });
     });
+
+    test('It should update the turn counter after a full round', async () => {
+        const turnDisplay = screen.getByText(/Turn:/);
+        expect(turnDisplay).toHaveTextContent('Turn: 1');
+
+        const endTurnButton = screen.getByRole('button', { name: /Rest \/ End Turn/i });
+
+        // Player 1 ends turn
+        fireEvent.click(endTurnButton);
+        await waitFor(() => {
+            // Assuming AI takes its turn immediately and then it's Player 1's turn again
+            // and the turn counter increments.
+            expect(turnDisplay).toHaveTextContent('Turn: 2');
+        });
+    });
 });
