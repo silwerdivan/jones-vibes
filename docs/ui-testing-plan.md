@@ -59,7 +59,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
             *   *Simulates going to the Shopping Mall, clicks "Buy Item", and verifies a modal appears with a list of items to buy.*
         *   - [x] **It should display the number input modal for bank actions.**
             *   *Simulates going to the Bank, clicks "Deposit", and verifies a modal appears with a number input field and "Confirm" button.*
-        *   - [ ] **It should close the modal when 'Cancel' is clicked.**
+        *   - [x] **It should close the modal when 'Cancel' is clicked.**
             *   *Verifies that clicking the "Cancel" button on any modal removes it from the DOM.*
 
 *   **Suite: Game Over State**

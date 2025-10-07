@@ -102,4 +102,21 @@ describe('User Input Modals', () => {
         // Verify Cancel button is present
         expect(within(numberInputModal).getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
     });
+
+    test('It should close the modal when \'Cancel\' is clicked', async () => {
+        // Click the Travel button to open a modal
+        fireEvent.click(screen.getByRole('button', { name: /Travel/i }));
+
+        // Wait for the modal to appear
+        const travelModal = await screen.findByRole('heading', { name: /Travel to.../i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+
+        // Click the "Cancel" button within the modal
+        await waitFor(() => {
+            fireEvent.click(within(travelModal).getByRole('button', { name: /Cancel/i }));
+        });
+
+        // Verify that the modal is no longer in the DOM
+        expect(screen.queryByRole('heading', { name: /Travel to.../i })).not.toBeInTheDocument();
+        expect(document.getElementById('choice-modal-overlay')).not.toBeInTheDocument();
+    });
 });
