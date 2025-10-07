@@ -45,9 +45,9 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
             *   *Simulates traveling to the "Employment Agency" and verifies that the "Work Shift" button becomes visible.*
         *   - [x] **It should show the 'Take Course' button at the 'Community College'.**
             *   *Simulates traveling to the "Community College" and verifies that the "Take Course" button becomes visible.*
-*   [x] **It should show the 'Buy Item' button at the 'Shopping Mall'.**
+        *   - [x] **It should show the 'Buy Item' button at the 'Shopping Mall'.**
             *   *Simulates traveling to the "Shopping Mall" and verifies that the "Buy Item" button becomes visible.*
-        *   - [ ] **It should show all bank-related buttons at the 'Bank'.**
+        *   - [x] **It should show all bank-related buttons at the 'Bank'.**
             *   *Simulates traveling to the "Bank" and verifies that the "Deposit", "Withdraw", "Take Loan", and "Repay Loan" buttons are all visible.*
 
 *   **Suite: User Input Modals**
