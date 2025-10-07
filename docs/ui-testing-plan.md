@@ -53,7 +53,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
 *   **Suite: User Input Modals**
     *   **Description:** Tests for the functionality of the dynamically appearing modals for choices and number inputs.
     *   **Test Cases:**
-        *   - [ ] **It should display the travel choice modal when the 'Travel' button is clicked.**
+        *   - [x] **It should display the travel choice modal when the 'Travel' button is clicked.**
             *   *Verifies that clicking "Travel" creates and displays a modal with the title "Travel to..." and a list of location buttons.*
         *   - [ ] **It should display the item choice modal when the 'Buy Item' button is clicked.**
             *   *Simulates going to the Shopping Mall, clicks "Buy Item", and verifies a modal appears with a list of items to buy.*
