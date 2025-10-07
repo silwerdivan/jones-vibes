@@ -19,7 +19,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
             *   *Verifies that initial values for Cash, Savings, Loan, Happiness, etc., are all rendered correctly as '0' or their default state.*
         *   - [x] **It should highlight Player 1 as the current player on an initial load.**
             *   *Verifies that the Player 1 panel has the `current-player` class and the Player 2 panel does not.*
-        *   - [ ] **It should display the correct initial location and turn.**
+        *   - [x] **It should display the correct initial location and turn.**
             *   *Verifies that the "Current Location" is "Home" and the "Turn" is "1".*
         *   - [ ] **It should display the game log section.**
             *   *Verifies that the "Game Log" container is rendered.*

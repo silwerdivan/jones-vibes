@@ -48,4 +48,12 @@ describe('Game Initialization and Player Status', () => {
         expect(player1Panel).toHaveClass('current-player');
         expect(player2Panel).not.toHaveClass('current-player');
     });
+
+    test('It should display the correct initial location and turn', () => {
+        const locationDisplay = screen.getByText(/Current Location:/);
+        const turnDisplay = screen.getByText(/Turn:/);
+
+        expect(locationDisplay).toHaveTextContent('Current Location: Home');
+        expect(turnDisplay).toHaveTextContent('Turn: 1');
+    });
 });
