@@ -92,4 +92,36 @@ describe('Location-Specific Controls', () => {
         expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
         expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
     });
+
+    test('It should show the \'Buy Item\' button at the \'Shopping Mall\'', async () => {
+        // Click the Travel button
+        fireEvent.click(screen.getByRole('button', { name: /Travel/i }));
+
+        // Wait for the modal to appear and get a reference to it
+        const travelModal = await screen.findByRole('heading', { name: /Travel to.../i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+
+        // Click "Shopping Mall" within the modal
+        await waitFor(() => {
+            fireEvent.click(within(travelModal).getByRole('button', { name: /Shopping Mall/i }));
+        });
+
+        // Wait for the UI to update and the Buy Item button to become visible
+        await waitFor(() => {
+            const buyItemButton = screen.getByRole('button', { name: /Buy Item/i });
+            expect(buyItemButton).toBeInTheDocument();
+            expect(buyItemButton).not.toHaveClass('hidden');
+        });
+
+        // Verify Travel and End Turn buttons are still visible
+        expect(screen.getByRole('button', { name: /Travel/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
+
+        // Verify other location-specific buttons are hidden
+        expect(screen.queryByRole('button', { name: /Work Shift/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Take Course/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
+    });
 });
