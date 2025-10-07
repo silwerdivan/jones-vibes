@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor } from '@testing-library/dom';
+import { screen, fireEvent, waitFor, within } from '@testing-library/dom';
 import fs from 'fs';
 import path from 'path';
 
@@ -81,6 +81,20 @@ describe('Game Over State', () => {
         // Verify that the game over message is displayed in the log
         await waitFor(() => {
             expect(screen.getByText(/Game Over! Player 1 wins!/i)).toBeInTheDocument();
+        });
+    });
+
+    test('It should disable all action buttons when the game is over', async () => {
+        // The game over state is already set in beforeEach.
+        // We just need to wait for the DOM to update and then check button states.
+
+        // Verify that all buttons inside the #game-controls div are disabled
+        await waitFor(() => {
+            const gameControls = document.getElementById('game-controls');
+            const buttons = within(gameControls).getAllByRole('button');
+            buttons.forEach(button => {
+                expect(button).toBeDisabled();
+            });
         });
     });
 });
