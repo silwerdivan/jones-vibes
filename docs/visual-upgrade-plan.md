@@ -8,7 +8,7 @@
 
 This document outlines the plan to execute a visual upgrade for the "Jones in the Fastlane Vibes" MVP. The primary goal is to move from a basic, unstyled presentation to a visually appealing and cohesive interface using plain HTML, CSS, and JavaScript, while adhering to the principles of **Structured Vibe Coding 2.0**.
 
-The core challenge is to refactor a brownfield project withoutintroducing regressions, losing context, or engaging in unstructured "vibe coding." This plan directly addresses the pitfalls of context drift and brownfield context collapse by implementing a Test-Driven Refactoring (TDR) workflow, leveraging a **Model Context Protocol (MCP)** server for dynamic context management, and enforcing a deterministic, step-by-step execution via a `todo.md` and `blueprint.md`.
+The core challenge is to refactor a brownfield project without introducing regressions, losing context, or engaging in unstructured "vibe coding." This plan directly addresses the pitfalls of context drift and brownfield context collapse by implementing a Test-Driven Refactoring (TDR) workflow, leveraging a **Model Context Protocol (MCP)** server for dynamic context management, and enforcing a deterministic, step-by-step execution via a `todo.md` and `blueprint.md`.
 
 ## 2. Required Inputs & Personas
 
@@ -40,24 +40,6 @@ We will strictly follow the **Structured Vibe Coding 2.0** methodology.
 2.  **`blueprint.md` (New):** A new blueprint will be created to translate the visual spec into an architectural and sequential plan. It will break down the refactoring into atomic tasks (e.g., "1. Create `css/style.css` and define CSS variables. 2. Refactor `index.html` to link the new stylesheet and apply new body classes.").
 3.  **`todo.md` (New):** A new `todo.md` will be generated from the blueprint, serving as the execution checklist for the AI agent.
 
-### 3.2. MCP Servers and Tooling Strategy
-
-To combat context collapse, we will leverage a multi-layered tooling approach involving three distinct sets of tools:
-
-*   **`serena`**: This is the primary toolset for all code and file manipulation. It offers low-level, granular control over the file system and code symbols via tools with the `serena__` prefix (e.g., `serena__find_symbol`).
-*   **`nl.context7`**: A separate MCP server that provides tools for library documentation discovery. The `context7` MCP server exposes `resolve-library-id` and `get-library-docs`.
-*   **`default_api`**: The built-in toolset of the Gemini CLI. It provides a set of general-purpose tools for file system operations, shell command execution, and web searches.
-
-**Tool Prioritization Strategy:**
-
-The agent will adhere to the following tool prioritization strategy:
-
-1.  **`serena` First**: For any given task, the agent will first check if a `serena` tool is available and suitable for the job. This is the preferred toolset for all code-related tasks.
-2.  **`context7` for Research**: The `context7` tools (`resolve-library-id` and `get-library-docs`) will be used specifically for research and discovery of library APIs and documentation.
-3.  **`default_api` as Fallback**: The `default_api` tools will be used only if a suitable tool is not available in `serena` or `context7`.
-
-**Reasoning:** This structured approach ensures that the most precise and context-aware tools (`serena`) are used for code manipulation, reducing the risk of errors. `context7` is used for its specific purpose of documentation retrieval, and `default_api` serves as a general-purpose fallback. This strategy is critical for safe, incremental refactoring in a brownfield project.
-
 ## 4. Test-Driven Refactoring (TDR) Strategy
 
 We will adapt the existing Jest testing framework for TDR. The focus will be on **structural and style contract testing**, not just functional logic.
@@ -82,7 +64,6 @@ The entire process will be broken down into the following sequential steps, mana
 1.  **Step 1: Setup & Baseline**
     *   Create `visual-spec.md` (Input from UX).
     *   Create `visual-upgrade-plan.md` (this file).
-    *   Ensure `nl.context7` and `serena` MCP servers are configured and available.
     *   Create `blueprint.md` and `todo.md` for the visual upgrade.
     *   Create a baseline test that captures the current state (snapshot test) to ensure no functional regressions occur.
 
