@@ -40,4 +40,12 @@ describe('Game Initialization and Player Status', () => {
         within(player2Panel).getByText((content, element) => element.textContent === 'Savings: $0');
         within(player2Panel).getByText((content, element) => element.textContent === 'Loan: $0');
     });
+
+    test('It should highlight Player 1 as the current player on an initial load', () => {
+        const player1Panel = screen.getByText(/Player 1/).closest('.player-panel');
+        const player2Panel = screen.getByText(/Player 2 \(AI\)/).closest('.player-panel');
+
+        expect(player1Panel).toHaveClass('current-player');
+        expect(player2Panel).not.toHaveClass('current-player');
+    });
 });
