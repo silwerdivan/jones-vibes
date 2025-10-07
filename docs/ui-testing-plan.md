@@ -65,7 +65,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
 *   **Suite: Game Over State**
     *   **Description:** Tests to ensure the UI correctly reflects the game's end state.
     *   **Test Cases:**
-        *   - [ ] **It should display a 'Game Over' message in the log when a player wins.**
+        *   - [x] **It should display a 'Game Over' message in the log when a player wins.**
             *   *Mocks a game state where a player has met the win conditions, triggers the check, and verifies the log shows a "Game Over! Player X wins!" message.*
         *   - [ ] **It should disable all action buttons when the game is over.**
             *   *Verifies that after the game ends, all buttons inside the `game-controls` div become disabled.*
