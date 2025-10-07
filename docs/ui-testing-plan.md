@@ -21,7 +21,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
             *   *Verifies that the Player 1 panel has the `current-player` class and the Player 2 panel does not.*
         *   - [x] **It should display the correct initial location and turn.**
             *   *Verifies that the "Current Location" is "Home" and the "Turn" is "1".*
-        *   - [ ] **It should display the game log section.**
+        *   - [x] **It should display the game log section.**
             *   *Verifies that the "Game Log" container is rendered.*
 
 *   **Suite: Player Actions and UI Updates**

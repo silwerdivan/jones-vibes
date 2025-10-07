@@ -56,4 +56,9 @@ describe('Game Initialization and Player Status', () => {
         expect(locationDisplay).toHaveTextContent('Current Location: Home');
         expect(turnDisplay).toHaveTextContent('Turn: 1');
     });
+
+    test('It should display the game log section', () => {
+        const gameLog = screen.getByText(/Game Log/);
+        expect(gameLog).toBeInTheDocument();
+    });
 });
