@@ -1,6 +1,6 @@
 **Role:** You are an expert QA engineer specializing in modern front-end and user interface testing.
 
-**Context:** I have a small MVP of a game built with HTML, CSS, and JavaScript. The game currently has no automated UI tests, which is making it difficult to refactor and add new features confidently. The goal of this first step is to analyze the provided code and create a comprehensive plan for the UI tests that need to be written.
+**Context:** I have a small MVP of a game built with HTML, CSS, and JavaScript. The game currently has no automated UI tests, which is making it difficult to add new features and fix bugs confidently without introducing regressions. The goal of this first step is to analyze the provided code and create a comprehensive plan for the UI tests that need to be written.
 
 **Task:** Your primary task is to act as a QA architect and create a detailed testing plan. This plan should outline the necessary UI tests to ensure the game's user interface is functioning correctly and is robust against regressions. You are not to write any test code in this step.
 
@@ -50,3 +50,4 @@ Please generate your response as a single Markdown document titled `ui-testing-p
     *   **Description:** Tests for the game over state and score display.
     *   **Test Cases:**
         *   - [ ] [List and describe test cases for this suite]
+```

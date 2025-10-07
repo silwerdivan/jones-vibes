@@ -1,5 +1,7 @@
 ### **UI Testing Plan for Jones in the Fast Lane**
 
+This plan outlines a suite of UI tests to be implemented for the existing application to create a safety net for future development and bug fixing.
+
 **1. Testing Framework**
 
 *   **Framework:** Jest with Testing Library
@@ -15,7 +17,7 @@
             *   *Verifies that the panels for "Player 1" and "Player 2 (AI)" are present in the document.*
         *   - [ ] **It should display the correct initial stats for both players.**
             *   *Verifies that initial values for Cash, Savings, Loan, Happiness, etc., are all rendered correctly as '0' or their default state.*
-        *   - [ ] **It should highlight Player 1 as the current player on initial load.**
+        *   - [ ] **It should highlight Player 1 as the current player on an initial load.**
             *   *Verifies that the Player 1 panel has the `current-player` class and the Player 2 panel does not.*
         *   - [ ] **It should display the correct initial location and turn.**
             *   *Verifies that the "Current Location" is "Home" and the "Turn" is "1".*
