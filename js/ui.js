@@ -114,6 +114,12 @@ export function showChoiceModal(title, options) {
 
 export function showNumberInputModal(title) {
     return new Promise((resolve, reject) => {
+        // Remove any existing modal before creating a new one
+        const existingOverlay = document.getElementById('choice-modal-overlay'); // Reusing the same overlay ID
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
         const overlay = document.createElement('div');
         overlay.id = 'choice-modal-overlay'; // Reusing the same overlay style
 

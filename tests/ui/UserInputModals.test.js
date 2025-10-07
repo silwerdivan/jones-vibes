@@ -70,4 +70,36 @@ describe('User Input Modals', () => {
         // Verify Cancel button is present
         expect(within(itemModal).getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
     });
+
+    test('It should display the number input modal for bank actions', async () => {
+        // First, travel to the Bank
+        fireEvent.click(screen.getByRole('button', { name: /Travel/i }));
+        const travelModal = await screen.findByRole('heading', { name: /Travel to.../i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+        await waitFor(() => {
+            fireEvent.click(within(travelModal).getByRole('button', { name: /Bank/i }));
+        });
+
+        // Now, click the "Deposit" button
+        await waitFor(() => {
+            const depositButton = screen.getByRole('button', { name: /Deposit/i });
+            expect(depositButton).toBeInTheDocument();
+            expect(depositButton).not.toHaveClass('hidden');
+            fireEvent.click(depositButton);
+        });
+
+        // Wait for the number input modal to appear
+        const numberInputModal = await screen.findByRole('heading', { name: /Enter amount to deposit:/i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+
+        // Verify the modal title
+        expect(within(numberInputModal).getByRole('heading', { name: /Enter amount to deposit:/i })).toBeInTheDocument();
+
+        // Verify number input field is present
+        expect(within(numberInputModal).getByRole('spinbutton')).toBeInTheDocument(); // 'spinbutton' is the ARIA role for number input
+
+        // Verify Confirm button is present
+        expect(within(numberInputModal).getByRole('button', { name: /Confirm/i })).toBeInTheDocument();
+
+        // Verify Cancel button is present
+        expect(within(numberInputModal).getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
+    });
 });
