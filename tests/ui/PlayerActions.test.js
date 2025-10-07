@@ -36,4 +36,22 @@ describe('Player Actions and UI Updates', () => {
             expect(timeDisplay.textContent).toBe('22');
         });
     });
+
+    test('It should switch the highlighted player after a turn ends', async () => {
+        const player1Panel = screen.getByText(/Player 1/).closest('.player-panel');
+        const player2Panel = screen.getByText(/Player 2/).closest('.player-panel');
+
+        // Player 1 starts as the current player
+        expect(player1Panel).toHaveClass('current-player');
+        expect(player2Panel).not.toHaveClass('current-player');
+
+        const endTurnButton = screen.getByRole('button', { name: /Rest \/ End Turn/i });
+        fireEvent.click(endTurnButton);
+
+        // After ending the turn, Player 2 should be the current player
+        await waitFor(() => {
+            expect(player1Panel).not.toHaveClass('current-player');
+            expect(player2Panel).toHaveClass('current-player');
+        });
+    });
 });

@@ -28,8 +28,8 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
     *   **Description:** Tests for core player actions and ensures the UI updates accordingly after each action.
     *   **Test Cases:**
         *   - [x] **It should update player stats when an action is performed.**
-            *   *Simulates a player action (e.g., working a shift) and verifies that the cash and time displays are updated in the correct player's panel.*
-        *   - [ ] **It should switch the highlighted player after a turn ends.**
+            *   *Simulates a player action (e.g., working a shift) and verifies that the cash and time displays are updated in the correct player\'s panel.*
+        *   - [x] **It should switch the highlighted player after a turn ends.**
             *   *Verifies that after the "Rest / End Turn" button is clicked, the `current-player` class moves from the Player 1 panel to the Player 2 panel.*
         *   - [ ] **It should add a message to the game log after an action.**
             *   *Verifies that performing an action (e.g., traveling) adds a new entry to the game log display.*
