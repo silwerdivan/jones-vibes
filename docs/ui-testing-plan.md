@@ -41,7 +41,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
     *   **Test Cases:**
         *   - [x] **It should only show the 'Travel' and 'End Turn' buttons at 'Home'.**
             *   *Verifies that at the start of the turn (location: Home), only the travel and end turn buttons are visible.*
-        *   - [ ] **It should show the 'Work Shift' button at the 'Employment Agency'.**
+*   [x] **It should show the 'Work Shift' button at the 'Employment Agency'.**
             *   *Simulates traveling to the "Employment Agency" and verifies that the "Work Shift" button becomes visible.*
         *   - [ ] **It should show the 'Take Course' button at the 'Community College'.**
             *   *Simulates traveling to the "Community College" and verifies that the "Take Course" button becomes visible.*

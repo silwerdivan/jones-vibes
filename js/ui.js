@@ -62,6 +62,12 @@ export function render(gameState) {
 
 export function showChoiceModal(title, options) {
     return new Promise((resolve, reject) => {
+        // Remove any existing modal before creating a new one
+        const existingOverlay = document.getElementById('choice-modal-overlay');
+        if (existingOverlay) {
+            existingOverlay.remove();
+        }
+
         // Create modal overlay
         const overlay = document.createElement('div');
         overlay.id = 'choice-modal-overlay';
