@@ -37,4 +37,37 @@ describe('User Input Modals', () => {
         // Verify Cancel button is present
         expect(within(travelModal).getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
     });
+
+    test('It should display the item choice modal when the \'Buy Item\' button is clicked', async () => {
+        // First, travel to the Shopping Mall
+        fireEvent.click(screen.getByRole('button', { name: /Travel/i }));
+        const travelModal = await screen.findByRole('heading', { name: /Travel to.../i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+        await waitFor(() => {
+            fireEvent.click(within(travelModal).getByRole('button', { name: /Shopping Mall/i }));
+        });
+
+        // Now, click the "Buy Item" button
+        await waitFor(() => {
+            const buyItemButton = screen.getByRole('button', { name: /Buy Item/i });
+            expect(buyItemButton).toBeInTheDocument();
+            expect(buyItemButton).not.toHaveClass('hidden');
+            fireEvent.click(buyItemButton);
+        });
+
+        // Wait for the item choice modal to appear
+        const itemModal = await screen.findByRole('heading', { name: /Buy an Item/i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+
+        // Verify the modal title
+        expect(within(itemModal).getByRole('heading', { name: /Buy an Item/i })).toBeInTheDocument();
+
+        // Verify item buttons are present
+        expect(within(itemModal).getByRole('button', { name: /Coffee/i })).toBeInTheDocument();
+        expect(within(itemModal).getByRole('button', { name: /Movie Ticket/i })).toBeInTheDocument();
+        expect(within(itemModal).getByRole('button', { name: /New Clothes/i })).toBeInTheDocument();
+        expect(within(itemModal).getByRole('button', { name: /Concert Ticket/i })).toBeInTheDocument();
+        expect(within(itemModal).getByRole('button', { name: /Vacation Package/i })).toBeInTheDocument();
+
+        // Verify Cancel button is present
+        expect(within(itemModal).getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
+    });
 });

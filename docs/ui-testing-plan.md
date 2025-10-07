@@ -55,7 +55,7 @@ This plan outlines a suite of UI tests to be implemented for the existing applic
     *   **Test Cases:**
         *   - [x] **It should display the travel choice modal when the 'Travel' button is clicked.**
             *   *Verifies that clicking "Travel" creates and displays a modal with the title "Travel to..." and a list of location buttons.*
-        *   - [ ] **It should display the item choice modal when the 'Buy Item' button is clicked.**
+        *   - [x] **It should display the item choice modal when the 'Buy Item' button is clicked.**
             *   *Simulates going to the Shopping Mall, clicks "Buy Item", and verifies a modal appears with a list of items to buy.*
         *   - [ ] **It should display the number input modal for bank actions.**
             *   *Simulates going to the Bank, clicks "Deposit", and verifies a modal appears with a number input field and "Confirm" button.*
