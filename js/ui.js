@@ -19,11 +19,13 @@ export function render(gameState) {
         document.querySelector(`${playerPanelId}time`).textContent = player.time;
 
         // Highlight current player
-        const panel = document.querySelector(`#player${index + 1}-status-panel`);
+        const panel = document.querySelector(`#player-${index + 1}`);
         if (index === gameState.currentPlayerIndex) {
-            panel.classList.add('current-player');
+            panel.classList.remove('active'); // Remove first to ensure re-trigger
+            void panel.offsetWidth; // Force reflow
+            panel.classList.add('active');
         } else {
-            panel.classList.remove('current-player');
+            panel.classList.remove('active');
         }
     });
 

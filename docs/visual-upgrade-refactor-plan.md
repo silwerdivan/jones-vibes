@@ -71,7 +71,8 @@ These steps are designed to be performed sequentially and atomically.
         </div>
         ```
     - [x] Do the same for all stats for both Player 1 and Player 2, ensuring IDs like `p1-savings`, `p2-happiness`, etc., are in the correct new locations.
-    - [x] Update the `id` of the main panel `div` from `player-1` to `player1-status-panel` to match the original.
+    - [x] Update the `id` of the main panel `div` from `player1-status-panel` to `player-1` and `player2-status-panel` to `player-2` to match the original design's CSS selectors.
+    - [x] **MISSED STEP (CSS & JS):** The `style.css` was missing the `.active` state to enhance the existing glows for `#player-1` and `#player-2`. The `index.html` had incorrect IDs for player panels, and the JavaScript was incorrectly querying for these IDs. These have been corrected to leverage the existing CSS structure and enhance the glows dynamically. The active player's panel now glows with a distinct neon green color, and a JavaScript reflow fix ensures the transform animation consistently re-triggers on each turn.
 - [x] **Post-Refactoring Validation:**
     - [x] Update the component snapshot test.
     - [x] Run the `GameInitialization.test.js` and `PlayerActions.test.js` suites. They should pass, confirming that stats are still being updated correctly.

@@ -9,6 +9,7 @@
     --electric-cyan: #00FFFF;
     --vibrant-yellow: #FFFF00;
     --off-white: #E0E0E0;
+    --neon-green: #00FF00;
 
     --font-header: 'Press Start 2P', cursive;
     --font-body: 'VT323', monospace;
@@ -111,6 +112,8 @@ h2 {
 .player-panel, .event-log {
     padding: 1.5rem 2rem;
     border-radius: 12px;
+    transition: all 0.5s ease-in-out; /* Increased transition duration */
+    transform: scale(1); /* Explicitly set default transform */
 }
 
 #player-1 {
@@ -118,9 +121,26 @@ h2 {
     box-shadow: 0 0 15px var(--hot-magenta), inset 0 0 12px rgba(255, 0, 255, 0.4);
 }
 
+#player-1.active {
+    border: 2px solid var(--neon-green);
+    box-shadow: 0 0 25px var(--neon-green), inset 0 0 15px rgba(0, 255, 0, 0.6); /* Enhanced neon green glow */
+    transform: scale(1.02);
+}
+
 #player-2 {
     border: 2px solid var(--electric-cyan);
     box-shadow: 0 0 15px var(--electric-cyan), inset 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+#player-2.active {
+    border: 2px solid var(--neon-green);
+    box-shadow: 0 0 25px var(--neon-green), inset 0 0 15px rgba(0, 255, 0, 0.6); /* Enhanced neon green glow */
+    transform: scale(1.02);
+}
+
+#player-1 h2 {
+    color: var(--hot-magenta);
+    text-shadow: 0 0 5px var(--hot-magenta), 0 0 10px var(--hot-magenta);
 }
 
 #player-2 h2 {
