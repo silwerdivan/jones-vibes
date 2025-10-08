@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Event Log Snapshot should match the snapshot for the event log 1`] = `
+<div
+  class="event-log"
+  data-testid="game-log"
+>
+  
+                
+  <h3>
+    Game Log
+  </h3>
+  
+                
+  <div
+    class="log-content"
+  />
+  
+            
+</div>
+`;

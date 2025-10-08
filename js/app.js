@@ -10,10 +10,11 @@ const gameController = new GameController(2, aiController, updateUI); // 2 playe
 
 // Function to log messages to the UI
 function logMessage(message) {
-    const logDiv = document.getElementById('log');
+    const logDiv = document.querySelector('[data-testid="game-log"]');
+    const logContentDiv = logDiv.querySelector('.log-content');
     const p = document.createElement('p');
     p.textContent = message;
-    logDiv.prepend(p); // Add new messages to the top
+    logContentDiv.prepend(p); // Add new messages to the top
 }
 
 // Function to update the UI

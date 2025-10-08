@@ -57,7 +57,8 @@ describe('Player Actions and UI Updates', () => {
 
     test('It should add a message to the game log after an action', async () => {
         const gameLog = screen.getByTestId('game-log');
-        const initialLogCount = gameLog.children.length;
+        const logContent = gameLog.querySelector('.log-content'); // Get the log-content div
+        const initialLogCount = logContent.children.length;
 
         const travelButton = screen.getByRole('button', { name: /Travel/i });
         fireEvent.click(travelButton);
@@ -69,8 +70,8 @@ describe('Player Actions and UI Updates', () => {
         fireEvent.click(agencyButton);
 
         await waitFor(() => {
-            expect(gameLog.children.length).toBeGreaterThan(initialLogCount);
-            expect(gameLog.textContent).toContain('Traveled to Employment Agency.');
+            expect(logContent.children.length).toBeGreaterThan(initialLogCount);
+            expect(logContent.textContent).toContain('Traveled to Employment Agency.');
         });
     });
 

@@ -94,17 +94,17 @@ These steps are designed to be performed sequentially and atomically.
 
 ### Step 4: Refactor Event Log
 
-- [ ] **Objective:** Update the game log to match the new design.
-- [ ] **Pre-Refactoring Test Plan:**
-    - [ ] Write a snapshot test for the `#log` component.
-- [ ] **Refactoring Actions:**
-    - [ ] Replace `<div id="log" data-testid="game-log">` with the new `<div class="event-log">` structure.
-    - [ ] **Keep the `data-testid="game-log"` attribute on the new outer `div`**.
-    - [ ] The JS currently appends messages directly to the log container. The new design has a `log-content` child `div`. The `updateLog` function in `ui.js` may need a minor tweak to target this new child element. This is the only potential JS change required.
-- [ ] **Post-Refactoring Validation:**
-    - [ ] Update the component snapshot test.
-    - [ ] Run the `PlayerActions.test.js` suite. The test for logging should pass (with the minor JS tweak if necessary).
-    - [ ] Visually verify the new log styling.
+- [x] **Objective:** Update the game log to match the new design.
+- [x] **Pre-Refactoring Test Plan:**
+    - [x] Write a snapshot test for the `#log` component.
+- [x] **Refactoring Actions:**
+    - [x] Replace `<div id="log" data-testid="game-log">` with the new `<div class="event-log">` structure.
+    - [x] **Keep the `data-testid="game-log"` attribute on the new outer `div`**.
+    - [x] The JS currently appends messages directly to the log container. The new design has a `log-content` child `div`. The `updateLog` function in `ui.js` may need a minor tweak to target this new child element. This is the only potential JS change required.
+- [x] **Post-Refactoring Validation:**
+    - [x] Update the component snapshot test.
+    - [x] Run the `PlayerActions.test.js` suite. The test for logging should pass (with the minor JS tweak if necessary).
+    - [x] Visually verify the new log styling.
 
 ### Step 5: Style the Modals
 
