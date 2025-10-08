@@ -1,30 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Body Snapshot Body should match snapshot 1`] = `
+"
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jones in the Fast Lane</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-</head>
-<body>
+
+
     <div class="game-container">
         <header class="game-title">
             <h1>JONES IN THE FAST LANE</h1>
         </header>
         <main class="main-grid">
-            <div id="player1-status-panel" class="player-panel">
+            <div id="player1-status-panel" class="player-panel current-player">
                 <h3>Player 1</h3>
                 <p>Cash: $<span id="p1-cash">0</span></p>
                 <p>Savings: $<span id="p1-savings">0</span></p>
                 <p>Loan: $<span id="p1-loan">0</span></p>
-                <p>Happiness: <span id="p1-happiness">0</span></p>
-                <p>Education: <span id="p1-education">None</span></p>
-                <p>Career: <span id="p1-career">Unemployed</span></p>
+                <p>Happiness: <span id="p1-happiness">50</span></p>
+                <p>Education: <span id="p1-education">0</span></p>
+                <p>Career: <span id="p1-career">0</span></p>
                 <p>Car: <span id="p1-car">No</span></p>
-                <p>Time Remaining: <span id="p1-time">0</span> hours</p>
+                <p>Time Remaining: <span id="p1-time">24</span> hours</p>
             </div>
 
             <div id="player2-status-panel" class="player-panel">
@@ -32,22 +35,22 @@
                 <p>Cash: $<span id="p2-cash">0</span></p>
                 <p>Savings: $<span id="p2-savings">0</span></p>
                 <p>Loan: $<span id="p2-loan">0</span></p>
-                <p>Happiness: <span id="p2-happiness">0</span></p>
-                <p>Education: <span id="p2-education">None</span></p>
-                <p>Career: <span id="p2-career">Unemployed</span></p>
+                <p>Happiness: <span id="p2-happiness">50</span></p>
+                <p>Education: <span id="p2-education">0</span></p>
+                <p>Career: <span id="p2-career">0</span></p>
                 <p>Car: <span id="p2-car">No</span></p>
-                <p>Time Remaining: <span id="p2-time">0</span> hours</p>
+                <p>Time Remaining: <span id="p2-time">24</span> hours</p>
             </div>
 
             <div id="location-info">
-                <h2>Current Location: <span id="current-location">Start</span></h2>
+                <h2>Current Location: <span id="current-location">Home</span></h2>
                 <p>Turn: <span id="game-turn">1</span></p>
             </div>
 
             <div id="game-controls">
                 <h2>Actions</h2>
                 <button id="btn-rest-end-turn">Rest / End Turn</button>
-                <button id="btn-travel" class="location-specific hidden">Travel</button>
+                <button id="btn-travel" class="location-specific">Travel</button>
                 <button id="btn-work-shift" class="location-specific hidden">Work Shift</button>
                 <button id="btn-take-course" class="location-specific hidden">Take Course</button>
                 <button id="btn-buy-item" class="location-specific hidden">Buy Item</button>
@@ -65,5 +68,6 @@
     </div>
 
     <script type="module" src="js/app.js"></script>
-</body>
-</html>
+
+"
+`;

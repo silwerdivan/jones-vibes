@@ -1,0 +1,198 @@
+/* --- COLOR PALETTE & FONT VARIABLES --- */
+:root {
+    /* Corrected background color to match the image */
+    --deep-space-blue: #080f24;
+    --central-glow: #2D044F;
+    --vhs-purple: #1A0433;
+    --panel-bg: #15042A; 
+    --hot-magenta: #FF00FF;
+    --electric-cyan: #00FFFF;
+    --vibrant-yellow: #FFFF00;
+    --off-white: #E0E0E0;
+
+    --font-header: 'Press Start 2P', cursive;
+    --font-body: 'VT323', monospace;
+}
+
+/* --- GLOBAL STYLES & BACKGROUND --- */
+body {
+    /* Using the new, accurate background color */
+    background: var(--deep-space-blue) radial-gradient(ellipse at 50% 0%, var(--central-glow) 0%, var(--deep-space-blue) 80%);
+    color: var(--off-white);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+    font-size: 22px; 
+    position: relative; /* Needed for pseudo-element */
+}
+
+/* ADDED SCAN LINES EFFECT */
+body::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.3) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 950px;
+    padding: 2rem;
+    position: relative;
+    background-size: 30px 30px;
+    z-index: 2; /* Ensure game content is above scanlines */
+}
+
+/* --- TYPOGRAPHY & HEADERS --- */
+h1, h2 {
+    font-family: var(--font-header);
+    text-transform: uppercase;
+    color: var(--hot-magenta);
+    text-shadow: 0 0 5px var(--hot-magenta), 0 0 10px var(--hot-magenta);
+    margin: 0;
+}
+
+.game-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.game-title h1 {
+    font-size: 1.8rem;
+    /* CORRECTED: New layered, thinner text-shadow for a crisp neon effect */
+    text-shadow: 
+        0 0 4px var(--hot-magenta),
+        0 0 8px var(--hot-magenta);
+}
+
+h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* --- MAIN LAYOUT GRID --- */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "player1 player2"
+        "info actions"
+        "log log";
+    gap: 2.5rem 2rem;
+}
+
+#player-1 { grid-area: player1; }
+#player-2 { grid-area: player2; }
+.info-panel { grid-area: info; }
+.actions-panel { grid-area: actions; }
+.event-log { grid-area: log; }
+
+/* --- PANELS & BORDERS --- */
+.player-panel, .event-log, button {
+    background-color: var(--panel-bg);
+}
+
+.player-panel, .event-log {
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+}
+
+#player-1 {
+    border: 2px solid var(--hot-magenta);
+    box-shadow: 0 0 15px var(--hot-magenta), inset 0 0 12px rgba(255, 0, 255, 0.4);
+}
+
+#player-2 {
+    border: 2px solid var(--electric-cyan);
+    box-shadow: 0 0 15px var(--electric-cyan), inset 0 0 12px rgba(0, 255, 255, 0.4);
+}
+
+#player-2 h2 {
+    color: var(--electric-cyan);
+    text-shadow: 0 0 5px var(--electric-cyan), 0 0 10px var(--electric-cyan);
+}
+
+/* --- PLAYER STATS --- */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat-label {
+    color: var(--electric-cyan);
+    margin-right: 1rem;
+}
+
+.stat-value.currency {
+    color: var(--vibrant-yellow);
+}
+
+.time-remaining {
+    padding-top: 1.5rem;
+    color: var(--electric-cyan);
+}
+
+/* --- INFO & ACTIONS --- */
+.info-panel p {
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* --- BUTTONS --- */
+button {
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: var(--off-white);
+    border: 2px solid var(--hot-magenta);
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 0 8px var(--hot-magenta), inset 0 0 6px rgba(255, 0, 255, 0.3);
+    text-align: center;
+}
+
+button:hover {
+    color: var(--hot-magenta);
+    background-color: rgba(255, 0, 255, 0.1);
+    box-shadow: 0 0 18px var(--hot-magenta), inset 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* --- EVENT LOG --- */
+.event-log {
+    border: 2px solid var(--hot-magenta);
+    box-shadow: 0 0 15px var(--hot-magenta), inset 0 0 12px rgba(255, 0, 255, 0.4);
+    padding-top: 2rem;
+}
+
+.log-content p {
+    margin: 0 0 0.75rem 0;
+}

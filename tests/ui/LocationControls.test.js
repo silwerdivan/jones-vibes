@@ -20,13 +20,13 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /Travel/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
 
-        expect(screen.queryByRole('button', { name: /Work Shift/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Course/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Buy Item/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Work Shift/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Deposit/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Withdraw/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Loan/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Repay Loan/i })).toHaveClass('hidden');
     });
 
     test('It should show the \'Work Shift\' button at the \'Employment Agency\'', async () => {
@@ -53,12 +53,12 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
 
         // Verify other location-specific buttons are hidden
-        expect(screen.queryByRole('button', { name: /Take Course/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Buy Item/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Deposit/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Withdraw/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Loan/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Repay Loan/i })).toHaveClass('hidden');
     });
 
     test('It should show the \'Take Course\' button at the \'Community College\'', async () => {
@@ -85,12 +85,12 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
 
         // Verify other location-specific buttons are hidden
-        expect(screen.queryByRole('button', { name: /Work Shift/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Buy Item/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Work Shift/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Deposit/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Withdraw/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Loan/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Repay Loan/i })).toHaveClass('hidden');
     });
 
     test('It should show the \'Buy Item\' button at the \'Shopping Mall\'', async () => {
@@ -117,12 +117,12 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
 
         // Verify other location-specific buttons are hidden
-        expect(screen.queryByRole('button', { name: /Work Shift/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Course/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Deposit/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Withdraw/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Loan/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Repay Loan/i })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Work Shift/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Deposit/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Withdraw/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Loan/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Repay Loan/i })).toHaveClass('hidden');
     });
 
     test('It should show all bank-related buttons at the \'Bank\'', async () => {
@@ -162,8 +162,8 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
 
         // Verify other location-specific buttons are hidden
-        expect(screen.queryByRole('button', { name: /Work Shift/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Take Course/i })).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Buy Item/i })).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Work Shift/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
     });
 });
