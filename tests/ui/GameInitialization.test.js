@@ -31,14 +31,26 @@ describe('Game Initialization and Player Status', () => {
         const player2Panel = screen.getByText(/Player 2 \(AI\)/).closest('.player-panel');
 
         // Player 1
-        within(player1Panel).getByText((content, element) => element.textContent === 'Cash: $0');
-        within(player1Panel).getByText((content, element) => element.textContent === 'Savings: $0');
-        within(player1Panel).getByText((content, element) => element.textContent === 'Loan: $0');
+        const p1CashValue = within(player1Panel).getByText('Cash:').nextElementSibling;
+        expect(p1CashValue).toHaveTextContent('0');
+        expect(p1CashValue).toHaveClass('currency');
+
+        const p1SavingsValue = within(player1Panel).getByText('Savings:').nextElementSibling;
+        expect(p1SavingsValue).toHaveTextContent('0');
+
+        const p1LoanValue = within(player1Panel).getByText('Loan:').nextElementSibling;
+        expect(p1LoanValue).toHaveTextContent('0');
 
         // Player 2
-        within(player2Panel).getByText((content, element) => element.textContent === 'Cash: $0');
-        within(player2Panel).getByText((content, element) => element.textContent === 'Savings: $0');
-        within(player2Panel).getByText((content, element) => element.textContent === 'Loan: $0');
+        const p2CashValue = within(player2Panel).getByText('Cash:').nextElementSibling;
+        expect(p2CashValue).toHaveTextContent('0');
+        expect(p2CashValue).toHaveClass('currency');
+
+        const p2SavingsValue = within(player2Panel).getByText('Savings:').nextElementSibling;
+        expect(p2SavingsValue).toHaveTextContent('0');
+
+        const p2LoanValue = within(player2Panel).getByText('Loan:').nextElementSibling;
+        expect(p2LoanValue).toHaveTextContent('0');
     });
 
     test('It should highlight Player 1 as the current player on an initial load', () => {
