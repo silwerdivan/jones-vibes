@@ -108,17 +108,17 @@ These steps are designed to be performed sequentially and atomically.
 
 ### Step 5: Style the Modals
 
-- [ ] **Objective:** Apply the new retro theme to the pop-up modals, which are not present in the static target design.
-- [ ] **Pre-Refactoring Test Plan:**
-    - [ ] The `UserInputModals.test.js` suite already provides a good functional test base.
-    - [ ] Write a snapshot test for an open modal.
-- [ ] **Refactoring Actions:**
-    - [ ] Add new CSS rules to `style.css` for `#choice-modal-overlay` and `#choice-modal`.
-    - [ ] Style the modal background, text, and buttons to match the overall aesthetic (e.g., use the same fonts, color palette, and button styling as the `actions-panel`).
-- [ ] **Post-Refactoring Validation:**
-    - [ ] Update the modal snapshot test.
-    - [ ] Run the `UserInputModals.test.js` suite to ensure modals are still functional.
-    - [ ] Visually verify that modals now match the new design aesthetic.
+- [x] **Objective:** Apply the new retro theme to the pop-up modals, which are not present in the static target design.
+- [x] **Pre-Refactoring Test Plan:**
+    - [x] The `UserInputModals.test.js` suite already provides a good functional test base.
+    - [x] Write a snapshot test for an open modal.
+- [x] **Refactoring Actions:**
+    - [x] Add new CSS rules to `style.css` for `#choice-modal-overlay` and `#choice-modal`.
+    - [x] Style the modal background, text, and buttons to match the overall aesthetic (e.g., use the same fonts, color palette, and button styling as the `actions-panel`).
+- [x] **Post-Refactoring Validation:**
+    - [x] Update the modal snapshot test.
+    - [x] Run the `UserInputModals.test.js` suite to ensure modals are still functional.
+    - [x] Visually verify that modals now match the new design aesthetic.
 
 ## 5. Conclusion and Next Steps
 
