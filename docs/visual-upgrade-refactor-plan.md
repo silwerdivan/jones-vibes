@@ -31,15 +31,15 @@ These steps are designed to be performed sequentially and atomically.
 
 ### Step 1: Main Layout and Stylesheet Integration
 
-- [ ] **Objective:** Replace the old layout and inline styles with the new external stylesheet and primary HTML structure.
-- [ ] **Dependency:** This is the foundational step and must be completed first.
-- [ ] **Pre-Refactoring Test Plan:**
-    - [ ] Write a snapshot test for the entire `<body>` content to capture the current structure.
-- [ ] **Refactoring Actions:**
-    - [ ] Create `style.css` in the root directory and copy the content from `docs/visual-upgrade.css` into it.
-    - [ ] In `index.html`, remove the existing `<style>` block from the `<head>`.
-    - [ ] Add the Google Fonts `preconnect` links and the new stylesheet `<link>` to the `<head>`.
-    - [ ] Replace the `<h1>` and `<div id="game-container">` with the new top-level structure:
+- [x] **Objective:** Replace the old layout and inline styles with the new external stylesheet and primary HTML structure.
+- [x] **Dependency:** This is the foundational step and must be completed first.
+- [x] **Pre-Refactoring Test Plan:**
+    - [x] Write a snapshot test for the entire `<body>` content to capture the current structure.
+- [x] **Refactoring Actions:**
+    - [x] Create `style.css` in the root directory and copy the content from `docs/visual-upgrade.css` into it.
+    - [x] In `index.html`, remove the existing `<style>` block from the `<head>`.
+    - [x] Add the Google Fonts `preconnect` links and the new stylesheet `<link>` to the `<head>`.
+    - [x] Replace the `<h1>` and `<div id="game-container">` with the new top-level structure:
         ```html
         <div class="game-container">
             <header class="game-title">
@@ -50,10 +50,10 @@ These steps are designed to be performed sequentially and atomically.
             </main>
         </div>
         ```
-    - [ ] Move the existing player, info, controls, and log panels inside the new `<main class="main-grid">` tag for now. The page will look broken, but this is expected.
-- [ ] **Post-Refactoring Validation:**
-    - [ ] Update the initial snapshot test. The new snapshot should reflect the new container structure.
-    - [ ] Visually verify that the new background color and header font are applied. The layout will be incorrect, but the styles should be loading.
+    - [x] Move the existing player, info, controls, and log panels inside the new `<main class="main-grid">` tag for now. The page will look broken, but this is expected.
+- [x] **Post-Refactoring Validation:**
+    - [x] Update the initial snapshot test. The new snapshot should reflect the new container structure.
+    - [x] Visually verify that the new background color and header font are applied. The layout will be incorrect, but the styles should be loading.
 
 ### Step 2: Refactor Player Panels
 
