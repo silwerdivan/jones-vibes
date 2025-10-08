@@ -246,6 +246,14 @@ class GameState {
         this.currentPlayerIndex = 0;
         this.turn = 1;
         this.DAILY_EXPENSE = 50;
+        this.log = [];
+    }
+
+    addLogMessage(message) {
+        this.log.unshift(message); // Add to the beginning
+        if (this.log.length > 50) { // Keep log from getting too big
+            this.log.pop();
+        }
     }
 
     getCurrentPlayer() {

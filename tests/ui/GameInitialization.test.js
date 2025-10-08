@@ -57,8 +57,8 @@ describe('Game Initialization and Player Status', () => {
         const player1Panel = screen.getByText(/Player 1/).closest('.player-panel');
         const player2Panel = screen.getByText(/Player 2 \(AI\)/).closest('.player-panel');
 
-        expect(player1Panel).toHaveClass('current-player');
-        expect(player2Panel).not.toHaveClass('current-player');
+        expect(player1Panel).toHaveClass('active');
+        expect(player2Panel).not.toHaveClass('active');
     });
 
     test('It should display the correct initial location and turn', () => {

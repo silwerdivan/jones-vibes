@@ -15,12 +15,12 @@ describe('UI Snapshots', () => {
   });
 
   test('Player 1 panel should match snapshot', () => {
-    const player1Panel = document.getElementById('player1-status-panel');
+    const player1Panel = document.getElementById('player-1');
     expect(player1Panel.innerHTML).toMatchSnapshot();
   });
 
   test('Player 2 panel should match snapshot', () => {
-    const player2Panel = document.getElementById('player2-status-panel');
+    const player2Panel = document.getElementById('player-2');
     expect(player2Panel.innerHTML).toMatchSnapshot();
   });
 
@@ -35,7 +35,7 @@ describe('UI Snapshots', () => {
   });
 
   test('Log panel should match snapshot', () => {
-    const logPanel = document.getElementById('log');
+    const logPanel = document.querySelector('.event-log');
     expect(logPanel.innerHTML).toMatchSnapshot();
   });
 });

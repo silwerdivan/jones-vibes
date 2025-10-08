@@ -42,16 +42,16 @@ describe('Player Actions and UI Updates', () => {
         const player2Panel = screen.getByText(/Player 2/).closest('.player-panel');
 
         // Player 1 starts as the current player
-        expect(player1Panel).toHaveClass('current-player');
-        expect(player2Panel).not.toHaveClass('current-player');
+        expect(player1Panel).toHaveClass('active');
+        expect(player2Panel).not.toHaveClass('active');
 
         const endTurnButton = screen.getByRole('button', { name: /Rest \/ End Turn/i });
         fireEvent.click(endTurnButton);
 
         // After ending the turn, Player 2 should be the current player
         await waitFor(() => {
-            expect(player1Panel).not.toHaveClass('current-player');
-            expect(player2Panel).toHaveClass('current-player');
+            expect(player1Panel).not.toHaveClass('active');
+            expect(player2Panel).toHaveClass('active');
         });
     });
 
@@ -83,10 +83,15 @@ describe('Player Actions and UI Updates', () => {
 
         // Player 1 ends turn
         fireEvent.click(endTurnButton);
+
+        // After P1 ends turn, AI takes its turn. Once AI is done, it will be P1's turn again.
         await waitFor(() => {
-            // Assuming AI takes its turn immediately and then it's Player 1's turn again
-            // and the turn counter increments.
-            expect(turnDisplay).toHaveTextContent('Turn: 2');
-        });
+            // Check that it's Player 1's turn again
+            const player1Panel = screen.getByText(/Player 1/).closest('.player-panel');
+            expect(player1Panel).toHaveClass('active');
+        }, { timeout: 2000 }); // Wait longer for AI turn to complete
+
+        // Now that we are sure the full round is complete, check the turn counter.
+        expect(turnDisplay).toHaveTextContent('Turn: 2');
     });
 });

@@ -29,6 +29,7 @@ exports[`UI Snapshots Info panel should match snapshot 1`] = `
 exports[`UI Snapshots Log panel should match snapshot 1`] = `
 "
                 <h3>Game Log</h3>
+                <div class="log-content"></div>
             "
 `;
 

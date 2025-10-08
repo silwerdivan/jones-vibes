@@ -274,3 +274,21 @@ button:hover {
 .hidden {
     display: none !important;
 }
+
+/* --- UI CHANGE HIGHLIGHT --- */
+@keyframes flash-yellow {
+    0% {
+        background-color: var(--vibrant-yellow);
+        color: var(--deep-space-blue); /* Black or dark blue for contrast */
+        box-shadow: 0 0 7px var(--vibrant-yellow);
+    }
+    100% {
+        background-color: transparent;
+        color: inherit; /* Reverts to the element's default color */
+        box-shadow: none;
+    }
+}
+
+.value-changed {
+    animation: flash-yellow 0.7s ease-out;
+}

@@ -1,22 +1,47 @@
 // js/ui.js
 
+let isInitialRender = true;
+
+function updateValue(selector, value) {
+    const element = document.querySelector(selector);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function updateAndAnimate(selector, value) {
+    const element = document.querySelector(selector);
+    if (element) {
+        const oldValue = element.textContent;
+        if (oldValue !== String(value)) {
+            element.textContent = value;
+            element.classList.add('value-changed');
+            element.addEventListener('animationend', () => {
+                element.classList.remove('value-changed');
+            }, { once: true });
+        }
+    }
+}
+
 export function render(gameState) {
     if (!gameState || !gameState.players) {
         console.error("Invalid gameState object provided to render function.");
         return;
     }
 
+    const updateFn = isInitialRender ? updateValue : updateAndAnimate;
+
     // Update player panels
     gameState.players.forEach((player, index) => {
-        const playerPanelId = `#p${index + 1}-`;
-        document.querySelector(`${playerPanelId}cash`).textContent = player.cash;
-        document.querySelector(`${playerPanelId}savings`).textContent = player.savings;
-        document.querySelector(`${playerPanelId}loan`).textContent = player.loan;
-        document.querySelector(`${playerPanelId}happiness`).textContent = player.happiness;
-        document.querySelector(`${playerPanelId}education`).textContent = player.educationLevel;
-        document.querySelector(`${playerPanelId}career`).textContent = player.careerLevel;
-        document.querySelector(`${playerPanelId}car`).textContent = player.hasCar ? 'Yes' : 'No';
-        document.querySelector(`${playerPanelId}time`).textContent = player.time;
+        const playerPrefix = `#p${index + 1}-`;
+        updateFn(`${playerPrefix}cash`, player.cash);
+        updateFn(`${playerPrefix}savings`, player.savings);
+        updateFn(`${playerPrefix}loan`, player.loan);
+        updateFn(`${playerPrefix}happiness`, player.happiness);
+        updateFn(`${playerPrefix}education`, player.educationLevel);
+        updateFn(`${playerPrefix}career`, player.careerLevel);
+        updateFn(`${playerPrefix}car`, player.hasCar ? 'Yes' : 'No');
+        updateFn(`${playerPrefix}time`, player.time);
 
         // Highlight current player
         const panel = document.querySelector(`#player-${index + 1}`);
@@ -30,8 +55,26 @@ export function render(gameState) {
     });
 
     // Update location info
-    document.querySelector('#current-location').textContent = gameState.getCurrentPlayer().location;
-    document.querySelector('#game-turn').textContent = gameState.turn;
+    updateFn('#current-location', gameState.getCurrentPlayer().location);
+    updateFn('#game-turn', gameState.turn);
+
+    // Render event log
+    const logContentDiv = document.querySelector('.event-log .log-content');
+    const latestLogMessageInState = gameState.log[0];
+    const latestLogMessageInDOM = logContentDiv.querySelector('p:first-child')?.textContent;
+
+    if (latestLogMessageInState && latestLogMessageInState !== latestLogMessageInDOM) {
+        const p = document.createElement('p');
+        p.textContent = latestLogMessageInState;
+        logContentDiv.prepend(p);
+        
+        if (!isInitialRender) {
+            p.classList.add('value-changed');
+            p.addEventListener('animationend', () => {
+                p.classList.remove('value-changed');
+            }, { once: true });
+        }
+    }
 
     // Show/hide action buttons based on location
     const currentPlayer = gameState.getCurrentPlayer();
@@ -60,6 +103,11 @@ export function render(gameState) {
             break;
     }
     document.querySelector('#btn-travel').classList.remove('hidden'); // Travel is always an option
+
+    // After the first render, all subsequent renders should animate
+    if (isInitialRender) {
+        isInitialRender = false;
+    }
 }
 
 export function showChoiceModal(title, options) {

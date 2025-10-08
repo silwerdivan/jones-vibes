@@ -74,6 +74,7 @@ describe('GameController', () => {
             repayLoan: jest.fn(() => ({ success: true, message: 'Loan repaid.' })),
             buyCar: jest.fn(() => ({ success: true, message: 'Car bought.' })),
             checkWinCondition: jest.fn(() => false),
+            addLogMessage: jest.fn(),
         };
 
         // Mock GameState constructor to return our mock instance

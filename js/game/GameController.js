@@ -53,15 +53,19 @@ class GameController {
                 result = { success: false, message: `Invalid action type: ${actionType}` };
         }
 
-        if (result.success && actionType !== 'endTurn') {
-            if (this.gameState.checkWinCondition(currentPlayer)) {
+        if (result.success) {
+            this.gameState.addLogMessage(result.message);
+            if (actionType !== 'endTurn' && this.gameState.checkWinCondition(currentPlayer)) {
                 this.gameOver = true;
                 this.winner = currentPlayer;
-                result.message = `${result.message} ${currentPlayer.name} has won the game!`;
+                const winMessage = `${result.message} ${currentPlayer.name} has won the game!`;
+                this.gameState.addLogMessage(winMessage);
+                result.message = winMessage;
             }
         }
 
         if (actionType === 'endTurn' && !this.gameOver) {
+            this.updateUICallback(); // Update UI to show player switch
             if (this.gameState.getCurrentPlayer().isAI) {
                 await this.handleAITurn();
             }
@@ -75,23 +79,21 @@ class GameController {
         let aiPlayer = this.gameState.getCurrentPlayer();
 
         while (aiPlayer.isAI && aiPlayer.time > 0 && !this.gameOver) {
-            this.updateUICallback(); // Update UI before AI makes a move
             await new Promise(resolve => setTimeout(resolve, AI_THINKING_DELAY));
 
             const aiAction = this.aiController.takeTurn(this.gameState, aiPlayer);
 
             if (aiAction.action === 'endTurn') {
-                this.gameState.endTurn();
+                this.handleAction('endTurn', {});
                 break; // AI decided to end turn
             }
 
             const result = await this.handleAction(aiAction.action, aiAction.params);
-            // Log AI's action for visibility
-            this.updateUICallback(); // Update UI after AI makes a move
+            this.updateUICallback();
 
             if (!result.success) {
                 // If AI's action failed, it might be stuck, so end its turn
-                this.gameState.endTurn();
+                this.handleAction('endTurn', {});
                 break;
             }
 

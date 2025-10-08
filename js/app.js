@@ -1,4 +1,3 @@
-import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
 import AIController from './game/AIController.js';
 import { render, showChoiceModal, showNumberInputModal } from './ui.js';
@@ -6,23 +5,13 @@ import { LOCATIONS, SHOPPING_ITEMS } from './game/gameData.js';
 
 // Initialize GameState and GameController
 const aiController = new AIController();
-const gameController = new GameController(2, aiController, updateUI); // 2 players, with AI for player 2
-
-// Function to log messages to the UI
-function logMessage(message) {
-    const logDiv = document.querySelector('[data-testid="game-log"]');
-    const logContentDiv = logDiv.querySelector('.log-content');
-    const p = document.createElement('p');
-    p.textContent = message;
-    logContentDiv.prepend(p); // Add new messages to the top
-}
+export const gameController = new GameController(2, aiController, () => updateUI());
 
 // Function to update the UI
-function updateUI() {
+export function updateUI() {
     render(gameController.gameState);
 
     if (gameController.gameOver) {
-        logMessage(`Game Over! ${gameController.winner.name} wins!`);
         // Disable all action buttons
         document.querySelectorAll('#game-controls button').forEach(button => {
             button.disabled = true;
@@ -48,47 +37,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add event listeners
     btnRestEndTurn.addEventListener('click', async () => {
-        const result = await gameController.handleAction('endTurn', {});
-        logMessage(result.message);
+        await gameController.handleAction('endTurn', {});
         updateUI();
     });
 
     btnWorkShift.addEventListener('click', async () => {
-        const result = await gameController.handleAction('workShift', {});
-        logMessage(result.message);
+        await gameController.handleAction('workShift', {});
         updateUI();
     });
 
     btnBuyCar.addEventListener('click', async () => {
-        const result = await gameController.handleAction('buyCar', {});
-        logMessage(result.message);
+        await gameController.handleAction('buyCar', {});
         updateUI();
     });
 
     btnTravel.addEventListener('click', async () => {
         try {
             const destination = await showChoiceModal('Travel to...', LOCATIONS);
-            const result = await gameController.handleAction('travel', { destination });
-            logMessage(result.message);
+            await gameController.handleAction('travel', { destination });
             updateUI();
         } catch (error) {
-            logMessage(`Travel cancelled. ${error}`);
+            console.log(`Travel cancelled. ${error}`);
         }
     });
 
     btnTakeCourse.addEventListener('click', async () => {
         const course = gameController.getNextAvailableCourse();
         if (!course) {
-            logMessage("No more courses available.");
+            // This case should be handled by the UI disabling the button, but as a fallback:
+            const p = document.createElement('p');
+            p.textContent = "No more courses available.";
+            document.querySelector('.event-log .log-content').prepend(p);
             return;
         }
         try {
-            const choice = await showChoiceModal(`Take course: ${course.name}?`, [course.name]);
-            const result = await gameController.handleAction('takeCourse', { courseId: course.id });
-            logMessage(result.message);
+            await showChoiceModal(`Take course: ${course.name}?`, [course.name]);
+            await gameController.handleAction('takeCourse', { courseId: course.id });
             updateUI();
         } catch (error) {
-            logMessage(`Course selection cancelled. ${error}`);
+            console.log(`Course selection cancelled. ${error}`);
         }
     });
 
@@ -96,55 +83,50 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemNames = SHOPPING_ITEMS.map(item => item.name);
         try {
             const itemName = await showChoiceModal('Buy an Item', itemNames);
-            const result = await gameController.handleAction('buyItem', { itemName });
-            logMessage(result.message);
+            await gameController.handleAction('buyItem', { itemName });
             updateUI();
         } catch (error) {
-            logMessage(`Purchase cancelled. ${error}`);
+            console.log(`Purchase cancelled. ${error}`);
         }
     });
 
     btnDeposit.addEventListener('click', async () => {
         try {
             const amount = await showNumberInputModal('Enter amount to deposit:');
-            const result = await gameController.handleAction('deposit', { amount });
-            logMessage(result.message);
+            await gameController.handleAction('deposit', { amount });
             updateUI();
         } catch (error) {
-            logMessage('Action cancelled.');
+            console.log('Action cancelled.');
         }
     });
 
     btnWithdraw.addEventListener('click', async () => {
         try {
             const amount = await showNumberInputModal('Enter amount to withdraw:');
-            const result = await gameController.handleAction('withdraw', { amount });
-            logMessage(result.message);
+            await gameController.handleAction('withdraw', { amount });
             updateUI();
         } catch (error) {
-            logMessage('Action cancelled.');
+            console.log('Action cancelled.');
         }
     });
 
     btnTakeLoan.addEventListener('click', async () => {
         try {
             const amount = await showNumberInputModal('Enter amount to take loan:');
-            const result = await gameController.handleAction('takeLoan', { amount });
-            logMessage(result.message);
+            await gameController.handleAction('takeLoan', { amount });
             updateUI();
         } catch (error) {
-            logMessage('Action cancelled.');
+            console.log('Action cancelled.');
         }
     });
 
     btnRepayLoan.addEventListener('click', async () => {
         try {
             const amount = await showNumberInputModal('Enter amount to repay loan:');
-            const result = await gameController.handleAction('repayLoan', { amount });
-            logMessage(result.message);
+            await gameController.handleAction('repayLoan', { amount });
             updateUI();
         } catch (error) {
-            logMessage('Action cancelled.');
+            console.log('Action cancelled.');
         }
     });
 });
