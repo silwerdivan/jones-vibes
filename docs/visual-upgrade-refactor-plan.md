@@ -79,17 +79,17 @@ These steps are designed to be performed sequentially and atomically.
 
 ### Step 3: Refactor Info & Actions Panels
 
-- [ ] **Objective:** Update the location/turn info panel and the game controls panel.
-- [ ] **Pre-Refactoring Test Plan:**
-    - [ ] Write snapshot tests for the `#location-info` and `#game-controls` components.
-- [ ] **Refactoring Actions:**
-    - [ ] Replace `<div id="location-info">` with the new `<div class="info-panel">` structure. Re-apply the `id="current-location"` and `id="game-turn"` to the new `<span>` elements that will hold these values.
-    - [ ] Replace `<div id="game-controls">` with the new `<div class="actions-panel">` structure.
-    - [ ] Move the existing action buttons inside the new `<div class="action-buttons">`. **Preserve all original button IDs** (e.g., `btn-travel`, `btn-work-shift`).
-- [ ] **Post-Refactoring Validation:**
-    - [ ] Update the component snapshot tests.
-    - [ ] Run the `LocationControls.test.js` and `PlayerActions.test.js` suites. They should pass, confirming buttons appear/disappear and actions still work.
-    - [ ] Visually verify the new panel styling.
+- [x] **Objective:** Update the location/turn info panel and the game controls panel.
+- [x] **Pre-Refactoring Test Plan:**
+    - [x] Write snapshot tests for the `#location-info` and `#game-controls` components.
+- [x] **Refactoring Actions:**
+    - [x] Replace `<div id="location-info">` with the new `<div class="info-panel">` structure. Re-apply the `id="current-location"` and `id="game-turn"` to the new `<span>` elements that will hold these values.
+    - [x] Replace `<div id="game-controls">` with the new `<div class="actions-panel">` structure.
+    - [x] Move the existing action buttons inside the new `<div class="action-buttons">`. **Preserve all original button IDs** (e.g., `btn-travel`, `btn-work-shift`).
+- [x] **Post-Refactoring Validation:**
+    - [x] Update the component snapshot tests.
+    - [x] Run the `LocationControls.test.js` and `PlayerActions.test.js` suites. They should pass, confirming buttons appear/disappear and actions still work.
+    - [x] Visually verify the new panel styling.
 
 ### Step 4: Refactor Event Log
 
