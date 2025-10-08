@@ -57,12 +57,12 @@ These steps are designed to be performed sequentially and atomically.
 
 ### Step 2: Refactor Player Panels
 
-- [ ] **Objective:** Update the player status panels to the new HTML structure and styling, while preserving JavaScript functionality.
-- [ ] **Pre-Refactoring Test Plan:**
-    - [ ] Write a snapshot test for the `player1-status-panel` component.
-- [ ] **Refactoring Actions:**
-    - [ ] Replace the content of `<div id="player1-status-panel" class="player-panel">` with the new structure from the target design.
-    - [ ] **Crucially, re-apply the original IDs to the new stat `<span>` elements.**
+- [x] **Objective:** Update the player status panels to the new HTML structure and styling, while preserving JavaScript functionality.
+- [x] **Pre-Refactoring Test Plan:**
+    - [x] Write a snapshot test for the `player1-status-panel` component.
+- [x] **Refactoring Actions:**
+    - [x] Replace the content of `<div id="player1-status-panel" class="player-panel">` with the new structure from the target design.
+    - [x] **Crucially, re-apply the original IDs to the new stat `<span>` elements.**
         ```html
         <!-- Example for Player 1 Cash -->
         <div class="stat-item">
@@ -70,12 +70,12 @@ These steps are designed to be performed sequentially and atomically.
             <span id="p1-cash" class="stat-value currency">$0</span>
         </div>
         ```
-    - [ ] Do the same for all stats for both Player 1 and Player 2, ensuring IDs like `p1-savings`, `p2-happiness`, etc., are in the correct new locations.
-    - [ ] Update the `id` of the main panel `div` from `player-1` to `player1-status-panel` to match the original.
-- [ ] **Post-Refactoring Validation:**
-    - [ ] Update the component snapshot test.
-    - [ ] Run the `GameInitialization.test.js` and `PlayerActions.test.js` suites. They should pass, confirming that stats are still being updated correctly.
-    - [ ] Visually verify the new player panel styling.
+    - [x] Do the same for all stats for both Player 1 and Player 2, ensuring IDs like `p1-savings`, `p2-happiness`, etc., are in the correct new locations.
+    - [x] Update the `id` of the main panel `div` from `player-1` to `player1-status-panel` to match the original.
+- [x] **Post-Refactoring Validation:**
+    - [x] Update the component snapshot test.
+    - [x] Run the `GameInitialization.test.js` and `PlayerActions.test.js` suites. They should pass, confirming that stats are still being updated correctly.
+    - [x] Visually verify the new player panel styling.
 
 ### Step 3: Refactor Info & Actions Panels
 
