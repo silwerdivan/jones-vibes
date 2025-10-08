@@ -17,13 +17,13 @@ A comparison between the current `index.html` and the target `visual-upgrade-ind
 
 The existing UI test suite is functional but insufficient for a visual refactor. Before any code is changed, the test suite must be enhanced.
 
-- [ ] **Objective:** To create a safety net that can detect unintended structural and visual regressions.
-- [ ] **New Test Requirements:**
-    - [ ] **Implement Snapshot Testing:** For each major UI component (Player Panels, Info Panel, Actions, Log), create a Jest snapshot test. This will capture the initial HTML structure and serve as a baseline.
-    - [ ] **Write a "Current State" Visual Test:** Create a new test file that:
-        - [ ] Asserts the presence of the main containers (`player1-status-panel`, `game-controls`, etc.).
-        - [ ] Checks for the `current-player` class on the active player's panel.
-        - [ ] This test will initially pass and will be the first to be adapted during the refactoring.
+- [x] **Objective:** To create a safety net that can detect unintended structural and visual regressions.
+- [x] **New Test Requirements:**
+    - [x] **Implement Snapshot Testing:** For each major UI component (Player Panels, Info Panel, Actions, Log), create a Jest snapshot test. This will capture the initial HTML structure and serve as a baseline.
+    - [x] **Write a "Current State" Visual Test:** Create a new test file that:
+        - [x] Asserts the presence of the main containers (`player1-status-panel`, `game-controls`, etc.).
+        - [x] Checks for the `current-player` class on the active player's panel.
+        - [x] This test will initially pass and will be the first to be adapted during the refactoring.
 
 ## 4. Step-by-Step Refactoring Plan
 
