@@ -53,8 +53,8 @@ class GameController {
                 result = { success: false, message: `Invalid action type: ${actionType}` };
         }
 
+        this.gameState.addLogMessage(result.message);
         if (result.success) {
-            this.gameState.addLogMessage(result.message);
             if (actionType !== 'endTurn' && this.gameState.checkWinCondition(currentPlayer)) {
                 this.gameOver = true;
                 this.winner = currentPlayer;
