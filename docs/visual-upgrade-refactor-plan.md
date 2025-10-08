@@ -90,6 +90,7 @@ These steps are designed to be performed sequentially and atomically.
     - [x] Update the component snapshot tests.
     - [x] Run the `LocationControls.test.js` and `PlayerActions.test.js` suites. They should pass, confirming buttons appear/disappear and actions still work.
     - [x] Visually verify the new panel styling.
+    - [x] **FIXED:** Add `.hidden { display: none !important; }` to `style.css` to resolve a regression where all action buttons were displayed due to the missing CSS rule.
 
 ### Step 4: Refactor Event Log
 

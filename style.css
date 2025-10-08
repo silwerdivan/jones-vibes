@@ -196,3 +196,8 @@ button:hover {
 .log-content p {
     margin: 0 0 0.75rem 0;
 }
+
+/* --- UTILITY CLASSES --- */
+.hidden {
+    display: none !important;
+}
