@@ -15,11 +15,26 @@ function updateAndAnimate(selector, value) {
         const oldValue = element.textContent;
         if (oldValue !== String(value)) {
             element.textContent = value;
-            element.classList.add('value-changed');
-            element.addEventListener('animationend', () => {
-                element.classList.remove('value-changed');
-            }, { once: true });
+            // No animation class added here directly
         }
+    }
+}
+
+function batchAnimate(changedSelectors) {
+    const elements = changedSelectors.map(selector => document.querySelector(selector)).filter(el => el);
+
+    // Add the class to all elements
+    elements.forEach(element => {
+        element.classList.add('value-changed');
+    });
+
+    // Listen for the animation to end on the last element, then remove the class from all
+    if (elements.length > 0) {
+        elements[elements.length - 1].addEventListener('animationend', () => {
+            elements.forEach(element => {
+                element.classList.remove('value-changed');
+            });
+        }, { once: true });
     }
 }
 
@@ -30,18 +45,32 @@ export function render(gameState) {
     }
 
     const updateFn = isInitialRender ? updateValue : updateAndAnimate;
+    const changedSelectors = [];
 
     // Update player panels
     gameState.players.forEach((player, index) => {
         const playerPrefix = `#p${index + 1}-`;
-        updateFn(`${playerPrefix}cash`, player.cash);
-        updateFn(`${playerPrefix}savings`, player.savings);
-        updateFn(`${playerPrefix}loan`, player.loan);
-        updateFn(`${playerPrefix}happiness`, player.happiness);
-        updateFn(`${playerPrefix}education`, player.educationLevel);
-        updateFn(`${playerPrefix}career`, player.careerLevel);
-        updateFn(`${playerPrefix}car`, player.hasCar ? 'Yes' : 'No');
-        updateFn(`${playerPrefix}time`, player.time);
+        const fields = {
+            cash: player.cash,
+            savings: player.savings,
+            loan: player.loan,
+            happiness: player.happiness,
+            education: player.educationLevel,
+            career: player.careerLevel,
+            car: player.hasCar ? 'Yes' : 'No',
+            time: player.time
+        };
+
+        for (const [field, value] of Object.entries(fields)) {
+            const selector = `${playerPrefix}${field}`;
+            const element = document.querySelector(selector);
+            if (element && element.textContent !== String(value)) {
+                updateFn(selector, value);
+                if (!isInitialRender) {
+                    changedSelectors.push(selector);
+                }
+            }
+        }
 
         // Highlight current player
         const panel = document.querySelector(`#player-${index + 1}`);
@@ -55,8 +84,19 @@ export function render(gameState) {
     });
 
     // Update location info
-    updateFn('#current-location', gameState.getCurrentPlayer().location);
-    updateFn('#game-turn', gameState.turn);
+    const locationSelector = '#current-location';
+    const turnSelector = '#game-turn';
+    const locationEl = document.querySelector(locationSelector);
+    const turnEl = document.querySelector(turnSelector);
+
+    if (locationEl && locationEl.textContent !== gameState.getCurrentPlayer().location) {
+        updateFn(locationSelector, gameState.getCurrentPlayer().location);
+        if (!isInitialRender) changedSelectors.push(locationSelector);
+    }
+    if (turnEl && turnEl.textContent !== String(gameState.turn)) {
+        updateFn(turnSelector, gameState.turn);
+        if (!isInitialRender) changedSelectors.push(turnSelector);
+    }
 
     // Render event log
     const logContentDiv = document.querySelector('.event-log .log-content');
@@ -69,11 +109,17 @@ export function render(gameState) {
         logContentDiv.prepend(p);
         
         if (!isInitialRender) {
+            // This animation is handled separately as it's a new element
             p.classList.add('value-changed');
             p.addEventListener('animationend', () => {
                 p.classList.remove('value-changed');
             }, { once: true });
         }
+    }
+
+    // Batch animate all changed fields
+    if (changedSelectors.length > 0) {
+        batchAnimate(changedSelectors);
     }
 
     // Show/hide action buttons based on location

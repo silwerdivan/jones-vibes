@@ -257,4 +257,31 @@ describe('GameController', () => {
         expect(mockGameStateInstance.workShift).toHaveBeenCalledTimes(1);
         expect(mockUpdateUICallback).toHaveBeenCalled();
     });
+
+    test('handleAITurn calls updateUICallback after each successful action', async () => {
+        // Set current player to AI
+        mockGameStateInstance.getCurrentPlayer.mockReturnValue(mockGameStateInstance.players[1]);
+
+        // Mock AI actions using the correct 'takeTurn' method
+        mockAIControllerInstance.takeTurn
+            .mockReturnValueOnce({ action: 'workShift' })
+            .mockReturnValueOnce({ action: 'takeCourse', params: { courseId: 'basicProgramming' } })
+            .mockReturnValueOnce({ action: 'endTurn' });
+
+        // Mock GameState method results to ensure they are "successful"
+        mockGameStateInstance.workShift.mockResolvedValue({ success: true, message: 'AI worked.' });
+        mockGameStateInstance.takeCourse.mockResolvedValue({ success: true, message: 'AI took a course.' });
+
+        await gameController.handleAITurn();
+
+        // Expect UI callback to be called for each successful action (work, take course)
+        expect(mockUpdateUICallback).toHaveBeenCalledTimes(2);
+        
+        // Verify that the actions were actually attempted
+        expect(mockGameStateInstance.workShift).toHaveBeenCalledTimes(1);
+        expect(mockGameStateInstance.takeCourse).toHaveBeenCalledWith('basicProgramming');
+        
+        // The AI's last action is to end its own turn.
+        expect(mockGameStateInstance.endTurn).toHaveBeenCalledTimes(1);
+    });
 });

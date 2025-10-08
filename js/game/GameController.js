@@ -84,12 +84,12 @@ class GameController {
             const aiAction = this.aiController.takeTurn(this.gameState, aiPlayer);
 
             if (aiAction.action === 'endTurn') {
-                this.handleAction('endTurn', {});
+                this.gameState.endTurn();
+                this.gameState.addLogMessage("Turn ended.");
                 break; // AI decided to end turn
             }
 
             const result = await this.handleAction(aiAction.action, aiAction.params);
-            this.updateUICallback();
 
             if (!result.success) {
                 // If AI's action failed, it might be stuck, so end its turn
@@ -97,10 +97,11 @@ class GameController {
                 break;
             }
 
+            this.updateUICallback(); // Update UI after each successful AI action
+
             // Re-check if the current player is still the AI after the action
             aiPlayer = this.gameState.getCurrentPlayer();
         }
-        this.updateUICallback(); // Final UI update after AI turn is completely over
     }
 
     getNextAvailableCourse() {
