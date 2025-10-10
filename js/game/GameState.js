@@ -232,7 +232,7 @@ class GameState {
 
         this.players = [];
         for (let i = 0; i < numberOfPlayers; i++) {
-            const player = new Player();
+            const player = new Player(i + 1);
             if (i === 1 && isPlayer2AI) {
                 player.isAI = true;
                 player.name = "AI Opponent"; // Give AI a distinct name

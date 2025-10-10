@@ -77,6 +77,7 @@ class GameController {
     async handleAITurn() {
         const AI_THINKING_DELAY = 500; // milliseconds
         let aiPlayer = this.gameState.getCurrentPlayer();
+        let turnEnded = false;
 
         while (aiPlayer.isAI && aiPlayer.time > 0 && !this.gameOver) {
             await new Promise(resolve => setTimeout(resolve, AI_THINKING_DELAY));
@@ -86,6 +87,7 @@ class GameController {
             if (aiAction.action === 'endTurn') {
                 this.gameState.endTurn();
                 this.gameState.addLogMessage("Turn ended.");
+                turnEnded = true;
                 break; // AI decided to end turn
             }
 
@@ -93,7 +95,8 @@ class GameController {
 
             if (!result.success) {
                 // If AI's action failed, it might be stuck, so end its turn
-                this.handleAction('endTurn', {});
+                await this.handleAction('endTurn', {});
+                turnEnded = true;
                 break;
             }
 
@@ -101,6 +104,11 @@ class GameController {
 
             // Re-check if the current player is still the AI after the action
             aiPlayer = this.gameState.getCurrentPlayer();
+        }
+
+        if (!turnEnded && this.gameState.getCurrentPlayer().isAI) {
+            this.gameState.endTurn();
+            this.gameState.addLogMessage("AI turn ended due to out of time.");
         }
     }
 

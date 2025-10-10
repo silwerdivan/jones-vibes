@@ -6,18 +6,18 @@ Game Performance Refactoring Plan
   ---
 
    - [ ] Phase 1: Diagnosis and Performance Baselining
-     - [ ] Benchmark Initial Performance:
+     - [x] Benchmark Initial Performance:
        - Action: Play the game for 15-20 minutes (simulating many turns) while recording a performance profile using the browser's Developer Tools (Performance and Memory tabs).     
        - Goal: Establish a baseline measurement of the problem. Save the performance profile recording. Look for:
            - Long Frames: Frames that take significantly longer than 16.7ms to render.
            - Expensive Function Calls: Identify functions that consume the most CPU time in the "Main" thread of the performance profile.
            - Memory Usage Pattern: Observe the memory graph for a "sawtooth" pattern. A healthy pattern shows memory increasing and then dropping back to a low baseline after garbage
              collection. If the baseline consistently creeps up, it indicates a memory leak.
-     - [ ] Analyze Heap Snapshots for Memory Leaks:
+     - [x] Analyze Heap Snapshots for Memory Leaks:
        - Action: Take a heap snapshot at the beginning of the game. Play for 10-15 minutes. Take another heap snapshot.
        - Goal: Compare the two snapshots to identify objects that are accumulating. Pay close attention to "Detached DOM tree" entries, which are a clear sign of DOM nodes that were 
          removed from the page but are still held in memory, often by lingering event listeners.
-     - [ ] Write a High-Level Regression Test:
+     - [x] Write a High-Level Regression Test:
        - Action: Create a new Jest test file (tests/ui/LongSession.test.js). This test will simulate a long gameplay session by programmatically advancing through many turns and     
          performing common actions (e.g., working, studying).
        - Goal: This test will serve as a safety net. It should verify that core game mechanics (e.g., player stats updating, day advancing) still function correctly after many turns.

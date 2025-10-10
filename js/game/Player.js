@@ -1,5 +1,6 @@
 export default class Player {
-    constructor() {
+    constructor(id) {
+        this.id = id;
         this.cash = 0;
         this.savings = 0;
         this.happiness = 50;

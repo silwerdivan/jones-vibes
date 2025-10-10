@@ -14,16 +14,18 @@ class AIController {
                 // If at Bank but cannot repay, fall through to next priority
             }
         }
+
         // Priority 2: Gain Wealth
-        else if (player.cash < 1000) {
+        if (player.cash < 1000) {
             if (player.location !== 'Employment Agency') {
                 return { action: 'travel', params: { destination: 'Employment Agency' } };
             } else {
                 return { action: 'workShift' };
             }
         }
+
         // Priority 3: Advance Education
-        else if (player.educationLevel < COURSES.length) {
+        if (player.educationLevel < COURSES.length) {
             const nextEducationLevel = player.educationLevel + 1;
             const nextCourse = COURSES.find(course => course.educationMilestone === nextEducationLevel);
 
@@ -36,8 +38,9 @@ class AIController {
             }
             // If cannot afford next course or no more courses, fall through to next priority
         }
+
         // Priority 4: Boost Happiness
-        else if (player.happiness < 50) {
+        if (player.happiness < 50) {
             if (player.location !== 'Shopping Mall') {
                 return { action: 'travel', params: { destination: 'Shopping Mall' } };
             } else {
@@ -49,21 +52,21 @@ class AIController {
                 // If at Shopping Mall but no affordable items, fall through to next priority
             }
         }
+
         // Priority 5: Increase Efficiency (Buy Car)
-        else if (player.cash > 3500 && !player.hasCar) {
+        if (player.cash > 3500 && !player.hasCar) {
             if (player.location !== 'Used Car Lot') {
                 return { action: 'travel', params: { destination: 'Used Car Lot' } };
             } else {
                 return { action: 'buyCar' };
             }
         }
+
         // Catch-all: If none of the above conditions are met, travel to the Employment Agency and workShift
-        else {
-            if (player.location !== 'Employment Agency') {
-                return { action: 'travel', params: { destination: 'Employment Agency' } };
-            } else {
-                return { action: 'workShift' };
-            }
+        if (player.location !== 'Employment Agency') {
+            return { action: 'travel', params: { destination: 'Employment Agency' } };
+        } else {
+            return { action: 'workShift' };
         }
     }
 }
