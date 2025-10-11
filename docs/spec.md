@@ -21,7 +21,7 @@
 | **Turn Time** | Player starts each turn with **24 Hours**. |
 | **Max Time Bank** | **48 Hours** (Can carry over 24 unused Hours). |
 | **Daily Expense** | **\$50** per turn/day. |
-| **Resting** | **Ends turn**, replenishes Time to 24 Hours, and **deducts the Daily Expense**. If a player cannot pay, an Overdue Bills amount is tracked. |
+| **Resting** | Ends turn, adds 24 hours to any remaining time (up to the 48-hour maximum), and **deducts the Daily Expense**. If a player cannot pay, an Overdue Bills amount is tracked. |
 
 ## III. Map & Locations
 
