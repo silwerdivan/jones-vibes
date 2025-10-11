@@ -137,6 +137,9 @@ export function render(gameState) {
         case 'Shopping Mall':
             document.querySelector('#btn-buy-item').classList.remove('hidden');
             break;
+        case 'Used Car Lot':
+            document.querySelector('#btn-buy-car').classList.remove('hidden');
+            break;
         case 'Bank':
             document.querySelector('#btn-deposit').classList.remove('hidden');
             document.querySelector('#btn-withdraw').classList.remove('hidden');

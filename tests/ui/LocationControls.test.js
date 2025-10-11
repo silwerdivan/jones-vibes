@@ -166,4 +166,37 @@ describe('Location-Specific Controls', () => {
         expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
         expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
     });
+
+    test('It should show the \'Buy Car\' button at the \'Used Car Lot\'', async () => {
+        // Click the Travel button
+        fireEvent.click(screen.getByRole('button', { name: /Travel/i }));
+
+        // Wait for the modal to appear and get a reference to it
+        const travelModal = await screen.findByRole('heading', { name: /Travel to.../i }).then(heading => heading.closest('div[id^="choice-modal"]'));
+
+        // Click "Used Car Lot" within the modal
+        await waitFor(() => {
+            fireEvent.click(within(travelModal).getByRole('button', { name: /Used Car Lot/i }));
+        });
+
+        // Wait for the UI to update and the Buy Car button to become visible
+        await waitFor(() => {
+            const buyCarButton = screen.getByRole('button', { name: /Buy Car/i });
+            expect(buyCarButton).toBeInTheDocument();
+            expect(buyCarButton).not.toHaveClass('hidden');
+        });
+
+        // Verify Travel and End Turn buttons are still visible
+        expect(screen.getByRole('button', { name: /Travel/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /End Turn/i })).toBeInTheDocument();
+
+        // Verify other location-specific buttons are hidden
+        expect(screen.getByRole('button', { name: /Work Shift/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Course/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Buy Item/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Deposit/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Withdraw/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Take Loan/i })).toHaveClass('hidden');
+        expect(screen.getByRole('button', { name: /Repay Loan/i })).toHaveClass('hidden');
+    });
 });
