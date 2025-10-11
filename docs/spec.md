@@ -55,9 +55,11 @@ The game board features 6 interactive locations:
 
 | Course Name | Cost (\$) | Time to Complete (Hours) | Milestone Gained |
 | :---: | :---: | :---: | :---: |
-| Intro to Business | \$500 | 10 Hours | Completed 1st Course |
-| Basic Accounting | \$750 | 15 Hours | Completed 2nd Course |
-| **Time Management** | \$1,000 | 20 Hours | **Completed Community College** |
+| Intro to Business | \$500 | 10 | Completed 1st Course (Milestone 1) |
+| Marketing Fundamentals | \$750 | 15 | Completed 2nd Course (Milestone 2) |
+| **Financial Accounting** | \$1,000 | 20 | **Completed Community College** (Milestone 3) |
+| Business Law | \$1,250 | 25 | Completed 4th Course (Milestone 4) |
+| Advanced Management | \$1,500 | 30 | Completed 5th Course (Milestone 5) |
 
 ### 3. Happiness (Shopping Mall)
 

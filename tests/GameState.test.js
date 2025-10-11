@@ -123,8 +123,8 @@ describe('GameState', () => {
         expect(gameState.getCurrentPlayer()).toBe(player2);
     });
 
-    // Test 5: endTurn() - expense deduction and time reset
-    test('endTurn deducts daily expense and resets time for current player', () => {
+    // Test 5: endTurn() - expense deduction and time banking
+    test('endTurn deducts daily expense and banks time for current player', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.cash = 1000; // Set initial cash for testing
@@ -133,7 +133,7 @@ describe('GameState', () => {
         gameState.endTurn();
 
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
-        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(34);
     });
 
     // Test 6: endTurn() - currentPlayerIndex advancement (2 players)
@@ -164,25 +164,25 @@ describe('GameState', () => {
         expect(gameState.turn).toBe(3);
     });
 
-    // Test 8: endTurn() - time reset does not exceed 48 (max time)
-    test('endTurn resets player time to 24, not exceeding 48', () => {
+    // Test 8: endTurn() - time banking does not exceed 48 (max time)
+    test('endTurn caps player time at 48', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.time = 40; // Player has more than 24 hours
 
         gameState.endTurn();
-        // Should reset to 24
-        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
+        // Should be capped at 48
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(48);
     });
 
-    // New Test: endTurn() - interest calculation, expense deduction, and time reset
-    test('endTurn correctly applies interest, deducts expense, and resets time', () => {
+    // New Test: endTurn() - interest calculation, expense deduction, and time banking
+    test('endTurn correctly applies interest, deducts expense, and banks time', () => {
         gameState = new GameState(1);
         const currentPlayer = gameState.getCurrentPlayer();
         currentPlayer.cash = 1000;
         currentPlayer.savings = 1000;
         currentPlayer.loan = 1000;
-        currentPlayer.time = 10; // Will be reset to 24
+        currentPlayer.time = 10; // Will be banked to 34
 
         const initialSavings = currentPlayer.savings;
         const initialLoan = currentPlayer.loan;
@@ -196,8 +196,8 @@ describe('GameState', () => {
         expect(currentPlayer.loan).toBeCloseTo(initialLoan * 1.05);
         // Verify daily expense deduction
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
-        // Verify time reset
-        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
+        // Verify time banking
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(34);
         // Verify cash after expense (mocked spendCash updates cash)
         expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
     });
@@ -220,8 +220,8 @@ describe('GameState', () => {
         expect(currentPlayer.loan).toBe(0);
         // Verify daily expense deduction
         expect(currentPlayer.spendCash).toHaveBeenCalledWith(gameState.DAILY_EXPENSE);
-        // Verify time reset
-        expect(currentPlayer.setTime).toHaveBeenCalledWith(24);
+        // Verify time banking
+        expect(currentPlayer.setTime).toHaveBeenCalledWith(34);
         // Verify cash after expense
         expect(currentPlayer.cash).toBe(initialCash - gameState.DAILY_EXPENSE);
     });
@@ -1012,5 +1012,30 @@ describe('GameState', () => {
         currentPlayer.careerLevel = 0;
 
         expect(gameState.checkWinCondition(currentPlayer)).toBe(false);
+    });
+
+    // Failing tests for time-banking logic
+    describe('endTurn time-banking logic', () => {
+        test('should add 24 hours to remaining time when resting', () => {
+            gameState = new GameState(1);
+            const currentPlayer = gameState.getCurrentPlayer();
+            currentPlayer.time = 10; // Player has 10 hours remaining
+
+            gameState.endTurn();
+
+            // According to spec, 10 remaining + 24 new = 34
+            expect(currentPlayer.setTime).toHaveBeenCalledWith(34);
+        });
+
+        test('should cap banked time at 48 hours', () => {
+            gameState = new GameState(1);
+            const currentPlayer = gameState.getCurrentPlayer();
+            currentPlayer.time = 30; // Player has 30 hours remaining (30 + 24 = 54)
+
+            gameState.endTurn();
+
+            // According to spec, time should be capped at 48 hours
+            expect(currentPlayer.setTime).toHaveBeenCalledWith(48);
+        });
     });
 });

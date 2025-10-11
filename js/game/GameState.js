@@ -274,8 +274,12 @@ class GameState {
         currentPlayer.spendCash(this.DAILY_EXPENSE);
 
         // Replenish Time:
-        // Reset the player's time to 24.
-        currentPlayer.setTime(24);
+        // Add 24 hours to remaining time, capped at 48.
+        let newTime = currentPlayer.time + 24;
+        if (newTime > 48) {
+            newTime = 48;
+        }
+        currentPlayer.setTime(newTime);
 
         // Reset Location to Home:
         currentPlayer.setLocation('Home');
