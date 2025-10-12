@@ -143,7 +143,7 @@ describe('Location-Specific Controls', () => {
             const withdrawButton = screen.getByRole('button', { name: /Withdraw/i });
             const takeLoanButton = screen.getByRole('button', { name: /Take Loan/i });
             const repayLoanButton = screen.getByRole('button', { name: /Repay Loan/i });
-            const buyCarButton = screen.getByRole('button', { name: /Buy Car/i }); // Also visible at Bank
+            const buyCarButton = screen.getByRole('button', { name: /Buy Car/i });
 
             expect(depositButton).toBeInTheDocument();
             expect(depositButton).not.toHaveClass('hidden');
@@ -153,8 +153,7 @@ describe('Location-Specific Controls', () => {
             expect(takeLoanButton).not.toHaveClass('hidden');
             expect(repayLoanButton).toBeInTheDocument();
             expect(repayLoanButton).not.toHaveClass('hidden');
-            expect(buyCarButton).toBeInTheDocument();
-            expect(buyCarButton).not.toHaveClass('hidden');
+            expect(buyCarButton).toHaveClass('hidden');
         });
 
         // Verify Travel and End Turn buttons are still visible

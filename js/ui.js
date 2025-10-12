@@ -145,7 +145,6 @@ export function render(gameState) {
             document.querySelector('#btn-withdraw').classList.remove('hidden');
             document.querySelector('#btn-take-loan').classList.remove('hidden');
             document.querySelector('#btn-repay-loan').classList.remove('hidden');
-            document.querySelector('#btn-buy-car').classList.remove('hidden');
             break;
         default:
             // No specific buttons for other locations like 'Home' or 'Start'
