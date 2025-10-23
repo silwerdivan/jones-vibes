@@ -86,15 +86,19 @@ class GameState {
                 break;
             case 'workShift':
                 this.workShift();
+                this.endTurn();
                 break;
             case 'takeCourse':
                 this.takeCourse(aiAction.params.courseId);
+                this.endTurn();
                 break;
             case 'buyItem':
                 this.buyItem(aiAction.params.itemName);
+                this.endTurn();
                 break;
             case 'buyCar':
-                this.buyCar();
+                this.buyCar(action.car);
+                this.endTurn();
                 break;
             case 'deposit':
                 this.deposit(aiAction.params.amount);
@@ -113,6 +117,7 @@ class GameState {
                 setTimeout(() => this.processAITurn(), 1000);
                 break;
             default:
+                this.addLogMessage('AI decides to do nothing and ends its turn.');
                 this.endTurn(); // If AI does nothing, end its turn
                 break;
         }
