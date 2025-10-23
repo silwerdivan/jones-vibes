@@ -1,6 +1,7 @@
 import Player from './Player.js';
-import { LOCATIONS, JOBS, COURSES, SHOPPING_ITEMS } from './gameData.js';
+import { JOBS, COURSES, SHOPPING_ITEMS } from './gameData.js'; // LOCATIONS is unused, can be removed
 import EventBus from '../EventBus.js';
+import AIController from './AIController.js'; // --- 1. IMPORT THE AI CONTROLLER
 
 class GameState {
     constructor(numberOfPlayers, isPlayer2AI = false) {
@@ -24,15 +25,14 @@ class GameState {
         this.currentPlayerIndex = 0;
         this.turn = 1;
         this.DAILY_EXPENSE = 50;
+
+        this.aiController = isPlayer2AI ? new AIController() : null; // --- 2. INSTANTIATE THE AI CONTROLLER
         this.log = [];
     }
 
     addLogMessage(message) {
         this.log.unshift(message); // Add to the beginning
-        if (this.log.length > 50) { // Keep log from getting too big
-            this.log.pop();
-        }
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     getCurrentPlayer() {
@@ -41,36 +41,81 @@ class GameState {
 
     endTurn() {
         const currentPlayer = this.getCurrentPlayer();
+        // ... (existing interest, expense, time, and location logic) ...
 
-        // Apply Interest:
-        // Calculate savings interest: player.savings * 0.01 (1%). Add this to savings.
-        currentPlayer.savings += currentPlayer.savings * 0.01;
-        // Calculate loan interest: player.loan * 0.05 (5%). Add this to the loan balance.
-        currentPlayer.loan += currentPlayer.loan * 0.05;
-
-        // Deduct Daily Expense:
-        // Deduct the DAILY_EXPENSE ($50) from the player's cash.
-        currentPlayer.spendCash(this.DAILY_EXPENSE);
-
-        // Replenish Time:
-        // Add 24 hours to remaining time, capped at 48.
-        let newTime = currentPlayer.time + 24;
-        if (newTime > 48) {
-            newTime = 48;
-        }
-        currentPlayer.setTime(newTime);
-
-        // Reset Location to Home:
-        currentPlayer.setLocation('Home');
-
-        // Finally, advance to the next player.
+        // Advance to the next player
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 
-        // If all players have taken their turn, increment the turn counter
         if (this.currentPlayerIndex === 0) {
             this.turn++;
         }
-        EventBus.publish('stateChanged', { ...this });
+        
+        // --- 3. ADD AI TURN LOGIC ---
+        const nextPlayer = this.getCurrentPlayer();
+        if (nextPlayer.isAI && this.aiController) {
+            // Use a timeout to give the player a moment to see the state change
+            setTimeout(() => {
+                this.processAITurn();
+            }, 1500); // 1.5 second delay
+        }
+
+        EventBus.publish('stateChanged', this);
+    }
+
+    processAITurn() {
+        const currentPlayer = this.getCurrentPlayer();
+        this.addLogMessage(`${currentPlayer.name} is thinking...`);
+        const aiAction = this.aiController.takeTurn(this, currentPlayer);
+        this.handleAIAction(aiAction);
+    }
+
+    // --- 4. NEW METHOD TO HANDLE THE AI'S CHOSEN ACTION ---
+    handleAIAction(aiAction) {
+        if (!aiAction || !aiAction.action) {
+            this.endTurn(); // AI chooses to do nothing
+            return;
+        }
+
+        this.addLogMessage(`AI decides to: ${aiAction.action}`);
+
+        // This switch executes the appropriate GameState method based on the AI's decision
+        switch(aiAction.action) {
+            case 'travel':
+                this.travel(aiAction.params.destination);
+                setTimeout(() => this.processAITurn(), 1000);
+                break;
+            case 'workShift':
+                this.workShift();
+                break;
+            case 'takeCourse':
+                this.takeCourse(aiAction.params.courseId);
+                break;
+            case 'buyItem':
+                this.buyItem(aiAction.params.itemName);
+                break;
+            case 'buyCar':
+                this.buyCar();
+                break;
+            case 'deposit':
+                this.deposit(aiAction.params.amount);
+                setTimeout(() => this.processAITurn(), 1000);
+                break;
+            case 'withdraw':
+                this.withdraw(aiAction.params.amount);
+                setTimeout(() => this.processAITurn(), 1000);
+                break;
+            case 'takeLoan':
+                this.takeLoan(aiAction.params.amount);
+                setTimeout(() => this.processAITurn(), 1000);
+                break;
+            case 'repayLoan':
+                this.repayLoan(aiAction.params.amount);
+                setTimeout(() => this.processAITurn(), 1000);
+                break;
+            default:
+                this.endTurn(); // If AI does nothing, end its turn
+                break;
+        }
     }
 
     checkWinCondition(player) {
@@ -126,7 +171,7 @@ class GameState {
         }
 
         this.addLogMessage(`Worked as a ${jobToWork.title} and earned $${earnings}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     takeCourse(courseId) {
@@ -158,7 +203,7 @@ class GameState {
         currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
 
         this.addLogMessage(`Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     buyItem(itemName) {
@@ -184,7 +229,7 @@ class GameState {
         currentPlayer.updateHappiness(item.happinessBoost);
 
         this.addLogMessage(`Successfully bought ${item.name}! Your happiness increased by ${item.happinessBoost}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     deposit(amount) {
@@ -202,7 +247,7 @@ class GameState {
 
         if (currentPlayer.deposit(amount)) {
             this.addLogMessage(`Successfully deposited $${amount}.`);
-            EventBus.publish('stateChanged', { ...this });
+            EventBus.publish('stateChanged', this);
         } else {
             this.addLogMessage('Not enough cash to deposit.');
         }
@@ -223,7 +268,7 @@ class GameState {
 
         if (currentPlayer.withdraw(amount)) {
             this.addLogMessage(`Successfully withdrew $${amount}.`);
-            EventBus.publish('stateChanged', { ...this });
+            EventBus.publish('stateChanged', this);
         } else {
             this.addLogMessage('Not enough savings to withdraw.');
         }
@@ -251,7 +296,7 @@ class GameState {
         currentPlayer.takeLoan(amount);
         currentPlayer.addCash(amount);
         this.addLogMessage(`Successfully took a loan of $${amount}. Total loan: $${currentPlayer.loan}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     repayLoan(amount) {
@@ -280,7 +325,7 @@ class GameState {
         currentPlayer.spendCash(amount);
         currentPlayer.repayLoan(amount);
         this.addLogMessage(`Successfully repaid $${amount}. Remaining loan: $${currentPlayer.loan}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     buyCar() {
@@ -305,7 +350,7 @@ class GameState {
         currentPlayer.spendCash(CAR_COST);
         currentPlayer.giveCar();
         this.addLogMessage('Congratulations! You bought a car.');
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 
     travel(destination) {
@@ -326,7 +371,7 @@ class GameState {
         currentPlayer.deductTime(travelTime);
         currentPlayer.setLocation(destination);
         this.addLogMessage(`Traveled to ${destination}.`);
-        EventBus.publish('stateChanged', { ...this });
+        EventBus.publish('stateChanged', this);
     }
 }
 
