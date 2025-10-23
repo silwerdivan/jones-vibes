@@ -1,18 +1,27 @@
+import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
-import AIController from './game/AIController.js';
-
 import GameView from './ui.js';
-import { LOCATIONS, SHOPPING_ITEMS } from './game/gameData.js';
 import InputManager from './InputManager.js';
 
-// Initialize GameState and GameController
-const aiController = new AIController();
-export const gameController = new GameController(2, aiController);
+// The main entry point for the application.
+function main() {
+  // 1. Initialize the View first so it can listen for events immediately.
+  const gameView = new GameView();
 
-// Initial render of the UI
-document.addEventListener('DOMContentLoaded', () => {
-    const gameView = new GameView();
-    const inputManager = new InputManager(gameController);
-    inputManager.initialize();
-    gameView.render(gameController.gameState);
-});
+  // 2. Initialize the game's state.
+  const gameState = new GameState(2, true); // 2 players, P2 is AI
+
+  // 3. Initialize the controller, giving it access to the state.
+  const gameController = new GameController(gameState);
+
+  // 4. Initialize the input manager, giving it access to the controller.
+  const inputManager = new InputManager(gameController);
+  inputManager.initialize();
+
+  // 5. Perform the initial render to show the starting state of the game.
+  // This is the ONLY manual call to render.
+  gameView.render(gameState);
+}
+
+// Start the game when the DOM is ready.
+document.addEventListener('DOMContentLoaded', main);

@@ -1,16 +1,28 @@
+// A simple pub/sub module for decoupled communication.
 const EventBus = {
-  listeners: {},
+  events: {},
 
-  subscribe(event, callback) {
-    if (!this.listeners[event]) {
-      this.listeners[event] = [];
+  /**
+   * Subscribe to an event.
+   * @param {string} eventName The name of the event (e.g., 'stateChanged').
+   * @param {function} callback The function to execute when the event is published.
+   */
+  subscribe(eventName, callback) {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
     }
-    this.listeners[event].push(callback);
+    this.events[eventName].push(callback);
   },
 
-  publish(event, data) {
-    if (this.listeners[event]) {
-      this.listeners[event].forEach(callback => {
+  /**
+   * Publish an event.
+   * @param {string} eventName The name of the event to publish.
+   * @param {*} data The data to pass to all subscribed callbacks.
+   */
+  publish(eventName, data) {
+    if (this.events[eventName]) {
+      this.events[eventName].forEach(callback => {
+        // Pass the data to the callback.
         callback(data);
       });
     }

@@ -1,31 +1,33 @@
 class InputManager {
+  /**
+   * @param {GameController} gameController An instance of the GameController.
+   */
   constructor(gameController) {
     this.gameController = gameController;
   }
 
   initialize() {
     const gameContainer = document.querySelector('.game-container');
-    if (gameContainer) {
-      gameContainer.addEventListener('click', this._handleEvent.bind(this));
-    } else {
-      console.error('Game container not found. InputManager cannot initialize.');
-    }
-  }
 
-  _handleEvent(event) {
-    const target = event.target;
-    const actionElement = target.closest('[data-action]');
+    // Use a single listener on the parent container for efficiency.
+    gameContainer.addEventListener('click', (event) => {
+      // Find the closest parent element (or the element itself) with a data-action attribute.
+      const target = event.target.closest('[data-action]');
+      
+      if (!target) {
+        return; // Exit if the click was not on an actionable element.
+      }
 
-    if (actionElement) {
-      const action = actionElement.dataset.action;
-      this._handleAction(action, event);
-    }
-  }
+      const action = target.dataset.action;
 
-  _handleAction(action, event) {
-    console.log(`Action: ${action}, Event:`, event);
-    // This is where the gameController will be used to perform actions
-    // For now, just logging the action.
+      // Check if a method with this name exists on the controller.
+      if (typeof this.gameController[action] === 'function') {
+        // Call the corresponding method on the game controller.
+        this.gameController[action]();
+      } else {
+        console.warn(`Action "${action}" is not defined on GameController.`);
+      }
+    });
   }
 }
 

@@ -1,275 +1,111 @@
-// js/ui.js
-
 import EventBus from './EventBus.js';
 
 class GameView {
-    constructor() {
-        this.isInitialRender = true;
-        EventBus.subscribe('stateChanged', (gameState) => this.render(gameState));
+  constructor() {
+    // Player 1
+    this.p1Cash = document.getElementById('p1-cash');
+    this.p1Savings = document.getElementById('p1-savings');
+    this.p1Loan = document.getElementById('p1-loan');
+    this.p1Happiness = document.getElementById('p1-happiness');
+    this.p1Education = document.getElementById('p1-education');
+    this.p1Career = document.getElementById('p1-career');
+    this.p1Car = document.getElementById('p1-car');
+    this.p1Time = document.getElementById('p1-time');
+
+    // Player 2
+    this.p2Cash = document.getElementById('p2-cash');
+    this.p2Savings = document.getElementById('p2-savings');
+    this.p2Loan = document.getElementById('p2-loan');
+    this.p2Happiness = document.getElementById('p2-happiness');
+    this.p2Education = document.getElementById('p2-education');
+    this.p2Career = document.getElementById('p2-career');
+    this.p2Car = document.getElementById('p2-car');
+    this.p2Time = document.getElementById('p2-time');
+
+    // Game Info
+    this.currentLocation = document.getElementById('current-location');
+    this.gameTurn = document.getElementById('game-turn');
+
+    // Log
+    this.logContent = document.querySelector('.log-content');
+
+    // Action Buttons
+    this.actionButtons = document.querySelectorAll('[data-action]');
+
+    EventBus.subscribe('stateChanged', (gameState) => {
+      this.render(gameState);
+    });
+  }
+
+  render(gameState) {
+    console.log('Rendering UI with new state:', gameState); // DEBUGGING LINE
+
+    // Player 1
+    const player1 = gameState.players[0];
+    this.p1Cash.textContent = `$${player1.cash}`;
+    this.p1Savings.textContent = `$${player1.savings}`;
+    this.p1Loan.textContent = `$${player1.loan}`;
+    this.p1Happiness.textContent = player1.happiness;
+    this.p1Education.textContent = player1.educationLevel; // Assuming educationLevel is a number
+    this.p1Career.textContent = player1.careerLevel; // Assuming careerLevel is a number
+    this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
+    this.p1Time.textContent = `${player1.time} hours`;
+
+    // Player 2
+    if (gameState.players.length > 1) {
+        const player2 = gameState.players[1];
+        this.p2Cash.textContent = `$${player2.cash}`;
+        this.p2Savings.textContent = `$${player2.savings}`;
+        this.p2Loan.textContent = `$${player2.loan}`;
+        this.p2Happiness.textContent = player2.happiness;
+        this.p2Education.textContent = player2.educationLevel;
+        this.p2Career.textContent = player2.careerLevel;
+        this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
+        this.p2Time.textContent = `${player2.time} hours`;
     }
 
-    _updateValue(selector, value) {
-        const element = document.querySelector(selector);
-        if (element) {
-            element.textContent = value;
+    // Game Info
+    const currentPlayer = gameState.getCurrentPlayer();
+    this.currentLocation.textContent = currentPlayer.location;
+    this.gameTurn.textContent = gameState.turn;
+
+    // Game Log
+    this.logContent.innerHTML = ''; // Clear the log first
+    gameState.log.forEach(message => {
+      const p = document.createElement('p');
+      p.textContent = message;
+      this.logContent.appendChild(p);
+    });
+
+    // Action Buttons Visibility
+    this.actionButtons.forEach(button => {
+        if(button.dataset.action !== 'rest-end-turn') { // rest-end-turn is always visible
+            button.classList.add('hidden');
         }
+    });
+
+    switch (currentPlayer.location) {
+        case 'Employment Agency':
+            document.querySelector('[data-action="work-shift"]').classList.remove('hidden');
+            break;
+        case 'Community College':
+            document.querySelector('[data-action="take-course"]').classList.remove('hidden');
+            break;
+        case 'Shopping Mall':
+            document.querySelector('[data-action="buy-item"]').classList.remove('hidden');
+            break;
+        case 'Used Car Lot':
+            document.querySelector('[data-action="buy-car"]').classList.remove('hidden');
+            break;
+        case 'Bank':
+            document.querySelector('[data-action="deposit"]').classList.remove('hidden');
+            document.querySelector('[data-action="withdraw"]').classList.remove('hidden');
+            document.querySelector('[data-action="take-loan"]').classList.remove('hidden');
+            document.querySelector('[data-action="repay-loan"]').classList.remove('hidden');
+            break;
     }
-
-    _updateAndAnimate(selector, value) {
-        const element = document.querySelector(selector);
-        if (element) {
-            const oldValue = element.textContent;
-            if (oldValue !== String(value)) {
-                element.textContent = value;
-                // No animation class added here directly
-            }
-        }
-    }
-
-    _batchAnimate(changedSelectors) {
-        const elements = changedSelectors.map(selector => document.querySelector(selector)).filter(el => el);
-
-        // Add the class to all elements
-        elements.forEach(element => {
-            element.classList.add('value-changed');
-        });
-
-        // Listen for the animation to end on the last element, then remove the class from all
-        if (elements.length > 0) {
-            elements[elements.length - 1].addEventListener('animationend', () => {
-                elements.forEach(element => {
-                    element.classList.remove('value-changed');
-                });
-            }, { once: true });
-        }
-    }
-
-    render(gameState) {
-        if (!gameState || !gameState.players) {
-            console.error("Invalid gameState object provided to render function.");
-            return;
-        }
-
-        const updateFn = this.isInitialRender ? this._updateValue : this._updateAndAnimate;
-        const changedSelectors = [];
-
-        // Update player panels
-        gameState.players.forEach((player, index) => {
-            const playerPrefix = `#p${index + 1}-`;
-            const fields = {
-                cash: player.cash,
-                savings: player.savings,
-                loan: player.loan,
-                happiness: player.happiness,
-                education: player.educationLevel,
-                career: player.careerLevel,
-                car: player.hasCar ? 'Yes' : 'No',
-                time: player.time
-            };
-
-            for (const [field, value] of Object.entries(fields)) {
-                const selector = `${playerPrefix}${field}`;
-                const element = document.querySelector(selector);
-                if (element && element.textContent !== String(value)) {
-                    updateFn(selector, value);
-                    if (!this.isInitialRender) {
-                        changedSelectors.push(selector);
-                    }
-                }
-            }
-
-            // Highlight current player
-            const panel = document.querySelector(`#player-${index + 1}`);
-            if (index === gameState.currentPlayerIndex) {
-                panel.classList.remove('active'); // Remove first to ensure re-trigger
-                void panel.offsetWidth; // Force reflow
-                panel.classList.add('active');
-            } else {
-                panel.classList.remove('active');
-            }
-        });
-
-        // Update location info
-        const locationSelector = '#current-location';
-        const turnSelector = '#game-turn';
-        const locationEl = document.querySelector(locationSelector);
-        const turnEl = document.querySelector(turnSelector);
-
-        if (locationEl && locationEl.textContent !== gameState.getCurrentPlayer().location) {
-            updateFn(locationSelector, gameState.getCurrentPlayer().location);
-            if (!this.isInitialRender) changedSelectors.push(locationSelector);
-        }
-        if (turnEl && turnEl.textContent !== String(gameState.turn)) {
-            updateFn(turnSelector, gameState.turn);
-            if (!this.isInitialRender) changedSelectors.push(turnSelector);
-        }
-
-        // Render event log
-        const logContentDiv = document.querySelector('.event-log .log-content');
-        const latestLogMessageInState = gameState.log[0];
-        const latestLogMessageInDOM = logContentDiv.querySelector('p:first-child')?.textContent;
-
-        if (latestLogMessageInState && latestLogMessageInState !== latestLogMessageInDOM) {
-            const p = document.createElement('p');
-            p.textContent = latestLogMessageInState;
-            logContentDiv.prepend(p);
-            
-            if (!this.isInitialRender) {
-                // This animation is handled separately as it's a new element
-                p.classList.add('value-changed');
-                p.addEventListener('animationend', () => {
-                    p.classList.remove('value-changed');
-                }, { once: true });
-            }
-        }
-
-        // Batch animate all changed fields
-        if (changedSelectors.length > 0) {
-            this._batchAnimate(changedSelectors);
-        }
-
-        // Show/hide action buttons based on location
-        const currentPlayer = gameState.getCurrentPlayer();
-        const locationSpecificButtons = document.querySelectorAll('.location-specific');
-        locationSpecificButtons.forEach(button => button.classList.add('hidden')); // Hide all first
-
-        switch (currentPlayer.location) {
-            case 'Employment Agency':
-                document.querySelector('[data-action="work-shift"]').classList.remove('hidden');
-                break;
-            case 'Community College':
-                document.querySelector('[data-action="take-course"]').classList.remove('hidden');
-                break;
-            case 'Shopping Mall':
-                document.querySelector('[data-action="buy-item"]').classList.remove('hidden');
-                break;
-            case 'Used Car Lot':
-                document.querySelector('[data-action="buy-car"]').classList.remove('hidden');
-                break;
-            case 'Bank':
-                document.querySelector('[data-action="deposit"]').classList.remove('hidden');
-                document.querySelector('[data-action="withdraw"]').classList.remove('hidden');
-                document.querySelector('[data-action="take-loan"]').classList.remove('hidden');
-                document.querySelector('[data-action="repay-loan"]').classList.remove('hidden');
-                break;
-            default:
-                // No specific buttons for other locations like 'Home' or 'Start'
-                break;
-        }
-        document.querySelector('[data-action="travel"]').classList.remove('hidden'); // Travel is always an option
-
-        if (this.isInitialRender) {
-            this.isInitialRender = false;
-        }
-    }
-
-    showChoiceModal(title, options) {
-        return new Promise((resolve, reject) => {
-            // Remove any existing modal before creating a new one
-            const existingOverlay = document.getElementById('choice-modal-overlay');
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-
-            // Create modal overlay
-            const overlay = document.createElement('div');
-            overlay.id = 'choice-modal-overlay';
-            
-            // Create modal content box
-            const modal = document.createElement('div');
-            modal.id = 'choice-modal';
-
-            // Add title
-            const h2 = document.createElement('h2');
-            h2.textContent = title;
-            modal.appendChild(h2);
-
-            // Add option buttons
-            options.forEach(optionText => {
-                const button = document.createElement('button');
-                button.textContent = optionText;
-                button.addEventListener('click', () => {
-                    cleanup();
-                    resolve(optionText);
-                });
-                modal.appendChild(button);
-            });
-
-            // Add Cancel button
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.addEventListener('click', () => {
-                cleanup();
-                reject('User cancelled.');
-            });
-            modal.appendChild(cancelButton);
-
-            // Cleanup function
-            const cleanup = () => {
-                document.body.removeChild(overlay);
-            };
-
-            // Append to body
-            overlay.appendChild(modal);
-            document.body.appendChild(overlay);
-        });
-    }
-
-    showNumberInputModal(title) {
-        return new Promise((resolve, reject) => {
-            // Remove any existing modal before creating a new one
-            const existingOverlay = document.getElementById('choice-modal-overlay'); // Reusing the same overlay ID
-            if (existingOverlay) {
-                existingOverlay.remove();
-            }
-
-            const overlay = document.createElement('div');
-            overlay.id = 'choice-modal-overlay'; // Reusing the same overlay style
-
-            const modal = document.createElement('div');
-            modal.id = 'choice-modal'; // Reusing the same modal style
-
-            const h2 = document.createElement('h2');
-            h2.textContent = title;
-            modal.appendChild(h2);
-
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.min = '1';
-            input.placeholder = 'Enter amount';
-            modal.appendChild(input);
-
-            const confirmButton = document.createElement('button');
-            confirmButton.textContent = 'Confirm';
-            confirmButton.addEventListener('click', () => {
-                const value = Number(input.value);
-                if (input.value && value > 0) {
-                    cleanup();
-                    resolve(value);
-                } else {
-                    alert('Please enter a positive number.');
-                }
-            });
-            modal.appendChild(confirmButton);
-
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.addEventListener('click', () => {
-                cleanup();
-                reject('User cancelled.');
-            });
-            modal.appendChild(cancelButton);
-
-            const cleanup = () => {
-                document.body.removeChild(overlay);
-            };
-
-            overlay.appendChild(modal);
-            document.body.appendChild(overlay);
-
-            input.focus();
-        });
-    }
+    document.querySelector('[data-action="travel"]').classList.remove('hidden');
+  }
 }
 
 export default GameView;
