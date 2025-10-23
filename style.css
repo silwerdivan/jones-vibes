@@ -292,3 +292,41 @@ button:hover {
 .value-changed {
     animation: flash-yellow 0.7s ease-out;
 }
+
+@media (max-width: 768px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "player1"
+            "player2"
+            "info"
+            "actions"
+            "log";
+        padding-bottom: 6rem; /* To prevent overlap with sticky footer */
+    }
+
+    .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background-color: var(--panel-bg);
+        z-index: 10;
+        padding: 1rem;
+        border-top: 1px solid var(--hot-magenta);
+    }
+
+    #choice-modal {
+        width: 95vw;
+        max-width: none; /* Override the desktop max-width */
+    }
+
+    #choice-modal button {
+        width: 100%;
+        margin: 0.5rem 0; /* Adjust margin for vertical stacking */
+    }
+
+    button {
+        padding: 1rem;
+        font-size: 1.2rem;
+        min-height: 44px;
+    }
+}

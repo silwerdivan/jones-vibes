@@ -1,6 +1,7 @@
 
 import Player from './Player.js';
 import { LOCATIONS, JOBS, COURSES, SHOPPING_ITEMS } from './gameData.js';
+import EventBus from '../EventBus.js';
 
 class GameState {
 
@@ -42,6 +43,41 @@ class GameState {
         return { success: true, message: `Worked as a ${jobToWork.title} and earned $${earnings}.`, job: jobToWork };
     }
 
+    workShift() {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Employment Agency') {
+            return { success: false, message: 'Must be at the Employment Agency to work.' };
+        }
+
+        const availableJobs = this._getAvailableJobs(currentPlayer);
+        if (availableJobs.length === 0) {
+            return { success: false, message: 'No jobs available for your education level.' };
+        }
+
+        // Find the highest-level job from the available list
+        const jobToWork = availableJobs.reduce((prev, current) => (prev.level > current.level) ? prev : current);
+
+        if (currentPlayer.time < jobToWork.shiftHours) {
+            return { success: false, message: `Not enough time to work the ${jobToWork.title} shift.` };
+        }
+
+        // Deduct the shiftHours from the player's time.
+        currentPlayer.deductTime(jobToWork.shiftHours);
+
+        // Calculate earnings and add to cash.
+        const earnings = jobToWork.wage * jobToWork.shiftHours;
+        currentPlayer.addCash(earnings);
+
+        // Update the player's careerLevel to jobToWork.level if it's an advancement.
+        if (jobToWork.level > currentPlayer.careerLevel) {
+            currentPlayer.careerLevel = jobToWork.level;
+        }
+
+        EventBus.publish('stateChanged', this);
+        return { success: true, message: `Worked as a ${jobToWork.title} and earned $${earnings}.`, job: jobToWork };
+    }
+
     takeCourse(courseId) {
         const currentPlayer = this.getCurrentPlayer();
 
@@ -75,6 +111,7 @@ class GameState {
         currentPlayer.deductTime(course.time);
         currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
 
+        EventBus.publish('stateChanged', this);
         return { success: true, message: `Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.` };
     }
 
@@ -98,6 +135,7 @@ class GameState {
         currentPlayer.spendCash(item.cost);
         currentPlayer.updateHappiness(item.happinessBoost);
 
+        EventBus.publish('stateChanged', this);
         return { success: true, message: `Successfully bought ${item.name}! Your happiness increased by ${item.happinessBoost}.` };
     }
 
@@ -113,6 +151,7 @@ class GameState {
         }
 
         if (currentPlayer.deposit(amount)) {
+            EventBus.publish('stateChanged', this);
             return { success: true, message: `Successfully deposited $${amount}.` };
         } else {
             return { success: false, message: 'Not enough cash to deposit.' };
@@ -131,6 +170,7 @@ class GameState {
         }
 
         if (currentPlayer.withdraw(amount)) {
+            EventBus.publish('stateChanged', this);
             return { success: true, message: `Successfully withdrew $${amount}.` };
         } else {
             return { success: false, message: 'Not enough savings to withdraw.' };
@@ -155,6 +195,7 @@ class GameState {
 
         currentPlayer.takeLoan(amount);
         currentPlayer.addCash(amount);
+        EventBus.publish('stateChanged', this);
         return { success: true, message: `Successfully took a loan of $${amount}. Total loan: $${currentPlayer.loan}.` };
     }
 
@@ -179,6 +220,7 @@ class GameState {
 
         currentPlayer.spendCash(amount);
         currentPlayer.repayLoan(amount);
+        EventBus.publish('stateChanged', this);
         return { success: true, message: `Successfully repaid $${amount}. Remaining loan: $${currentPlayer.loan}.` };
     }
 
@@ -200,6 +242,7 @@ class GameState {
 
         currentPlayer.spendCash(CAR_COST);
         currentPlayer.giveCar();
+        EventBus.publish('stateChanged', this);
         return { success: true, message: 'Congratulations! You bought a car.' };
     }
 
@@ -222,6 +265,7 @@ class GameState {
 
         currentPlayer.deductTime(travelTime);
         currentPlayer.setLocation(destination);
+        EventBus.publish('stateChanged', this);
         return { success: true, message: `Traveled to ${destination}.` };
     }
 
@@ -291,6 +335,7 @@ class GameState {
         if (this.currentPlayerIndex === 0) {
             this.turn++;
         }
+        EventBus.publish('stateChanged', this);
     }
 
     checkWinCondition(player) {

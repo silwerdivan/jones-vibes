@@ -1,10 +1,9 @@
 import GameState from './GameState.js';
 
 class GameController {
-    constructor(numberOfPlayers, aiController = null, updateUICallback = () => { }) {
+    constructor(numberOfPlayers, aiController = null) {
         this.gameState = new GameState(numberOfPlayers, aiController !== null);
         this.aiController = aiController;
-        this.updateUICallback = updateUICallback;
         this.gameOver = false;
         this.winner = null;
     }
@@ -65,7 +64,6 @@ class GameController {
         }
 
         if (actionType === 'endTurn' && !this.gameOver) {
-            this.updateUICallback(); // Update UI to show player switch
             if (this.gameState.getCurrentPlayer().isAI) {
                 await this.handleAITurn();
             }
@@ -99,8 +97,6 @@ class GameController {
                 turnEnded = true;
                 break;
             }
-
-            this.updateUICallback(); // Update UI after each successful AI action
 
             // Re-check if the current player is still the AI after the action
             aiPlayer = this.gameState.getCurrentPlayer();
