@@ -70,6 +70,25 @@
                 <div class="log-content"></div>
             </div>
         </main>
+
+        <!-- START: Add the Modal Structure -->
+        <div id="choice-modal-overlay" class="hidden">
+            <div id="choice-modal">
+                <h2 id="choice-modal-title">Make a Choice</h2>
+                <div id="choice-modal-content">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+                <div id="choice-modal-input" class="hidden">
+                    <input type="number" id="modal-input-amount" placeholder="Enter amount">
+                </div>
+                <div id="choice-modal-buttons">
+                    <!-- Buttons will be dynamically inserted here -->
+                </div>
+                <button id="modal-cancel-button">Cancel</button>
+            </div>
+        </div>
+        <!-- END: Add the Modal Structure -->
+
     </div>
 
     <script type="module" src="js/app.js"></script>

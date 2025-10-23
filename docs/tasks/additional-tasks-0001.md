@@ -18,7 +18,7 @@ The most likely failure points are:
 
 Follow this guide to ensure each part of the new architecture is implemented correctly. Treat the code blocks below as the "source of truth" to compare against your existing files or to replace their content entirely.
 
-#### [x] **Step 1: Verify the Core Communication Channel (`EventBus.js`)**
+#### [ ] **Step 1: Verify the Core Communication Channel (`EventBus.js`)**
 
 This is the simplest piece and the foundation of the new architecture. Ensure the file `js/EventBus.js` exists and contains the following code.
 
@@ -58,7 +58,7 @@ const EventBus = {
 export default EventBus;
 ```
 
-#### [x] **Step 2: Verify the Input System (`InputManager.js`)**
+#### [ ] **Step 2: Verify the Input System (`InputManager.js`)**
 
 This class is responsible for listening to all user clicks and starting the action chain. Ensure `js/InputManager.js` exists and is implemented correctly.
 
@@ -100,7 +100,7 @@ class InputManager {
 export default InputManager;
 ```
 
-#### [x] **Step 3: Decouple the `GameController` and `GameState`**
+#### [ ] **Step 3: Decouple the `GameController` and `GameState`**
 
 The controller's job is to translate inputs into state changes. The state's job is to perform the logic and announce that it has changed via the `EventBus`.
 
@@ -159,7 +159,7 @@ class GameState {
 }
 ```
 
-#### [x] **Step 4: Refactor the UI to a Reactive `GameView`**
+#### [ ] **Step 4: Refactor the UI to a Reactive `GameView`**
 
 This is the final link in the chain. `ui.js` becomes a class that listens for the `'stateChanged'` event and does nothing until it hears it.
 
@@ -210,7 +210,7 @@ class GameView {
 export default GameView;
 ```
 
-#### [x] **Step 5: Orchestrate Everything in `app.js`**
+#### [ ] **Step 5: Orchestrate Everything in `app.js`**
 
 This is the most critical file to get right. It's where you create instances of all your modules and connect them. Your old `app.js` with all its `addEventListener` calls should be completely replaced with this new structure.
 
@@ -247,9 +247,9 @@ document.addEventListener('DOMContentLoaded', main);
 
 ### **Debugging and Verification**
 
-1.  [x] **Check File Imports/Exports:** Ensure you are using `export default` in your module files and `import` correctly in `app.js`.
-2.  [x] **Open the Developer Console (F12):** Look for errors. A `TypeError` like "`gameController[action]` is not a function" means your `data-action` name doesn't match a method in `GameController.js`. A `ReferenceError` means a file probably wasn't imported correctly.
-3.  [x] **Trace the Flow:** Add `console.log` statements at each step of the chain to see where it breaks:
+1.  [ ] **Check File Imports/Exports:** Ensure you are using `export default` in your module files and `import` correctly in `app.js`.
+2.  [ ] **Open the Developer Console (F12):** Look for errors. A `TypeError` like "`gameController[action]` is not a function" means your `data-action` name doesn't match a method in `GameController.js`. A `ReferenceError` means a file probably wasn't imported correctly.
+3.  [ ] **Trace the Flow:** Add `console.log` statements at each step of the chain to see where it breaks:
     *   In `InputManager.js`: Log the `action` to see if clicks are being detected.
     *   In `GameController.js`: Log that the specific action method was called.
     *   In `GameState.js`: Log right before you `EventBus.publish` to confirm the state logic ran.

@@ -129,9 +129,9 @@ class GameState {
         EventBus.publish('stateChanged', { ...this });
     }
 
-    takeCourse() {
+    takeCourse(courseId) {
         const currentPlayer = this.getCurrentPlayer();
-        const course = this.getNextAvailableCourse();
+        const course = COURSES.find(c => c.id === courseId);
 
         if (currentPlayer.location !== 'Community College') {
             this.addLogMessage('Must be at the Community College to take a course.');
@@ -139,7 +139,7 @@ class GameState {
         }
 
         if (!course) {
-            this.addLogMessage('No course available.');
+            this.addLogMessage('Course not found.');
             return;
         }
 
@@ -161,9 +161,9 @@ class GameState {
         EventBus.publish('stateChanged', { ...this });
     }
 
-    buyItem() {
+    buyItem(itemName) {
         const currentPlayer = this.getCurrentPlayer();
-        const item = SHOPPING_ITEMS.find(i => i.name === 'Pizza'); // Hardcoded for now
+        const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
         if (currentPlayer.location !== 'Shopping Mall') {
             this.addLogMessage('Must be at the Shopping Mall to buy items.');
@@ -187,9 +187,8 @@ class GameState {
         EventBus.publish('stateChanged', { ...this });
     }
 
-    deposit() {
+    deposit(amount) {
         const currentPlayer = this.getCurrentPlayer();
-        const amount = 100; // Hardcoded for now
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to deposit cash.');
@@ -209,9 +208,8 @@ class GameState {
         }
     }
 
-    withdraw() {
+    withdraw(amount) {
         const currentPlayer = this.getCurrentPlayer();
-        const amount = 50; // Hardcoded for now
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to withdraw cash.');
@@ -231,9 +229,8 @@ class GameState {
         }
     }
 
-    takeLoan() {
+    takeLoan(amount) {
         const currentPlayer = this.getCurrentPlayer();
-        const amount = 500; // Hardcoded for now
         const MAX_LOAN = 2500;
 
         if (currentPlayer.location !== 'Bank') {
@@ -257,9 +254,8 @@ class GameState {
         EventBus.publish('stateChanged', { ...this });
     }
 
-    repayLoan() {
+    repayLoan(amount) {
         const currentPlayer = this.getCurrentPlayer();
-        const amount = 100; // Hardcoded for now
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to repay a loan.');
@@ -312,9 +308,7 @@ class GameState {
         EventBus.publish('stateChanged', { ...this });
     }
 
-    travel() {
-        // Hardcoding a destination for now as the UI doesn't support selecting one yet.
-        const destination = 'Bank';
+    travel(destination) {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location === destination) {

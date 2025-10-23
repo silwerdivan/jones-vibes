@@ -1,7 +1,9 @@
 import EventBus from './EventBus.js';
 
 class GameView {
-  constructor() {
+  constructor(gameController) { // MODIFIED
+    this.gameController = gameController; // NEW
+
     // Player 1
     this.p1Cash = document.getElementById('p1-cash');
     this.p1Savings = document.getElementById('p1-savings');
@@ -32,9 +34,55 @@ class GameView {
     // Action Buttons
     this.actionButtons = document.querySelectorAll('[data-action]');
 
+    // --- NEW: Modal Element Caching ---
+    this.modalOverlay = document.getElementById('choice-modal-overlay');
+    this.modalTitle = document.getElementById('choice-modal-title');
+    this.modalContent = document.getElementById('choice-modal-content');
+    this.modalInput = document.getElementById('choice-modal-input');
+    this.modalInputField = document.getElementById('modal-input-amount');
+    this.modalButtons = document.getElementById('choice-modal-buttons');
+    this.modalCancel = document.getElementById('modal-cancel-button');
+
     EventBus.subscribe('stateChanged', (gameState) => {
       this.render(gameState);
     });
+
+    // Add event listener for the cancel button
+    this.modalCancel.addEventListener('click', () => this.hideModal()); // NEW
+  }
+
+  // --- NEW: Method to show a generic choice modal ---
+  showChoiceModal({ title, choices, showInput = false }) {
+    this.modalTitle.textContent = title;
+    this.modalContent.innerHTML = ''; // Clear previous content
+    this.modalButtons.innerHTML = ''; // Clear previous buttons
+
+    if (showInput) {
+      this.modalInput.classList.remove('hidden');
+      this.modalInputField.value = ''; // Clear input field
+    } else {
+      this.modalInput.classList.add('hidden');
+    }
+
+    choices.forEach(choice => {
+      const button = document.createElement('button');
+      button.textContent = choice.text;
+      // Use a callback to link button click to a controller action
+      button.onclick = () => {
+        const amount = showInput ? parseInt(this.modalInputField.value, 10) : null;
+        this.hideModal();
+        // Call the action with the chosen value (and amount if applicable)
+        choice.action(choice.value, amount); 
+      };
+      this.modalButtons.appendChild(button);
+    });
+
+    this.modalOverlay.classList.remove('hidden');
+  }
+
+  // --- NEW: Method to hide the modal ---
+  hideModal() {
+    this.modalOverlay.classList.add('hidden');
   }
 
   render(gameState) {
