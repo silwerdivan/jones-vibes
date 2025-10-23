@@ -1,4 +1,6 @@
 import EventBus from './EventBus.js';
+// --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
+import { JOBS, COURSES } from './game/gameData.js';
 
 class GameView {
   constructor(gameController) { // MODIFIED
@@ -86,16 +88,16 @@ class GameView {
   }
 
   render(gameState) {
-    console.log('Rendering UI with new state:', gameState); // DEBUGGING LINE
-
     // Player 1
     const player1 = gameState.players[0];
     this.p1Cash.textContent = `$${player1.cash}`;
     this.p1Savings.textContent = `$${player1.savings}`;
     this.p1Loan.textContent = `$${player1.loan}`;
     this.p1Happiness.textContent = player1.happiness;
-    this.p1Education.textContent = player1.educationLevel; // Assuming educationLevel is a number
-    this.p1Career.textContent = player1.careerLevel; // Assuming careerLevel is a number
+    const p1Course = COURSES.find(c => c.educationMilestone === player1.educationLevel);
+    this.p1Education.textContent = p1Course ? p1Course.name : 'None';
+    const p1Job = JOBS.find(j => j.level === player1.careerLevel);
+    this.p1Career.textContent = p1Job ? p1Job.title : 'Unemployed';
     this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
     this.p1Time.textContent = `${player1.time} hours`;
 
@@ -106,8 +108,10 @@ class GameView {
         this.p2Savings.textContent = `$${player2.savings}`;
         this.p2Loan.textContent = `$${player2.loan}`;
         this.p2Happiness.textContent = player2.happiness;
-        this.p2Education.textContent = player2.educationLevel;
-        this.p2Career.textContent = player2.careerLevel;
+        const p2Course = COURSES.find(c => c.educationMilestone === player2.educationLevel);
+        this.p2Education.textContent = p2Course ? p2Course.name : 'None';
+        const p2Job = JOBS.find(j => j.level === player2.careerLevel);
+        this.p2Career.textContent = p2Job ? p2Job.title : 'Unemployed';
         this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
         this.p2Time.textContent = `${player2.time} hours`;
     }
@@ -127,32 +131,33 @@ class GameView {
 
     // Action Buttons Visibility
     this.actionButtons.forEach(button => {
-        if(button.dataset.action !== 'rest-end-turn') { // rest-end-turn is always visible
+        if(button.dataset.action !== 'restEndTurn') { // restEndTurn is always visible
             button.classList.add('hidden');
         }
     });
 
+    document.querySelector('[data-action="travel"]').classList.remove('hidden');
+
     switch (currentPlayer.location) {
         case 'Employment Agency':
-            document.querySelector('[data-action="work-shift"]').classList.remove('hidden');
+            document.querySelector('[data-action="workShift"]').classList.remove('hidden');
             break;
         case 'Community College':
-            document.querySelector('[data-action="take-course"]').classList.remove('hidden');
+            document.querySelector('[data-action="takeCourse"]').classList.remove('hidden');
             break;
         case 'Shopping Mall':
-            document.querySelector('[data-action="buy-item"]').classList.remove('hidden');
+            document.querySelector('[data-action="buyItem"]').classList.remove('hidden');
             break;
         case 'Used Car Lot':
-            document.querySelector('[data-action="buy-car"]').classList.remove('hidden');
+            document.querySelector('[data-action="buyCar"]').classList.remove('hidden');
             break;
         case 'Bank':
             document.querySelector('[data-action="deposit"]').classList.remove('hidden');
             document.querySelector('[data-action="withdraw"]').classList.remove('hidden');
-            document.querySelector('[data-action="take-loan"]').classList.remove('hidden');
-            document.querySelector('[data-action="repay-loan"]').classList.remove('hidden');
+            document.querySelector('[data-action="takeLoan"]').classList.remove('hidden');
+            document.querySelector('[data-action="repayLoan"]').classList.remove('hidden');
             break;
     }
-    document.querySelector('[data-action="travel"]').classList.remove('hidden');
   }
 }
 

@@ -7,19 +7,18 @@ class GameController {
     this.gameView = gameView; // Store the view reference
   }
 
-  'rest-end-turn'() {
+  restEndTurn() {
     this.gameState.endTurn();
   }
 
-  'work-shift'() {
+  workShift() {
     this.gameState.workShift();
   }
 
-  'buy-car'() {
+  buyCar() {
     this.gameState.buyCar();
   }
 
-  // --- REFACTORED: Now opens a modal ---
   travel() {
     const currentPlayer = this.gameState.getCurrentPlayer();
     const availableDestinations = LOCATIONS.filter(loc => loc !== currentPlayer.location);
@@ -29,13 +28,11 @@ class GameController {
       choices: availableDestinations.map(dest => ({
         text: dest,
         value: dest,
-        // The action is a function that calls the GameState
         action: (destination) => this.gameState.travel(destination)
       }))
     });
   }
   
-  // --- REFACTORED: Now opens a modal with an input ---
   deposit() {
     this.gameView.showChoiceModal({
       title: 'How much to deposit?',
@@ -43,7 +40,6 @@ class GameController {
       choices: [{
         text: 'Confirm Deposit',
         value: null,
-        // The action now uses the amount from the input field
         action: (_, amount) => {
           if (amount && amount > 0) {
             this.gameState.deposit(amount);
@@ -69,7 +65,7 @@ class GameController {
     });
   }
 
-  'take-loan'() {
+  takeLoan() {
     this.gameView.showChoiceModal({
       title: 'How much for loan?',
       showInput: true,
@@ -85,7 +81,7 @@ class GameController {
     });
   }
 
-  'repay-loan'() {
+  repayLoan() {
     this.gameView.showChoiceModal({
       title: 'How much to repay?',
       showInput: true,
@@ -101,11 +97,8 @@ class GameController {
     });
   }
 
-  'buy-item'() {
+  buyItem() {
     const currentPlayer = this.gameState.getCurrentPlayer();
-    // For now, let's assume we can only buy items at the shopping mall
-    // and the list of items is available.
-    // A more robust implementation would check location and available items.
     this.gameView.showChoiceModal({
         title: 'What to buy?',
         choices: SHOPPING_ITEMS.map(item => ({
@@ -116,8 +109,7 @@ class GameController {
     });
   }
 
-  // --- REFACTORED: Example for taking a course ---
-  'take-course'() {
+  takeCourse() {
     const nextCourse = this.gameState.getNextAvailableCourse();
     if (!nextCourse) {
       this.gameState.addLogMessage("No more courses available.");
@@ -129,7 +121,7 @@ class GameController {
       choices: [{
         text: `${nextCourse.name} ($${nextCourse.cost})`,
         value: nextCourse.id,
-        action: (courseId) => this.gameState.takeCourse(courseId) // Assuming takeCourse is updated to take an ID
+        action: (courseId) => this.gameState.takeCourse(courseId)
       }]
     });
   }
