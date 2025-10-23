@@ -26,7 +26,7 @@ function main() {
   inputManager.initialize();
 
   // 5. Perform the initial render.
-  gameView.render(gameState);
+
 }
 
 // Start the game when the DOM is ready.

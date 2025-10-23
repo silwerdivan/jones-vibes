@@ -28,6 +28,7 @@ class GameState {
 
         this.aiController = isPlayer2AI ? new AIController() : null; // --- 2. INSTANTIATE THE AI CONTROLLER
         this.log = [];
+        EventBus.publish('stateChanged', this);
     }
 
     addLogMessage(message) {
@@ -94,11 +95,11 @@ class GameState {
                 break;
             case 'buyItem':
                 this.buyItem(aiAction.params.itemName);
-                this.endTurn();
+                setTimeout(() => this.processAITurn(), 1000);
                 break;
             case 'buyCar':
-                this.buyCar(action.car);
-                this.endTurn();
+                this.buyCar();
+                setTimeout(() => this.processAITurn(), 1000);
                 break;
             case 'deposit':
                 this.deposit(aiAction.params.amount);
