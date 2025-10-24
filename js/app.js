@@ -5,28 +5,23 @@ import InputManager from './InputManager.js';
 
 // The main entry point for the application.
 function main() {
-  // GameState can be initialized first
-  const gameState = new GameState(2, true); // 2 players, P2 is AI
+  // 1. Instantiate GameState.
+  const gameState = new GameState(2, true); // 2 players, P2 is AI.
 
-  // The View needs the Controller to create choice callbacks, but the Controller
-  // needs the View to show modals. We solve this by creating them and then linking them.
-  let gameController; // Declare upfront
+  // 2. Instantiate GameView.
+  const gameView = new GameView(); // GameView constructor runs here, subscribes to stateChanged
 
-  // 1. Initialize the View, passing a reference to the future controller.
-  const gameView = new GameView(gameController);
+  // 3. Instantiate GameController, passing it the gameState and gameView instances.
+  const gameController = new GameController(gameState, gameView);
 
-  // 2. Initialize the controller, giving it access to the state AND the view.
-  gameController = new GameController(gameState, gameView);
-
-  // 3. NOW, assign the fully-built controller to the view.
-  gameView.gameController = gameController;
-
-  // 4. Initialize the input manager, giving it access to the controller.
+  // 4. Instantiate InputManager, passing it the gameController.
   const inputManager = new InputManager(gameController);
+
+  // 5. Call inputManager.initialize().
   inputManager.initialize();
 
-  // 5. Perform the initial render.
-
+  // --- FIX: Manually trigger the first render after everything is set up ---
+  gameState.publishCurrentState();
 }
 
 // Start the game when the DOM is ready.

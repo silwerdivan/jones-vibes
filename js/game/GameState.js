@@ -28,6 +28,9 @@ class GameState {
 
         this.aiController = isPlayer2AI ? new AIController() : null; // --- 2. INSTANTIATE THE AI CONTROLLER
         this.log = [];
+    }
+
+    publishCurrentState() {
         EventBus.publish('stateChanged', this);
     }
 
@@ -72,55 +75,69 @@ class GameState {
 
     // --- 4. NEW METHOD TO HANDLE THE AI'S CHOSEN ACTION ---
     handleAIAction(aiAction) {
+        let success = false; // Declare success variable
+
         if (!aiAction || !aiAction.action) {
             this.endTurn(); // AI chooses to do nothing
             return;
         }
 
-        this.addLogMessage(`AI decides to: ${aiAction.action}`);
+        let actionDescription = `AI decides to: ${aiAction.action}`;
+        if (aiAction.params) {
+            actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
+        }
+        this.addLogMessage(actionDescription);
 
         // This switch executes the appropriate GameState method based on the AI's decision
         switch(aiAction.action) {
             case 'travel':
-                this.travel(aiAction.params.destination);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.travel(aiAction.params.destination);
                 break;
             case 'workShift':
-                this.workShift();
-                this.endTurn();
+                success = this.workShift();
                 break;
             case 'takeCourse':
-                this.takeCourse(aiAction.params.courseId);
-                this.endTurn();
+                success = this.takeCourse(aiAction.params.courseId);
                 break;
             case 'buyItem':
-                this.buyItem(aiAction.params.itemName);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.buyItem(aiAction.params.itemName);
                 break;
             case 'buyCar':
-                this.buyCar();
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.buyCar();
                 break;
             case 'deposit':
-                this.deposit(aiAction.params.amount);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.deposit(aiAction.params.amount);
                 break;
             case 'withdraw':
-                this.withdraw(aiAction.params.amount);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.withdraw(aiAction.params.amount);
                 break;
             case 'takeLoan':
-                this.takeLoan(aiAction.params.amount);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.takeLoan(aiAction.params.amount);
                 break;
             case 'repayLoan':
-                this.repayLoan(aiAction.params.amount);
-                setTimeout(() => this.processAITurn(), 1000);
+                success = this.repayLoan(aiAction.params.amount);
+                break;
+            case 'pass':
+                this.addLogMessage('AI chooses to pass its turn.');
+                success = true; // Passing is always "successful" in that it ends the AI's action
                 break;
             default:
-                this.addLogMessage('AI decides to do nothing and ends its turn.');
-                this.endTurn(); // If AI does nothing, end its turn
+                console.warn(`AI tried to perform an unknown action: ${aiAction.action}`);
+                success = false;
                 break;
+        }
+
+        // Centralized Post-Action Check
+        if (success && this.getCurrentPlayer().time > 0) {
+            this.addLogMessage("AI action successful, deciding next move...");
+            setTimeout(() => this.processAITurn(), 1000);
+        } else {
+            if (!success) {
+                this.addLogMessage("AI action failed, ending turn.");
+            } else {
+                this.addLogMessage("AI is out of time, ending turn.");
+            }
+            this.endTurn();
         }
     }
 
@@ -147,13 +164,13 @@ class GameState {
 
         if (currentPlayer.location !== 'Employment Agency') {
             this.addLogMessage('Must be at the Employment Agency to work.');
-            return;
+            return false;
         }
 
         const availableJobs = this._getAvailableJobs(currentPlayer);
         if (availableJobs.length === 0) {
             this.addLogMessage('No jobs available for your education level.');
-            return;
+            return false;
         }
 
         // Find the highest-level job from the available list
@@ -161,7 +178,7 @@ class GameState {
 
         if (currentPlayer.time < jobToWork.shiftHours) {
             this.addLogMessage(`Not enough time to work the ${jobToWork.title} shift.`);
-            return;
+            return false;
         }
 
         // Deduct the shiftHours from the player's time.
@@ -178,6 +195,7 @@ class GameState {
 
         this.addLogMessage(`Worked as a ${jobToWork.title} and earned $${earnings}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     takeCourse(courseId) {
@@ -186,22 +204,22 @@ class GameState {
 
         if (currentPlayer.location !== 'Community College') {
             this.addLogMessage('Must be at the Community College to take a course.');
-            return;
+            return false;
         }
 
         if (!course) {
             this.addLogMessage('Course not found.');
-            return;
+            return false;
         }
 
         if (currentPlayer.cash < course.cost) {
             this.addLogMessage(`Not enough cash to take ${course.name}. You need $${course.cost}.`);
-            return;
+            return false;
         }
 
         if (currentPlayer.time < course.time) {
             this.addLogMessage(`Not enough time to take ${course.name}. You need ${course.time} hours.`);
-            return;
+            return false;
         }
 
         currentPlayer.spendCash(course.cost);
@@ -210,6 +228,7 @@ class GameState {
 
         this.addLogMessage(`Successfully completed ${course.name}! Your education level is now ${currentPlayer.educationLevel}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     buyItem(itemName) {
@@ -218,17 +237,17 @@ class GameState {
 
         if (currentPlayer.location !== 'Shopping Mall') {
             this.addLogMessage('Must be at the Shopping Mall to buy items.');
-            return;
+            return false;
         }
 
         if (!item) {
             this.addLogMessage('Item not found.');
-            return;
+            return false;
         }
 
         if (currentPlayer.cash < item.cost) {
             this.addLogMessage(`Not enough cash to buy ${item.name}. You need $${item.cost}.`);
-            return;
+            return false;
         }
 
         currentPlayer.spendCash(item.cost);
@@ -236,6 +255,7 @@ class GameState {
 
         this.addLogMessage(`Successfully bought ${item.name}! Your happiness increased by ${item.happinessBoost}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     deposit(amount) {
@@ -243,19 +263,21 @@ class GameState {
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to deposit cash.');
-            return;
+            return false;
         }
 
         if (amount <= 0) {
             this.addLogMessage('Deposit amount must be positive.');
-            return;
+            return false;
         }
 
         if (currentPlayer.deposit(amount)) {
             this.addLogMessage(`Successfully deposited $${amount}.`);
             EventBus.publish('stateChanged', this);
+            return true;
         } else {
             this.addLogMessage('Not enough cash to deposit.');
+            return false;
         }
     }
 
@@ -264,19 +286,21 @@ class GameState {
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to withdraw cash.');
-            return;
+            return false;
         }
 
         if (amount <= 0) {
             this.addLogMessage('Withdrawal amount must be positive.');
-            return;
+            return false;
         }
 
         if (currentPlayer.withdraw(amount)) {
             this.addLogMessage(`Successfully withdrew $${amount}.`);
             EventBus.publish('stateChanged', this);
+            return true;
         } else {
             this.addLogMessage('Not enough savings to withdraw.');
+            return false;
         }
     }
 
@@ -286,23 +310,24 @@ class GameState {
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to take a loan.');
-            return;
+            return false;
         }
 
         if (amount <= 0) {
             this.addLogMessage('Loan amount must be positive.');
-            return;
+            return false;
         }
 
         if (currentPlayer.loan + amount > MAX_LOAN) {
             this.addLogMessage(`Cannot take a loan exceeding the $${MAX_LOAN} cap. Current loan: $${currentPlayer.loan}.`);
-            return;
+            return false;
         }
 
         currentPlayer.takeLoan(amount);
         currentPlayer.addCash(amount);
         this.addLogMessage(`Successfully took a loan of $${amount}. Total loan: $${currentPlayer.loan}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     repayLoan(amount) {
@@ -310,28 +335,29 @@ class GameState {
 
         if (currentPlayer.location !== 'Bank') {
             this.addLogMessage('Must be at the Bank to repay a loan.');
-            return;
+            return false;
         }
 
         if (amount <= 0) {
             this.addLogMessage('Repayment amount must be positive.');
-            return;
+            return false;
         }
 
         if (currentPlayer.cash < amount) {
             this.addLogMessage('Not enough cash to repay this amount.');
-            return;
+            return false;
         }
 
         if (amount > currentPlayer.loan) {
             this.addLogMessage(`Repayment amount ($${amount}) cannot exceed outstanding loan ($${currentPlayer.loan}).`);
-            return;
+            return false;
         }
 
         currentPlayer.spendCash(amount);
         currentPlayer.repayLoan(amount);
         this.addLogMessage(`Successfully repaid $${amount}. Remaining loan: $${currentPlayer.loan}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     buyCar() {
@@ -340,23 +366,24 @@ class GameState {
 
         if (currentPlayer.location !== 'Used Car Lot') {
             this.addLogMessage('Must be at the Used Car Lot to buy a car.');
-            return;
+            return false;
         }
 
         if (currentPlayer.hasCar) {
             this.addLogMessage('You already own a car.');
-            return;
+            return false;
         }
 
         if (currentPlayer.cash < CAR_COST) {
             this.addLogMessage(`Not enough cash to buy a car. You need $${CAR_COST}.`);
-            return;
+            return false;
         }
 
         currentPlayer.spendCash(CAR_COST);
         currentPlayer.giveCar();
         this.addLogMessage('Congratulations! You bought a car.');
         EventBus.publish('stateChanged', this);
+        return true;
     }
 
     travel(destination) {
@@ -364,20 +391,21 @@ class GameState {
 
         if (currentPlayer.location === destination) {
             this.addLogMessage('Already at this location.');
-            return;
+            return false;
         }
 
         const travelTime = currentPlayer.hasCar ? 1 : 2;
 
         if (currentPlayer.time < travelTime) {
             this.addLogMessage('Not enough time for the trip.');
-            return;
+            return false;
         }
 
         currentPlayer.deductTime(travelTime);
         currentPlayer.setLocation(destination);
         this.addLogMessage(`Traveled to ${destination}.`);
         EventBus.publish('stateChanged', this);
+        return true;
     }
 }
 

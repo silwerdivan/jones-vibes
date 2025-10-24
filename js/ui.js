@@ -3,8 +3,7 @@ import EventBus from './EventBus.js';
 import { JOBS, COURSES } from './game/gameData.js';
 
 class GameView {
-  constructor(gameController) { // MODIFIED
-    this.gameController = gameController; // NEW
+  constructor() {
 
     // Player 1
     this.p1Cash = document.getElementById('p1-cash');

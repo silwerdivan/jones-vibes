@@ -63,10 +63,18 @@ class AIController {
         }
 
         // Catch-all: If none of the above conditions are met, travel to the Employment Agency and workShift
+        // If already at Employment Agency and cannot work, then pass turn.
         if (player.location !== 'Employment Agency') {
             return { action: 'travel', params: { destination: 'Employment Agency' } };
         } else {
-            return { action: 'workShift' };
+            // Check if working a shift is possible (simplified check for now)
+            // In a more complex AI, this would involve checking time, job availability, etc.
+            // For now, assume if at Employment Agency, workShift is generally possible unless time is 0.
+            if (player.time > 0) { // Basic check: can only work if there's time
+                return { action: 'workShift' };
+            } else {
+                return { action: 'pass' }; // Explicitly pass if no other action is viable
+            }
         }
     }
 }

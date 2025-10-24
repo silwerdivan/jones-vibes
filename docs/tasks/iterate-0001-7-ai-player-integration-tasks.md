@@ -36,7 +36,7 @@ We will implement the following flow to fix the game:
 
 Here are the specific changes needed to make the game fully functional.
 
-#### [ ] **Step 1: Integrate the `AIController` to Make the AI Play Its Turn (Critical Fix)**
+#### [x] **Step 1: Integrate the `AIController` to Make the AI Play Its Turn (Critical Fix)**
 
 This is the highest priority. We need to modify `GameState.js` to use the existing AI logic.
 
@@ -118,7 +118,7 @@ class GameState {
 export default GameState;
 ```
 
-#### [ ] **Step 2: Standardize Action Naming Convention**
+#### [x] **Step 2: Standardize Action Naming Convention**
 
 Using hyphens in `data-action` attributes and method names is fragile. Let's convert them to `camelCase` for consistency and robustness.
 
@@ -184,7 +184,7 @@ class GameController {
 export default GameController;
 ```
 
-#### [ ] **Step 3: Improve UI Readability by Mapping Data to Names**
+#### [x] **Step 3: Improve UI Readability by Mapping Data to Names**
 
 Let's make the player panels display meaningful text instead of just numbers.
 

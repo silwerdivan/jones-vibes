@@ -16,7 +16,7 @@
 
 ## Tasks
 
--   [ ] 1.0 Implement CSS-First Responsive Layout
+-   [x] 1.0 Implement CSS-First Responsive Layout
     -   [x] 1.1 In `style.css`, add a `@media (max-width: 768px)` query to target mobile and tablet devices.
     -   [x] 1.2 Within the media query, change the `.main-grid`'s `grid-template-columns` to `1fr` and update `grid-template-areas` to stack the panels vertically in a logical order (e.g., player1, player2, info, actions, log).
     -   [x] 1.3 Implement a "sticky footer" for the `.action-buttons` on mobile. Inside the media query, set its `position` to `sticky`, `bottom` to `0`, and give it a background color and `z-index`.
