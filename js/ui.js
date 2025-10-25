@@ -14,6 +14,7 @@ class GameView {
     this.p1Career = document.getElementById('p1-career');
     this.p1Car = document.getElementById('p1-car');
     this.p1Time = document.getElementById('p1-time');
+    this.player1Panel = document.getElementById('player-1');
 
     // Player 2
     this.p2Cash = document.getElementById('p2-cash');
@@ -24,6 +25,7 @@ class GameView {
     this.p2Career = document.getElementById('p2-career');
     this.p2Car = document.getElementById('p2-car');
     this.p2Time = document.getElementById('p2-time');
+    this.player2Panel = document.getElementById('player-2');
 
     // Game Info
     this.currentLocation = document.getElementById('current-location');
@@ -87,6 +89,16 @@ class GameView {
   }
 
   render(gameState) {
+    // --- START: ACTIVE PLAYER HIGHLIGHT ---
+    this.player1Panel.classList.remove('active');
+    this.player2Panel.classList.remove('active');
+    if (gameState.currentPlayerIndex === 0) {
+      this.player1Panel.classList.add('active');
+    } else {
+      this.player2Panel.classList.add('active');
+    }
+    // --- END: ACTIVE PLAYER HIGHLIGHT ---
+
     // Player 1
     const player1 = gameState.players[0];
     this.p1Cash.textContent = `$${player1.cash}`;
@@ -124,7 +136,13 @@ class GameView {
     this.logContent.innerHTML = ''; // Clear the log first
     gameState.log.forEach(message => {
       const p = document.createElement('p');
-      p.textContent = message;
+      // Handle both old string format and new object format
+      if (typeof message === 'string') {
+        p.textContent = message;
+      } else {
+        p.textContent = message.text;
+        p.classList.add(`log-${message.category}`);
+      }
       this.logContent.appendChild(p);
     });
 

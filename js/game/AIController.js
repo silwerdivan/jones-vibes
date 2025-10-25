@@ -1,9 +1,12 @@
-import { COURSES, SHOPPING_ITEMS } from './gameData.js';
+import { COURSES, SHOPPING_ITEMS, JOBS } from './gameData.js';
 
 class AIController {
     takeTurn(gameState, player) {
+        const currentJob = JOBS.find(job => job.level === player.jobLevel);
+        const workShiftHours = currentJob ? currentJob.shiftHours : 8; // Default to 8 if no job
+
         // Priority 1: Pay Loan
-        if (player.loan > 2000) {
+        if (player.loan > 2000 && player.time >= 2) { // Assume banking takes 2 hours
             if (player.location !== 'Bank') {
                 return { action: 'travel', params: { destination: 'Bank' } };
             } else {
@@ -11,12 +14,11 @@ class AIController {
                 if (amountToRepay > 0) {
                     return { action: 'repayLoan', params: { amount: amountToRepay } };
                 }
-                // If at Bank but cannot repay, fall through to next priority
             }
         }
 
         // Priority 2: Gain Wealth
-        if (player.cash < 1000) {
+        if (player.cash < 1000 && player.time >= workShiftHours) {
             if (player.location !== 'Employment Agency') {
                 return { action: 'travel', params: { destination: 'Employment Agency' } };
             } else {
@@ -29,18 +31,17 @@ class AIController {
             const nextEducationLevel = player.educationLevel + 1;
             const nextCourse = COURSES.find(course => course.educationMilestone === nextEducationLevel);
 
-            if (nextCourse && player.cash >= nextCourse.cost) {
+            if (nextCourse && player.cash >= nextCourse.cost && player.time >= nextCourse.time) {
                 if (player.location !== 'Community College') {
                     return { action: 'travel', params: { destination: 'Community College' } };
                 } else {
                     return { action: 'takeCourse', params: { courseId: nextCourse.id } };
                 }
             }
-            // If cannot afford next course or no more courses, fall through to next priority
         }
 
         // Priority 4: Boost Happiness
-        if (player.happiness < 50) {
+        if (player.happiness < 50 && player.time >= 2) { // Assume shopping takes 2 hours
             if (player.location !== 'Shopping Mall') {
                 return { action: 'travel', params: { destination: 'Shopping Mall' } };
             } else {
@@ -49,12 +50,11 @@ class AIController {
                     const mostExpensive = affordableItems.reduce((prev, current) => (prev.cost > current.cost) ? prev : current);
                     return { action: 'buyItem', params: { itemName: mostExpensive.name } };
                 }
-                // If at Shopping Mall but no affordable items, fall through to next priority
             }
         }
 
         // Priority 5: Increase Efficiency (Buy Car)
-        if (player.cash > 3500 && !player.hasCar) {
+        if (player.cash > 3500 && !player.hasCar && player.time >= 4) { // Assume buying a car takes 4 hours
             if (player.location !== 'Used Car Lot') {
                 return { action: 'travel', params: { destination: 'Used Car Lot' } };
             } else {
@@ -62,20 +62,13 @@ class AIController {
             }
         }
 
-        // Catch-all: If none of the above conditions are met, travel to the Employment Agency and workShift
-        // If already at Employment Agency and cannot work, then pass turn.
-        if (player.location !== 'Employment Agency') {
-            return { action: 'travel', params: { destination: 'Employment Agency' } };
-        } else {
-            // Check if working a shift is possible (simplified check for now)
-            // In a more complex AI, this would involve checking time, job availability, etc.
-            // For now, assume if at Employment Agency, workShift is generally possible unless time is 0.
-            if (player.time > 0) { // Basic check: can only work if there's time
-                return { action: 'workShift' };
-            } else {
-                return { action: 'pass' }; // Explicitly pass if no other action is viable
-            }
+        // Catch-all: If other priorities are not met, work if possible.
+        if (player.location === 'Employment Agency' && player.time >= workShiftHours) {
+            return { action: 'workShift' };
         }
+        
+        // If no other action is viable, pass the turn.
+        return { action: 'pass' };
     }
 }
 

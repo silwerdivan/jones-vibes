@@ -8,9 +8,10 @@ class InputManager {
 
   initialize() {
     const gameContainer = document.querySelector('.game-container');
+    const eventType = 'ontouchstart' in window ? 'touchstart' : 'click';
 
     // Use a single listener on the parent container for efficiency.
-    gameContainer.addEventListener('click', (event) => {
+    gameContainer.addEventListener(eventType, (event) => {
       // Find the closest parent element (or the element itself) with a data-action attribute.
       const target = event.target.closest('[data-action]');
       

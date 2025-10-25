@@ -302,26 +302,54 @@ button:hover {
             "info"
             "actions"
             "log";
-        padding-bottom: 6rem; /* To prevent overlap with sticky footer */
+        padding-bottom: 8rem; /* Increased padding for fixed actions panel */
     }
 
-    .action-buttons {
-        position: sticky;
+    .actions-panel {
+        position: fixed;
         bottom: 0;
+        left: 0;
+        right: 0;
         background-color: var(--panel-bg);
         z-index: 10;
         padding: 1rem;
         border-top: 1px solid var(--hot-magenta);
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    }
+
+    .actions-panel h2 {
+        display: none;
     }
 
     #choice-modal {
-        width: 95vw;
+        width: 100vw;
+        height: 100vh;
         max-width: none; /* Override the desktop max-width */
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    #choice-modal .modal-content {
+        padding: 1rem;
+    }
+
+    #choice-modal input[type="number"] {
+        padding: 1rem;
+        font-size: 1.5rem; /* Larger font for readability */
+        margin-bottom: 1.5rem;
+    }
+
+    #choice-modal .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Adds space between buttons */
     }
 
     #choice-modal button {
         width: 100%;
-        margin: 0.5rem 0; /* Adjust margin for vertical stacking */
+        margin: 0; /* Remove margin, use gap instead */
     }
 
     button {
@@ -329,4 +357,23 @@ button:hover {
         font-size: 1.2rem;
         min-height: 44px;
     }
+}/* --- LOG MESSAGE CATEGORIES --- */
+.log-success {
+    color: var(--neon-green);
+}
+
+.log-error {
+    color: var(--hot-magenta);
+}
+
+.log-warning {
+    color: var(--vibrant-yellow);
+}
+
+.log-expense {
+    color: var(--electric-cyan);
+}
+
+.log-info {
+    color: var(--off-white);
 }
