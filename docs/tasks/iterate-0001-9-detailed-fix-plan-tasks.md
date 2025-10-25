@@ -114,7 +114,7 @@ Use player names consistently
 Format money values consistently
 Add color coding for different message types
 
-- [ ] Step 11: Add Loading States
+- [x] Step 11: Add Loading States
 
 * Problem: No feedback during AI thinking time
 * Solution: Add visual indicators during AI processing
