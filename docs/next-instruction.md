@@ -1,60 +1,38 @@
-## [ ] Step 12: Update AI and Win Condition Messages
+### 2. Style the loading overlay  
+Open **style.css**, and at the very bottom add:
 
-**Location:** `js/game/GameState.js`
-
-**In the `processAITurn` method:**
-```javascript
-processAITurn() {
-    const currentPlayer = this.getCurrentPlayer();
-    this.addLogMessage(
-        `${this._getPlayerName(currentPlayer)} is thinking...`,
-        'info'
-    );
-    const aiAction = this.aiController.takeTurn(this, currentPlayer);
-    this.handleAIAction(aiAction);
+```css
+/* --- LOADING OVERLAY --- */
+#loading-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+#loading-overlay.hidden {
+  display: none !important;
+}
+.spinner {
+  border: 8px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  width: 60px; height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-text {
+  color: var(--off-white);
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px var(--off-white);
 }
 ```
 
-**In the `checkWinCondition` method:**
-```javascript
-if (cashCondition && happinessCondition && educationCondition && careerCondition) {
-    this.gameOver = true;
-    this.winner = player;
-    this.addLogMessage(
-        `🎉 ${this._getPlayerName(player)} has won the game!`,
-        'success'
-    );
-    EventBus.publish('gameOver', this);
-}
-```
-
-**In the `handleAIAction` method, update these messages:**
-```javascript
-if (aiAction.action === 'pass') {
-    this.addLogMessage(
-        `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
-        'info'
-    );
-    this.endTurn();
-    return;
-}
-
-// ... later ...
-
-if (success && playerHasTime) {
-    this.checkWinCondition(this.getCurrentPlayer());
-    this.addLogMessage(
-        `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
-        'info'
-    );
-    setTimeout(() => this.processAITurn(), 1000);
-} else {
-    if (!success) {
-        this.addLogMessage(
-            `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
-            'warning'
-        );
-    }
-    this.endTurn();
-}
-```
+This gives you a semi-transparent full-screen overlay with a CSS spinner and a “AI is thinking…” message.

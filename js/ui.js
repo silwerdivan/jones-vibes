@@ -46,6 +46,11 @@ class GameView {
     this.modalButtons = document.getElementById('choice-modal-buttons');
     this.modalCancel = document.getElementById('modal-cancel-button');
 
+    // --- LOADING OVERLAY ---
+    this.loadingOverlay = document.getElementById('loading-overlay');
+    EventBus.subscribe('aiThinkingStart', () => this.showLoading());
+    EventBus.subscribe('aiThinkingEnd',   () => this.hideLoading());
+
     EventBus.subscribe('stateChanged', (gameState) => {
       this.render(gameState);
     });
@@ -86,6 +91,17 @@ class GameView {
   // --- NEW: Method to hide the modal ---
   hideModal() {
     this.modalOverlay.classList.add('hidden');
+  }
+
+  // --- NEW: Loading handlers ---
+  showLoading() {
+    this.loadingOverlay.classList.remove('hidden');
+    this.actionButtons.forEach(btn => btn.disabled = true);
+  }
+
+  hideLoading() {
+    this.loadingOverlay.classList.add('hidden');
+    this.actionButtons.forEach(btn => btn.disabled = false);
   }
 
   render(gameState) {

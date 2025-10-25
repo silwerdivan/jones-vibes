@@ -98,10 +98,12 @@ class GameState {
         // --- 3. ADD AI TURN LOGIC ---
         const nextPlayer = this.getCurrentPlayer();
         if (nextPlayer.isAI && this.aiController) {
-            // Use a timeout to give the player a moment to see the state change
+            // Notify view to show loading
+            EventBus.publish('aiThinkingStart');
+            // Delay AI processing so player can see the state change
             setTimeout(() => {
                 this.processAITurn();
-            }, 1500); // 1.5 second delay
+            }, 1500);
         }
 
         EventBus.publish('stateChanged', this);
@@ -119,83 +121,88 @@ class GameState {
 
     // --- 4. NEW METHOD TO HANDLE THE AI'S CHOSEN ACTION ---
     handleAIAction(aiAction) {
-        if (!aiAction || !aiAction.action) {
-            this.endTurn(); // AI chooses to do nothing
-            return;
-        }
-
-        // The 'pass' action should immediately end the turn.
-        if (aiAction.action === 'pass') {
-            this.addLogMessage(
-                `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
-                'info'
-            );
-            this.endTurn();
-            return;
-        }
-
-        let success = false;
-        let actionDescription = `AI decides to: ${aiAction.action}`;
-        if (aiAction.params) {
-            actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
-        }
-        this.addLogMessage(actionDescription);
-
-        // This switch executes the appropriate GameState method based on the AI's decision
-        switch(aiAction.action) {
-            case 'travel':
-                success = this.travel(aiAction.params.destination);
-                break;
-            case 'workShift':
-                success = this.workShift();
-                break;
-            case 'takeCourse':
-                success = this.takeCourse(aiAction.params.courseId);
-                break;
-            case 'buyItem':
-                success = this.buyItem(aiAction.params.itemName);
-                break;
-            case 'buyCar':
-                success = this.buyCar();
-                break;
-            case 'deposit':
-                success = this.deposit(aiAction.params.amount);
-                break;
-            case 'withdraw':
-                success = this.withdraw(aiAction.params.amount);
-                break;
-            case 'takeLoan':
-                success = this.takeLoan(aiAction.params.amount);
-                break;
-            case 'repayLoan':
-                success = this.repayLoan(aiAction.params.amount);
-                break;
-            default:
-                console.warn(`AI tried to perform an unknown action: ${aiAction.action}`);
-                success = false;
-                break;
-        }
-
-        // After an action, decide whether to continue the turn or end it.
-        const playerHasTime = this.getCurrentPlayer().time > 0;
-
-        if (success && playerHasTime) {
-            this.checkWinCondition(this.getCurrentPlayer());
-            this.addLogMessage(
-                `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
-                'info'
-            );
-            setTimeout(() => this.processAITurn(), 1000);
-        } else {
-            if (!success) {
-                this.addLogMessage(
-                    `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
-                    'warning'
-                );
-            }
-            this.endTurn();
-        }
+    // 1) no action → end AI turn immediately
+    if (!aiAction || !aiAction.action) {
+        EventBus.publish('aiThinkingEnd');
+        this.endTurn();
+        return;
     }
+
+    // 2) explicit 'pass' → end AI turn
+    if (aiAction.action === 'pass') {
+        this.addLogMessage(
+            `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
+            'info'
+        );
+        EventBus.publish('aiThinkingEnd');
+        this.endTurn();
+        return;
+    }
+
+    // 3) otherwise, carry out the action
+    let success = false;
+    let actionDescription = `AI decides to: ${aiAction.action}`;
+    if (aiAction.params) {
+        actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
+    }
+    this.addLogMessage(actionDescription);
+
+    switch(aiAction.action) {
+        case 'travel':
+            success = this.travel(aiAction.params.destination);
+            break;
+        case 'workShift':
+            success = this.workShift();
+            break;
+        case 'takeCourse':
+            success = this.takeCourse(aiAction.params.courseId);
+            break;
+        case 'buyItem':
+            success = this.buyItem(aiAction.params.itemName);
+            break;
+        case 'buyCar':
+            success = this.buyCar();
+            break;
+        case 'deposit':
+            success = this.deposit(aiAction.params.amount);
+            break;
+        case 'withdraw':
+            success = this.withdraw(aiAction.params.amount);
+            break;
+        case 'takeLoan':
+            success = this.takeLoan(aiAction.params.amount);
+            break;
+        case 'repayLoan':
+            success = this.repayLoan(aiAction.params.amount);
+            break;
+        default:
+            console.warn(`AI tried an unknown action: ${aiAction.action}`);
+            success = false;
+            break;
+    }
+
+    const playerHasTime = this.getCurrentPlayer().time > 0;
+
+    if (success && playerHasTime) {
+        // AI still has time → decide next move
+        this.checkWinCondition(this.getCurrentPlayer());
+        this.addLogMessage(
+            `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
+            'info'
+        );
+        setTimeout(() => this.processAITurn(), 1000);
+    } else {
+        // AI turn ends (either success but no time left, or action failed)
+        if (!success) {
+            this.addLogMessage(
+                `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
+                'warning'
+            );
+        }
+        EventBus.publish('aiThinkingEnd');
+        this.endTurn();
+    }
+}
 
     checkWinCondition(player) {
         if (this.gameOver) return;
