@@ -389,6 +389,7 @@ button:hover {
   justify-content: center;
   align-items: center;
   z-index: 1001;
+  pointer-events: none; /* Allow clicks to pass through if needed, but we disable buttons anyway */
 }
 #loading-overlay.hidden {
   display: none !important;
@@ -407,5 +408,19 @@ button:hover {
 .loading-text {
   color: var(--off-white);
   font-size: 1.2rem;
-  font-weight: bold;
+  text-shadow: 0 0 5px var(--off-white);
+}
+
+/* Mobile-specific fixes */
+@media (max-width: 768px) {
+  #loading-overlay {
+    position: fixed; /* Full viewport coverage */
+    top: 0; left: 0;
+    width: 100vw; height: 100vh; /* Use viewport units for full screen */
+    z-index: 2000; /* Higher z-index to ensure it's above fixed elements like actions panel */
+  }
+  /* Prevent body scroll while overlay is visible */
+  body.loading-active {
+    overflow: hidden;
+  }
 }

@@ -94,15 +94,21 @@ class GameView {
   }
 
   // --- NEW: Loading handlers ---
-  showLoading() {
-    this.loadingOverlay.classList.remove('hidden');
-    this.actionButtons.forEach(btn => btn.disabled = true);
-  }
+// Show the loading overlay and disable action buttons
+showLoading() {
+  this.loadingOverlay.classList.remove('hidden');
+  this.actionButtons.forEach(btn => btn.disabled = true);
+  // Mobile fix: Prevent body scroll
+  document.body.classList.add('loading-active');
+}
 
-  hideLoading() {
-    this.loadingOverlay.classList.add('hidden');
-    this.actionButtons.forEach(btn => btn.disabled = false);
-  }
+// Hide the loading overlay and re-enable action buttons
+hideLoading() {
+  this.loadingOverlay.classList.add('hidden');
+  this.actionButtons.forEach(btn => btn.disabled = false);
+  // Mobile fix: Re-enable body scroll
+  document.body.classList.remove('loading-active');
+}
 
   render(gameState) {
     // --- START: ACTIVE PLAYER HIGHLIGHT ---
