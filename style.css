@@ -424,3 +424,138 @@ button:hover {
     overflow: hidden;
   }
 }
+
+/* --- MOBILE STATS BAR --- */
+.mobile-stats {
+    display: none; /* Hidden by default, shown only on mobile */
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 5;
+}
+
+.mobile-stat-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--electric-cyan);
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.mobile-stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.mobile-player-name {
+    font-family: var(--font-header);
+    font-size: 0.7rem;
+    color: var(--vibrant-yellow);
+    text-transform: uppercase;
+}
+
+.mobile-player-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
+}
+
+.mobile-stat-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.5rem;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.mobile-stat-icon {
+    font-size: 0.9rem;
+}
+
+.mobile-stat-value {
+    color: var(--off-white);
+    font-family: var(--font-body);
+}
+
+/* Active player highlighting */
+#mobile-stat-p1.active {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
+}
+
+#mobile-stat-p1.active .mobile-player-indicator {
+    background-color: var(--neon-green);
+    box-shadow: 0 0 5px var(--neon-green);
+}
+
+#mobile-stat-p2.active {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
+}
+
+#mobile-stat-p2.active .mobile-player-indicator {
+    background-color: var(--neon-green);
+    box-shadow: 0 0 5px var(--neon-green);
+}
+
+/* Mobile-specific overrides */
+@media (max-width: 768px) {
+    /* Show mobile stats bar */
+    .mobile-stats {
+        display: grid;
+    }
+
+    /* Reduce title size to save space */
+    .game-title h1 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .game-title {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Hide the large player panels on mobile to avoid duplication */
+    .player-panel {
+        display: none;
+    }
+
+    /* Adjust main grid for mobile without player panels */
+    .main-grid {
+        grid-template-areas:
+            "info"
+            "log";
+        gap: 1rem;
+    }
+
+    /* Make info panel more compact */
+    .info-panel {
+        padding: 1rem;
+    }
+
+    .info-panel h2 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Adjust event log for better mobile visibility */
+    .event-log {
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .event-log h3 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+}

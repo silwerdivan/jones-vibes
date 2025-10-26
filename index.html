@@ -14,6 +14,36 @@
         <header class="game-title">
             <h1>JONES IN THE FAST LANE</h1>
         </header>
+        <!-- Mobile stats bar - only visible on small screens -->
+        <div id="mobile-stats" class="mobile-stats" aria-label="Player Statistics">
+            <div class="mobile-stat-card" id="mobile-stat-p1">
+                <div class="mobile-stat-header">
+                    <span class="mobile-player-name">P1</span>
+                    <span class="mobile-player-indicator" id="mobile-p1-active"></span>
+                </div>
+                <div class="mobile-stat-grid">
+                    <span class="mobile-stat-icon">💰</span>
+                    <span id="mobile-p1-cash" class="mobile-stat-value">$0</span>
+                    <span class="mobile-stat-icon">😊</span>
+                    <span id="mobile-p1-happiness" class="mobile-stat-value">0</span>
+                    <span class="mobile-stat-icon">⏰</span>
+                    <span id="mobile-p1-time" class="mobile-stat-value">24h</span>
+                </div>
+            </div>
+            <div class="mobile-stat-card" id="mobile-stat-p2">
+                <div class="mobile-stat-header">
+                    <span class="mobile-player-name">AI</span>
+                    <span class="mobile-player-indicator" id="mobile-p2-active"></span>
+                </div>
+                <div class="mobile-stat-grid">
+                    <span class="mobile-stat-icon">💰</span>
+                    <span id="mobile-p2-cash" class="mobile-stat-value">$0</span>
+                    <span class="mobile-stat-icon">😊</span>
+                    <span id="mobile-p2-happiness" class="mobile-stat-value">0</span>
+                    <span id="mobile-p2-time" class="mobile-stat-value">24h</span>
+                </div>
+            </div>
+        </div>
         <main class="main-grid">
             <div id="player-1" class="player-panel">
                 <h2>Player 1</h2>

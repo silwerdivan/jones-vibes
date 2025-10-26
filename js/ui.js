@@ -46,6 +46,16 @@ class GameView {
     this.modalButtons = document.getElementById('choice-modal-buttons');
     this.modalCancel = document.getElementById('modal-cancel-button');
 
+    // --- MOBILE STATS BAR ELEMENTS ---
+    this.mobileStatP1 = document.getElementById('mobile-stat-p1');
+    this.mobileStatP2 = document.getElementById('mobile-stat-p2');
+    this.mobileP1Cash = document.getElementById('mobile-p1-cash');
+    this.mobileP1Happiness = document.getElementById('mobile-p1-happiness');
+    this.mobileP1Time = document.getElementById('mobile-p1-time');
+    this.mobileP2Cash = document.getElementById('mobile-p2-cash');
+    this.mobileP2Happiness = document.getElementById('mobile-p2-happiness');
+    this.mobileP2Time = document.getElementById('mobile-p2-time');
+
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
     EventBus.subscribe('aiThinkingStart', () => this.showLoading());
@@ -111,6 +121,10 @@ hideLoading() {
 }
 
   render(gameState) {
+    // Get player data at the beginning to avoid initialization issues
+    const player1 = gameState.players[0];
+    const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
+    
     // --- START: ACTIVE PLAYER HIGHLIGHT ---
     this.player1Panel.classList.remove('active');
     this.player2Panel.classList.remove('active');
@@ -121,8 +135,42 @@ hideLoading() {
     }
     // --- END: ACTIVE PLAYER HIGHLIGHT ---
 
+    // --- MOBILE STATS UPDATE ---
+    // Update mobile stats bar (only visible on mobile)
+    if (this.mobileP1Cash) {
+        // Update Player 1 mobile stats
+        this.mobileP1Cash.textContent = `$${player1.cash}`;
+        this.mobileP1Happiness.textContent = player1.happiness;
+        this.mobileP1Time.textContent = `${player1.time}h`;
+        
+        // Update active state for mobile
+        if (this.mobileStatP1) {
+            if (gameState.currentPlayerIndex === 0) {
+                this.mobileStatP1.classList.add('active');
+            } else {
+                this.mobileStatP1.classList.remove('active');
+            }
+        }
+    }
+
+    // Update Player 2 mobile stats
+    if (this.mobileP2Cash && player2) {
+        this.mobileP2Cash.textContent = `$${player2.cash}`;
+        this.mobileP2Happiness.textContent = player2.happiness;
+        this.mobileP2Time.textContent = `${player2.time}h`;
+        
+        // Update active state for mobile
+        if (this.mobileStatP2) {
+            if (gameState.currentPlayerIndex === 1) {
+                this.mobileStatP2.classList.add('active');
+            } else {
+                this.mobileStatP2.classList.remove('active');
+            }
+        }
+    }
+    // --- END MOBILE STATS UPDATE ---
+
     // Player 1
-    const player1 = gameState.players[0];
     this.p1Cash.textContent = `$${player1.cash}`;
     this.p1Savings.textContent = `$${player1.savings}`;
     this.p1Loan.textContent = `$${player1.loan}`;
@@ -135,8 +183,7 @@ hideLoading() {
     this.p1Time.textContent = `${player1.time} hours`;
 
     // Player 2
-    if (gameState.players.length > 1) {
-        const player2 = gameState.players[1];
+    if (player2) {
         this.p2Cash.textContent = `$${player2.cash}`;
         this.p2Savings.textContent = `$${player2.savings}`;
         this.p2Loan.textContent = `$${player2.loan}`;
