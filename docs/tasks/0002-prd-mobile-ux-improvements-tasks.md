@@ -50,13 +50,13 @@
   - [x] 4.5 Ensure clock visualization works on both mobile and desktop
   - [x] 4.6 Maintain existing game architecture and visual design language
 
-- [ ] 5.0 Add Collapsible Game Log with Turn History
-  - [ ] 5.1 Implement collapsible game log accessible via dedicated button/icon
-  - [ ] 5.2 Create overlay/modal that expands when log is activated
-  - [ ] 5.3 Ensure log maintains only events from last player turn and last AI turn
-  - [ ] 5.4 Implement color coding for log entries by category (success, error, warning, etc.)
-  - [ ] 5.5 Add functionality to clear notification badge when log is opened
-  - [ ] 5.6 Ensure log is accessible on both mobile and desktop
+- [x] 5.0 Add Collapsible Game Log with Turn History (COMPLETED)
+  - [x] 5.1 Implement collapsible game log accessible via dedicated button/icon
+  - [x] 5.2 Create overlay/modal that expands when log is activated
+  - [x] 5.3 Ensure log maintains only events from last player turn and last AI turn
+  - [x] 5.4 Implement color coding for log entries by category (success, error, warning, etc.)
+  - [x] 5.5 Add functionality to clear notification badge when log is opened
+  - [x] 5.6 Ensure log is accessible on both mobile and desktop
 
 - [ ] 6.0 Add Location Context Hints and Action Improvements
   - [ ] 6.1 Display contextual hint text below current location (e.g., "3 actions available here")

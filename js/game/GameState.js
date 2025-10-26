@@ -149,7 +149,7 @@ class GameState {
     if (aiAction.params) {
         actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
     }
-    this.addLogMessage(actionDescription);
+    this.addLogMessage(actionDescription, 'info');
 
     switch(aiAction.action) {
         case 'travel':
@@ -281,7 +281,7 @@ class GameState {
 
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} worked as ${jobToWork.title} and earned ${this._formatMoney(earnings)}.`,
-            'log-success'
+            'success'
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);

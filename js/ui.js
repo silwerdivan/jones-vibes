@@ -35,6 +35,8 @@ class GameView {
     // Log
     this.logContent = document.querySelector('.log-content');
     this.eventLog = document.querySelector('.event-log');
+    this.logToggleBtn = document.getElementById('log-toggle-btn');
+    this.logToggleIcon = document.querySelector('.log-toggle-icon');
 
     // Action Buttons
     this.actionButtons = document.querySelectorAll('[data-action]');
@@ -75,6 +77,12 @@ class GameView {
     this.modalCareer = document.getElementById('modal-career');
     this.modalCar = document.getElementById('modal-car');
     this.modalTime = document.getElementById('modal-time');
+
+    // --- GAME LOG MODAL ELEMENTS ---
+    this.gameLogModalOverlay = document.getElementById('game-log-modal-overlay');
+    this.gameLogModal = document.getElementById('game-log-modal');
+    this.gameLogModalClose = document.getElementById('game-log-modal-close');
+    this.gameLogModalEntries = document.getElementById('game-log-modal-entries');
 
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
@@ -120,11 +128,29 @@ class GameView {
     
     // Add click listener to event log to publish logOpened event
     if (this.eventLog) {
-      this.eventLog.addEventListener('click', () => {
-        EventBus.publish('logOpened');
-      });
+        this.eventLog.addEventListener('click', () => {
+            EventBus.publish('logOpened');
+        });
     }
-
+    
+    // Add click listener for log toggle button
+    if (this.logToggleBtn) {
+        this.logToggleBtn.addEventListener('click', () => {
+            this.toggleLogVisibility();
+        });
+    }
+    
+    // Add event listeners for game log modal
+    this.gameLogModalClose.addEventListener('click', () => this.hideGameLogModal());
+    this.gameLogModalOverlay.addEventListener('click', (e) => {
+      if (e.target === this.gameLogModalOverlay) {
+        this.hideGameLogModal();
+      }
+    });
+    
+    // Add swipe-down functionality for mobile game log modal
+    this.addSwipeToClose(this.gameLogModal);
+    
     // Initialize ClockVisualization components
     this.p1ClockVisualization = null;
     this.p2ClockVisualization = null;
@@ -338,6 +364,104 @@ class GameView {
       this.eventLog.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
+  
+  // Method to toggle log visibility
+  toggleLogVisibility() {
+    if (this.eventLog) {
+      const isCollapsed = this.eventLog.classList.contains('collapsed');
+      
+      if (isCollapsed) {
+        // On mobile, show the modal instead of expanding inline
+        if (window.innerWidth <= 768) {
+          this.showGameLogModal();
+        } else {
+          // Expand the log on desktop
+          this.eventLog.classList.remove('collapsed');
+          this.logToggleIcon.textContent = '▼';
+        }
+      } else {
+        // Collapse the log
+        this.eventLog.classList.add('collapsed');
+        this.logToggleIcon.textContent = '▲';
+      }
+    }
+  }
+  
+  // --- NEW: Game Log Modal Methods ---
+  showGameLogModal() {
+    // Get current game state to populate the modal
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    if (!gameState) return;
+    
+    // Clear existing content
+    this.gameLogModalEntries.innerHTML = '';
+    
+    // Get only the log entries from the last player turn and last AI turn
+    const recentLogEntries = this.getRecentLogEntries(gameState);
+    
+    // Populate the modal with recent log entries
+    recentLogEntries.forEach(message => {
+      const p = document.createElement('p');
+      // Handle both old string format and new object format
+      if (typeof message === 'string') {
+        p.textContent = message;
+      } else {
+        p.textContent = message.text;
+        p.classList.add(`log-${message.category}`);
+      }
+      this.gameLogModalEntries.appendChild(p);
+    });
+    
+    // Show the modal
+    this.gameLogModalOverlay.classList.remove('hidden');
+    
+    // Prevent body scroll on mobile
+    document.body.style.overflow = 'hidden';
+    
+    // Publish logOpened event to clear notification badge
+    EventBus.publish('logOpened');
+  }
+  
+  // Helper method to get log entries from the last player turn and last AI turn
+  getRecentLogEntries(gameState) {
+    if (!gameState.log || gameState.log.length === 0) return [];
+    
+    // Find the indices of turn boundaries in the log
+    const turnBoundaries = [];
+    
+    // Look for turn end messages to identify turn boundaries
+    for (let i = 0; i < gameState.log.length; i++) {
+      const message = gameState.log[i];
+      const text = typeof message === 'string' ? message : message.text;
+      
+      // Check if this message indicates the end of a turn
+      if (text.includes('returned home.') || text.includes('paid $50 for daily expenses.')) {
+        turnBoundaries.push(i);
+      }
+    }
+    
+    // If we have at least 2 turn boundaries, get entries from the last two turns
+    if (turnBoundaries.length >= 2) {
+      const lastTurnStart = turnBoundaries[turnBoundaries.length - 2];
+      return gameState.log.slice(0, lastTurnStart);
+    }
+    
+    // If we have only one turn boundary, get entries from the current turn
+    if (turnBoundaries.length === 1) {
+      const lastTurnStart = turnBoundaries[0];
+      return gameState.log.slice(0, lastTurnStart);
+    }
+    
+    // If no turn boundaries found, return all entries (fallback)
+    return gameState.log;
+  }
+  
+  hideGameLogModal() {
+    this.gameLogModalOverlay.classList.add('hidden');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
 
   // --- NEW: Loading handlers ---
 // Show the loading overlay and disable action buttons
@@ -459,7 +583,11 @@ hideLoading() {
 
     // Game Log
     this.logContent.innerHTML = ''; // Clear the log first
-    gameState.log.forEach(message => {
+    
+    // Get only the log entries from the last player turn and last AI turn
+    const recentLogEntries = this.getRecentLogEntries(gameState);
+    
+    recentLogEntries.forEach(message => {
       const p = document.createElement('p');
       // Handle both old string format and new object format
       if (typeof message === 'string') {

@@ -106,7 +106,12 @@
             </div>
 
             <div class="event-log" data-testid="game-log">
-                <h3>Game Log</h3>
+                <div class="log-header">
+                    <h3>Game Log</h3>
+                    <button id="log-toggle-btn" class="log-toggle-btn" aria-label="Toggle game log">
+                        <span class="log-toggle-icon">▼</span>
+                    </button>
+                </div>
                 <div class="log-content"></div>
             </div>
         </main>
@@ -190,6 +195,23 @@
             </div>
         </div>
         <!-- END: Player Stats Modal Structure -->
+
+        <!-- START: Game Log Modal Structure -->
+        <div id="game-log-modal-overlay" class="hidden">
+            <div id="game-log-modal">
+                <div class="game-log-modal-header">
+                    <h2>Game Log</h2>
+                    <button id="game-log-modal-close" class="modal-close-btn">✕</button>
+                </div>
+                <div class="swipe-indicator">
+                    <div class="swipe-bar"></div>
+                </div>
+                <div class="game-log-modal-content">
+                    <div id="game-log-modal-entries"></div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Game Log Modal Structure -->
 
         <!-- START: Loading Overlay -->
         <div id="loading-overlay" class="hidden">

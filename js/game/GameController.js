@@ -112,7 +112,7 @@ class GameController {
   takeCourse() {
     const nextCourse = this.gameState.getNextAvailableCourse();
     if (!nextCourse) {
-      this.gameState.addLogMessage("No more courses available.");
+      this.gameState.addLogMessage("No more courses available.", 'warning');
       return;
     }
     
