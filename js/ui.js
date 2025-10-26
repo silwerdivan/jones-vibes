@@ -50,11 +50,29 @@ class GameView {
     this.mobileStatP1 = document.getElementById('mobile-stat-p1');
     this.mobileStatP2 = document.getElementById('mobile-stat-p2');
     this.mobileP1Cash = document.getElementById('mobile-p1-cash');
+    this.mobileP1Savings = document.getElementById('mobile-p1-savings');
+    this.mobileP1Loan = document.getElementById('mobile-p1-loan');
     this.mobileP1Happiness = document.getElementById('mobile-p1-happiness');
     this.mobileP1Time = document.getElementById('mobile-p1-time');
     this.mobileP2Cash = document.getElementById('mobile-p2-cash');
+    this.mobileP2Savings = document.getElementById('mobile-p2-savings');
+    this.mobileP2Loan = document.getElementById('mobile-p2-loan');
     this.mobileP2Happiness = document.getElementById('mobile-p2-happiness');
     this.mobileP2Time = document.getElementById('mobile-p2-time');
+
+    // --- PLAYER STATS MODAL ELEMENTS ---
+    this.playerStatsModalOverlay = document.getElementById('player-stats-modal-overlay');
+    this.playerStatsModal = document.getElementById('player-stats-modal');
+    this.playerStatsModalTitle = document.getElementById('player-stats-modal-title');
+    this.playerStatsModalClose = document.getElementById('player-stats-modal-close');
+    this.modalCash = document.getElementById('modal-cash');
+    this.modalSavings = document.getElementById('modal-savings');
+    this.modalLoan = document.getElementById('modal-loan');
+    this.modalHappiness = document.getElementById('modal-happiness');
+    this.modalEducation = document.getElementById('modal-education');
+    this.modalCareer = document.getElementById('modal-career');
+    this.modalCar = document.getElementById('modal-car');
+    this.modalTime = document.getElementById('modal-time');
 
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
@@ -67,6 +85,21 @@ class GameView {
 
     // Add event listener for the cancel button
     this.modalCancel.addEventListener('click', () => this.hideModal()); // NEW
+    
+    // Add event listeners for player stats modal
+    this.playerStatsModalClose.addEventListener('click', () => this.hidePlayerStatsModal());
+    this.playerStatsModalOverlay.addEventListener('click', (e) => {
+      if (e.target === this.playerStatsModalOverlay) {
+        this.hidePlayerStatsModal();
+      }
+    });
+    
+    // Add swipe-down functionality for mobile
+    this.addSwipeToClose(this.playerStatsModal);
+    
+    // Add click listeners to mobile stat cards
+    this.mobileStatP1.addEventListener('click', () => this.showPlayerStatsModal(1));
+    this.mobileStatP2.addEventListener('click', () => this.showPlayerStatsModal(2));
   }
 
   // --- NEW: Method to show a generic choice modal ---
@@ -101,6 +134,121 @@ class GameView {
   // --- NEW: Method to hide the modal ---
   hideModal() {
     this.modalOverlay.classList.add('hidden');
+  }
+
+  // --- NEW: Player Stats Modal Methods ---
+  showPlayerStatsModal(playerIndex) {
+    // Get current game state to populate the modal
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    if (!gameState || !gameState.players[playerIndex - 1]) return;
+    
+    const player = gameState.players[playerIndex - 1];
+    
+    // Set the modal title based on player
+    this.playerStatsModalTitle.textContent = playerIndex === 1 ? 'Your Stats' : 'AI Stats';
+    
+    // Set the player-specific color theme
+    this.playerStatsModal.className = playerIndex === 1 ? 'player-1' : 'player-2';
+    
+    // Populate the modal with player data
+    this.modalCash.textContent = `$${player.cash}`;
+    this.modalSavings.textContent = `$${player.savings}`;
+    this.modalLoan.textContent = `$${player.loan}`;
+    this.modalHappiness.textContent = player.happiness;
+    
+    // Get education and career information
+    const course = JOBS.find(c => c.educationMilestone === player.educationLevel);
+    this.modalEducation.textContent = course ? course.name : 'None';
+    
+    const job = JOBS.find(j => j.level === player.careerLevel);
+    this.modalCareer.textContent = job ? job.title : 'Unemployed';
+    
+    this.modalCar.textContent = player.hasCar ? 'Yes' : 'No';
+    this.modalTime.textContent = `${player.time} hours`;
+    
+    // Show the modal
+    this.playerStatsModalOverlay.classList.remove('hidden');
+    
+    // Prevent body scroll on mobile
+    document.body.style.overflow = 'hidden';
+  }
+  
+  hidePlayerStatsModal() {
+    this.playerStatsModalOverlay.classList.add('hidden');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+  }
+  
+  // Add swipe-to-close functionality for mobile modals
+  addSwipeToClose(modalElement) {
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    
+    const handleTouchStart = (e) => {
+      // Only start tracking if touch is near the top of the modal
+      const touch = e.touches[0];
+      const rect = modalElement.getBoundingClientRect();
+      
+      // Check if touch is in the top 25% of the modal
+      if (touch.clientY - rect.top < rect.height * 0.25) {
+        startY = touch.clientY;
+        isDragging = true;
+        modalElement.style.transition = 'none';
+      }
+    };
+    
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      // Only allow downward swipe
+      if (deltaY > 0) {
+        // Apply transform to create the swipe effect
+        modalElement.style.transform = `translateY(${deltaY}px)`;
+        
+        // Add opacity based on swipe distance
+        const opacity = Math.max(0, 1 - (deltaY / window.innerHeight));
+        this.playerStatsModalOverlay.style.backgroundColor = `rgba(0, 0, 0, ${0.8 * opacity})`;
+      }
+    };
+    
+    const handleTouchEnd = () => {
+      if (!isDragging) return;
+      
+      isDragging = false;
+      const deltaY = currentY - startY;
+      const threshold = window.innerHeight * 0.3; // 30% of screen height
+      
+      // Reset transition
+      modalElement.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      
+      if (deltaY > threshold) {
+        // If swiped far enough, close the modal
+        modalElement.style.transform = `translateY(100%)`;
+        modalElement.style.opacity = '0';
+        
+        setTimeout(() => {
+          this.hidePlayerStatsModal();
+          // Reset styles after closing
+          modalElement.style.transform = '';
+          modalElement.style.opacity = '';
+          this.playerStatsModalOverlay.style.backgroundColor = '';
+        }, 300);
+      } else {
+        // If not swiped far enough, snap back
+        modalElement.style.transform = '';
+        this.playerStatsModalOverlay.style.backgroundColor = '';
+      }
+    };
+    
+    // Add touch event listeners
+    modalElement.addEventListener('touchstart', handleTouchStart, { passive: true });
+    modalElement.addEventListener('touchmove', handleTouchMove, { passive: true });
+    modalElement.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
 
   // --- NEW: Loading handlers ---
@@ -140,6 +288,8 @@ hideLoading() {
     if (this.mobileP1Cash) {
         // Update Player 1 mobile stats
         this.mobileP1Cash.textContent = `$${player1.cash}`;
+        this.mobileP1Savings.textContent = `$${player1.savings}`;
+        this.mobileP1Loan.textContent = `$${player1.loan}`;
         this.mobileP1Happiness.textContent = player1.happiness;
         this.mobileP1Time.textContent = `${player1.time}h`;
         
@@ -156,6 +306,8 @@ hideLoading() {
     // Update Player 2 mobile stats
     if (this.mobileP2Cash && player2) {
         this.mobileP2Cash.textContent = `$${player2.cash}`;
+        this.mobileP2Savings.textContent = `$${player2.savings}`;
+        this.mobileP2Loan.textContent = `$${player2.loan}`;
         this.mobileP2Happiness.textContent = player2.happiness;
         this.mobileP2Time.textContent = `${player2.time}h`;
         

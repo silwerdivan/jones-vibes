@@ -19,16 +19,16 @@
   - [x] 1.5 Implement fixed action panel at bottom on mobile for easy thumb access
   - [x] 1.6 Update mobile-specific CSS to maintain 80% viewport utilization
 
-- [ ] 2.0 Create Enhanced Mobile Player Cards with Stats Modal
-  - [ ] 2.1 Increase mobile player stat cards size by 30% from current implementation
-  - [ ] 2.2 Display at least 2 additional key stats (Happiness and Time) on mobile cards
-  - [ ] 2.3 Ensure text and icons have appropriate contrast ratios (minimum 4.5:1)
-  - [ ] 2.4 Update player labels to use "You" and "AI" consistently (not "P1" or "Player 1")
-  - [ ] 2.5 Implement full-screen modal triggered by tapping player card
-  - [ ] 2.6 Add all player statistics to modal: Cash, Savings, Loan, Happiness, Education, Career, Car ownership, Time remaining
-  - [ ] 2.7 Implement clear close mechanism (X button or swipe down) for the modal
-  - [ ] 2.8 Ensure modal maintains player's color theme (magenta for You, cyan for AI)
-  - [ ] 2.9 Add visual feedback to active player's card (scale and glow)
+- [x] 2.0 Create Enhanced Mobile Player Cards with Stats Modal
+  - [x] 2.1 Increase mobile player stat cards size by 30% from current implementation
+  - [x] 2.2 Display at least 2 additional key stats (Happiness and Time) on mobile cards
+  - [x] 2.3 Ensure text and icons have appropriate contrast ratios (minimum 4.5:1)
+  - [x] 2.4 Update player labels to use "You" and "AI" consistently (not "P1" or "Player 1")
+  - [x] 2.5 Implement full-screen modal triggered by tapping player card
+  - [x] 2.6 Add all player statistics to modal: Cash, Savings, Loan, Happiness, Education, Career, Car ownership, Time remaining
+  - [x] 2.7 Implement clear close mechanism (X button or swipe down) for the modal
+  - [x] 2.8 Ensure modal maintains player's color theme (magenta for You, cyan for AI)
+  - [x] 2.9 Add visual feedback to active player's card (scale and glow)
 
 - [ ] 3.0 Build Event Notification System with Queue Management
   - [ ] 3.1 Create new EventNotificationManager component to handle event queue
