@@ -11,13 +11,13 @@
 
 ## Tasks
 
-- [ ] 1.0 Implement Dynamic Title Sizing and Viewport Optimizations
-  - [ ] 1.1 Modify CSS to scale down game title font size by 30-40% on mobile viewports (< 768px)
-  - [ ] 1.2 Reduce vertical spacing between UI elements by 20-30% in mobile view
-  - [ ] 1.3 Consolidate "Current Location" and "Turn" into a single compact bar in mobile view
-  - [ ] 1.4 Ensure action buttons include both icons and text labels for clarity
-  - [ ] 1.5 Implement fixed action panel at bottom on mobile for easy thumb access
-  - [ ] 1.6 Update mobile-specific CSS to maintain 80% viewport utilization
+- [x] 1.0 Implement Dynamic Title Sizing and Viewport Optimizations
+  - [x] 1.1 Modify CSS to scale down game title font size by 30-40% on mobile viewports (< 768px)
+  - [x] 1.2 Reduce vertical spacing between UI elements by 20-30% in mobile view
+  - [x] 1.3 Consolidate "Current Location" and "Turn" into a single compact bar in mobile view
+  - [x] 1.4 Ensure action buttons include both icons and text labels for clarity
+  - [x] 1.5 Implement fixed action panel at bottom on mobile for easy thumb access
+  - [x] 1.6 Update mobile-specific CSS to maintain 80% viewport utilization
 
 - [ ] 2.0 Create Enhanced Mobile Player Cards with Stats Modal
   - [ ] 2.1 Increase mobile player stat cards size by 30% from current implementation
