@@ -193,6 +193,20 @@ h2 {
     font-size: 0.9rem;
 }
 
+.location-hint {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 6px;
+    color: var(--vibrant-yellow);
+    font-size: 0.85rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 0, 0.2), 0 0 15px rgba(0, 255, 255, 0.1);
+    text-shadow: 0 0 3px rgba(255, 255, 0, 0.5), 0 0 6px rgba(255, 255, 0, 0.3);
+}
+
 .action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -230,6 +244,74 @@ button:hover {
     color: var(--hot-magenta);
     background-color: rgba(255, 0, 255, 0.1);
     box-shadow: 0 0 18px var(--hot-magenta), inset 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* Visual indicators for context-specific action buttons */
+button.location-specific {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+button.location-specific:not(.hidden) {
+    border-color: var(--electric-cyan);
+    box-shadow: 0 0 12px var(--electric-cyan), inset 0 0 8px rgba(0, 255, 255, 0.3);
+    animation: pulse-cyan 3s infinite;
+}
+
+button.location-specific:not(.hidden):hover {
+    border-color: var(--vibrant-yellow);
+    box-shadow: 0 0 20px var(--vibrant-yellow), inset 0 0 12px rgba(255, 255, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Pulse animation for context-specific buttons */
+@keyframes pulse-cyan {
+    0% {
+        box-shadow: 0 0 12px var(--electric-cyan), inset 0 0 8px rgba(0, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px var(--electric-cyan), inset 0 0 10px rgba(0, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 12px var(--electric-cyan), inset 0 0 8px rgba(0, 255, 255, 0.3);
+    }
+}
+
+/* Badge indicator for context-specific buttons */
+button.location-specific:not(.hidden)::after {
+    content: "!";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--vibrant-yellow);
+    color: var(--deep-space-blue);
+    font-family: var(--font-header);
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px var(--vibrant-yellow);
+    animation: badge-pulse 3s infinite;
+}
+
+/* Badge pulse animation */
+@keyframes badge-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 8px var(--vibrant-yellow);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px var(--vibrant-yellow);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 8px var(--vibrant-yellow);
+    }
 }
 
 /* --- EVENT LOG --- */
@@ -748,6 +830,19 @@ button:hover {
     .btn-text {
         font-size: 0.8em;
     }
+    
+    /* Mobile-specific adjustments for context-specific button indicators */
+    button.location-specific:not(.hidden)::after {
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+    }
+    
+    button.location-specific:not(.hidden):hover {
+        transform: translateY(-1px);
+    }
 }/* --- LOG MESSAGE CATEGORIES --- */
 .log-success {
     color: var(--neon-green);
@@ -1026,6 +1121,12 @@ button:hover {
     .info-panel h2 {
         font-size: 0.9rem;
         margin-bottom: 0.35rem; /* Reduced by 30% from 0.5rem */
+    }
+    
+    .location-hint {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        margin-top: 0.4rem;
     }
 
     /* Adjust event log for better mobile visibility */

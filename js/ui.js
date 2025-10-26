@@ -31,6 +31,7 @@ class GameView {
     // Game Info
     this.currentLocation = document.getElementById('current-location');
     this.gameTurn = document.getElementById('game-turn');
+    this.locationHint = document.getElementById('location-hint');
 
     // Log
     this.logContent = document.querySelector('.log-content');
@@ -580,6 +581,9 @@ hideLoading() {
     const currentPlayer = gameState.getCurrentPlayer();
     this.currentLocation.textContent = currentPlayer.location;
     this.gameTurn.textContent = gameState.turn;
+    
+    // Update location hint with count of available actions
+    this.updateLocationHint(currentPlayer.location);
 
     // Game Log
     this.logContent.innerHTML = ''; // Clear the log first
@@ -601,6 +605,9 @@ hideLoading() {
 
     // Action Buttons Visibility
     this.actionButtons.forEach(button => {
+        // Remove location-specific class from all buttons first
+        button.classList.remove('location-specific');
+        
         if(button.dataset.action !== 'restEndTurn') { // restEndTurn is always visible
             button.classList.add('hidden');
         }
@@ -611,23 +618,61 @@ hideLoading() {
     switch (currentPlayer.location) {
         case 'Employment Agency':
             document.querySelector('[data-action="workShift"]').classList.remove('hidden');
+            document.querySelector('[data-action="workShift"]').classList.add('location-specific');
             break;
         case 'Community College':
             document.querySelector('[data-action="takeCourse"]').classList.remove('hidden');
+            document.querySelector('[data-action="takeCourse"]').classList.add('location-specific');
             break;
         case 'Shopping Mall':
             document.querySelector('[data-action="buyItem"]').classList.remove('hidden');
+            document.querySelector('[data-action="buyItem"]').classList.add('location-specific');
             break;
         case 'Used Car Lot':
             document.querySelector('[data-action="buyCar"]').classList.remove('hidden');
+            document.querySelector('[data-action="buyCar"]').classList.add('location-specific');
             break;
         case 'Bank':
             document.querySelector('[data-action="deposit"]').classList.remove('hidden');
+            document.querySelector('[data-action="deposit"]').classList.add('location-specific');
             document.querySelector('[data-action="withdraw"]').classList.remove('hidden');
+            document.querySelector('[data-action="withdraw"]').classList.add('location-specific');
             document.querySelector('[data-action="takeLoan"]').classList.remove('hidden');
+            document.querySelector('[data-action="takeLoan"]').classList.add('location-specific');
             document.querySelector('[data-action="repayLoan"]').classList.remove('hidden');
+            document.querySelector('[data-action="repayLoan"]').classList.add('location-specific');
             break;
     }
+  }
+  
+  // Method to update location hint based on available actions
+  updateLocationHint(location) {
+    let hintText = '';
+    
+    switch (location) {
+        case 'Home':
+            hintText = 'Rest and end your turn here';
+            break;
+        case 'Employment Agency':
+            hintText = 'Find work and earn money';
+            break;
+        case 'Community College':
+            hintText = 'Improve your education for better jobs';
+            break;
+        case 'Shopping Mall':
+            hintText = 'Buy items to boost your happiness';
+            break;
+        case 'Used Car Lot':
+            hintText = 'Purchase a car for faster travel';
+            break;
+        case 'Bank':
+            hintText = 'Manage your finances: deposit, withdraw, or take a loan';
+            break;
+        default:
+            hintText = 'Travel to other locations';
+    }
+    
+    this.locationHint.textContent = hintText;
   }
 }
 

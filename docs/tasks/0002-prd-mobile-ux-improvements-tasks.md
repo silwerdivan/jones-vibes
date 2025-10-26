@@ -58,11 +58,11 @@
   - [x] 5.5 Add functionality to clear notification badge when log is opened
   - [x] 5.6 Ensure log is accessible on both mobile and desktop
 
-- [ ] 6.0 Add Location Context Hints and Action Improvements
-  - [ ] 6.1 Display contextual hint text below current location (e.g., "3 actions available here")
-  - [ ] 6.2 Update hints based on player's current location
-  - [ ] 6.3 Add visual indicators (glow or badge) to context-specific action buttons
-  - [ ] 6.4 Ensure action button icons are simple and universally recognizable
-  - [ ] 6.5 Maintain existing neon/cyberpunk color palette and retro VHS/arcade aesthetic
-  - [ ] 6.6 Ensure all animations are smooth but not distracting (use CSS transitions where possible)
+- [x] 6.0 Add Location Context Hints and Action Improvements
+  - [x] 6.1 Display contextual hint text below current location (e.g., "3 actions available here")
+  - [x] 6.2 Update hints based on player's current location
+  - [x] 6.3 Add visual indicators (glow or badge) to context-specific action buttons
+  - [x] 6.4 Ensure action button icons are simple and universally recognizable
+  - [x] 6.5 Maintain existing neon/cyberpunk color palette and retro VHS/arcade aesthetic
+  - [x] 6.6 Ensure all animations are smooth but not distracting (use CSS transitions where possible)
 ```
