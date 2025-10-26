@@ -1,6 +1,7 @@
 import EventBus from './EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
 import { JOBS, COURSES } from './game/gameData.js';
+import ClockVisualization from './ui/ClockVisualization.js';
 
 class GameView {
   constructor() {
@@ -121,6 +122,63 @@ class GameView {
     if (this.eventLog) {
       this.eventLog.addEventListener('click', () => {
         EventBus.publish('logOpened');
+      });
+    }
+
+    // Initialize ClockVisualization components
+    this.p1ClockVisualization = null;
+    this.p2ClockVisualization = null;
+    this.mobileP1ClockVisualization = null;
+    this.mobileP2ClockVisualization = null;
+    
+    // Initialize clock visualizations after DOM is ready
+    this.initializeClockVisualizations();
+  }
+
+  initializeClockVisualizations() {
+    // Initialize desktop clock visualizations
+    if (this.p1Time) {
+      this.p1ClockVisualization = new ClockVisualization('p1-time', {
+        size: 50,
+        strokeWidth: 6,
+        backgroundColor: 'rgba(255, 0, 255, 0.2)',
+        foregroundColor: '#FF00FF',
+        textColor: '#FFFFFF',
+        fontSize: '12px'
+      });
+    }
+    
+    if (this.p2Time) {
+      this.p2ClockVisualization = new ClockVisualization('p2-time', {
+        size: 50,
+        strokeWidth: 6,
+        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        foregroundColor: '#00FFFF',
+        textColor: '#FFFFFF',
+        fontSize: '12px'
+      });
+    }
+    
+    // Initialize mobile clock visualizations
+    if (this.mobileP1Time) {
+      this.mobileP1ClockVisualization = new ClockVisualization('mobile-p1-time', {
+        size: 40,
+        strokeWidth: 4,
+        backgroundColor: 'rgba(255, 0, 255, 0.2)',
+        foregroundColor: '#FF00FF',
+        textColor: '#FFFFFF',
+        fontSize: '10px'
+      });
+    }
+    
+    if (this.mobileP2Time) {
+      this.mobileP2ClockVisualization = new ClockVisualization('mobile-p2-time', {
+        size: 40,
+        strokeWidth: 4,
+        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        foregroundColor: '#00FFFF',
+        textColor: '#FFFFFF',
+        fontSize: '10px'
       });
     }
   }
@@ -321,7 +379,11 @@ hideLoading() {
         this.mobileP1Savings.textContent = `$${player1.savings}`;
         this.mobileP1Loan.textContent = `$${player1.loan}`;
         this.mobileP1Happiness.textContent = player1.happiness;
-        this.mobileP1Time.textContent = `${player1.time}h`;
+        if (this.mobileP1ClockVisualization) {
+          this.mobileP1ClockVisualization.updateTime(player1.time);
+        } else {
+          this.mobileP1Time.textContent = `${player1.time}h`;
+        }
         
         // Update active state for mobile
         if (this.mobileStatP1) {
@@ -339,7 +401,11 @@ hideLoading() {
         this.mobileP2Savings.textContent = `$${player2.savings}`;
         this.mobileP2Loan.textContent = `$${player2.loan}`;
         this.mobileP2Happiness.textContent = player2.happiness;
-        this.mobileP2Time.textContent = `${player2.time}h`;
+        if (this.mobileP2ClockVisualization) {
+          this.mobileP2ClockVisualization.updateTime(player2.time);
+        } else {
+          this.mobileP2Time.textContent = `${player2.time}h`;
+        }
         
         // Update active state for mobile
         if (this.mobileStatP2) {
@@ -362,7 +428,11 @@ hideLoading() {
     const p1Job = JOBS.find(j => j.level === player1.careerLevel);
     this.p1Career.textContent = p1Job ? p1Job.title : 'Unemployed';
     this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
-    this.p1Time.textContent = `${player1.time} hours`;
+    if (this.p1ClockVisualization) {
+      this.p1ClockVisualization.updateTime(player1.time);
+    } else {
+      this.p1Time.textContent = `${player1.time} hours`;
+    }
 
     // Player 2
     if (player2) {
@@ -375,7 +445,11 @@ hideLoading() {
         const p2Job = JOBS.find(j => j.level === player2.careerLevel);
         this.p2Career.textContent = p2Job ? p2Job.title : 'Unemployed';
         this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
-        this.p2Time.textContent = `${player2.time} hours`;
+        if (this.p2ClockVisualization) {
+          this.p2ClockVisualization.updateTime(player2.time);
+        } else {
+          this.p2Time.textContent = `${player2.time} hours`;
+        }
     }
 
     // Game Info

@@ -42,13 +42,13 @@
   - [x] 3.9 Add CSS animations for smooth transitions between queued events
   - [x] 3.10 Refactor notification system to use sliding window approach for rapid actions (improved UX)
 
-- [ ] 4.0 Implement Clock Visualization Component
-  - [ ] 4.1 Create new ClockVisualization component to replace text-based time display
-  - [ ] 4.2 Implement circular pie chart that fills with darker color as time depletes
-  - [ ] 4.3 Set 24 hours = empty, 0 hours = full for the pie chart visualization
-  - [ ] 4.4 Display numeric time value in center of pie chart
-  - [ ] 4.5 Ensure clock visualization works on both mobile and desktop
-  - [ ] 4.6 Maintain existing game architecture and visual design language
+- [x] 4.0 Implement Clock Visualization Component
+  - [x] 4.1 Create new ClockVisualization component to replace text-based time display
+  - [x] 4.2 Implement circular pie chart that fills with darker color as time depletes
+  - [x] 4.3 Set 24 hours = empty, 0 hours = full for the pie chart visualization
+  - [x] 4.4 Display numeric time value in center of pie chart
+  - [x] 4.5 Ensure clock visualization works on both mobile and desktop
+  - [x] 4.6 Maintain existing game architecture and visual design language
 
 - [ ] 5.0 Add Collapsible Game Log with Turn History
   - [ ] 5.1 Implement collapsible game log accessible via dedicated button/icon
