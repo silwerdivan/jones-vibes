@@ -51,6 +51,10 @@ class GameState {
             timestamp: new Date().toLocaleTimeString()
         };
         this.log.unshift(formattedMessage);
+        
+        // Publish to event notification system
+        EventBus.publish('gameEvent', formattedMessage);
+        
         EventBus.publish('stateChanged', this);
     }
     getCurrentPlayer() {

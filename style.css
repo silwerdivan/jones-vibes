@@ -904,3 +904,138 @@ button:hover {
         margin-bottom: 0.35rem; /* Reduced by 30% from 0.5rem */
     }
 }
+
+/* --- EVENT NOTIFICATION SYSTEM --- */
+.event-notification-strip {
+    position: fixed;
+    bottom: 80px; /* Position above the action buttons panel */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--panel-bg);
+    border: 2px solid var(--electric-cyan);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    z-index: 100;
+    max-width: 90%;
+    box-shadow: 0 0 15px var(--electric-cyan), inset 0 0 10px rgba(0, 255, 255, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.event-notification-strip.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.event-notification-strip.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+    pointer-events: none;
+}
+
+.event-notification-strip.shrinking {
+    animation: shrinkToLog 0.5s ease-out forwards;
+}
+
+@keyframes shrinkToLog {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+    70% {
+        opacity: 0.7;
+        transform: translateX(-50%) translateY(-10px) scale(0.8);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px) scale(0.5);
+    }
+}
+
+.event-notification-text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--off-white);
+    text-align: center;
+}
+
+/* Log icon with badge */
+.log-icon-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.log-icon {
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+}
+
+.log-icon:hover {
+    transform: scale(1.1);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--hot-magenta);
+    color: var(--off-white);
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 0 5px var(--hot-magenta);
+    z-index: 10;
+}
+
+.notification-badge.hidden {
+    display: none;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+    .event-notification-strip {
+        bottom: 70px; /* Adjust for mobile action panel height */
+        width: calc(100% - 2rem);
+        max-width: none;
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+    }
+    
+    .event-notification-strip.show {
+        transform: translateY(0);
+    }
+    
+    .event-notification-strip.hidden {
+        transform: translateY(20px);
+    }
+    
+    .event-notification-strip.shrinking {
+        animation: shrinkToLogMobile 0.5s ease-out forwards;
+    }
+    
+    @keyframes shrinkToLogMobile {
+        0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        70% {
+            opacity: 0.7;
+            transform: translateY(-10px) scale(0.8);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.5);
+        }
+    }
+    
+    .event-notification-text {
+        font-size: 0.9rem;
+    }
+}

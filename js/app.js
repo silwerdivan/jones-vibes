@@ -2,6 +2,7 @@ import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
 import GameView from './ui.js';
 import InputManager from './InputManager.js';
+import EventNotificationManager from './ui/EventNotificationManager.js';
 
 // The main entry point for the application.
 function main() {
@@ -14,10 +15,16 @@ function main() {
   // 3. Instantiate GameController, passing it the gameState and gameView instances.
   const gameController = new GameController(gameState, gameView);
 
-  // 4. Instantiate InputManager, passing it the gameController.
+  // Expose gameController globally for EventNotificationManager
+  window.gameController = gameController;
+
+  // 4. Instantiate EventNotificationManager.
+  const eventNotificationManager = new EventNotificationManager();
+
+  // 5. Instantiate InputManager, passing it the gameController.
   const inputManager = new InputManager(gameController);
 
-  // 5. Call inputManager.initialize().
+  // 6. Call inputManager.initialize().
   inputManager.initialize();
 
   // --- FIX: Manually trigger the first render after everything is set up ---

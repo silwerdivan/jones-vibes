@@ -33,6 +33,7 @@ class GameView {
 
     // Log
     this.logContent = document.querySelector('.log-content');
+    this.eventLog = document.querySelector('.event-log');
 
     // Action Buttons
     this.actionButtons = document.querySelectorAll('[data-action]');
@@ -100,6 +101,28 @@ class GameView {
     // Add click listeners to mobile stat cards
     this.mobileStatP1.addEventListener('click', () => this.showPlayerStatsModal(1));
     this.mobileStatP2.addEventListener('click', () => this.showPlayerStatsModal(2));
+    
+    // Subscribe to log icon click event
+    EventBus.subscribe('logIconClicked', () => {
+      this.scrollToLog();
+      EventBus.publish('logOpened');
+    });
+    
+    // Subscribe to add to log event from EventNotificationManager
+    EventBus.subscribe('addToLog', (event) => {
+      // This event is already handled by the regular log update in render()
+      // We just need to ensure the state is updated
+      if (window.gameController) {
+        window.gameController.gameState.publishCurrentState();
+      }
+    });
+    
+    // Add click listener to event log to publish logOpened event
+    if (this.eventLog) {
+      this.eventLog.addEventListener('click', () => {
+        EventBus.publish('logOpened');
+      });
+    }
   }
 
   // --- NEW: Method to show a generic choice modal ---
@@ -249,6 +272,13 @@ class GameView {
     modalElement.addEventListener('touchstart', handleTouchStart, { passive: true });
     modalElement.addEventListener('touchmove', handleTouchMove, { passive: true });
     modalElement.addEventListener('touchend', handleTouchEnd, { passive: true });
+  }
+  
+  // Method to scroll to the log
+  scrollToLog() {
+    if (this.eventLog) {
+      this.eventLog.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   // --- NEW: Loading handlers ---

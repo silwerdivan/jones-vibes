@@ -30,16 +30,17 @@
   - [x] 2.8 Ensure modal maintains player's color theme (magenta for You, cyan for AI)
   - [x] 2.9 Add visual feedback to active player's card (scale and glow)
 
-- [ ] 3.0 Build Event Notification System with Queue Management
-  - [ ] 3.1 Create new EventNotificationManager component to handle event queue
-  - [ ] 3.2 Implement event strip/toast that appears above action buttons
-  - [ ] 3.3 Add queue system for rapid actions: each event displays for minimum 2 seconds
-  - [ ] 3.4 Implement queue logic: new events queue if one is displaying, display sequentially
-  - [ ] 3.5 Set maximum queue size of 5 events (older events go directly to log if exceeded)
-  - [ ] 3.6 Add animation showing event "shrinking" and moving to log icon
-  - [ ] 3.7 Implement log icon with badge showing unread event count
-  - [ ] 3.8 Ensure badge count resets to zero when game log is opened
-  - [ ] 3.9 Add CSS animations for smooth transitions between queued events
+- [x] 3.0 Build Event Notification System with Queue Management
+  - [x] 3.1 Create new EventNotificationManager component to handle event queue
+  - [x] 3.2 Implement event strip/toast that appears above action buttons
+  - [x] 3.3 Add queue system for rapid actions: each event displays for minimum 2 seconds
+  - [x] 3.4 Implement queue logic: new events queue if one is displaying, display sequentially
+  - [x] 3.5 Set maximum queue size of 5 events (older events go directly to log if exceeded)
+  - [x] 3.6 Add animation showing event "shrinking" and moving to log icon
+  - [x] 3.7 Implement log icon with badge showing unread event count
+  - [x] 3.8 Ensure badge count resets to zero when game log is opened
+  - [x] 3.9 Add CSS animations for smooth transitions between queued events
+  - [x] 3.10 Refactor notification system to use sliding window approach for rapid actions (improved UX)
 
 - [ ] 4.0 Implement Clock Visualization Component
   - [ ] 4.1 Create new ClockVisualization component to replace text-based time display
