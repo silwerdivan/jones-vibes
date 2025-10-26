@@ -1,38 +1,65 @@
-### 2. Style the loading overlay  
-Open **style.css**, and at the very bottom add:
+## Step 3: Update the JavaScript View
 
-```css
-/* --- LOADING OVERLAY --- */
-#loading-overlay {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1001;
-}
-#loading-overlay.hidden {
-  display: none !important;
-}
-.spinner {
-  border: 8px solid rgba(255,255,255,0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  width: 60px; height: 60px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-.loading-text {
-  color: var(--off-white);
-  font-size: 1.2rem;
-  text-shadow: 0 0 5px var(--off-white);
-}
+### 3.1 Open `js/ui.js`
+
+### 3.2 Add Mobile Stats DOM References
+
+In the `GameView` constructor, locate the comment `// --- NEW: Modal Element Caching ---` (around line 44).
+
+**Add the following code AFTER the modal element caching section:**
+
+```javascript
+// --- MOBILE STATS BAR ELEMENTS ---
+this.mobileStatP1 = document.getElementById('mobile-stat-p1');
+this.mobileStatP2 = document.getElementById('mobile-stat-p2');
+this.mobileP1Cash = document.getElementById('mobile-p1-cash');
+this.mobileP1Happiness = document.getElementById('mobile-p1-happiness');
+this.mobileP1Time = document.getElementById('mobile-p1-time');
+this.mobileP2Cash = document.getElementById('mobile-p2-cash');
+this.mobileP2Happiness = document.getElementById('mobile-p2-happiness');
+this.mobileP2Time = document.getElementById('mobile-p2-time');
 ```
 
-This gives you a semi-transparent full-screen overlay with a CSS spinner and a “AI is thinking…” message.
+### 3.3 Update the render() Method
+
+In the `render(gameState)` method, locate the comment `// --- END: ACTIVE PLAYER HIGHLIGHT ---` (around line 126).
+
+**Add the following code immediately AFTER that comment:**
+
+```javascript
+// --- MOBILE STATS UPDATE ---
+// Update mobile stats bar (only visible on mobile)
+if (this.mobileP1Cash) {
+    // Update Player 1 mobile stats
+    this.mobileP1Cash.textContent = `$${player1.cash}`;
+    this.mobileP1Happiness.textContent = player1.happiness;
+    this.mobileP1Time.textContent = `${player1.time}h`;
+    
+    // Update active state for mobile
+    if (this.mobileStatP1) {
+        if (gameState.currentPlayerIndex === 0) {
+            this.mobileStatP1.classList.add('active');
+        } else {
+            this.mobileStatP1.classList.remove('active');
+        }
+    }
+}
+
+// Update Player 2 mobile stats
+if (this.mobileP2Cash && gameState.players.length > 1) {
+    const player2 = gameState.players[1];
+    this.mobileP2Cash.textContent = `$${player2.cash}`;
+    this.mobileP2Happiness.textContent = player2.happiness;
+    this.mobileP2Time.textContent = `${player2.time}h`;
+    
+    // Update active state for mobile
+    if (this.mobileStatP2) {
+        if (gameState.currentPlayerIndex === 1) {
+            this.mobileStatP2.classList.add('active');
+        } else {
+            this.mobileStatP2.classList.remove('active');
+        }
+    }
+}
+// --- END MOBILE STATS UPDATE ---
+```
