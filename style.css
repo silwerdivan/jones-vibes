@@ -1300,3 +1300,50 @@ button.location-specific:not(.hidden)::after {
         font-size: 0.9rem;
     }
 }
+
+/* --- JOB APPLICATION MODAL STYLES --- */
+.job-list {
+  margin-bottom: 1rem;
+}
+
+.job-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.job-title {
+  font-weight: bold;
+  color: var(--electric-cyan);
+  margin-bottom: 0.25rem;
+}
+
+.job-details {
+  font-size: 0.9rem;
+}
+
+.job-apply-btn {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  background-color: rgba(0, 255, 0, 0.2);
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.job-apply-btn:hover {
+  background-color: rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 5px var(--neon-green);
+}
+
+.job-apply-btn:disabled {
+  background-color: rgba(255, 0, 0, 0.2);
+  border-color: var(--hot-magenta);
+  color: var(--hot-magenta);
+  cursor: not-allowed;
+}

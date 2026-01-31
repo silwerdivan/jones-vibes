@@ -244,6 +244,63 @@ class GameView {
     this.modalOverlay.classList.add('hidden');
   }
 
+  // --- NEW: Method to show job application modal ---
+  showJobApplicationModal() {
+    this.modalTitle.textContent = 'Apply for a Job';
+    this.modalContent.innerHTML = ''; // Clear previous content
+    this.modalButtons.innerHTML = ''; // Clear previous buttons
+    this.modalInput.classList.add('hidden'); // Hide input field
+
+    // Create job list content
+    const jobList = document.createElement('div');
+    jobList.className = 'job-list';
+    
+    JOBS.forEach(job => {
+      const jobItem = document.createElement('div');
+      jobItem.className = 'job-item';
+      
+      const jobTitle = document.createElement('div');
+      jobTitle.className = 'job-title';
+      jobTitle.textContent = job.title;
+      
+      const jobDetails = document.createElement('div');
+      jobDetails.className = 'job-details';
+      jobDetails.innerHTML = `
+        <div>Wage: $${job.wage}/hour</div>
+        <div>Shift: ${job.shiftHours} hours</div>
+        <div>Education Required: Level ${job.educationRequired}</div>
+      `;
+      
+      jobItem.appendChild(jobTitle);
+      jobItem.appendChild(jobDetails);
+      
+      // Add apply button for each job
+      const applyButton = document.createElement('button');
+      applyButton.className = 'job-apply-btn';
+      applyButton.textContent = 'Apply';
+      applyButton.onclick = () => {
+        this.hideModal();
+        // Call the controller method with the job level parameter
+        if (window.gameController) {
+          window.gameController.applyForJob(job.level);
+        }
+      };
+      
+      jobItem.appendChild(applyButton);
+      jobList.appendChild(jobItem);
+    });
+    
+    this.modalContent.appendChild(jobList);
+
+    // Add cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.onclick = () => this.hideModal();
+    this.modalButtons.appendChild(cancelButton);
+
+    this.modalOverlay.classList.remove('hidden');
+  }
+
   // --- NEW: Player Stats Modal Methods ---
   showPlayerStatsModal(playerIndex) {
     // Get current game state to populate the modal
@@ -616,10 +673,12 @@ hideLoading() {
     document.querySelector('[data-action="travel"]').classList.remove('hidden');
 
     switch (currentPlayer.location) {
-        case 'Employment Agency':
-            document.querySelector('[data-action="workShift"]').classList.remove('hidden');
-            document.querySelector('[data-action="workShift"]').classList.add('location-specific');
-            break;
+    case 'Employment Agency':
+        document.querySelector('[data-action="workShift"]').classList.remove('hidden');
+        document.querySelector('[data-action="workShift"]').classList.add('location-specific');
+        document.querySelector('[data-action="applyForJob"]').classList.remove('hidden');
+        document.querySelector('[data-action="applyForJob"]').classList.add('location-specific');
+        break;
         case 'Community College':
             document.querySelector('[data-action="takeCourse"]').classList.remove('hidden');
             document.querySelector('[data-action="takeCourse"]').classList.add('location-specific');

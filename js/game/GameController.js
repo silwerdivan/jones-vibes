@@ -125,6 +125,19 @@ class GameController {
       }]
     });
   }
+
+  applyForJob(jobLevel) {
+    if (jobLevel !== undefined) {
+      // Called from modal with specific job level
+      const success = this.gameState.applyForJob(jobLevel);
+      // The GameState.applyForJob method already handles logging and event publishing
+      return success;
+    } else {
+      // Called from button click - show modal
+      this.gameView.showJobApplicationModal();
+      return false;
+    }
+  }
 }
 
 export default GameController;

@@ -2,7 +2,7 @@ import { COURSES, SHOPPING_ITEMS, JOBS } from './gameData.js';
 
 class AIController {
     takeTurn(gameState, player) {
-        const currentJob = JOBS.find(job => job.level === player.jobLevel);
+        const currentJob = JOBS.find(job => job.level === player.careerLevel);
         const workShiftHours = currentJob ? currentJob.shiftHours : 8; // Default to 8 if no job
 
         // Priority 1: Pay Loan
@@ -22,6 +22,18 @@ class AIController {
             if (player.location !== 'Employment Agency') {
                 return { action: 'travel', params: { destination: 'Employment Agency' } };
             } else {
+                // Check if AI is unemployed (careerLevel === 0)
+                if (player.careerLevel === 0) {
+                    // Find the highest level job the AI qualifies for
+                    const availableJobs = JOBS.filter(job => player.educationLevel >= job.educationRequired);
+                    if (availableJobs.length > 0) {
+                        // Get the highest level job available
+                        const highestLevelJob = availableJobs.reduce((prev, current) =>
+                            (prev.level > current.level) ? prev : current
+                        );
+                        return { action: 'applyForJob', params: { jobLevel: highestLevelJob.level } };
+                    }
+                }
                 return { action: 'workShift' };
             }
         }
@@ -62,8 +74,8 @@ class AIController {
             }
         }
 
-        // Catch-all: If other priorities are not met, work if possible.
-        if (player.location === 'Employment Agency' && player.time >= workShiftHours) {
+        // Catch-all: If other priorities are not met, work if possible and employed.
+        if (player.location === 'Employment Agency' && player.time >= workShiftHours && player.careerLevel > 0) {
             return { action: 'workShift' };
         }
         

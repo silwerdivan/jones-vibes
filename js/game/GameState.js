@@ -158,6 +158,9 @@ class GameState {
         case 'workShift':
             success = this.workShift();
             break;
+        case 'applyForJob':
+            success = this.applyForJob(aiAction.params.jobLevel);
+            break;
         case 'takeCourse':
             success = this.takeCourse(aiAction.params.courseId);
             break;
@@ -242,6 +245,15 @@ class GameState {
         if (currentPlayer.location !== 'Employment Agency') {
             this.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} must be at the Employment Agency to work.`,
+                'error'
+            );
+            return false;
+        }
+
+        // Check if player has an active job (careerLevel > 0)
+        if (currentPlayer.careerLevel === 0) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must apply for a job first.`,
                 'error'
             );
             return false;
@@ -582,6 +594,50 @@ class GameState {
             `${this._getPlayerName(currentPlayer)} traveled to ${destination}.`,
             'info'
         );
+        this.checkWinCondition(currentPlayer);
+        EventBus.publish('stateChanged', this);
+        return true;
+    }
+
+    applyForJob(jobLevel) {
+        const currentPlayer = this.getCurrentPlayer();
+        
+        // Find the job by level
+        const job = JOBS.find(j => j.level === jobLevel);
+        
+        if (!job) {
+            this.addLogMessage(
+                `Job level ${jobLevel} not found.`,
+                'error'
+            );
+            EventBus.publish('jobApplicationError', { player: currentPlayer, reason: 'Job not found' });
+            return false;
+        }
+        
+        // Check if player meets education requirements
+        if (currentPlayer.educationLevel < job.educationRequired) {
+            this.addLogMessage(
+                `Insufficient education for ${job.title}. Required: Level ${job.educationRequired}, Current: Level ${currentPlayer.educationLevel}.`,
+                'error'
+            );
+            EventBus.publish('jobApplicationError', {
+                player: currentPlayer,
+                job: job,
+                reason: 'Insufficient education'
+            });
+            return false;
+        }
+        
+        // Set the player's career level to the job level
+        currentPlayer.careerLevel = jobLevel;
+        
+        this.addLogMessage(
+            `🎉 Congratulations! ${this._getPlayerName(currentPlayer)} was hired as a ${job.title}!`,
+            'success'
+        );
+        EventBus.publish('jobApplicationSuccess', { player: currentPlayer, job: job });
+        
+        // Check win condition since career level might have changed
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
         return true;
