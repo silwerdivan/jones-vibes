@@ -16,7 +16,7 @@
         </header>
         <!-- Mobile stats bar - only visible on small screens -->
         <div id="mobile-stats" class="mobile-stats" aria-label="Player Statistics">
-            <div class="mobile-stat-card" id="mobile-stat-p1">
+            <div class="mobile-stat-card card" id="mobile-stat-p1">
                 <div class="mobile-stat-header">
                     <span class="mobile-player-name">You</span>
                     <span class="mobile-player-indicator" id="mobile-p1-active"></span>
@@ -34,7 +34,7 @@
                     <span id="mobile-p1-time" class="mobile-stat-value">24h</span>
                 </div>
             </div>
-            <div class="mobile-stat-card" id="mobile-stat-p2">
+            <div class="mobile-stat-card card" id="mobile-stat-p2">
                 <div class="mobile-stat-header">
                     <span class="mobile-player-name">AI</span>
                     <span class="mobile-player-indicator" id="mobile-p2-active"></span>
@@ -53,7 +53,7 @@
             </div>
         </div>
         <main class="main-grid">
-            <div id="player-1" class="player-panel">
+            <div id="player-1" class="player-panel card">
                 <h2>You</h2>
                 <div class="stats">
                     <div class="stat-item"><span class="stat-label">Cash:</span> <span id="p1-cash" class="stat-value currency">$0</span></div>
@@ -67,7 +67,7 @@
                 <div class="time-remaining">Time Remaining: <span id="p1-time">0</span> hours</div>
             </div>
 
-            <div id="player-2" class="player-panel">
+            <div id="player-2" class="player-panel card">
                 <h2>AI</h2>
                 <div class="stats">
                     <div class="stat-item"><span class="stat-label">Cash:</span> <span id="p2-cash" class="stat-value currency">$0</span></div>
@@ -81,7 +81,7 @@
                 <div class="time-remaining">Time Remaining: <span id="p2-time">0</span> hours</div>
             </div>
 
-            <div id="location-info" class="info-panel">
+            <div id="location-info" class="info-panel card">
                 <h2>Current Location</h2>
                 <div class="location-turn-bar">
                     <span class="location-info">Location: <span id="current-location">Start</span></span>
@@ -90,27 +90,27 @@
                 <div class="location-hint" id="location-hint">3 actions available here</div>
             </div>
 
-            <div id="game-controls" class="actions-panel">
+            <div id="game-controls" class="actions-panel card">
                 <h2>Actions</h2>
                 <div class="action-buttons">
-                    <button data-action="restEndTurn"><span class="btn-icon">😴</span> <span class="btn-text">Rest / End Turn</span></button>
-                    <button data-action="travel" class="location-specific hidden"><span class="btn-icon">🗺️</span> <span class="btn-text">Travel</span></button>
-                    <button data-action="workShift" class="location-specific hidden"><span class="btn-icon">💼</span> <span class="btn-text">Work Shift</span></button>
-                    <button data-action="applyForJob" class="location-specific hidden"><span class="btn-icon">📋</span> <span class="btn-text">Apply for Job</span></button>
-                    <button data-action="takeCourse" class="location-specific hidden"><span class="btn-icon">📚</span> <span class="btn-text">Take Course</span></button>
-                    <button data-action="buyItem" class="location-specific hidden"><span class="btn-icon">🛍️</span> <span class="btn-text">Buy Item</span></button>
-                    <button data-action="deposit" class="location-specific hidden"><span class="btn-icon">🏦</span> <span class="btn-text">Deposit</span></button>
-                    <button data-action="withdraw" class="location-specific hidden"><span class="btn-icon">💵</span> <span class="btn-text">Withdraw</span></button>
-                    <button data-action="takeLoan" class="location-specific hidden"><span class="btn-icon">📈</span> <span class="btn-text">Take Loan</span></button>
-                    <button data-action="repayLoan" class="location-specific hidden"><span class="btn-icon">📉</span> <span class="btn-text">Repay Loan</span></button>
-                    <button data-action="buyCar" class="location-specific hidden"><span class="btn-icon">🚙</span> <span class="btn-text">Buy Car</span></button>
+                    <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon">😴</span> <span class="btn-text">Rest / End Turn</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon">🗺️</span> <span class="btn-text">Travel</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon">💼</span> <span class="btn-text">Work Shift</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon">📋</span> <span class="btn-text">Apply for Job</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon">📚</span> <span class="btn-text">Take Course</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon">🛍️</span> <span class="btn-text">Buy Item</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon">🏦</span> <span class="btn-text">Deposit</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon">💵</span> <span class="btn-text">Withdraw</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon">📈</span> <span class="btn-text">Take Loan</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon">📉</span> <span class="btn-text">Repay Loan</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon">🚙</span> <span class="btn-text">Buy Car</span></button>
                 </div>
             </div>
 
-            <div class="event-log" data-testid="game-log">
+            <div class="event-log card" data-testid="game-log">
                 <div class="log-header">
                     <h3>Game Log</h3>
-                    <button id="log-toggle-btn" class="log-toggle-btn" aria-label="Toggle game log">
+                    <button id="log-toggle-btn" class="btn btn-icon" aria-label="Toggle game log">
                         <span class="log-toggle-icon">▼</span>
                     </button>
                 </div>
@@ -134,7 +134,7 @@
                     <div id="choice-modal-buttons">
                         <!-- Buttons will be dynamically inserted here -->
                     </div>
-                    <button id="modal-cancel-button">Cancel</button>
+                    <button id="modal-cancel-button" class="btn btn-secondary">Cancel</button>
                 </div>
             </div>
         </div>
@@ -145,7 +145,7 @@
             <div id="player-stats-modal">
                 <div class="player-stats-modal-header">
                     <h2 id="player-stats-modal-title">Player Stats</h2>
-                    <button id="player-stats-modal-close" class="modal-close-btn">✕</button>
+                    <button id="player-stats-modal-close" class="btn btn-icon btn-secondary modal-close-btn">✕</button>
                 </div>
                 <div class="swipe-indicator">
                     <div class="swipe-bar"></div>
@@ -203,7 +203,7 @@
             <div id="game-log-modal">
                 <div class="game-log-modal-header">
                     <h2>Game Log</h2>
-                    <button id="game-log-modal-close" class="modal-close-btn">✕</button>
+                    <button id="game-log-modal-close" class="btn btn-icon btn-secondary modal-close-btn">✕</button>
                 </div>
                 <div class="swipe-indicator">
                     <div class="swipe-bar"></div>

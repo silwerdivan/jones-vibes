@@ -226,6 +226,7 @@ class GameView {
     choices.forEach(choice => {
       const button = document.createElement('button');
       button.textContent = choice.text;
+      button.classList.add('btn', 'btn-primary');
       // Use a callback to link button click to a controller action
       button.onclick = () => {
         const amount = showInput ? parseInt(this.modalInputField.value, 10) : null;
@@ -276,7 +277,7 @@ class GameView {
       
       // Add apply button for each job
       const applyButton = document.createElement('button');
-      applyButton.className = 'job-apply-btn';
+      applyButton.classList.add('btn', 'btn-primary', 'job-apply-btn');
       applyButton.textContent = 'Apply';
       applyButton.onclick = () => {
         this.hideModal();
@@ -295,6 +296,7 @@ class GameView {
     // Add cancel button
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Cancel';
+    cancelButton.classList.add('btn', 'btn-secondary');
     cancelButton.onclick = () => this.hideModal();
     this.modalButtons.appendChild(cancelButton);
 

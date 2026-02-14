@@ -106,13 +106,16 @@ js/
   app.js
   EventBus.js
   InputManager.js
-  ui.js               // Reimplemented as GameView
   game/
     GameState.js
     GameController.js
     AIController.js
     Player.js
     gameData.js
+  ui/
+    ui.js               // Reimplemented as GameView (now modularized under js/ui)
+    ClockVisualization.js
+    EventNotificationManager.js
 docs/
   0001-prd-responsive-evolution.md
 tests/
@@ -126,8 +129,10 @@ tests/
 Simply open `index.html` in any modern web browser (desktop or mobile).
 
 ### Testing
-Jest is used for automated tests of `GameState`, `AIController`, and controller logic.
+***Automated testing is currently on hold.***
+The existing Jest tests for `GameState`, `AIController`, and controller logic need a rework as they have fallen behind recent changes. For the time being, all testing will be performed manually.
 
+Jest is used for automated tests of `GameState`, `AIController`, and controller logic.
 ```bash
 npm install
 npm test
@@ -147,9 +152,20 @@ npm test
 - CSS Grid for layout
 - Seamless transitions between devices
 - Fluid spacing, accessibility, and visual legibility
-- Retro neon aesthetic layered with modern responsiveness
+- Retro neon aesthetic layered with modern responsiveness, with an ongoing effort towards a "Modern Neumorphism" / "Glassmorphism" aesthetic as detailed in `docs/ui-redesign-plan.md` and guided by the comprehensive `docs/ui-ux-blueprint.md`.
 
 **Documentation**
 - `0001-prd-responsive-evolution.md`: detailed responsive redesign specification (implemented)
 - `spec.md`: gameplay rules and mechanics
 - `visual-upgrade-refactor-plan.md`: aesthetic and UI evolution roadmap
+
+---
+
+## 🤖 LLM Task-Following Instructions
+
+When provided with a markdown file containing a list of tasks, please adhere to the following workflow:
+
+1.  **Identify the specific task** mentioned in the prompt from the markdown file.
+2.  **Implement the task** by making all necessary code changes.
+3.  Once the implementation is complete and verified, **mark the task as completed** within the markdown file. This can be done by adding `[COMPLETED]` or a similar indicator to the task's title or by using markdown's checkbox syntax (`[x]`).
+4.  **This allows for task continuity across sessions.**
