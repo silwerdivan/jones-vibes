@@ -133,8 +133,8 @@ body {
 
 /* --- BOTTOM NAV --- */
 .bottom-nav {
-    padding: var(--space-sm) var(--space-md);
-    padding-bottom: calc(var(--space-sm) + env(safe-area-inset-bottom));
+    padding: var(--space-md);
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
     z-index: 10;
     border-top: 1px solid var(--glass-border);
 }
@@ -145,28 +145,29 @@ body {
 
 .action-buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-sm);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
 }
 
 @media (max-width: 360px) {
     .action-buttons {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 /* --- TYPOGRAPHY & HEADERS --- */
-h1, h2 {
-    font-family: var(--font-family-display);
+h1, h2, h3 {
+    font-family: var(--font-primary);
+    font-weight: 800;
     text-transform: uppercase;
-    color: var(--neon-pink);
-    text-shadow: 0 0 5px var(--neon-pink);
     margin: 0;
 }
 
 h2 {
-    font-size: 14px;
+    font-size: 18px;
+    color: var(--neon-pink);
     margin-bottom: var(--space-md);
+    letter-spacing: 1px;
 }
 
 /* --- CARD/PANEL STYLES --- */
@@ -174,59 +175,81 @@ h2 {
     border-radius: var(--radius-lg);
     padding: var(--space-md);
     transition: all 0.3s ease;
+    background: var(--glass-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
 }
 
 /* --- PLAYER PANELS --- */
 .player-panel {
     border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
 }
 
-#player-1.active {
+#player-1.active, #player-2.active {
     border: 2px solid var(--neon-green);
-    box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
 }
 
-#player-2.active {
-    border: 2px solid var(--neon-green);
-    box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+#player-1.active::before, #player-2.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
 }
 
 /* --- STATS --- */
 .stats {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-sm);
-    margin-bottom: var(--space-md);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
 }
 
 .stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.stat-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+}
+
+.stat-details {
     display: flex;
     flex-direction: column;
 }
 
 .stat-label {
-    font-size: 10px;
+    font-size: 9px;
+    font-weight: 500;
     color: #E0E0E0;
     text-transform: uppercase;
-    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+    margin-bottom: -2px;
 }
 
 .stat-value {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 800;
+    color: #FFFFFF;
 }
 
 .stat-value.currency {
     color: var(--neon-cyan);
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
 }
 
 .time-remaining {
-    font-size: 12px;
-    color: var(--neon-pink);
-    font-weight: 800;
-    text-align: right;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: var(--space-sm);
+    display: none; /* Replaced by stat-item for Time in HTML */
 }
 
 /* --- EVENT LOG --- */
@@ -270,47 +293,67 @@ h2 {
 .btn {
     font-family: var(--font-primary);
     font-weight: 800;
-    font-size: 10px;
+    font-size: 11px;
     color: #FFFFFF;
     border: none;
     border-radius: var(--radius-lg);
-    padding: var(--space-sm);
+    padding: var(--space-md) var(--space-sm);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--neon-pink), #9c27b0);
-    box-shadow: 0 4px 10px rgba(255, 0, 255, 0.3);
+    background: linear-gradient(135deg, var(--neon-pink) 0%, #9c27b0 100%);
+    box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 255, 0.5);
+    filter: brightness(1.1);
 }
 
 .btn-secondary {
-    background: rgba(0, 255, 255, 0.1);
-    border: 1px solid var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.3);
     color: var(--neon-cyan);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.3;
     cursor: not-allowed;
-    background: #333;
-    border: none;
+    filter: grayscale(1);
     box-shadow: none;
 }
 
 .btn .material-icons {
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .btn-text {
     text-align: center;
-    line-height: 1;
+    line-height: 1.1;
 }
 
 /* --- MODAL STYLES --- */
@@ -841,58 +884,41 @@ h2 {
 .mobile-stats {
     display: none; /* Hidden by default, shown only on mobile */
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
-    margin-bottom: var(--spacing-xs);
+    gap: var(--space-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-xs);
     position: relative;
     z-index: 5;
 }
 
 .mobile-stat-card {
-    border: 2px solid var(--color-secondary); /* Increased border width for better visibility */
+    padding: var(--space-md);
+    cursor: pointer;
+    background: var(--glass-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
     transition: all 0.3s ease;
-    transform: scale(1.3); /* Increased size by 30% */
-    transform-origin: center;
-    cursor: pointer; /* Indicate the card is clickable */
-    position: relative; /* For positioning the tap indicator */
-}
-
-/* Add a subtle tap indicator */
-.mobile-stat-card::after {
-    content: "👆";
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    font-size: var(--font-size-sm);
-    opacity: 0.5;
-    transition: opacity 0.3s ease;
-}
-
-.mobile-stat-card:hover::after {
-    opacity: 0.8;
-}
-
-/* Add hover effect for mobile stat cards */
-.mobile-stat-card:hover {
-    transform: scale(1.35); /* Slightly larger on hover */
-    box-shadow: 0 0 12px rgba(var(--color-secondary), 0.7); /* Enhanced glow on hover */
+    position: relative;
 }
 
 .mobile-stat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-xxs);
-    padding-bottom: var(--spacing-xxs);
-    border-bottom: 2px solid rgba(var(--color-secondary), 0.4); /* Increased border width and opacity */
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .mobile-player-name {
-    font-family: var(--font-family-display);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-primary);
-    text-shadow: 0 0 5px var(--color-accent);
+    font-family: var(--font-primary);
+    font-weight: 800;
+    font-size: 14px;
+    color: #FFFFFF;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .mobile-player-indicator {
@@ -900,87 +926,37 @@ h2 {
     height: 8px;
     border-radius: 50%;
     background-color: transparent;
-    transition: background-color 0.3s ease;
 }
 
 .mobile-stat-grid {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--spacing-xxs) var(--spacing-sm);
+    grid-template-columns: auto 1fr auto 1fr;
+    gap: var(--space-xs) var(--space-sm);
     align-items: center;
-    font-size: var(--font-size-sm);
 }
 
 .mobile-stat-icon {
-    font-size: var(--font-size-md);
-    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5)); /* Added subtle glow to icons */
+    font-size: 14px;
 }
 
 .mobile-stat-value {
-    color: var(--color-text-primary);
-    font-family: var(--font-family-primary);
-    font-size: var(--font-size-md);
-    text-shadow: 0 0 3px rgba(255, 255, 255, 0.3); /* Added subtle text shadow */
+    color: #FFFFFF;
+    font-family: var(--font-primary);
+    font-weight: 800;
+    font-size: 13px;
 }
 
 /* Active player highlighting */
-#mobile-stat-p1.active {
-    border-color: var(--color-success);
-    box-shadow: 0 0 20px var(--color-success), 0 0 40px rgba(0, 255, 0, 0.5);
-    transform: scale(1.35); /* Slightly larger than the base scale */
-    animation: pulse-green 2s infinite;
-    z-index: 10; /* Ensure active card is on top */
-    position: relative;
+#mobile-stat-p1.active, #mobile-stat-p2.active {
+    border: 2px solid var(--neon-green);
+    box-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+    background: rgba(0, 230, 118, 0.05);
 }
 
-#mobile-stat-p1.active .mobile-player-indicator {
-    background-color: var(--color-success);
-    box-shadow: 0 0 10px var(--color-success);
-    animation: pulse-indicator 1.5s infinite;
-}
-
-#mobile-stat-p2.active {
-    border-color: var(--color-success);
-    box-shadow: 0 0 20px var(--color-success), 0 0 40px rgba(0, 255, 0, 0.5);
-    transform: scale(1.35); /* Slightly larger than the base scale */
-    animation: pulse-green 2s infinite;
-    z-index: 10; /* Ensure active card is on top */
-    position: relative;
-}
-
+#mobile-stat-p1.active .mobile-player-indicator,
 #mobile-stat-p2.active .mobile-player-indicator {
-    background-color: var(--color-success);
-    box-shadow: 0 0 10px var(--color-success);
-    animation: pulse-indicator 1.5s infinite;
-}
-
-/* Pulse animation for active player cards */
-@keyframes pulse-green {
-    0% {
-        box-shadow: 0 0 20px var(--color-success), 0 0 40px rgba(0, 255, 0, 0.5);
-    }
-    50% {
-        box-shadow: 0 0 30px var(--color-success), 0 0 60px rgba(0, 255, 0, 0.7);
-    }
-    100% {
-        box-shadow: 0 0 20px var(--color-success), 0 0 40px rgba(0, 255, 0, 0.5);
-    }
-}
-
-/* Pulse animation for player indicator */
-@keyframes pulse-indicator {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    background-color: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
 }
 
 /* Mobile-specific overrides */
@@ -990,101 +966,23 @@ h2 {
         display: grid;
     }
     
-    /* Make location-turn-bar more compact on mobile */
-    .location-turn-bar {
-        padding: 0.3rem 0;
-        border-bottom: 1px solid rgba(var(--color-secondary), 0.2);
-        margin-bottom: var(--spacing-xs);
-    }
-    
-    .location-info, .turn-info {
-        font-size: var(--font-size-sm);
+    .location-display .value, .turn-display .value {
+        font-size: 16px;
     }
 
-    /* Reduce title size to save space */
-    .game-title h1 {
-        font-size: var(--font-size-sm);
-        margin-bottom: var(--spacing-xs);
-    }
-
-    .game-title {
-        margin-bottom: var(--spacing-xxs);
-    }
-
-    /* Hide the large player panels on mobile to avoid duplication */
+    /* Hide large player panels on mobile */
     .player-panel {
         display: none;
     }
 
-    /* Adjust main grid for mobile without player panels */
-    .main-grid {
-        grid-template-areas:
-            "info"
-            "log";
-        gap: var(--spacing-xs);
-        height: calc(80vh - 120px); /* Use 80% of viewport height minus space for title and stats */
-        overflow-y: auto;
-        padding-bottom: var(--spacing-md);
+    .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
     }
     
-    .game-container {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        padding: var(--spacing-md);
-        padding-bottom: 0; /* No bottom padding as action panel is fixed */
-    }
-
-    /* Make info panel more compact */
-    .info-panel {
-        padding: var(--spacing-xs);
-    }
-
-    .info-panel h2 {
-        font-size: var(--font-size-sm);
-        margin-bottom: var(--spacing-xxs);
-    }
-    
-    .location-hint {
-        font-size: var(--font-size-xs);
-        padding: var(--spacing-xxs) var(--spacing-sm);
-        margin-top: var(--spacing-xxs);
-    }
-
-    /* Adjust event log for better mobile visibility */
-    .event-log {
-        max-height: calc(40vh - 60px); /* Use 40% of available space for log */
-        overflow-y: auto;
-        padding: 0; /* Remove padding as we're using header padding */
-        flex-grow: 1; /* Allow log to grow to fill available space */
-    }
-    
-    .log-header {
-        padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xxs) var(--spacing-md);
-        position: relative;
-        z-index: 15; /* Ensure header is above other elements */
-    }
-    
-    .log-header h3 {
-        font-size: var(--font-size-md);
-        margin: 0;
-    }
-    
-    .log-toggle-btn {
-        font-size: var(--font-size-md);
-        padding: var(--spacing-xxs);
-    }
-    
-    .log-content {
-        padding: 0 var(--spacing-md) var(--spacing-xs) var(--spacing-md);
-        max-height: calc(40vh - 80px); /* Account for header height */
-    }
-    
-    /* Ensure info panel doesn't take too much space */
-    .info-panel {
-        flex-shrink: 0;
-        max-height: calc(40vh - 60px); /* Limit info panel to 40% of available space */
-        overflow-y: auto;
+    .btn {
+        min-height: 50px;
+        padding: var(--space-sm);
     }
 }
 

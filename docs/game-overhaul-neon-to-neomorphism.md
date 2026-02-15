@@ -53,17 +53,17 @@
     3.  [x] **Main Content (`main`):** `flex: 1`, `overflow-y: auto`. This is where the Player Cards and Action Grids will live.
     4.  [x] **Bottom Nav (Actions):** Fixed at bottom. Glass background. Replace the current wrapped button list with a structured **Icon Bar** (e.g., Travel, Work, Shop, Bank).
 
-#### Task 3: The Component Library (Cards & Buttons)
+#### Task 3: The Component Library (Cards & Buttons) [COMPLETED]
 **Objective:** Style the specific UI elements using the Glass/Neon tokens.
 *   **Directives:**
-    1.  **Player Cards:** Style `#player-1` and `#player-2` as **Glass Cards**.
+    1.  [x] **Player Cards:** Style `#player-1` and `#player-2` as **Glass Cards**.
         *   Layout: Flex row or grid.
         *   Active State: Apply the **Neon Green** border/glow when class `.active` is present.
-    2.  **Stats Grid:** Inside cards, align icons (💰, 🏦, 😊) with values using Flexbox. Use large font for values, small for labels.
-    3.  **Bento Grid (Actions):** Convert the `.action-buttons` container into a CSS Grid (2 columns).
-    4.  **Buttons:**
-        *   `.btn-primary`: Linear Gradient (Magenta to Purple), White Text, Shadow.
-        *   `.btn-secondary`: Transparent background, Cyan Border, Cyan Text (Glass button).
+    2.  [x] **Stats Grid:** Inside cards, align icons (💰, 🏦, 😊) with values using Flexbox. Use large font for values, small for labels.
+    3.  [x] **Bento Grid (Actions):** Convert the `.action-buttons` container into a CSS Grid (2 columns).
+    4.  [x] **Buttons:**
+        *   [x] `.btn-primary`: Linear Gradient (Magenta to Purple), White Text, Shadow.
+        *   [x] `.btn-secondary`: Transparent background, Cyan Border, Cyan Text (Glass button).
 
 #### Task 4: Interactive Overlays (Modals & Polish)
 **Objective:** Replace standard browser interactions with immersive overlays.
