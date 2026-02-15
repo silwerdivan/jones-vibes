@@ -65,10 +65,10 @@
         *   [x] `.btn-primary`: Linear Gradient (Magenta to Purple), White Text, Shadow.
         *   [x] `.btn-secondary`: Transparent background, Cyan Border, Cyan Text (Glass button).
 
-#### Task 4: Interactive Overlays (Modals & Polish)
+#### Task 4: Interactive Overlays (Modals & Polish) [COMPLETED]
 **Objective:** Replace standard browser interactions with immersive overlays.
 *   **Directives:**
-    1.  **Modal Backdrop:** `rgba(0, 0, 0, 0.8)` + `backdrop-filter: blur(5px)`.
-    2.  **Modal Content:** Centered Glass Card, sliding in from bottom (mobile) or center (desktop).
-    3.  **Input Fields:** Transparent background, bottom border only (`2px solid rgba(255,255,255,0.3)`), white text.
-    4.  **Clock Visualization:** Ensure the SVG clock fits the new modern theme (adjust stroke colors to match variables).
+    1.  [x] **Modal Backdrop:** `rgba(0, 0, 0, 0.8)` + `backdrop-filter: blur(5px)`.
+    2.  [x] **Modal Content:** Centered Glass Card, sliding in from bottom (mobile) or center (desktop).
+    3.  [x] **Input Fields:** Transparent background, bottom border only (`2px solid rgba(255,255,255,0.3)`), white text.
+    4.  [x] **Clock Visualization:** Ensure the SVG clock fits the new modern theme (adjust stroke colors to match variables).
