@@ -1,93 +1,60 @@
 /* --- DESIGN TOKENS --- */
 :root {
     /* Colors */
-    --color-primary: #FF00FF; /* Hot Magenta - primary accent */
-    --color-secondary: #00FFFF; /* Electric Cyan - secondary accent */
-    --color-accent: #FFFF00; /* Vibrant Yellow - highlight/warning */
-    --color-background: #0D0015; /* Dark purple-ish background */
-    --color-surface: #1A0433; /* Slightly lighter surface for panels (VHS Purple) */
-    --color-text-primary: #E0E0E0; /* Off-white for main text */
-    --color-text-secondary: #00FFFF; /* Electric Cyan for secondary text */
-    --color-success: #00E676; /* Green for success */
-    --color-warning: #FFD600; /* Yellow for warning/energy */
-    --color-error: #FF1744; /* Red for errors */
-    --color-info: #2979FF; /* Blue for info/education */
-
-    /* Typography */
-    --font-family-primary: 'Plus Jakarta Sans', 'Inter', sans-serif;
-    --font-family-display: 'Press Start 2P', cursive;
-
-    /* Fluid Typography Scale */
-    --font-size-sm: clamp(0.75rem, 0.5rem + 0.4vw, 0.875rem); /* 12px -> 14px */
-    --font-size-md: clamp(1rem, 0.75rem + 0.5vw, 1.125rem); /* 16px -> 18px */
-    --font-size-lg: clamp(1.25rem, 1rem + 0.6vw, 1.5rem); /* 20px -> 24px */
-    --font-size-xl: clamp(1.5rem, 1.2rem + 0.8vw, 2rem); /* 24px -> 32px */
-    --font-size-2xl: clamp(2rem, 1.5rem + 1.2vw, 2.5rem); /* 32px -> 40px */
-    --font-size-3xl: clamp(2.5rem, 2rem + 1.5vw, 3.5rem); /* 40px -> 56px */
+    --bg-deep: #0D0015;
+    --bg-gradient: radial-gradient(circle at center, #1A0433 0%, #0D0015 100%);
+    --glass-surface: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --neon-pink: #FF00FF;
+    --neon-cyan: #00FFFF;
+    --neon-green: #00E676;
 
     /* Spacing */
-    --spacing-xxs: 4px;
-    --spacing-xs: 8px;
-    --spacing-sm: 12px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-2xl: 48px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
 
-    /* Border Radii */
-    --border-radius-sm: 8px;
-    --border-radius-md: 12px;
-    --border-radius-lg: 16px;
+    /* Radius */
+    --radius-lg: 16px;
+    --radius-xl: 24px;
 
-    /* Shadows (Neumorphic/Glassmorphic inspired) */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
-    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Typography */
+    --font-primary: 'Plus Jakarta Sans', sans-serif;
+    
+    /* Legacy Font (keep for now if needed by specific elements not yet refactored) */
+    --font-family-display: 'Press Start 2P', cursive;
 }
 
-/* --- GLOBAL STYLES & BACKGROUND --- */
+/* --- GLOBAL RESET & BASE STYLES --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    /* Using the new, accurate background color */
-    background: var(--color-background) radial-gradient(ellipse at 50% 0%, var(--color-surface) 0%, var(--color-background) 80%);
-    color: var(--color-text-primary);
-    font-family: var(--font-family-primary);
+    background: var(--bg-deep) var(--bg-gradient) fixed;
+    color: #FFFFFF;
+    font-family: var(--font-primary);
+    font-weight: 500;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: var(--spacing-lg);
-    box-sizing: border-box;
-    font-size: var(--font-size-md); 
-    position: relative; /* Needed for pseudo-element */
+    padding: var(--space-lg);
 }
 
-/* ADDED SCAN LINES EFFECT */
-body::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.3),
-        rgba(0, 0, 0, 0.3) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    pointer-events: none;
-    z-index: 1;
-}
+/* Removed Scanlines Effect */
 
 .game-container {
     width: 100%;
     max-width: 950px;
-    padding: var(--spacing-lg);
     position: relative;
-    background-size: 30px 30px;
-    z-index: 2; /* Ensure game content is above scanlines */
+    z-index: 2;
 }
 
 /* --- TYPOGRAPHY & HEADERS --- */
@@ -348,7 +315,29 @@ button {
 }
 
 .btn-icon .icon { /* Assuming icons have a class 'icon' */
-    font-size: 1.5em;
+    font-size: var(--icon-size-base);
+    color: var(--icon-color-base);
+}
+
+/* Base Material Icons styling */
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: var(--icon-size-base); /* Standard icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    color: var(--icon-color-base);
 }
 
 /* --- SUCCESS STATE --- */

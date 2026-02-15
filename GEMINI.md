@@ -152,12 +152,16 @@ npm test
 - CSS Grid for layout
 - Seamless transitions between devices
 - Fluid spacing, accessibility, and visual legibility
-- Retro neon aesthetic layered with modern responsiveness, with an ongoing effort towards a "Modern Neumorphism" / "Glassmorphism" aesthetic as detailed in `docs/ui-redesign-plan.md` and guided by the comprehensive `docs/ui-ux-blueprint.md`.
+- Transitioning from retro neon to a **"Modern Neumorphism" / "Glassmorphism"** aesthetic.
+- **Current Phase:** Implementing the **Cyberpunk Dashboard** overhaul as detailed in `docs/game-overhaul-neon-to-neomorphism.md` (superseding the now-implemented `docs/ui-redesign-plan.md`).
+- Guided by the comprehensive `docs/ui-ux-blueprint.md`.
 
 **Documentation**
-- `0001-prd-responsive-evolution.md`: detailed responsive redesign specification (implemented)
-- `spec.md`: gameplay rules and mechanics
-- `visual-upgrade-refactor-plan.md`: aesthetic and UI evolution roadmap
+- `docs/game-overhaul-neon-to-neomorphism.md`: Current active phase for visual and structural overhaul.
+- `docs/ui-redesign-plan.md`: Foundation and component library (implemented).
+- `0001-prd-responsive-evolution.md`: Detailed responsive redesign specification (implemented).
+- `spec.md`: Gameplay rules and mechanics.
+- `visual-upgrade-refactor-plan.md`: Aesthetic and UI evolution roadmap.
 
 ---
 
@@ -165,7 +169,11 @@ npm test
 
 When provided with a markdown file containing a list of tasks, please adhere to the following workflow:
 
-1.  **Identify the specific task** mentioned in the prompt from the markdown file.
-2.  **Implement the task** by making all necessary code changes.
-3.  Once the implementation is complete and verified, **mark the task as completed** within the markdown file. This can be done by adding `[COMPLETED]` or a similar indicator to the task's title or by using markdown's checkbox syntax (`[x]`).
-4.  **This allows for task continuity across sessions.**
+1.  **Work on exactly one task at a time.** Do not attempt multiple tasks from the list in a single turn.
+2.  **Identify the specific task** mentioned in the prompt or the next pending task from the markdown file.
+3.  **Implement the task** by making all necessary code changes.
+4.  Once the implementation is complete and verified, **mark the task as completed** within the markdown file. This can be done by adding `[COMPLETED]` or a similar indicator to the task's title or by using markdown's checkbox syntax (`[x]`).
+5.  **Commit the changes** using the `git` tools, ensuring a clear and concise commit message.
+6.  **Wait for user confirmation** before proceeding to the next task in the list.
+
+This workflow ensures focused development, clear history, and allows for task continuity across sessions.**

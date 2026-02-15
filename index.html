@@ -6,8 +6,9 @@
     <title>Jones in the Fast Lane</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <div class="game-container">
@@ -44,7 +45,6 @@
                     <span id="mobile-p2-cash" class="mobile-stat-value">$0</span>
                     <span class="mobile-stat-icon">🏦</span>
                     <span id="mobile-p2-savings" class="mobile-stat-value">$0</span>
-                    <span class="mobile-stat-icon">💸</span>
                     <span id="mobile-p2-loan" class="mobile-stat-value">$0</span>
                     <span class="mobile-stat-icon">😊</span>
                     <span id="mobile-p2-happiness" class="mobile-stat-value">0</span>
@@ -93,17 +93,17 @@
             <div id="game-controls" class="actions-panel card">
                 <h2>Actions</h2>
                 <div class="action-buttons">
-                    <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon">😴</span> <span class="btn-text">Rest / End Turn</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon">🗺️</span> <span class="btn-text">Travel</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon">💼</span> <span class="btn-text">Work Shift</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon">📋</span> <span class="btn-text">Apply for Job</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon">📚</span> <span class="btn-text">Take Course</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon">🛍️</span> <span class="btn-text">Buy Item</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon">🏦</span> <span class="btn-text">Deposit</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon">💵</span> <span class="btn-text">Withdraw</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon">📈</span> <span class="btn-text">Take Loan</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon">📉</span> <span class="btn-text">Repay Loan</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon">🚙</span> <span class="btn-text">Buy Car</span></button>
+                    <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon"><i class="material-icons">bedtime</i></span> <span class="btn-text">Rest / End Turn</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Travel</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon"><i class="material-icons">work</i></span> <span class="btn-text">Work Shift</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon"><i class="material-icons">description</i></span> <span class="btn-text">Apply for Job</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon"><i class="material-icons">school</i></span> <span class="btn-text">Take Course</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon"><i class="material-icons">shopping_bag</i></span> <span class="btn-text">Buy Item</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon"><i class="material-icons">account_balance</i></span> <span class="btn-text">Deposit</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon"><i class="material-icons">money_off</i></span> <span class="btn-text">Withdraw</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon"><i class="material-icons">trending_up</i></span> <span class="btn-text">Take Loan</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon"><i class="material-icons">trending_down</i></span> <span class="btn-text">Repay Loan</span></button>
+                    <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Buy Car</span></button>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                 <div class="log-header">
                     <h3>Game Log</h3>
                     <button id="log-toggle-btn" class="btn btn-icon" aria-label="Toggle game log">
-                        <span class="log-toggle-icon">▼</span>
+                        <span class="log-toggle-icon"><i class="material-icons">arrow_drop_down</i></span>
                     </button>
                 </div>
                 <div class="log-content"></div>
@@ -145,7 +145,7 @@
             <div id="player-stats-modal">
                 <div class="player-stats-modal-header">
                     <h2 id="player-stats-modal-title">Player Stats</h2>
-                    <button id="player-stats-modal-close" class="btn btn-icon btn-secondary modal-close-btn">✕</button>
+                    <button id="player-stats-modal-close" class="btn btn-icon btn-secondary modal-close-btn"><i class="material-icons">close</i></button>
                 </div>
                 <div class="swipe-indicator">
                     <div class="swipe-bar"></div>
@@ -203,7 +203,7 @@
             <div id="game-log-modal">
                 <div class="game-log-modal-header">
                     <h2>Game Log</h2>
-                    <button id="game-log-modal-close" class="btn btn-icon btn-secondary modal-close-btn">✕</button>
+                    <button id="game-log-modal-close" class="btn btn-icon btn-secondary modal-close-btn"><i class="material-icons">close</i></button>
                 </div>
                 <div class="swipe-indicator">
                     <div class="swipe-bar"></div>
