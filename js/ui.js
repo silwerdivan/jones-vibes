@@ -47,6 +47,9 @@ class GameView {
     // Action Buttons
     this.actionButtons = document.querySelectorAll('[data-action]');
 
+    // Location Hint
+    this.locationHint = document.getElementById('location-hint');
+
     // --- NEW: Modal Element Caching ---
     this.modalOverlay = document.getElementById('choice-modal-overlay');
     this.modalTitle = document.getElementById('choice-modal-title');
@@ -782,7 +785,9 @@ hideLoading() {
             hintText = 'Travel to other locations';
     }
     
-    this.locationHint.textContent = hintText;
+    if (this.locationHint) {
+        this.locationHint.textContent = hintText;
+    }
   }
 }
 
