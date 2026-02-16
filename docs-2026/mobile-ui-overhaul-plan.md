@@ -116,3 +116,9 @@ The objective is to move away from a "board game on a web page" layout to a slee
     - Audited `index.html` and `style.css` for current Material Icon usage.
     - Cross-referenced `js/game/gameData.js` to identify specific icon requirements for all game locations.
     - Produced `docs-2026/icon-audit-results.md` which maps 12 existing icons to Cyberpunk-themed replacements and identifies 15+ new icon gaps for the Tab Bar, Life Dashboard, and Bento Grid.
+- **Source or create custom SVG icons [2026-02-16]:**
+    - Created `js/ui/Icons.js` as a central ES6 module registry for custom SVG icons.
+    - Implemented 22 high-fidelity SVG icons with customizable size and color, covering utility (chevron, close), actions (standby, cyber-chip), navigation (city-grid, bio-metrics), and locations (apartment, agency).
+    - Verified icon rendering and aesthetic consistency using a dedicated `test-icons.html` preview page.
+- **Establish directory structure for new UI assets [2026-02-16]:**
+    - Created `assets/ui/icons`, `assets/ui/illustrations`, and `assets/ui/branding` to organize future high-fidelity visual components.
