@@ -1,6 +1,6 @@
 import EventBus from './EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
-import { JOBS, COURSES, LOCATIONS, CLERKS } from './game/gameData.js';
+import { JOBS, COURSES, LOCATIONS, CLERKS, SHOPPING_ITEMS } from './game/gameData.js';
 import ClockVisualization from './ui/ClockVisualization.js';
 import Icons from './ui/Icons.js';
 
@@ -348,19 +348,25 @@ class GameView {
       this.modalInput.classList.add('hidden');
     }
 
-    choices.forEach(choice => {
-      const button = document.createElement('button');
-      button.textContent = choice.text;
-      button.classList.add('btn', 'btn-primary');
-      // Use a callback to link button click to a controller action
-      button.onclick = () => {
-        const amount = showInput ? parseInt(this.modalInputField.value, 10) : null;
-        this.hideModal();
-        // Call the action with the chosen value (and amount if applicable)
-        choice.action(choice.value, amount); 
-      };
-      this.modalButtons.appendChild(button);
-    });
+    // SPECIAL HANDLING: Use Action Cards for Shopping and College
+    if (location === 'Shopping Mall') {
+      this.renderActionCards('shopping', SHOPPING_ITEMS);
+    } else if (location === 'Community College') {
+      this.renderActionCards('college', COURSES);
+    } else {
+      // Default button-based choices
+      choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.textContent = choice.text;
+        button.classList.add('btn', 'btn-primary');
+        button.onclick = () => {
+          const amount = showInput ? parseInt(this.modalInputField.value, 10) : null;
+          this.hideModal();
+          choice.action(choice.value, amount); 
+        };
+        this.modalButtons.appendChild(button);
+      });
+    }
 
     this.modalOverlay.classList.remove('hidden');
   }
@@ -389,46 +395,7 @@ class GameView {
     this.modalButtons.innerHTML = ''; // Clear previous buttons
     this.modalInput.classList.add('hidden'); // Hide input field
 
-    // Create job list content
-    const jobList = document.createElement('div');
-    jobList.className = 'job-list';
-    
-    JOBS.forEach(job => {
-      const jobItem = document.createElement('div');
-      jobItem.className = 'job-item';
-      
-      const jobTitle = document.createElement('div');
-      jobTitle.className = 'job-title';
-      jobTitle.textContent = job.title;
-      
-      const jobDetails = document.createElement('div');
-      jobDetails.className = 'job-details';
-      jobDetails.innerHTML = `
-        <div>Wage: $${job.wage}/hour</div>
-        <div>Shift: ${job.shiftHours} hours</div>
-        <div>Education Required: Level ${job.educationRequired}</div>
-      `;
-      
-      jobItem.appendChild(jobTitle);
-      jobItem.appendChild(jobDetails);
-      
-      // Add apply button for each job
-      const applyButton = document.createElement('button');
-      applyButton.classList.add('btn', 'btn-primary', 'job-apply-btn');
-      applyButton.textContent = 'Apply';
-      applyButton.onclick = () => {
-        this.hideModal();
-        // Call the controller method with the job level parameter
-        if (window.gameController) {
-          window.gameController.applyForJob(job.level);
-        }
-      };
-      
-      jobItem.appendChild(applyButton);
-      jobList.appendChild(jobItem);
-    });
-    
-    this.modalContent.appendChild(jobList);
+    this.renderActionCards('jobs', JOBS);
 
     // Add cancel button
     const cancelButton = document.createElement('button');
@@ -438,6 +405,83 @@ class GameView {
     this.modalButtons.appendChild(cancelButton);
 
     this.modalOverlay.classList.remove('hidden');
+  }
+
+  // Helper to render Action Cards for different types
+  renderActionCards(type, data) {
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    const player = gameState ? gameState.getCurrentPlayer() : null;
+    
+    const cardList = document.createElement('div');
+    cardList.className = 'action-card-list';
+
+    data.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'action-card';
+      
+      let title = '';
+      let metaHtml = '';
+      let isLocked = false;
+      let action = () => {};
+      let btnText = '';
+
+      if (type === 'jobs') {
+        title = item.title;
+        isLocked = player && player.educationLevel < item.educationRequired;
+        btnText = 'Apply';
+        metaHtml = `
+          <span class="action-card-tag price"><i class="material-icons">payments</i>$${item.wage}/hr</span>
+          <span class="action-card-tag"><i class="material-icons">schedule</i>${item.shiftHours}h</span>
+          <span class="action-card-tag requirement ${isLocked ? 'locked' : ''}">
+            <i class="material-icons">${isLocked ? 'lock' : 'school'}</i>Edu Lvl ${item.educationRequired}
+          </span>
+        `;
+        action = () => window.gameController.applyForJob(item.level);
+      } else if (type === 'college') {
+        title = item.name;
+        isLocked = player && player.cash < item.cost;
+        btnText = 'Study';
+        metaHtml = `
+          <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
+          <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
+        `;
+        action = () => window.gameController.gameState.takeCourse(item.id);
+      } else if (type === 'shopping') {
+        title = item.name;
+        isLocked = player && player.cash < item.cost;
+        btnText = 'Buy';
+        metaHtml = `
+          <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
+          <span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>
+        `;
+        action = () => window.gameController.gameState.buyItem(item.name);
+      }
+
+      if (isLocked) card.classList.add('locked');
+
+      card.innerHTML = `
+        <div class="action-card-content">
+          <div class="action-card-title">${title}</div>
+          <div class="action-card-meta">${metaHtml}</div>
+        </div>
+        <div class="action-card-action">
+          <button class="btn btn-primary action-card-btn" ${isLocked ? 'disabled' : ''}>
+            ${btnText}
+          </button>
+        </div>
+      `;
+
+      if (!isLocked) {
+        card.onclick = () => {
+          this.hideModal();
+          action();
+        };
+      }
+
+      cardList.appendChild(card);
+    });
+
+    this.modalContent.appendChild(cardList);
   }
 
   // --- NEW: Player Stats Modal Methods ---

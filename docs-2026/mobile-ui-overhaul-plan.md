@@ -93,9 +93,9 @@ The objective is to move away from a "board game on a web page" layout to a slee
 
 ### Phase 3: Character-Driven Modals
 - [x] Implement Clerk Modals with avatars and speech bubbles. [2026-02-16]
-- [ ] Implement Action Cards for buying items, taking courses, etc.
-- [ ] Replace `showChoiceModal` usage with new Clerk/Action Card interfaces.
-- [ ] Add tactile animations to Action Cards.
+- [x] Implement Action Cards for buying items, taking courses, etc. [2026-02-16]
+- [x] Replace `showChoiceModal` usage with new Clerk/Action Card interfaces. [2026-02-16]
+- [x] Add tactile animations to Action Cards. [2026-02-16]
 
 ### Phase 4: Life & Inventory
 - [ ] Implement Life Tab with 4 circular progress gauges.
@@ -138,3 +138,10 @@ The objective is to move away from a "board game on a web page" layout to a slee
     - Implemented comprehensive CSS for the clerk interaction, including glassmorphism speech bubbles, neon-cyan accents, and responsive layout.
     - Updated `GameView.showChoiceModal` and `GameView.showJobApplicationModal` to dynamically populate clerk info based on the current location.
     - Verified the clerk interaction visually and functionally via browser automation in the Bank and Employment Agency.
+- **Implement Action Card System [2026-02-16]:**
+    - Created a modern `.action-card` component in CSS with meta tags for Price, Wage, Time, and Happiness boosts.
+    - Implemented `renderActionCards` helper in `GameView` to dynamically generate job, course, and item listings.
+    - Integrated "Locked" state logic into cards, providing visual feedback (grayscale/opacity) and disabling buttons when requirements (Education/Cash) aren't met.
+    - Updated Shopping Mall and Community College modals to use rich Action Cards instead of simple buttons.
+    - Added tactile `scale(0.98)` animations to all interactive cards.
+    - Verified modal transitions and Locked states via browser automation in the Employment Agency, Shopping Mall, and Community College.
