@@ -47,199 +47,250 @@
         </div>
 
         <main class="content-area">
-            <!-- Mobile stats bar - only visible on small screens -->
-            <div id="mobile-stats" class="mobile-stats" aria-label="Player Statistics">
-                <div class="mobile-stat-card card" id="mobile-stat-p1">
-                    <div class="mobile-stat-header">
-                        <span class="mobile-player-name">You</span>
-                        <span class="mobile-player-indicator" id="mobile-p1-active"></span>
+            <section id="screen-city" class="screen">
+                <!-- Mobile stats bar - only visible on small screens -->
+                <div id="mobile-stats" class="mobile-stats" aria-label="Player Statistics">
+                    <div class="mobile-stat-card card" id="mobile-stat-p1">
+                        <div class="mobile-stat-header">
+                            <span class="mobile-player-name">You</span>
+                            <span class="mobile-player-indicator" id="mobile-p1-active"></span>
+                        </div>
+                        <div class="mobile-stat-grid">
+                            <span class="mobile-stat-icon">💰</span>
+                            <span id="mobile-p1-cash" class="mobile-stat-value">$0</span>
+                            <span class="mobile-stat-icon">🏦</span>
+                            <span id="mobile-p1-savings" class="mobile-stat-value">$0</span>
+                            <span class="mobile-stat-icon">💸</span>
+                            <span id="mobile-p1-loan" class="mobile-stat-value">$0</span>
+                            <span class="mobile-stat-icon">😊</span>
+                            <span id="mobile-p1-happiness" class="mobile-stat-value">0</span>
+                            <span class="mobile-stat-icon">⏰</span>
+                            <span id="mobile-p1-time" class="mobile-stat-value">24h</span>
+                        </div>
                     </div>
-                    <div class="mobile-stat-grid">
-                        <span class="mobile-stat-icon">💰</span>
-                        <span id="mobile-p1-cash" class="mobile-stat-value">$0</span>
-                        <span class="mobile-stat-icon">🏦</span>
-                        <span id="mobile-p1-savings" class="mobile-stat-value">$0</span>
-                        <span class="mobile-stat-icon">💸</span>
-                        <span id="mobile-p1-loan" class="mobile-stat-value">$0</span>
-                        <span class="mobile-stat-icon">😊</span>
-                        <span id="mobile-p1-happiness" class="mobile-stat-value">0</span>
-                        <span class="mobile-stat-icon">⏰</span>
-                        <span id="mobile-p1-time" class="mobile-stat-value">24h</span>
+                    <div class="mobile-stat-card card" id="mobile-stat-p2">
+                        <div class="mobile-stat-header">
+                            <span class="mobile-player-name">AI</span>
+                            <span class="mobile-player-indicator" id="mobile-p2-active"></span>
+                        </div>
+                        <div class="mobile-stat-grid">
+                            <span class="mobile-stat-icon">💰</span>
+                            <span id="mobile-p2-cash" class="mobile-stat-value">$0</span>
+                            <span class="mobile-stat-icon">🏦</span>
+                            <span id="mobile-p2-savings" class="mobile-stat-value">$0</span>
+                            <span id="mobile-p2-loan" class="mobile-stat-value">$0</span>
+                            <span class="mobile-stat-icon">😊</span>
+                            <span id="mobile-p2-happiness" class="mobile-stat-value">0</span>
+                            <span id="mobile-p2-time" class="mobile-stat-value">24h</span>
+                        </div>
                     </div>
                 </div>
-                <div class="mobile-stat-card card" id="mobile-stat-p2">
-                    <div class="mobile-stat-header">
-                        <span class="mobile-player-name">AI</span>
-                        <span class="mobile-player-indicator" id="mobile-p2-active"></span>
-                    </div>
-                    <div class="mobile-stat-grid">
-                        <span class="mobile-stat-icon">💰</span>
-                        <span id="mobile-p2-cash" class="mobile-stat-value">$0</span>
-                        <span class="mobile-stat-icon">🏦</span>
-                        <span id="mobile-p2-savings" class="mobile-stat-value">$0</span>
-                        <span id="mobile-p2-loan" class="mobile-stat-value">$0</span>
-                        <span class="mobile-stat-icon">😊</span>
-                        <span id="mobile-p2-happiness" class="mobile-stat-value">0</span>
-                        <span id="mobile-p2-time" class="mobile-stat-value">24h</span>
-                    </div>
-                </div>
-            </div>
 
-            <div id="player-1" class="player-panel card glass">
-                <h2>You</h2>
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-icon">💰</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Cash</span>
-                            <span id="p1-cash" class="stat-value currency">$0</span>
+                <div id="player-1" class="player-panel card glass">
+                    <h2>You</h2>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-icon">💰</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Cash</span>
+                                <span id="p1-cash" class="stat-value currency">$0</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🏦</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Savings</span>
-                            <span id="p1-savings" class="stat-value">$0</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">🏦</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Savings</span>
+                                <span id="p1-savings" class="stat-value">$0</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">💸</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Loan</span>
-                            <span id="p1-loan" class="stat-value">$0</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">💸</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Loan</span>
+                                <span id="p1-loan" class="stat-value">$0</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">😊</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Happiness</span>
-                            <span id="p1-happiness" class="stat-value">0</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">😊</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Happiness</span>
+                                <span id="p1-happiness" class="stat-value">0</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🎓</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Education</span>
-                            <span id="p1-education" class="stat-value">None</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">🎓</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Education</span>
+                                <span id="p1-education" class="stat-value">None</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">💼</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Career</span>
-                            <span id="p1-career" class="stat-value">Unemployed</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">💼</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Career</span>
+                                <span id="p1-career" class="stat-value">Unemployed</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🚗</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Car</span>
-                            <span id="p1-car" class="stat-value">No</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">🚗</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Car</span>
+                                <span id="p1-car" class="stat-value">No</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">⏰</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Time</span>
-                            <span id="p1-time" class="stat-value">24h</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="player-2" class="player-panel card glass">
-                <h2>AI</h2>
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-icon">💰</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Cash</span>
-                            <span id="p2-cash" class="stat-value currency">$0</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🏦</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Savings</span>
-                            <span id="p2-savings" class="stat-value">$0</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">💸</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Loan</span>
-                            <span id="p2-loan" class="stat-value">$0</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">😊</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Happiness</span>
-                            <span id="p2-happiness" class="stat-value">0</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🎓</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Education</span>
-                            <span id="p2-education" class="stat-value">None</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">💼</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Career</span>
-                            <span id="p2-career" class="stat-value">Unemployed</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">🚗</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Car</span>
-                            <span id="p2-car" class="stat-value">No</span>
-                        </div>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-icon">⏰</span>
-                        <div class="stat-details">
-                            <span class="stat-label">Time</span>
-                            <span id="p2-time" class="stat-value">24h</span>
+                        <div class="stat-item">
+                            <span class="stat-icon">⏰</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Time</span>
+                                <span id="p1-time" class="stat-value">24h</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="event-log card glass" data-testid="game-log">
-                <div class="log-header">
-                    <h3>Game Log</h3>
-                    <button id="log-toggle-btn" class="btn btn-icon" aria-label="Toggle game log">
-                        <span class="log-toggle-icon"><i class="material-icons">arrow_drop_down</i></span>
-                    </button>
+                <div id="player-2" class="player-panel card glass">
+                    <h2>AI</h2>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-icon">💰</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Cash</span>
+                                <span id="p2-cash" class="stat-value currency">$0</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🏦</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Savings</span>
+                                <span id="p2-savings" class="stat-value">$0</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">💸</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Loan</span>
+                                <span id="p2-loan" class="stat-value">$0</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">😊</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Happiness</span>
+                                <span id="p2-happiness" class="stat-value">0</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🎓</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Education</span>
+                                <span id="p2-education" class="stat-value">None</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">💼</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Career</span>
+                                <span id="p2-career" class="stat-value">Unemployed</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🚗</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Car</span>
+                                <span id="p2-car" class="stat-value">No</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">⏰</span>
+                            <div class="stat-details">
+                                <span class="stat-label">Time</span>
+                                <span id="p2-time" class="stat-value">24h</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="log-content"></div>
-            </div>
 
-            <div id="location-info" class="location-hint-area">
-                <div class="location-hint" id="location-hint">3 actions available here</div>
-            </div>
+                <div class="event-log card glass" data-testid="game-log">
+                    <div class="log-header">
+                        <h3>Game Log</h3>
+                        <button id="log-toggle-btn" class="btn btn-icon" aria-label="Toggle game log">
+                            <span class="log-toggle-icon"><i class="material-icons">arrow_drop_down</i></span>
+                        </button>
+                    </div>
+                    <div class="log-content"></div>
+                </div>
+
+                <div id="location-info" class="location-hint-area">
+                    <div class="location-hint" id="location-hint">3 actions available here</div>
+                </div>
+                
+                <div id="game-controls" class="action-bar">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon"><i class="material-icons">bedtime</i></span> <span class="btn-text">Rest / End Turn</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Travel</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon"><i class="material-icons">work</i></span> <span class="btn-text">Work Shift</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon"><i class="material-icons">description</i></span> <span class="btn-text">Apply for Job</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon"><i class="material-icons">school</i></span> <span class="btn-text">Take Course</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon"><i class="material-icons">shopping_bag</i></span> <span class="btn-text">Buy Item</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon"><i class="material-icons">account_balance</i></span> <span class="btn-text">Deposit</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon"><i class="material-icons">money_off</i></span> <span class="btn-text">Withdraw</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon"><i class="material-icons">trending_up</i></span> <span class="btn-text">Take Loan</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon"><i class="material-icons">trending_down</i></span> <span class="btn-text">Repay Loan</span></button>
+                        <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Buy Car</span></button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="screen-life" class="screen hidden">
+                <div class="screen-placeholder card glass">
+                    <h2>Life Dashboard</h2>
+                    <p>Coming soon: Track your goals and biometrics.</p>
+                </div>
+            </section>
+
+            <section id="screen-inventory" class="screen hidden">
+                <div class="screen-placeholder card glass">
+                    <h2>Inventory</h2>
+                    <p>Coming soon: Manage your gear and assets.</p>
+                </div>
+            </section>
+
+            <section id="screen-social" class="screen hidden">
+                <div class="screen-placeholder card glass">
+                    <h2>Social</h2>
+                    <p>Coming soon: Connect with other residents.</p>
+                </div>
+            </section>
+
+            <section id="screen-menu" class="screen hidden">
+                <div class="screen-placeholder card glass">
+                    <h2>System Menu</h2>
+                    <p>Coming soon: Settings and game options.</p>
+                </div>
+            </section>
         </main>
 
-        <nav class="bottom-nav glass">
-            <div id="game-controls" class="action-bar">
-                <div class="action-buttons">
-                    <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon"><i class="material-icons">bedtime</i></span> <span class="btn-text">Rest / End Turn</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Travel</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon"><i class="material-icons">work</i></span> <span class="btn-text">Work Shift</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon"><i class="material-icons">description</i></span> <span class="btn-text">Apply for Job</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon"><i class="material-icons">school</i></span> <span class="btn-text">Take Course</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon"><i class="material-icons">shopping_bag</i></span> <span class="btn-text">Buy Item</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon"><i class="material-icons">account_balance</i></span> <span class="btn-text">Deposit</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon"><i class="material-icons">money_off</i></span> <span class="btn-text">Withdraw</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon"><i class="material-icons">trending_up</i></span> <span class="btn-text">Take Loan</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon"><i class="material-icons">trending_down</i></span> <span class="btn-text">Repay Loan</span></button>
-                    <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Buy Car</span></button>
-                </div>
-            </div>
+        <nav class="tab-bar glass">
+            <button class="tab-item active" data-screen="city" aria-label="City">
+                <span class="tab-icon" id="icon-city"></span>
+                <span class="tab-label">City</span>
+            </button>
+            <button class="tab-item" data-screen="life" aria-label="Life">
+                <span class="tab-icon" id="icon-life"></span>
+                <span class="tab-label">Life</span>
+            </button>
+            <button class="tab-item" data-screen="inventory" aria-label="Inventory">
+                <span class="tab-icon" id="icon-inventory"></span>
+                <span class="tab-label">Items</span>
+            </button>
+            <button class="tab-item" data-screen="social" aria-label="Social">
+                <span class="tab-icon" id="icon-social"></span>
+                <span class="tab-label">Social</span>
+            </button>
+            <button class="tab-item" data-screen="menu" aria-label="Menu">
+                <span class="tab-icon" id="icon-menu"></span>
+                <span class="tab-label">Menu</span>
+            </button>
         </nav>
 
         <!-- START: Add the Modal Structure -->

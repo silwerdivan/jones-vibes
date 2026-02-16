@@ -2,9 +2,16 @@ import EventBus from './EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
 import { JOBS, COURSES } from './game/gameData.js';
 import ClockVisualization from './ui/ClockVisualization.js';
+import Icons from './ui/Icons.js';
 
 class GameView {
   constructor() {
+    // Screens
+    this.screens = document.querySelectorAll('.screen');
+    
+    // Tabs
+    this.tabItems = document.querySelectorAll('.tab-item');
+    this.currentScreenId = 'city';
 
     // Player 1
     this.p1Cash = document.getElementById('p1-cash');
@@ -117,8 +124,8 @@ class GameView {
     this.addSwipeToClose(this.playerStatsModal);
     
     // Add click listeners to mobile stat cards
-    this.mobileStatP1.addEventListener('click', () => this.showPlayerStatsModal(1));
-    this.mobileStatP2.addEventListener('click', () => this.showPlayerStatsModal(2));
+    if (this.mobileStatP1) this.mobileStatP1.addEventListener('click', () => this.showPlayerStatsModal(1));
+    if (this.mobileStatP2) this.mobileStatP2.addEventListener('click', () => this.showPlayerStatsModal(2));
     
     // Subscribe to log icon click event
     EventBus.subscribe('logIconClicked', () => {
@@ -160,6 +167,9 @@ class GameView {
     // Add swipe-down functionality for mobile game log modal
     this.addSwipeToClose(this.gameLogModal);
     
+    // Initialize Screen Switching
+    this.initializeScreenSwitching();
+
     // Initialize ClockVisualization components
     this.p1ClockVisualization = null;
     this.p2ClockVisualization = null;
@@ -169,6 +179,66 @@ class GameView {
     
     // Initialize clock visualizations after DOM is ready
     this.initializeClockVisualizations();
+  }
+
+  initializeScreenSwitching() {
+    // Populate tab icons
+    const iconCity = document.getElementById('icon-city');
+    const iconLife = document.getElementById('icon-life');
+    const iconInventory = document.getElementById('icon-inventory');
+    const iconSocial = document.getElementById('icon-social');
+    const iconMenu = document.getElementById('icon-menu');
+
+    if (iconCity) iconCity.innerHTML = Icons.cityGrid(20, 'rgba(255, 255, 255, 0.5)');
+    if (iconLife) iconLife.innerHTML = Icons.bioMetrics(20, 'rgba(255, 255, 255, 0.5)');
+    if (iconInventory) iconInventory.innerHTML = Icons.cyberDeck(20, 'rgba(255, 255, 255, 0.5)');
+    if (iconSocial) iconSocial.innerHTML = Icons.comms(20, 'rgba(255, 255, 255, 0.5)');
+    if (iconMenu) iconMenu.innerHTML = Icons.system(20, 'rgba(255, 255, 255, 0.5)');
+
+    // Add click listeners to tabs
+    this.tabItems.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const screenId = tab.dataset.screen;
+            this.switchScreen(screenId);
+        });
+    });
+  }
+
+  switchScreen(screenId) {
+    if (this.currentScreenId === screenId) return;
+
+    // Update state
+    this.currentScreenId = screenId;
+
+    // Update screens visibility
+    this.screens.forEach(screen => {
+        if (screen.id === `screen-${screenId}`) {
+            screen.classList.remove('hidden');
+        } else {
+            screen.classList.add('hidden');
+        }
+    });
+
+    // Update tab active state
+    this.tabItems.forEach(tab => {
+        const iconContainer = tab.querySelector('.tab-icon');
+        const iconSvg = iconContainer ? iconContainer.querySelector('svg') : null;
+
+        if (tab.dataset.screen === screenId) {
+            tab.classList.add('active');
+            if (iconSvg) {
+                iconSvg.setAttribute('stroke', '#00FFFF'); // neon-cyan
+            }
+        } else {
+            tab.classList.remove('active');
+            if (iconSvg) {
+                iconSvg.setAttribute('stroke', 'rgba(255, 255, 255, 0.5)');
+            }
+        }
+    });
+
+    // Publish event for other components if needed
+    EventBus.publish('screenSwitched', screenId);
   }
 
   initializeClockVisualizations() {
@@ -567,12 +637,12 @@ hideLoading() {
     const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
     
     // --- START: ACTIVE PLAYER HIGHLIGHT ---
-    this.player1Panel.classList.remove('active');
-    this.player2Panel.classList.remove('active');
+    if (this.player1Panel) this.player1Panel.classList.remove('active');
+    if (this.player2Panel) this.player2Panel.classList.remove('active');
     if (gameState.currentPlayerIndex === 0) {
-      this.player1Panel.classList.add('active');
+      if (this.player1Panel) this.player1Panel.classList.add('active');
     } else {
-      this.player2Panel.classList.add('active');
+      if (this.player2Panel) this.player2Panel.classList.add('active');
     }
     // --- END: ACTIVE PLAYER HIGHLIGHT ---
 
@@ -586,7 +656,7 @@ hideLoading() {
         this.mobileP1Happiness.textContent = player1.happiness;
         if (this.mobileP1ClockVisualization) {
           this.mobileP1ClockVisualization.updateTime(player1.time);
-        } else {
+        } else if (this.mobileP1Time) {
           this.mobileP1Time.textContent = `${player1.time}h`;
         }
         
@@ -608,7 +678,7 @@ hideLoading() {
         this.mobileP2Happiness.textContent = player2.happiness;
         if (this.mobileP2ClockVisualization) {
           this.mobileP2ClockVisualization.updateTime(player2.time);
-        } else {
+        } else if (this.mobileP2Time) {
           this.mobileP2Time.textContent = `${player2.time}h`;
         }
         
@@ -624,35 +694,35 @@ hideLoading() {
     // --- END MOBILE STATS UPDATE ---
 
     // Player 1
-    this.p1Cash.textContent = `$${player1.cash}`;
-    this.p1Savings.textContent = `$${player1.savings}`;
-    this.p1Loan.textContent = `$${player1.loan}`;
-    this.p1Happiness.textContent = player1.happiness;
+    if (this.p1Cash) this.p1Cash.textContent = `$${player1.cash}`;
+    if (this.p1Savings) this.p1Savings.textContent = `$${player1.savings}`;
+    if (this.p1Loan) this.p1Loan.textContent = `$${player1.loan}`;
+    if (this.p1Happiness) this.p1Happiness.textContent = player1.happiness;
     const p1Course = COURSES.find(c => c.educationMilestone === player1.educationLevel);
-    this.p1Education.textContent = p1Course ? p1Course.name : 'None';
+    if (this.p1Education) this.p1Education.textContent = p1Course ? p1Course.name : 'None';
     const p1Job = JOBS.find(j => j.level === player1.careerLevel);
-    this.p1Career.textContent = p1Job ? p1Job.title : 'Unemployed';
-    this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
+    if (this.p1Career) this.p1Career.textContent = p1Job ? p1Job.title : 'Unemployed';
+    if (this.p1Car) this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
     if (this.p1ClockVisualization) {
       this.p1ClockVisualization.updateTime(player1.time);
-    } else {
+    } else if (this.p1Time) {
       this.p1Time.textContent = `${player1.time} hours`;
     }
 
     // Player 2
     if (player2) {
-        this.p2Cash.textContent = `$${player2.cash}`;
-        this.p2Savings.textContent = `$${player2.savings}`;
-        this.p2Loan.textContent = `$${player2.loan}`;
-        this.p2Happiness.textContent = player2.happiness;
+        if (this.p2Cash) this.p2Cash.textContent = `$${player2.cash}`;
+        if (this.p2Savings) this.p2Savings.textContent = `$${player2.savings}`;
+        if (this.p2Loan) this.p2Loan.textContent = `$${player2.loan}`;
+        if (this.p2Happiness) this.p2Happiness.textContent = player2.happiness;
         const p2Course = COURSES.find(c => c.educationMilestone === player2.educationLevel);
-        this.p2Education.textContent = p2Course ? p2Course.name : 'None';
+        if (this.p2Education) this.p2Education.textContent = p2Course ? p2Course.name : 'None';
         const p2Job = JOBS.find(j => j.level === player2.careerLevel);
-        this.p2Career.textContent = p2Job ? p2Job.title : 'Unemployed';
-        this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
+        if (this.p2Career) this.p2Career.textContent = p2Job ? p2Job.title : 'Unemployed';
+        if (this.p2Car) this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
         if (this.p2ClockVisualization) {
           this.p2ClockVisualization.updateTime(player2.time);
-        } else {
+        } else if (this.p2Time) {
           this.p2Time.textContent = `${player2.time} hours`;
         }
     }
@@ -697,22 +767,24 @@ hideLoading() {
     this.updateLocationHint(currentPlayer.location);
 
     // Game Log
-    this.logContent.innerHTML = ''; // Clear the log first
-    
-    // Get only the log entries from the last player turn and last AI turn
-    const recentLogEntries = this.getRecentLogEntries(gameState);
-    
-    recentLogEntries.forEach(message => {
-      const p = document.createElement('p');
-      // Handle both old string format and new object format
-      if (typeof message === 'string') {
-        p.textContent = message;
-      } else {
-        p.textContent = message.text;
-        p.classList.add(`log-${message.category}`);
-      }
-      this.logContent.appendChild(p);
-    });
+    if (this.logContent) {
+        this.logContent.innerHTML = ''; // Clear the log first
+        
+        // Get only the log entries from the last player turn and last AI turn
+        const recentLogEntries = this.getRecentLogEntries(gameState);
+        
+        recentLogEntries.forEach(message => {
+          const p = document.createElement('p');
+          // Handle both old string format and new object format
+          if (typeof message === 'string') {
+            p.textContent = message;
+          } else {
+            p.textContent = message.text;
+            p.classList.add(`log-${message.category}`);
+          }
+          this.logContent.appendChild(p);
+        });
+    }
 
     // Action Buttons Visibility
     this.actionButtons.forEach(button => {
@@ -724,36 +796,64 @@ hideLoading() {
         }
     });
 
-    document.querySelector('[data-action="travel"]').classList.remove('hidden');
+    const travelBtn = document.querySelector('[data-action="travel"]');
+    if (travelBtn) travelBtn.classList.remove('hidden');
 
     switch (currentPlayer.location) {
     case 'Employment Agency':
-        document.querySelector('[data-action="workShift"]').classList.remove('hidden');
-        document.querySelector('[data-action="workShift"]').classList.add('location-specific');
-        document.querySelector('[data-action="applyForJob"]').classList.remove('hidden');
-        document.querySelector('[data-action="applyForJob"]').classList.add('location-specific');
+        const workShiftBtn = document.querySelector('[data-action="workShift"]');
+        if (workShiftBtn) {
+            workShiftBtn.classList.remove('hidden');
+            workShiftBtn.classList.add('location-specific');
+        }
+        const applyForJobBtn = document.querySelector('[data-action="applyForJob"]');
+        if (applyForJobBtn) {
+            applyForJobBtn.classList.remove('hidden');
+            applyForJobBtn.classList.add('location-specific');
+        }
         break;
         case 'Community College':
-            document.querySelector('[data-action="takeCourse"]').classList.remove('hidden');
-            document.querySelector('[data-action="takeCourse"]').classList.add('location-specific');
+            const takeCourseBtn = document.querySelector('[data-action="takeCourse"]');
+            if (takeCourseBtn) {
+                takeCourseBtn.classList.remove('hidden');
+                takeCourseBtn.classList.add('location-specific');
+            }
             break;
         case 'Shopping Mall':
-            document.querySelector('[data-action="buyItem"]').classList.remove('hidden');
-            document.querySelector('[data-action="buyItem"]').classList.add('location-specific');
+            const buyItemBtn = document.querySelector('[data-action="buyItem"]');
+            if (buyItemBtn) {
+                buyItemBtn.classList.remove('hidden');
+                buyItemBtn.classList.add('location-specific');
+            }
             break;
         case 'Used Car Lot':
-            document.querySelector('[data-action="buyCar"]').classList.remove('hidden');
-            document.querySelector('[data-action="buyCar"]').classList.add('location-specific');
+            const buyCarBtn = document.querySelector('[data-action="buyCar"]');
+            if (buyCarBtn) {
+                buyCarBtn.classList.remove('hidden');
+                buyCarBtn.classList.add('location-specific');
+            }
             break;
         case 'Bank':
-            document.querySelector('[data-action="deposit"]').classList.remove('hidden');
-            document.querySelector('[data-action="deposit"]').classList.add('location-specific');
-            document.querySelector('[data-action="withdraw"]').classList.remove('hidden');
-            document.querySelector('[data-action="withdraw"]').classList.add('location-specific');
-            document.querySelector('[data-action="takeLoan"]').classList.remove('hidden');
-            document.querySelector('[data-action="takeLoan"]').classList.add('location-specific');
-            document.querySelector('[data-action="repayLoan"]').classList.remove('hidden');
-            document.querySelector('[data-action="repayLoan"]').classList.add('location-specific');
+            const depositBtn = document.querySelector('[data-action="deposit"]');
+            if (depositBtn) {
+                depositBtn.classList.remove('hidden');
+                depositBtn.classList.add('location-specific');
+            }
+            const withdrawBtn = document.querySelector('[data-action="withdraw"]');
+            if (withdrawBtn) {
+                withdrawBtn.classList.remove('hidden');
+                withdrawBtn.classList.add('location-specific');
+            }
+            const takeLoanBtn = document.querySelector('[data-action="takeLoan"]');
+            if (takeLoanBtn) {
+                takeLoanBtn.classList.remove('hidden');
+                takeLoanBtn.classList.add('location-specific');
+            }
+            const repayLoanBtn = document.querySelector('[data-action="repayLoan"]');
+            if (repayLoanBtn) {
+                repayLoanBtn.classList.remove('hidden');
+                repayLoanBtn.classList.add('location-specific');
+            }
             break;
     }
   }

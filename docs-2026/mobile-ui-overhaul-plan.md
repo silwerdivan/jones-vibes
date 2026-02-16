@@ -84,8 +84,8 @@ The objective is to move away from a "board game on a web page" layout to a slee
 - [x] Update `style.css` with Cyberpunk palette and glassmorphism variables. [COMPLETED]
 - [x] Implement Persistent HUD (Avatar, Time Ring, Cash, Week). [COMPLETED]
 - [x] Implement News Ticker component. [2026-02-16]
-- [ ] Implement Bottom Tab Bar (City, Life, Inventory, Social, Menu).
-- [ ] Implement "View Switcher" in `GameView` to toggle screens.
+- [x] Implement Bottom Tab Bar (City, Life, Inventory, Social, Menu). [2026-02-16]
+- [x] Implement "View Switcher" in `GameView` to toggle screens. [2026-02-16]
 
 ### Phase 2: City Map
 - [ ] Redesign City tab as a scrollable grid of Bento cards.
@@ -137,4 +137,10 @@ The objective is to move away from a "board game on a web page" layout to a slee
     - Added a `news-ticker` component below the HUD in `index.html`.
     - Implemented a CSS-based scrolling animation (`ticker`) with glassmorphism styling and neon-cyan typography.
     - Updated `GameView` to populate the ticker with the 5 most recent game events from `gameState.log`.
-    - Fixed a regression in `js/ui.js` where deleted DOM elements were causing a crash in the `render` cycle.
+    - Fixed a regression in `js/ui.js` where the uninitialized `locationHint` element caused a crash in the `render` cycle, also restoring correct action button visibility.
+- **Implement Bottom Tab Bar & View Switcher [2026-02-16]:**
+    - Added a 5-item `tab-bar` to `index.html` (City, Life, Items, Social, Menu) with custom SVG icons from `Icons.js`.
+    - Refactored `content-area` in `index.html` into multiple `<section class="screen">` containers to support view switching.
+    - Implemented `initializeScreenSwitching` and `switchScreen` in `GameView` to manage UI state and tab active classes.
+    - Enhanced CSS with `.tab-bar` and `.screen` styles, using glassmorphism and neon-cyan highlights for the active tab.
+    - Verified screen switching functionality in-browser using automated agent interactions.
