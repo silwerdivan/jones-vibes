@@ -19,7 +19,11 @@ class GameController {
     this.gameState.buyCar();
   }
 
-  travel() {
+  travel(destination) {
+    if (destination) {
+      this.gameState.travel(destination);
+      return;
+    }
     const currentPlayer = this.gameState.getCurrentPlayer();
     const availableDestinations = LOCATIONS.filter(loc => loc !== currentPlayer.location);
     
@@ -28,7 +32,7 @@ class GameController {
       choices: availableDestinations.map(dest => ({
         text: dest,
         value: dest,
-        action: (destination) => this.gameState.travel(destination)
+        action: (dest) => this.gameState.travel(dest)
       }))
     });
   }

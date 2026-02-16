@@ -67,9 +67,8 @@ The objective is to move away from a "board game on a web page" layout to a slee
 4.  **Componentization:** Create reusable CSS classes for `.bento-card`, `.action-card`, and `.gauge-container`.
 
 ## 5. Next Steps
-1.  Start with the **HUD & Bottom Nav** to establish the "App" structure.
-2.  Transition the "City" view to the **Bento Grid**.
-3.  Implement the **Life Dashboard**.
+1.  Implement the **Character-Driven Modals** (Phase 3).
+2.  Implement the **Life Dashboard**.
 
 ---
 
@@ -88,12 +87,12 @@ The objective is to move away from a "board game on a web page" layout to a slee
 - [x] Implement "View Switcher" in `GameView` to toggle screens. [2026-02-16]
 
 ### Phase 2: City Map
-- [ ] Redesign City tab as a scrollable grid of Bento cards.
-- [ ] Map Bento card clicks to `gameController.travel()`.
-- [ ] Add "Next Week" Floating Action Button (FAB).
+- [x] Redesign City tab as a scrollable grid of Bento cards. [2026-02-16]
+- [x] Map Bento card clicks to `gameController.travel()`. [2026-02-16]
+- [x] Add "Next Week" Floating Action Button (FAB). [2026-02-16]
 
 ### Phase 3: Character-Driven Modals
-- [ ] Implement Clerk Modals with avatars and speech bubbles.
+- [x] Implement Clerk Modals with avatars and speech bubbles. [2026-02-16]
 - [ ] Implement Action Cards for buying items, taking courses, etc.
 - [ ] Replace `showChoiceModal` usage with new Clerk/Action Card interfaces.
 - [ ] Add tactile animations to Action Cards.
@@ -112,35 +111,30 @@ The objective is to move away from a "board game on a web page" layout to a slee
 ## 7. Implementation History
 
 ### Phase 0: Groundwork
-- **Audit existing Material Icons [2026-02-16]:**
-    - Audited `index.html` and `style.css` for current Material Icon usage.
-    - Cross-referenced `js/game/gameData.js` to identify specific icon requirements for all game locations.
-    - Produced `docs-2026/icon-audit-results.md` which maps 12 existing icons to Cyberpunk-themed replacements and identifies 15+ new icon gaps for the Tab Bar, Life Dashboard, and Bento Grid.
-- **Source or create custom SVG icons [2026-02-16]:**
-    - Created `js/ui/Icons.js` as a central ES6 module registry for custom SVG icons.
-    - Implemented 22 high-fidelity SVG icons with customizable size and color, covering utility (chevron, close), actions (standby, cyber-chip), navigation (city-grid, bio-metrics), and locations (apartment, agency).
-    - Verified icon rendering and aesthetic consistency using a dedicated `test-icons.html` preview page.
-- **Establish directory structure for new UI assets [2026-02-16]:**
-    - Created `assets/ui/icons`, `assets/ui/illustrations`, and `assets/ui/branding` to organize future high-fidelity visual components.
+- **Audit existing Material Icons [2026-02-16]:** Produced `docs-2026/icon-audit-results.md` mapping existing icons to replacements and identifying gaps.
+- **Source or create custom SVG icons [2026-02-16]:** Created `js/ui/Icons.js` with 22 high-fidelity SVG icons.
+- **Establish directory structure for new UI assets [2026-02-16]:** Created `assets/ui/icons`, `assets/ui/illustrations`, and `assets/ui/branding`.
 
 ### Phase 1: App Shell
-- **Update `style.css` with Cyberpunk palette [2026-02-16]:**
-    - Updated `:root` CSS variables with the new Cyberpunk palette (Neon Pink, Cyan, Green, Yellow, Blue, Red).
-    - Defined refined glassmorphism tokens (`--glass-surface`, `--glass-blur`, `--glass-shadow`, `--glass-glow`).
-    - Applied these new variables to `.glass`, `.card`, and `.btn` classes to enforce the new aesthetic (depth, inner glows, vibrant borders).
-- **Implement Persistent HUD [2026-02-16]:**
-    - Redesigned the top-bar as a Cyberpunk HUD in `index.html` with sections for avatar, stats, and game info.
-    - Added high-fidelity CSS for the HUD, featuring an avatar wrapper with an integrated SVG Time Ring.
-    - Enhanced `GameView` to dynamically update HUD credits, current zone, and turn week.
-    - Leveraged `ClockVisualization` to render a reactive, color-coded time ring around the player's avatar.
-- **Implement News Ticker [2026-02-16]:**
-    - Added a `news-ticker` component below the HUD in `index.html`.
-    - Implemented a CSS-based scrolling animation (`ticker`) with glassmorphism styling and neon-cyan typography.
-    - Updated `GameView` to populate the ticker with the 5 most recent game events from `gameState.log`.
-    - Fixed a regression in `js/ui.js` where the uninitialized `locationHint` element caused a crash in the `render` cycle, also restoring correct action button visibility.
-- **Implement Bottom Tab Bar & View Switcher [2026-02-16]:**
-    - Added a 5-item `tab-bar` to `index.html` (City, Life, Items, Social, Menu) with custom SVG icons from `Icons.js`.
-    - Refactored `content-area` in `index.html` into multiple `<section class="screen">` containers to support view switching.
-    - Implemented `initializeScreenSwitching` and `switchScreen` in `GameView` to manage UI state and tab active classes.
-    - Enhanced CSS with `.tab-bar` and `.screen` styles, using glassmorphism and neon-cyan highlights for the active tab.
-    - Verified screen switching functionality in-browser using automated agent interactions.
+- **Update `style.css` with Cyberpunk palette [2026-02-16]:** Updated variables for palette and glassmorphism effects.
+- **Implement Persistent HUD [2026-02-16]:** Redesigned HUD with avatar Time Ring and credits/week/zone displays.
+- **Implement News Ticker [2026-02-16]:** Added a glassmorphism scrolling ticker for game events.
+- **Implement Bottom Tab Bar & View Switcher [2026-02-16]:** Added a 5-item tab bar and refactored the main content area into switchable screens.
+
+### Phase 2: City Map
+- **Implement Bento Grid City Map [2026-02-16]:**
+    - Redesigned `screen-city` in `index.html` to host a dynamic `city-bento-grid` for location navigation.
+    - Added comprehensive `.bento-grid` and `.bento-card` styles to `style.css`, including glassmorphism effects, neon active states, and hover animations.
+    - Implemented `renderCityGrid` in `GameView` to dynamically generate location cards with custom SVG icons and status summaries.
+    - Enhanced `GameController.travel()` to accept an optional destination, enabling direct travel from card clicks.
+    - Added a "Next Week" Floating Action Button (FAB) that appears only when the player is at "Home", providing a clear, mobile-optimized path to end the turn.
+    - Verified direct travel and FAB visibility/functionality via browser automation.
+
+### Phase 3: Character-Driven Modals
+- **Implement Clerk Modals [2026-02-16]:**
+    - Added a new `CLERKS` constant to `gameData.js` mapping locations to unique clerk personas (Agent Smith, Dean Wright, etc.) with custom greetings.
+    - Added a `clerk` SVG icon to `Icons.js` for use in interaction modals.
+    - Redesigned `choice-modal` in `index.html` to include a `clerk-container` with an avatar wrapper and speech bubble component.
+    - Implemented comprehensive CSS for the clerk interaction, including glassmorphism speech bubbles, neon-cyan accents, and responsive layout.
+    - Updated `GameView.showChoiceModal` and `GameView.showJobApplicationModal` to dynamically populate clerk info based on the current location.
+    - Verified the clerk interaction visually and functionally via browser automation in the Bank and Employment Agency.

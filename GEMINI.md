@@ -148,6 +148,9 @@ npm test
 - Command-based controllers over DOM coupling
 - Responsive-first CSS
 
+**Shell & Environment**
+- **Windows (PowerShell) Compatibility:** When chaining multiple CLI commands, use the semicolon (`;`) as a separator. Do **not** use `&&` or `&`, as they may not be supported or may behave unexpectedly in the current environment.
+
 **UI Philosophy**
 - CSS Grid for layout
 - Seamless transitions between devices

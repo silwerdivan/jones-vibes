@@ -1,6 +1,6 @@
 import EventBus from './EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
-import { JOBS, COURSES } from './game/gameData.js';
+import { JOBS, COURSES, LOCATIONS, CLERKS } from './game/gameData.js';
 import ClockVisualization from './ui/ClockVisualization.js';
 import Icons from './ui/Icons.js';
 
@@ -12,6 +12,10 @@ class GameView {
     // Tabs
     this.tabItems = document.querySelectorAll('.tab-item');
     this.currentScreenId = 'city';
+
+    // Bento Grid
+    this.cityBentoGrid = document.getElementById('city-bento-grid');
+    this.fabNextWeek = document.getElementById('fab-next-week');
 
     // Player 1
     this.p1Cash = document.getElementById('p1-cash');
@@ -65,6 +69,12 @@ class GameView {
     this.modalInputField = document.getElementById('modal-input-amount');
     this.modalButtons = document.getElementById('choice-modal-buttons');
     this.modalCancel = document.getElementById('modal-cancel-button');
+
+    // --- NEW: Clerk Element Caching ---
+    this.modalClerkContainer = document.getElementById('modal-clerk-container');
+    this.modalClerkAvatar = document.getElementById('modal-clerk-avatar');
+    this.modalClerkName = document.getElementById('modal-clerk-name');
+    this.modalClerkMessage = document.getElementById('modal-clerk-message');
 
     // --- MOBILE STATS BAR ELEMENTS ---
     this.mobileStatP1 = document.getElementById('mobile-stat-p1');
@@ -166,6 +176,15 @@ class GameView {
     
     // Add swipe-down functionality for mobile game log modal
     this.addSwipeToClose(this.gameLogModal);
+    
+    // Add click listener for Next Week FAB
+    if (this.fabNextWeek) {
+        this.fabNextWeek.addEventListener('click', () => {
+            if (window.gameController) {
+                window.gameController.restEndTurn();
+            }
+        });
+    }
     
     // Initialize Screen Switching
     this.initializeScreenSwitching();
@@ -303,7 +322,22 @@ class GameView {
 
   // --- NEW: Method to show a generic choice modal ---
   showChoiceModal({ title, choices, showInput = false }) {
-    this.modalTitle.textContent = title;
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    const location = gameState ? gameState.getCurrentPlayer().location : null;
+    const clerk = CLERKS[location];
+
+    if (clerk) {
+      this.modalClerkContainer.classList.remove('hidden');
+      this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
+      this.modalClerkName.textContent = clerk.name;
+      this.modalClerkMessage.textContent = clerk.message;
+      this.modalTitle.classList.add('hidden'); // Hide title when clerk is present
+    } else {
+      this.modalClerkContainer.classList.add('hidden');
+      this.modalTitle.classList.remove('hidden');
+      this.modalTitle.textContent = title;
+    }
+
     this.modalContent.innerHTML = ''; // Clear previous content
     this.modalButtons.innerHTML = ''; // Clear previous buttons
 
@@ -338,7 +372,19 @@ class GameView {
 
   // --- NEW: Method to show job application modal ---
   showJobApplicationModal() {
-    this.modalTitle.textContent = 'Apply for a Job';
+    const clerk = CLERKS["Employment Agency"];
+    if (clerk) {
+      this.modalClerkContainer.classList.remove('hidden');
+      this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
+      this.modalClerkName.textContent = clerk.name;
+      this.modalClerkMessage.textContent = clerk.message;
+      this.modalTitle.classList.add('hidden');
+    } else {
+      this.modalClerkContainer.classList.add('hidden');
+      this.modalTitle.classList.remove('hidden');
+      this.modalTitle.textContent = 'Apply for a Job';
+    }
+
     this.modalContent.innerHTML = ''; // Clear previous content
     this.modalButtons.innerHTML = ''; // Clear previous buttons
     this.modalInput.classList.add('hidden'); // Hide input field
@@ -766,6 +812,11 @@ hideLoading() {
     // Update location hint with count of available actions
     this.updateLocationHint(currentPlayer.location);
 
+    // Render City Grid if on City screen
+    if (this.currentScreenId === 'city') {
+      this.renderCityGrid(gameState);
+    }
+
     // Game Log
     if (this.logContent) {
         this.logContent.innerHTML = ''; // Clear the log first
@@ -887,6 +938,65 @@ hideLoading() {
     
     if (this.locationHint) {
         this.locationHint.textContent = hintText;
+    }
+  }
+
+  renderCityGrid(gameState) {
+    if (!this.cityBentoGrid) return;
+
+    const currentPlayer = gameState.getCurrentPlayer();
+    this.cityBentoGrid.innerHTML = '';
+
+    LOCATIONS.forEach(location => {
+      const card = document.createElement('div');
+      card.className = `bento-card ${currentPlayer.location === location ? 'active' : ''}`;
+      
+      let iconSvg = '';
+      switch (location) {
+        case 'Home': iconSvg = Icons.apartment(32, '#FF00FF'); break;
+        case 'Employment Agency': iconSvg = Icons.agency(32, '#00FFFF'); break;
+        case 'Community College': iconSvg = Icons.cyberChip(32, '#2979FF'); break;
+        case 'Shopping Mall': iconSvg = Icons.smartBag(32, '#FFD600'); break;
+        case 'Used Car Lot': iconSvg = Icons.hoverCar(32, '#00E676'); break;
+        case 'Bank': iconSvg = Icons.cryptoVault(32, '#FF5252'); break;
+      }
+
+      card.innerHTML = `
+        <div class="bento-card-icon">${iconSvg}</div>
+        <div class="bento-card-title">${location}</div>
+        <div class="bento-card-info">${this.getLocationSummary(location)}</div>
+      `;
+
+      card.onclick = () => {
+        if (currentPlayer.location !== location) {
+          if (window.gameController) {
+            window.gameController.travel(location);
+          }
+        }
+      };
+
+      this.cityBentoGrid.appendChild(card);
+    });
+
+    // Update FAB visibility
+    if (this.fabNextWeek) {
+      if (currentPlayer.location === 'Home') {
+        this.fabNextWeek.classList.remove('hidden');
+      } else {
+        this.fabNextWeek.classList.add('hidden');
+      }
+    }
+  }
+
+  getLocationSummary(location) {
+    switch (location) {
+      case 'Home': return 'Rest and end turn';
+      case 'Employment Agency': return 'Find work';
+      case 'Community College': return 'Study courses';
+      case 'Shopping Mall': return 'Buy items';
+      case 'Used Car Lot': return 'Buy a car';
+      case 'Bank': return 'Savings & Loans';
+      default: return '';
     }
   }
 }

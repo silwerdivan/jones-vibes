@@ -86,6 +86,10 @@
                     </div>
                 </div>
 
+                <div id="city-bento-grid" class="bento-grid">
+                    <!-- Bento cards will be dynamically inserted here -->
+                </div>
+
                 <div id="player-1" class="player-panel card glass">
                     <h2>You</h2>
                     <div class="stats">
@@ -296,6 +300,15 @@
         <!-- START: Add the Modal Structure -->
         <div id="choice-modal-overlay" class="hidden">
             <div id="choice-modal">
+                <div id="modal-clerk-container" class="clerk-container hidden">
+                    <div class="clerk-avatar-wrapper">
+                        <div id="modal-clerk-avatar" class="clerk-avatar"></div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div id="modal-clerk-name" class="clerk-name">Clerk</div>
+                        <p id="modal-clerk-message" class="clerk-message">Welcome! How can I help you today?</p>
+                    </div>
+                </div>
                 <div class="modal-content">
                     <h2 id="choice-modal-title">Make a Choice</h2>
                     <div id="choice-modal-content">
@@ -396,6 +409,13 @@
           <p class="loading-text">AI is thinking...</p>
         </div>
         <!-- END: Loading Overlay -->
+
+        <!-- START: Floating Action Button -->
+        <button id="fab-next-week" class="fab-next-week hidden" aria-label="Next Week">
+            <i class="material-icons">fast_forward</i>
+            <span class="fab-label">Next Week</span>
+        </button>
+        <!-- END: Floating Action Button -->
 
     </div>
 
