@@ -77,8 +77,8 @@ The objective is to move away from a "board game on a web page" layout to a slee
 
 ### Phase 0: Groundwork
 - [x] Audit existing Material Icons and identify gaps for Cyberpunk aesthetic. [COMPLETED]
-- [ ] Source or create custom SVG icons for locations, items, and actions.
-- [ ] Establish directory structure for new UI assets.
+- [x] Source or create custom SVG icons for locations, items, and actions. [COMPLETED]
+- [x] Establish directory structure for new UI assets. [COMPLETED]
 
 ### Phase 1: App Shell
 - [ ] Update `style.css` with Cyberpunk palette and glassmorphism variables.

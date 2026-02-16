@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Test Page</title>
+    <style>
+        body {
+            background-color: #0d0221;
+            color: #fff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding: 2rem;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 2rem;
+        }
+        .icon-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+        .icon-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: #00ffff;
+        }
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            color: #00ffff;
+            filter: drop-shadow(0 0 5px #00ffff);
+        }
+        .icon-name {
+            font-size: 0.8rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+        h1 {
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cyberpunk Icon Registry Test</h1>
+    <div id="icon-grid" class="icon-grid"></div>
+
+    <script type="module">
+        import Icons from './js/ui/Icons.js';
+
+        const grid = document.getElementById('icon-grid');
+        
+        Object.keys(Icons).forEach(key => {
+            const card = document.createElement('div');
+            card.className = 'icon-card';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'icon-wrapper';
+            wrapper.innerHTML = Icons[key](32);
+            
+            const name = document.createElement('div');
+            name.className = 'icon-name';
+            name.textContent = key;
+            
+            card.appendChild(wrapper);
+            card.appendChild(name);
+            grid.appendChild(card);
+        });
+    </script>
+</body>
+</html>
