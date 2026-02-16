@@ -81,7 +81,7 @@ The objective is to move away from a "board game on a web page" layout to a slee
 - [x] Establish directory structure for new UI assets. [COMPLETED]
 
 ### Phase 1: App Shell
-- [ ] Update `style.css` with Cyberpunk palette and glassmorphism variables.
+- [x] Update `style.css` with Cyberpunk palette and glassmorphism variables. [COMPLETED]
 - [ ] Implement Persistent HUD (Avatar, Time Ring, Cash, Week).
 - [ ] Implement News Ticker component.
 - [ ] Implement Bottom Tab Bar (City, Life, Inventory, Social, Menu).
@@ -122,3 +122,9 @@ The objective is to move away from a "board game on a web page" layout to a slee
     - Verified icon rendering and aesthetic consistency using a dedicated `test-icons.html` preview page.
 - **Establish directory structure for new UI assets [2026-02-16]:**
     - Created `assets/ui/icons`, `assets/ui/illustrations`, and `assets/ui/branding` to organize future high-fidelity visual components.
+
+### Phase 1: App Shell
+- **Update `style.css` with Cyberpunk palette [2026-02-16]:**
+    - Updated `:root` CSS variables with the new Cyberpunk palette (Neon Pink, Cyan, Green, Yellow, Blue, Red).
+    - Defined refined glassmorphism tokens (`--glass-surface`, `--glass-blur`, `--glass-shadow`, `--glass-glow`).
+    - Applied these new variables to `.glass`, `.card`, and `.btn` classes to enforce the new aesthetic (depth, inner glows, vibrant borders).

@@ -1,15 +1,25 @@
 /* --- DESIGN TOKENS --- */
 :root {
-    /* Colors */
+    /* Colors - Cyberpunk Palette */
     --bg-deep: #0D0015;
     --bg-gradient: radial-gradient(circle at center, #1A0433 0%, #0D0015 100%);
+    
+    /* Neon Accents */
+    --neon-pink: #FF00FF;    /* Primary / UI / Buttons */
+    --neon-cyan: #00FFFF;    /* Secondary / Info / HUD */
+    --neon-green: #00E676;   /* Success / Career / Money */
+    --neon-yellow: #FFD600;  /* Energy / Time / Happiness */
+    --neon-blue: #2979FF;    /* Education / Status */
+    --neon-red: #FF5252;     /* Error / Expense / Alert */
+
+    /* Glassmorphism */
     --glass-surface: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --neon-pink: #FF00FF;
-    --neon-cyan: #00FFFF;
-    --neon-green: #00E676;
+    --glass-blur: blur(12px);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --glass-glow: rgba(255, 255, 255, 0.1);
 
-    /* Spacing */
+    /* Spacing & Layout */
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
@@ -17,14 +27,17 @@
     --space-xl: 32px;
 
     /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
 
     /* Typography */
     --font-primary: 'Plus Jakarta Sans', sans-serif;
     
-    /* Legacy Font */
+    /* Legacy Fonts */
     --font-family-display: 'Press Start 2P', cursive;
+    --font-family-mono: 'VT323', monospace;
 }
 
 /* --- GLOBAL RESET & BASE STYLES --- */
@@ -64,9 +77,10 @@ body {
 /* --- GLASS MATERIAL --- */
 .glass {
     background: var(--glass-surface);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 0 0 1px var(--glass-glow);
 }
 
 /* --- TOP BAR --- */
@@ -78,6 +92,7 @@ body {
     justify-content: center;
     z-index: 10;
     border-bottom: 1px solid var(--glass-border);
+    background: rgba(13, 0, 21, 0.6); /* Slightly darker for contrast */
 }
 
 .top-bar-content {
@@ -98,6 +113,7 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 2px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
 
 .value {
@@ -127,6 +143,7 @@ body {
     padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
     z-index: 10;
     border-top: 1px solid var(--glass-border);
+    background: rgba(13, 0, 21, 0.8);
 }
 
 .action-buttons {
@@ -155,20 +172,33 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--neon-pink) 0%, #9c27b0 100%);
-    box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+    background: linear-gradient(135deg, var(--neon-pink) 0%, #D500F9 100%);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
 .btn-secondary {
     background: rgba(0, 255, 255, 0.05);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+    border: 1px solid var(--neon-cyan);
     color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 .btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
     filter: grayscale(1);
+    box-shadow: none;
 }
 
 .btn .material-icons {
@@ -180,9 +210,10 @@ body {
     border-radius: var(--radius-lg);
     padding: var(--space-md);
     background: var(--glass-surface);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
 }
 
 .player-panel {
