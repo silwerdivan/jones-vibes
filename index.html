@@ -12,18 +12,39 @@
 </head>
 <body>
     <div class="app-shell">
-        <header class="top-bar glass">
-            <div class="top-bar-content">
-                <div class="location-display">
-                    <span class="label">LOCATION</span>
-                    <span id="current-location" class="value">Start</span>
+        <header class="hud glass">
+            <div class="hud-left">
+                <div class="player-avatar-wrapper">
+                    <div id="hud-time-ring" class="time-ring-container"></div>
+                    <div class="avatar-placeholder" id="hud-avatar">
+                        <span id="avatar-initials">P1</span>
+                    </div>
                 </div>
-                <div class="turn-display">
-                    <span class="label">TURN</span>
-                    <span id="game-turn" class="value">1</span>
+                <div class="hud-stats">
+                    <div class="hud-stat-item">
+                        <span class="hud-label">CREDITS</span>
+                        <span id="hud-cash" class="hud-value currency">$0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hud-right">
+                <div class="hud-stat-item text-right">
+                    <span class="hud-label">WEEK</span>
+                    <span id="hud-week" class="hud-value">1</span>
+                </div>
+                <div class="hud-stat-item text-right">
+                    <span class="hud-label">ZONE</span>
+                    <span id="hud-location" class="hud-value">Home</span>
                 </div>
             </div>
         </header>
+
+        <div class="news-ticker glass">
+            <div class="ticker-content" id="news-ticker-content">
+                Welcome to Jones in the Fast Lane! | Build wealth, education and happiness! | Visit the Employment Agency to find work.
+            </div>
+        </div>
 
         <main class="content-area">
             <!-- Mobile stats bar - only visible on small screens -->

@@ -28,10 +28,15 @@ class GameView {
     this.p2Time = document.getElementById('p2-time');
     this.player2Panel = document.getElementById('player-2');
 
-    // Game Info
-    this.currentLocation = document.getElementById('current-location');
-    this.gameTurn = document.getElementById('game-turn');
-    this.locationHint = document.getElementById('location-hint');
+    // HUD elements
+    this.hudCash = document.getElementById('hud-cash');
+    this.hudWeek = document.getElementById('hud-week');
+    this.hudLocation = document.getElementById('hud-location');
+    this.hudAvatar = document.getElementById('hud-avatar');
+    this.avatarInitials = document.getElementById('avatar-initials');
+
+    // News Ticker
+    this.newsTickerContent = document.getElementById('news-ticker-content');
 
     // Log
     this.logContent = document.querySelector('.log-content');
@@ -157,12 +162,25 @@ class GameView {
     this.p2ClockVisualization = null;
     this.mobileP1ClockVisualization = null;
     this.mobileP2ClockVisualization = null;
+    this.hudClockVisualization = null;
     
     // Initialize clock visualizations after DOM is ready
     this.initializeClockVisualizations();
   }
 
   initializeClockVisualizations() {
+    // Initialize HUD clock visualization
+    if (document.getElementById('hud-time-ring')) {
+      this.hudClockVisualization = new ClockVisualization('hud-time-ring', {
+        size: 60,
+        strokeWidth: 4,
+        backgroundColor: 'rgba(0, 255, 255, 0.1)',
+        foregroundColor: '#FF00FF',
+        textColor: 'transparent',
+        showNumeric: false
+      });
+    }
+
     // Initialize desktop clock visualizations
     if (this.p1Time) {
       this.p1ClockVisualization = new ClockVisualization('p1-time', {
@@ -638,9 +656,40 @@ hideLoading() {
 
     // Game Info
     const currentPlayer = gameState.getCurrentPlayer();
-    this.currentLocation.textContent = currentPlayer.location;
-    this.gameTurn.textContent = gameState.turn;
+    const currentPlayerIndex = gameState.currentPlayerIndex;
     
+    // Update HUD
+    if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
+    if (this.hudWeek) this.hudWeek.textContent = gameState.turn;
+    if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
+    
+    // Update HUD Avatar & Time Ring
+    if (this.avatarInitials) {
+      this.avatarInitials.textContent = currentPlayerIndex === 0 ? 'P1' : 'AI';
+    }
+    if (this.hudAvatar) {
+      this.hudAvatar.style.background = currentPlayerIndex === 0 
+        ? 'linear-gradient(135deg, var(--neon-pink), #D500F9)' 
+        : 'linear-gradient(135deg, var(--neon-cyan), var(--neon-blue))';
+      this.hudAvatar.style.boxShadow = currentPlayerIndex === 0
+        ? '0 0 15px rgba(255, 0, 255, 0.3)'
+        : '0 0 15px rgba(0, 255, 255, 0.3)';
+    }
+    
+    if (this.hudClockVisualization) {
+      this.hudClockVisualization.options.foregroundColor = currentPlayerIndex === 0 ? '#FF00FF' : '#00FFFF';
+      this.hudClockVisualization.updateTime(currentPlayer.time);
+    }
+
+    // Update News Ticker
+    if (this.newsTickerContent && gameState.log.length > 0) {
+      const recentEvents = gameState.log
+        .slice(0, 5)
+        .map(entry => typeof entry === 'string' ? entry : entry.text)
+        .join('  •  ');
+      this.newsTickerContent.textContent = recentEvents;
+    }
+
     // Update location hint with count of available actions
     this.updateLocationHint(currentPlayer.location);
 

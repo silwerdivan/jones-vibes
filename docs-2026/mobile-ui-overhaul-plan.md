@@ -82,8 +82,8 @@ The objective is to move away from a "board game on a web page" layout to a slee
 
 ### Phase 1: App Shell
 - [x] Update `style.css` with Cyberpunk palette and glassmorphism variables. [COMPLETED]
-- [ ] Implement Persistent HUD (Avatar, Time Ring, Cash, Week).
-- [ ] Implement News Ticker component.
+- [x] Implement Persistent HUD (Avatar, Time Ring, Cash, Week). [COMPLETED]
+- [x] Implement News Ticker component. [2026-02-16]
 - [ ] Implement Bottom Tab Bar (City, Life, Inventory, Social, Menu).
 - [ ] Implement "View Switcher" in `GameView` to toggle screens.
 
@@ -128,3 +128,13 @@ The objective is to move away from a "board game on a web page" layout to a slee
     - Updated `:root` CSS variables with the new Cyberpunk palette (Neon Pink, Cyan, Green, Yellow, Blue, Red).
     - Defined refined glassmorphism tokens (`--glass-surface`, `--glass-blur`, `--glass-shadow`, `--glass-glow`).
     - Applied these new variables to `.glass`, `.card`, and `.btn` classes to enforce the new aesthetic (depth, inner glows, vibrant borders).
+- **Implement Persistent HUD [2026-02-16]:**
+    - Redesigned the top-bar as a Cyberpunk HUD in `index.html` with sections for avatar, stats, and game info.
+    - Added high-fidelity CSS for the HUD, featuring an avatar wrapper with an integrated SVG Time Ring.
+    - Enhanced `GameView` to dynamically update HUD credits, current zone, and turn week.
+    - Leveraged `ClockVisualization` to render a reactive, color-coded time ring around the player's avatar.
+- **Implement News Ticker [2026-02-16]:**
+    - Added a `news-ticker` component below the HUD in `index.html`.
+    - Implemented a CSS-based scrolling animation (`ticker`) with glassmorphism styling and neon-cyan typography.
+    - Updated `GameView` to populate the ticker with the 5 most recent game events from `gameState.log`.
+    - Fixed a regression in `js/ui.js` where deleted DOM elements were causing a crash in the `render` cycle.
