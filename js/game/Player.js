@@ -12,27 +12,42 @@ export default class Player {
         this.loan = 0;
         this.inventory = [];
         this.hunger = 0; // 0 is full, higher is hungrier
+        
+        // Weekly tracking for summary
+        this.weeklyIncome = 0;
+        this.weeklyExpenses = 0;
+        this.weeklyHappinessChange = 0;
     }
 
     addCash(amount) {
         this.cash += amount;
+        this.weeklyIncome += amount;
     }
 
     spendCash(amount) {
         if (this.cash >= amount) {
             this.cash -= amount;
+            this.weeklyExpenses += amount;
             return true;
         }
         return false;
     }
 
     updateHappiness(points) {
+        const oldHappiness = this.happiness;
         this.happiness += points;
         if (this.happiness > 100) {
             this.happiness = 100;
         } else if (this.happiness < 0) {
             this.happiness = 0;
         }
+        this.weeklyHappinessChange += (this.happiness - oldHappiness);
+    }
+
+    resetWeeklyStats() {
+        this.weeklyIncome = 0;
+        this.weeklyExpenses = 0;
+        this.weeklyHappinessChange = 0;
     }
 
     advanceEducation() {

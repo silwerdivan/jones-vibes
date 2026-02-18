@@ -6,7 +6,7 @@
     <title>Jones in the Fast Lane</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Press+Start+2P&family=VT323&family=Orbitron:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -262,6 +262,33 @@
             </div>
         </div>
         <!-- END: Intel Terminal Structure -->
+
+        <!-- START: Turn Summary Modal -->
+        <section id="turn-summary-modal" class="modal-overlay hidden">
+            <div class="summary-container glass">
+                <header class="summary-header">
+                    <h1 class="neon-text-magenta">OH WHAT A WEEKEND!</h1>
+                    <p id="summary-subtitle" class="summary-subtitle">WEEK 1 REPORT</p>
+                </header>
+                <div id="event-list" class="event-list">
+                    <!-- Event cards injected here -->
+                </div>
+                <footer class="summary-footer">
+                    <div class="net-impact">
+                        <div class="impact-item">
+                            <span class="impact-label">NET CASHFLOW</span>
+                            <span id="summary-cash-total" class="total-value">$0</span>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-label">HAPPINESS</span>
+                            <span id="summary-happiness-total" class="total-value">0</span>
+                        </div>
+                    </div>
+                    <button id="btn-start-next-week" class="btn-neon-cyan">START NEXT WEEK →</button>
+                </footer>
+            </div>
+        </section>
+        <!-- END: Turn Summary Modal -->
 
         <!-- START: Loading Overlay -->
         <div id="loading-overlay" class="hidden">

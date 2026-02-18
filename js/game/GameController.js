@@ -11,6 +11,10 @@ class GameController {
     this.gameState.endTurn();
   }
 
+  advanceTurn() {
+    this.gameState.advanceTurn();
+  }
+
   workShift() {
     this.gameState.workShift();
   }

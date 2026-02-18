@@ -87,6 +87,14 @@ class GameView {
     this.terminalClose = document.getElementById('intel-terminal-close');
     this.unreadEvents = 0;
 
+    // --- Turn Summary Elements ---
+    this.turnSummaryModal = document.getElementById('turn-summary-modal');
+    this.eventList = document.getElementById('event-list');
+    this.summarySubtitle = document.getElementById('summary-subtitle');
+    this.summaryCashTotal = document.getElementById('summary-cash-total');
+    this.summaryHappinessTotal = document.getElementById('summary-happiness-total');
+    this.btnStartNextWeek = document.getElementById('btn-start-next-week');
+
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
     EventBus.subscribe('aiThinkingStart', () => this.showLoading());
@@ -94,6 +102,11 @@ class GameView {
 
     EventBus.subscribe('stateChanged', (gameState) => {
       this.render(gameState);
+    });
+
+    // Listen for turn ended to show summary
+    EventBus.subscribe('turnEnded', (summary) => {
+      this.showTurnSummary(summary);
     });
 
     // Add event listener for the cancel button
@@ -568,6 +581,108 @@ class GameView {
   hideLoading() {
     this.loadingOverlay.classList.add('hidden');
     document.body.classList.remove('loading-active');
+  }
+
+  showTurnSummary(summary) {
+    if (!this.turnSummaryModal) return;
+
+    this.summarySubtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
+    
+    // Update totals
+    this.summaryCashTotal.textContent = (summary.totals.cashChange >= 0 ? '+$' : '-$') + Math.abs(summary.totals.cashChange).toLocaleString();
+    this.summaryCashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
+    
+    this.summaryHappinessTotal.textContent = (summary.totals.happinessChange >= 0 ? '+' : '') + summary.totals.happinessChange;
+    this.summaryHappinessTotal.className = `total-value ${summary.totals.happinessChange >= 0 ? 'log-success' : 'log-error'}`;
+
+    this.btnStartNextWeek.textContent = "START NEXT WEEK →";
+
+    this.eventList.innerHTML = '';
+    
+    summary.events.forEach((event, index) => {
+      const card = document.createElement('div');
+      card.className = `event-card ${event.type}`;
+      
+      const valueText = (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
+      
+      card.innerHTML = `
+        <div class="event-icon-circle">
+          <i class="material-icons">${event.icon}</i>
+        </div>
+        <div class="event-info">
+          <span class="event-name">${event.label}</span>
+          <span class="event-amount">${valueText}</span>
+        </div>
+      `;
+      
+      this.eventList.appendChild(card);
+      
+      // Staggered animation
+      setTimeout(() => {
+        card.classList.add('animate-in');
+      }, 100 * (index + 1));
+    });
+
+    this.btnStartNextWeek.onclick = () => {
+      // Haptic Feedback Simulation
+      if (window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(10);
+      }
+      
+      this.hideTurnSummary();
+      if (window.gameController) {
+        window.gameController.advanceTurn();
+      }
+    };
+
+    this.turnSummaryModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+
+    // Animate totals after a short delay
+    setTimeout(() => {
+      this.animateValue(this.summaryCashTotal, 0, summary.totals.cashChange, 1000, '$');
+      this.animateValue(this.summaryHappinessTotal, 0, summary.totals.happinessChange, 1000);
+    }, 500);
+  }
+
+  /**
+   * Animates a numerical value in a DOM element.
+   * @param {HTMLElement} obj The element to update.
+   * @param {number} start The starting value.
+   * @param {number} end The target value.
+   * @param {number} duration Animation duration in ms.
+   * @param {string} prefix Optional prefix (e.g., '$').
+   */
+  animateValue(obj, start, end, duration, prefix = '') {
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const current = Math.floor(progress * (end - start) + start);
+      
+      const isPositive = current >= 0;
+      const sign = isPositive ? '+' : '-';
+      const absValue = Math.abs(current).toLocaleString();
+      
+      if (prefix === '$') {
+        obj.textContent = `${sign}$${absValue}`;
+      } else {
+        obj.textContent = `${sign}${absValue}`;
+      }
+      
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  hideTurnSummary() {
+    if (this.turnSummaryModal) {
+      this.turnSummaryModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
   }
 
   render(gameState) {

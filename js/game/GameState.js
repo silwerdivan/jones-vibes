@@ -63,42 +63,122 @@ class GameState {
 
     endTurn() {
         const currentPlayer = this.getCurrentPlayer();
+        const summary = {
+            player: currentPlayer.id,
+            playerName: this._getPlayerName(currentPlayer),
+            week: this.turn,
+            events: [],
+            totals: {
+                cashChange: 0,
+                happinessChange: 0
+            }
+        };
 
-        // 1. Apply daily expenses
+        // 1. Add overall weekly earnings if any
+        if (currentPlayer.weeklyIncome > 0) {
+            summary.events.push({
+                type: 'income',
+                label: 'Weekly Earnings',
+                value: currentPlayer.weeklyIncome,
+                unit: '$',
+                icon: 'payments'
+            });
+        }
+
+        // 2. Add overall weekly shopping/travel expenses if any
+        if (currentPlayer.weeklyExpenses > 0) {
+            summary.events.push({
+                type: 'expense',
+                label: 'Shopping & Travel',
+                value: -currentPlayer.weeklyExpenses,
+                unit: '$',
+                icon: 'shopping_cart'
+            });
+        }
+
+        // 3. Apply daily expenses (weekend)
         currentPlayer.spendCash(this.DAILY_EXPENSE);
+        summary.events.push({
+            type: 'expense',
+            label: 'Weekend Expenses',
+            value: -this.DAILY_EXPENSE,
+            unit: '$',
+            icon: 'home'
+        });
+
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.DAILY_EXPENSE)} for daily expenses.`,
+            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.DAILY_EXPENSE)} for weekend expenses.`,
             'expense'
         );
 
-        // 2. Apply loan interest
+        // 4. Apply loan interest
         if (currentPlayer.loan > 0) {
             const interest = Math.round(currentPlayer.loan * 0.10); // 10% interest
             currentPlayer.loan += interest;
+            // Record this as an expense in the tracker
+            currentPlayer.weeklyExpenses += interest;
+            
+            summary.events.push({
+                type: 'warning',
+                label: 'Loan Interest',
+                value: -interest,
+                unit: '$',
+                icon: 'account_balance'
+            });
+            
             this.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in loan interest.`,
                 'warning'
             );
         }
 
-        // 3. Apply hunger
+        // 5. Apply hunger
         currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + 20);
         if (currentPlayer.hunger > 50) {
             currentPlayer.updateHappiness(-5);
+            summary.events.push({
+                type: 'warning',
+                label: 'Hunger Penalty',
+                value: -5,
+                unit: 'Happiness',
+                icon: 'restaurant'
+            });
             this.addLogMessage(`${this._getPlayerName(currentPlayer)} is feeling hungry...`, 'warning');
         }
+
+        // 6. Calculate totals from tracked stats
+        summary.totals.cashChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
+        summary.totals.happinessChange = currentPlayer.weeklyHappinessChange;
+
+        // Reset weekly stats for the next week
+        currentPlayer.resetWeeklyStats();
         
-        // 4. Reset time for the next turn
+        // 7. Reset time for the next turn
         currentPlayer.setTime(24);
 
-        // 5. Reset location to Home
+        // 8. Reset location to Home
         currentPlayer.setLocation("Home");
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} returned home.`,
             'info'
         );
 
+        // Ensure AI loading state is cleared if it was the AI's turn
+        if (currentPlayer.isAI) {
+            EventBus.publish('aiThinkingEnd');
+        }
 
+        // Publish turn ended with summary
+        EventBus.publish('turnEnded', summary);
+        
+        // Advance player logic is now moved to advanceTurn()
+        // so that the UI can show the summary before advancing
+        
+        EventBus.publish('stateChanged', this);
+        return summary;
+    }
+
+    advanceTurn() {
         // Advance to the next player
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 
@@ -106,18 +186,20 @@ class GameState {
             this.turn++;
         }
         
-        // --- 3. ADD AI TURN LOGIC ---
         const nextPlayer = this.getCurrentPlayer();
+        
+        // Notify state change for the new player's turn
+        EventBus.publish('stateChanged', this);
+
+        // --- 3. ADD AI TURN LOGIC ---
         if (nextPlayer.isAI && this.aiController) {
             // Notify view to show loading
             EventBus.publish('aiThinkingStart');
-            // Delay AI processing so player can see the state change
+            // Delay AI processing so player can see the turn transition
             setTimeout(() => {
                 this.processAITurn();
-            }, 1500);
+            }, 1000);
         }
-
-        EventBus.publish('stateChanged', this);
     }
 
     processAITurn() {

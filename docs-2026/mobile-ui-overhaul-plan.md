@@ -104,8 +104,11 @@ The objective is to move away from a "board game on a web page" layout to a slee
 - [x] Implement Inventory Tab grid for owned equipment. [2026-02-17]
 
 ### Phase 5: Turn Transitions
-- [ ] Implement full-screen Turn Summary modal.
-- [ ] Implement color-coded Event Cards for the summary.
+- [x] Design Specification for "Oh What a Weekend!" Transition. [2026-02-18]
+- [x] Implement full-screen Turn Summary modal in `index.html`.
+- [x] Implement color-coded Event Cards for the summary in CSS.
+- [x] Refactor `GameState.endTurn()` to emit structured summary data (including weekly performance).
+- [x] Integrate Turn Summary into `GameView`.
 
 ---
 
