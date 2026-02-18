@@ -60,26 +60,6 @@
                 <div id="city-bento-grid" class="bento-grid">
                     <!-- Bento cards will be dynamically inserted here -->
                 </div>
-
-                <div id="location-info" class="location-hint-area">
-                    <div class="location-hint" id="location-hint">3 actions available here</div>
-                </div>
-                
-                <div id="game-controls" class="action-bar">
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" data-action="restEndTurn"><span class="btn-icon"><i class="material-icons">bedtime</i></span> <span class="btn-text">Rest / End Turn</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="travel"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Travel</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="workShift"><span class="btn-icon"><i class="material-icons">work</i></span> <span class="btn-text">Work Shift</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="applyForJob"><span class="btn-icon"><i class="material-icons">description</i></span> <span class="btn-text">Apply for Job</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="takeCourse"><span class="btn-icon"><i class="material-icons">school</i></span> <span class="btn-text">Take Course</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="buyItem"><span class="btn-icon"><i class="material-icons">shopping_bag</i></span> <span class="btn-text">Buy Item</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="deposit"><span class="btn-icon"><i class="material-icons">account_balance</i></span> <span class="btn-text">Deposit</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="withdraw"><span class="btn-icon"><i class="material-icons">money_off</i></span> <span class="btn-text">Withdraw</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="takeLoan"><span class="btn-icon"><i class="material-icons">trending_up</i></span> <span class="btn-text">Take Loan</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="repayLoan"><span class="btn-icon"><i class="material-icons">trending_down</i></span> <span class="btn-text">Repay Loan</span></button>
-                        <button class="btn btn-secondary location-specific hidden" data-action="buyCar"><span class="btn-icon"><i class="material-icons">directions_car</i></span> <span class="btn-text">Buy Car</span></button>
-                    </div>
-                </div>
             </section>
 
             <section id="screen-life" class="screen hidden">
@@ -140,6 +120,21 @@
                 </div>
             </section>
         </main>
+
+        <!-- START: Contextual Action Tray -->
+        <div id="contextual-action-tray" class="action-tray glass hidden">
+            <div class="tray-location-info">
+                <div id="tray-icon" class="tray-icon"></div>
+                <div class="tray-text">
+                    <span class="tray-label">Current Location</span>
+                    <span id="tray-location-name" class="tray-value">Employment Agency</span>
+                </div>
+            </div>
+            <div id="tray-actions" class="tray-buttons">
+                <!-- Dynamically populated buttons -->
+            </div>
+        </div>
+        <!-- END: Contextual Action Tray -->
 
         <nav class="tab-bar glass">
             <button class="tab-item active" data-screen="city" aria-label="City">

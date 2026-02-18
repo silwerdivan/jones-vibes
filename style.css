@@ -487,16 +487,77 @@ body {
     opacity: 0.7;
 }
 
-/* --- ACTION BAR (Inside Screen) --- */
-.action-bar {
-    margin-top: auto;
-    padding-top: var(--space-md);
+/* --- CONTEXTUAL ACTION TRAY --- */
+.action-tray {
+    position: fixed;
+    bottom: 70px; /* Right above the tab bar */
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-md);
+    z-index: 150;
+    border-top: 1px solid var(--neon-cyan);
+    animation: slideUp 0.3s ease;
+    background: rgba(13, 0, 21, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
-.action-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-md);
+.tray-location-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.tray-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tray-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.tray-label {
+    font-size: 8px;
+    font-weight: 800;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tray-value {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.tray-buttons {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.btn-sm {
+    padding: var(--space-sm) var(--space-md);
+    flex-direction: row !important; /* Horizontal button for the tray */
+    gap: 8px !important;
+    font-size: 12px !important;
+    min-height: 40px;
+}
+
+.btn-sm .material-icons {
+    font-size: 18px !important;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
 }
 
 /* --- BUTTONS --- */

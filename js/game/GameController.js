@@ -16,7 +16,14 @@ class GameController {
   }
 
   buyCar() {
-    this.gameState.buyCar();
+    this.gameView.showChoiceModal({
+      title: 'Buy a Car?',
+      choices: [{
+        text: 'Buy Hovercar ($3,000)',
+        value: null,
+        action: () => this.gameState.buyCar()
+      }]
+    });
   }
 
   travel(destination) {

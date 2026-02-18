@@ -35,10 +35,13 @@ class GameView {
     this.logContent = document.querySelector('.log-content');
     this.eventLog = document.querySelector('.event-log');
 
-    // Action Buttons
-    this.actionButtons = document.querySelectorAll('[data-action]');
+    // Contextual Action Tray
+    this.actionTray = document.getElementById('contextual-action-tray');
+    this.trayIcon = document.getElementById('tray-icon');
+    this.trayLocationName = document.getElementById('tray-location-name');
+    this.trayActions = document.getElementById('tray-actions');
 
-    // Location Hint
+    // Location Hint (Repurposed for tray or hidden if unused)
     this.locationHint = document.getElementById('location-hint');
 
     // --- Modal Element Caching ---
@@ -421,7 +424,7 @@ class GameView {
         action = () => window.gameController.applyForJob(item.level);
       } else if (type === 'college') {
         title = item.name;
-        isLocked = player && player.cash < item.cost;
+        isLocked = player && player.educationLevel < (item.educationMilestone - 1);
         btnText = 'Study';
         metaHtml = `
           <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
@@ -559,13 +562,11 @@ class GameView {
 
   showLoading() {
     this.loadingOverlay.classList.remove('hidden');
-    this.actionButtons.forEach(btn => btn.disabled = true);
     document.body.classList.add('loading-active');
   }
 
   hideLoading() {
     this.loadingOverlay.classList.add('hidden');
-    this.actionButtons.forEach(btn => btn.disabled = false);
     document.body.classList.remove('loading-active');
   }
 
@@ -632,76 +633,126 @@ class GameView {
       this.renderInventoryScreen(gameState);
     }
 
-    // Update Action Buttons
-    this.actionButtons.forEach(button => {
-        button.classList.remove('location-specific');
-        if(button.dataset.action !== 'restEndTurn') {
-            button.classList.add('hidden');
-        }
-    });
+    this.renderActionTray(gameState);
+  }
 
-    const travelBtn = document.querySelector('[data-action="travel"]');
-    if (travelBtn) travelBtn.classList.remove('hidden');
+  renderActionTray(gameState) {
+    if (!this.actionTray) return;
 
-    switch (currentPlayer.location) {
-    case 'Employment Agency':
-        const workShiftBtn = document.querySelector('[data-action="workShift"]');
-        if (workShiftBtn) {
-            workShiftBtn.classList.remove('hidden');
-            workShiftBtn.classList.add('location-specific');
+    const currentPlayer = gameState.getCurrentPlayer();
+    const location = currentPlayer.location;
+
+    // Update Tray Info
+    if (this.trayLocationName) this.trayLocationName.textContent = location;
+    if (this.trayIcon) {
+        let iconSvg = '';
+        switch (location) {
+            case 'Home': iconSvg = Icons.apartment(32, '#FF00FF'); break;
+            case 'Employment Agency': iconSvg = Icons.agency(32, '#00FFFF'); break;
+            case 'Community College': iconSvg = Icons.cyberChip(32, '#2979FF'); break;
+            case 'Shopping Mall': iconSvg = Icons.smartBag(32, '#FFD600'); break;
+            case 'Used Car Lot': iconSvg = Icons.hoverCar(32, '#00E676'); break;
+            case 'Bank': iconSvg = Icons.cryptoVault(32, '#FF5252'); break;
         }
-        const applyForJobBtn = document.querySelector('[data-action="applyForJob"]');
-        if (applyForJobBtn) {
-            applyForJobBtn.classList.remove('hidden');
-            applyForJobBtn.classList.add('location-specific');
-        }
-        break;
-        case 'Community College':
-            const takeCourseBtn = document.querySelector('[data-action="takeCourse"]');
-            if (takeCourseBtn) {
-                takeCourseBtn.classList.remove('hidden');
-                takeCourseBtn.classList.add('location-specific');
-            }
-            break;
-        case 'Shopping Mall':
-            const buyItemBtn = document.querySelector('[data-action="buyItem"]');
-            if (buyItemBtn) {
-                buyItemBtn.classList.remove('hidden');
-                buyItemBtn.classList.add('location-specific');
-            }
-            break;
-        case 'Used Car Lot':
-            const buyCarBtn = document.querySelector('[data-action="buyCar"]');
-            if (buyCarBtn) {
-                buyCarBtn.classList.remove('hidden');
-                buyCarBtn.classList.add('location-specific');
-            }
-            break;
-        case 'Bank':
-            const depositBtn = document.querySelector('[data-action="deposit"]');
-            if (depositBtn) {
-                depositBtn.classList.remove('hidden');
-                depositBtn.classList.add('location-specific');
-            }
-            const withdrawBtn = document.querySelector('[data-action="withdraw"]');
-            if (withdrawBtn) {
-                withdrawBtn.classList.remove('hidden');
-                withdrawBtn.classList.add('location-specific');
-            }
-            const takeLoanBtn = document.querySelector('[data-action="takeLoan"]');
-            if (takeLoanBtn) {
-                takeLoanBtn.classList.remove('hidden');
-                takeLoanBtn.classList.add('location-specific');
-            }
-            const repayLoanBtn = document.querySelector('[data-action="repayLoan"]');
-            if (repayLoanBtn) {
-                repayLoanBtn.classList.remove('hidden');
-                repayLoanBtn.classList.add('location-specific');
-            }
-            break;
+        this.trayIcon.innerHTML = iconSvg;
+    }
+
+    // Populate Buttons
+    if (this.trayActions) {
+        this.trayActions.innerHTML = '';
+        
+        const actions = this.getLocationActions(location);
+        
+        actions.forEach(action => {
+            const btn = document.createElement('button');
+            btn.className = `btn btn-sm ${action.primary ? 'btn-primary' : 'btn-secondary'}`;
+            btn.innerHTML = `<i class="material-icons">${action.icon}</i> ${action.label}`;
+            btn.onclick = action.onClick;
+            this.trayActions.appendChild(btn);
+        });
+    }
+
+    // Show/Hide Tray (Only on City screen or if actions available)
+    if (this.currentScreenId === 'city') {
+        this.actionTray.classList.remove('hidden');
+    } else {
+        this.actionTray.classList.add('hidden');
     }
   }
-  
+
+  getLocationActions(location) {
+    const actions = [];
+    
+    switch (location) {
+        case 'Home':
+            actions.push({
+                label: 'Rest / End Turn',
+                icon: 'bedtime',
+                primary: true,
+                onClick: () => window.gameController.restEndTurn()
+            });
+            break;
+        case 'Employment Agency':
+            actions.push({
+                label: 'Work Shift',
+                icon: 'work',
+                primary: true,
+                onClick: () => window.gameController.workShift()
+            });
+            actions.push({
+                label: 'Apply',
+                icon: 'description',
+                primary: false,
+                onClick: () => this.showJobApplicationModal()
+            });
+            break;
+        case 'Community College':
+            actions.push({
+                label: 'Browse Courses',
+                icon: 'school',
+                primary: true,
+                onClick: () => this.showChoiceModal({ title: 'Select a Course' })
+            });
+            break;
+        case 'Shopping Mall':
+            actions.push({
+                label: 'Browse Items',
+                icon: 'shopping_bag',
+                primary: true,
+                onClick: () => this.showChoiceModal({ title: 'Select an Item' })
+            });
+            break;
+        case 'Used Car Lot':
+            actions.push({
+                label: 'View Inventory',
+                icon: 'directions_car',
+                primary: true,
+                onClick: () => window.gameController.buyCar()
+            });
+            break;
+        case 'Bank':
+            actions.push({
+                label: 'Financial Services',
+                icon: 'account_balance',
+                primary: true,
+                onClick: () => this.showBankModal()
+            });
+            break;
+    }
+    
+    return actions;
+  }
+
+  showBankModal() {
+      const choices = [
+          { text: 'Deposit', value: 'deposit', action: (v, a) => window.gameController.deposit(a) },
+          { text: 'Withdraw', value: 'withdraw', action: (v, a) => window.gameController.withdraw(a) },
+          { text: 'Take Loan', value: 'loan', action: (v, a) => window.gameController.takeLoan(a) },
+          { text: 'Repay Loan', value: 'repay', action: (v, a) => window.gameController.repayLoan(a) }
+      ];
+      this.showChoiceModal({ title: 'Bank Services', choices, showInput: true });
+  }
+
   updateLocationHint(location) {
     let hintText = '';
     
@@ -750,6 +801,14 @@ class GameView {
         if (currentPlayer.location !== location) {
           if (window.gameController) {
             window.gameController.travel(location);
+          }
+        } else {
+          // Trigger primary interaction for current location
+          const actions = this.getLocationActions(location);
+          if (actions.length > 0) {
+            // If it's a "Browse" type action that opens a modal, trigger it
+            const primaryAction = actions.find(a => a.primary) || actions[0];
+            primaryAction.onClick();
           }
         }
       };
