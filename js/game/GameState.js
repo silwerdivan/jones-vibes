@@ -153,8 +153,17 @@ class GameState {
         // Reset weekly stats for the next week
         currentPlayer.resetWeeklyStats();
         
-        // 7. Reset time for the next turn
-        currentPlayer.setTime(24);
+        // 7. Reset time for the next turn, accounting for any deficit
+        const timeDeficit = currentPlayer.timeDeficit;
+        currentPlayer.setTime(24 - timeDeficit);
+        
+        if (timeDeficit > 0) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} started with ${timeDeficit} hour${timeDeficit > 1 ? 's' : ''} less due to incomplete travel.`,
+                'warning'
+            );
+            currentPlayer.timeDeficit = 0;
+        }
 
         // 8. Reset location to Home
         currentPlayer.setLocation("Home");
@@ -683,6 +692,19 @@ class GameState {
         const travelTime = currentPlayer.hasCar ? 1 : 2;
 
         if (currentPlayer.time < travelTime) {
+            if (destination === 'Home') {
+                const deficit = travelTime - currentPlayer.time;
+                currentPlayer.time = 0;
+                currentPlayer.timeDeficit = deficit;
+                currentPlayer.setLocation(destination);
+                this.addLogMessage(
+                    `${this._getPlayerName(currentPlayer)} traveled to ${destination} despite being ${deficit} hour${deficit > 1 ? 's' : ''} short. Starting next turn with ${deficit} hour${deficit > 1 ? 's' : ''} less time.`,
+                    'warning'
+                );
+                this.checkWinCondition(currentPlayer);
+                EventBus.publish('stateChanged', this);
+                return true;
+            }
             this.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} doesn't have enough time to travel.`,
                 'error'

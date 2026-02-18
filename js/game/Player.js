@@ -12,6 +12,7 @@ export default class Player {
         this.loan = 0;
         this.inventory = [];
         this.hunger = 0; // 0 is full, higher is hungrier
+        this.timeDeficit = 0; // Hours carried over from previous turn due to incomplete travel
         
         // Weekly tracking for summary
         this.weeklyIncome = 0;
