@@ -17,43 +17,23 @@ class GameView {
     this.cityBentoGrid = document.getElementById('city-bento-grid');
     this.fabNextWeek = document.getElementById('fab-next-week');
 
-    // Player 1
-    this.p1Cash = document.getElementById('p1-cash');
-    this.p1Savings = document.getElementById('p1-savings');
-    this.p1Loan = document.getElementById('p1-loan');
-    this.p1Happiness = document.getElementById('p1-happiness');
-    this.p1Education = document.getElementById('p1-education');
-    this.p1Career = document.getElementById('p1-career');
-    this.p1Car = document.getElementById('p1-car');
-    this.p1Time = document.getElementById('p1-time');
-    this.player1Panel = document.getElementById('player-1');
-
-    // Player 2
-    this.p2Cash = document.getElementById('p2-cash');
-    this.p2Savings = document.getElementById('p2-savings');
-    this.p2Loan = document.getElementById('p2-loan');
-    this.p2Happiness = document.getElementById('p2-happiness');
-    this.p2Education = document.getElementById('p2-education');
-    this.p2Career = document.getElementById('p2-career');
-    this.p2Car = document.getElementById('p2-car');
-    this.p2Time = document.getElementById('p2-time');
-    this.player2Panel = document.getElementById('player-2');
-
     // HUD elements
     this.hudCash = document.getElementById('hud-cash');
     this.hudWeek = document.getElementById('hud-week');
     this.hudLocation = document.getElementById('hud-location');
-    this.hudAvatar = document.getElementById('hud-avatar');
-    this.avatarInitials = document.getElementById('avatar-initials');
+    
+    // Command-Orb Elements
+    this.orbP1 = document.getElementById('orb-p1');
+    this.orbP2 = document.getElementById('orb-p2');
+    this.hudAvatarP1 = document.getElementById('hud-avatar-p1');
+    this.hudAvatarP2 = document.getElementById('hud-avatar-p2');
 
     // News Ticker
     this.newsTickerContent = document.getElementById('news-ticker-content');
 
-    // Log
+    // Log (legacy, now using Intel Terminal)
     this.logContent = document.querySelector('.log-content');
     this.eventLog = document.querySelector('.event-log');
-    this.logToggleBtn = document.getElementById('log-toggle-btn');
-    this.logToggleIcon = document.querySelector('.log-toggle-icon');
 
     // Action Buttons
     this.actionButtons = document.querySelectorAll('[data-action]');
@@ -61,7 +41,7 @@ class GameView {
     // Location Hint
     this.locationHint = document.getElementById('location-hint');
 
-    // --- NEW: Modal Element Caching ---
+    // --- Modal Element Caching ---
     this.modalOverlay = document.getElementById('choice-modal-overlay');
     this.modalTitle = document.getElementById('choice-modal-title');
     this.modalContent = document.getElementById('choice-modal-content');
@@ -70,25 +50,11 @@ class GameView {
     this.modalButtons = document.getElementById('choice-modal-buttons');
     this.modalCancel = document.getElementById('modal-cancel-button');
 
-    // --- NEW: Clerk Element Caching ---
+    // --- Clerk Element Caching ---
     this.modalClerkContainer = document.getElementById('modal-clerk-container');
     this.modalClerkAvatar = document.getElementById('modal-clerk-avatar');
     this.modalClerkName = document.getElementById('modal-clerk-name');
     this.modalClerkMessage = document.getElementById('modal-clerk-message');
-
-    // --- MOBILE STATS BAR ELEMENTS ---
-    this.mobileStatP1 = document.getElementById('mobile-stat-p1');
-    this.mobileStatP2 = document.getElementById('mobile-stat-p2');
-    this.mobileP1Cash = document.getElementById('mobile-p1-cash');
-    this.mobileP1Savings = document.getElementById('mobile-p1-savings');
-    this.mobileP1Loan = document.getElementById('mobile-p1-loan');
-    this.mobileP1Happiness = document.getElementById('mobile-p1-happiness');
-    this.mobileP1Time = document.getElementById('mobile-p1-time');
-    this.mobileP2Cash = document.getElementById('mobile-p2-cash');
-    this.mobileP2Savings = document.getElementById('mobile-p2-savings');
-    this.mobileP2Loan = document.getElementById('mobile-p2-loan');
-    this.mobileP2Happiness = document.getElementById('mobile-p2-happiness');
-    this.mobileP2Time = document.getElementById('mobile-p2-time');
 
     // --- PLAYER STATS MODAL ELEMENTS ---
     this.playerStatsModalOverlay = document.getElementById('player-stats-modal-overlay');
@@ -104,11 +70,19 @@ class GameView {
     this.modalCar = document.getElementById('modal-car');
     this.modalTime = document.getElementById('modal-time');
 
-    // --- GAME LOG MODAL ELEMENTS ---
-    this.gameLogModalOverlay = document.getElementById('game-log-modal-overlay');
-    this.gameLogModal = document.getElementById('game-log-modal');
-    this.gameLogModalClose = document.getElementById('game-log-modal-close');
-    this.gameLogModalEntries = document.getElementById('game-log-modal-entries');
+    // --- PHASE 4: NEW ELEMENTS ---
+    this.lifeAvatar = document.getElementById('life-avatar');
+    this.statusChips = document.getElementById('status-chips');
+    this.essentialsGrid = document.getElementById('essentials-grid');
+    this.assetsGrid = document.getElementById('assets-grid');
+
+    // --- INTEL TERMINAL ELEMENTS ---
+    this.intelTerminalOverlay = document.getElementById('intel-terminal-overlay');
+    this.terminalTrigger = document.getElementById('hud-terminal-trigger');
+    this.terminalBadge = document.getElementById('terminal-badge');
+    this.terminalEntries = document.getElementById('terminal-entries');
+    this.terminalClose = document.getElementById('intel-terminal-close');
+    this.unreadEvents = 0;
 
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
@@ -120,62 +94,58 @@ class GameView {
     });
 
     // Add event listener for the cancel button
-    this.modalCancel.addEventListener('click', () => this.hideModal()); // NEW
+    if (this.modalCancel) this.modalCancel.addEventListener('click', () => this.hideModal());
     
     // Add event listeners for player stats modal
-    this.playerStatsModalClose.addEventListener('click', () => this.hidePlayerStatsModal());
-    this.playerStatsModalOverlay.addEventListener('click', (e) => {
-      if (e.target === this.playerStatsModalOverlay) {
-        this.hidePlayerStatsModal();
-      }
-    });
+    if (this.playerStatsModalClose) this.playerStatsModalClose.addEventListener('click', () => this.hidePlayerStatsModal());
+    if (this.playerStatsModalOverlay) {
+      this.playerStatsModalOverlay.addEventListener('click', (e) => {
+        if (e.target === this.playerStatsModalOverlay) {
+          this.hidePlayerStatsModal();
+        }
+      });
+    }
     
     // Add swipe-down functionality for mobile
-    this.addSwipeToClose(this.playerStatsModal);
+    if (this.playerStatsModal) this.addSwipeToClose(this.playerStatsModal);
     
-    // Add click listeners to mobile stat cards
-    if (this.mobileStatP1) this.mobileStatP1.addEventListener('click', () => this.showPlayerStatsModal(1));
-    if (this.mobileStatP2) this.mobileStatP2.addEventListener('click', () => this.showPlayerStatsModal(2));
+    // Command-Orb click listeners
+    if (this.orbP1) this.orbP1.addEventListener('click', () => this.showPlayerStatsModal(1));
+    if (this.orbP2) this.orbP2.addEventListener('click', () => this.showPlayerStatsModal(2));
     
+    // Listen for game events to update unread count
+    EventBus.subscribe('gameEvent', (event) => {
+      this.unreadEvents++;
+      this.updateTerminalBadge();
+    });
+
+    // Add click listener for terminal trigger
+    if (this.terminalTrigger) {
+      this.terminalTrigger.addEventListener('click', () => this.showIntelTerminal());
+    }
+
+    // Add click listener for terminal close
+    if (this.terminalClose) {
+      this.terminalClose.addEventListener('click', () => this.hideIntelTerminal());
+    }
+
+    if (this.intelTerminalOverlay) {
+      this.intelTerminalOverlay.addEventListener('click', (e) => {
+        if (e.target === this.intelTerminalOverlay) this.hideIntelTerminal();
+      });
+    }
+
     // Subscribe to log icon click event
     EventBus.subscribe('logIconClicked', () => {
-      this.scrollToLog();
-      EventBus.publish('logOpened');
+      this.showIntelTerminal();
     });
     
     // Subscribe to add to log event from EventNotificationManager
     EventBus.subscribe('addToLog', (event) => {
-      // This event is already handled by the regular log update in render()
-      // We just need to ensure the state is updated
       if (window.gameController) {
         window.gameController.gameState.publishCurrentState();
       }
     });
-    
-    // Add click listener to event log to publish logOpened event
-    if (this.eventLog) {
-        this.eventLog.addEventListener('click', () => {
-            EventBus.publish('logOpened');
-        });
-    }
-    
-    // Add click listener for log toggle button
-    if (this.logToggleBtn) {
-        this.logToggleBtn.addEventListener('click', () => {
-            this.toggleLogVisibility();
-        });
-    }
-    
-    // Add event listeners for game log modal
-    this.gameLogModalClose.addEventListener('click', () => this.hideGameLogModal());
-    this.gameLogModalOverlay.addEventListener('click', (e) => {
-      if (e.target === this.gameLogModalOverlay) {
-        this.hideGameLogModal();
-      }
-    });
-    
-    // Add swipe-down functionality for mobile game log modal
-    this.addSwipeToClose(this.gameLogModal);
     
     // Add click listener for Next Week FAB
     if (this.fabNextWeek) {
@@ -189,15 +159,64 @@ class GameView {
     // Initialize Screen Switching
     this.initializeScreenSwitching();
 
-    // Initialize ClockVisualization components
-    this.p1ClockVisualization = null;
-    this.p2ClockVisualization = null;
-    this.mobileP1ClockVisualization = null;
-    this.mobileP2ClockVisualization = null;
-    this.hudClockVisualization = null;
+    // Initialize HUD clock visualizations
+    this.hudClockVisualizationP1 = null;
+    this.hudClockVisualizationP2 = null;
     
-    // Initialize clock visualizations after DOM is ready
     this.initializeClockVisualizations();
+    this.lastPlayerIndex = -1;
+  }
+
+  updateTerminalBadge() {
+    if (this.terminalBadge) {
+      if (this.unreadEvents > 0) {
+        this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents;
+        this.terminalBadge.classList.remove('hidden');
+      } else {
+        this.terminalBadge.classList.add('hidden');
+      }
+    }
+  }
+
+  showIntelTerminal() {
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    if (!gameState) return;
+
+    this.unreadEvents = 0;
+    this.updateTerminalBadge();
+
+    this.terminalEntries.innerHTML = '';
+    
+    // Chronological order (oldest at top, newest at bottom)
+    // The log is stored in chronological order in GameState? 
+    // Usually log is pushed to the end. Let's assume it's chronological.
+    const logEntries = gameState.log; 
+
+    logEntries.forEach(message => {
+      const p = document.createElement('p');
+      if (typeof message === 'string') {
+        p.textContent = message;
+      } else {
+        p.textContent = message.text;
+        p.className = `log-${message.category}`;
+      }
+      this.terminalEntries.appendChild(p);
+    });
+
+    this.intelTerminalOverlay.classList.remove('hidden');
+    
+    // Auto-scroll to bottom
+    const content = this.terminalEntries.parentElement;
+    setTimeout(() => {
+      content.scrollTop = content.scrollHeight;
+    }, 50);
+
+    document.body.style.overflow = 'hidden';
+  }
+
+  hideIntelTerminal() {
+    this.intelTerminalOverlay.classList.add('hidden');
+    document.body.style.overflow = '';
   }
 
   initializeScreenSwitching() {
@@ -256,71 +275,40 @@ class GameView {
         }
     });
 
+    // Trigger immediate render for the new screen
+    if (window.gameController && window.gameController.gameState) {
+        this.render(window.gameController.gameState);
+    }
+
     // Publish event for other components if needed
     EventBus.publish('screenSwitched', screenId);
   }
 
   initializeClockVisualizations() {
-    // Initialize HUD clock visualization
-    if (document.getElementById('hud-time-ring')) {
-      this.hudClockVisualization = new ClockVisualization('hud-time-ring', {
-        size: 60,
+    // Initialize HUD clock visualizations for Command-Orbs
+    if (document.getElementById('hud-time-ring-p1')) {
+      this.hudClockVisualizationP1 = new ClockVisualization('hud-time-ring-p1', {
+        size: 52,
         strokeWidth: 4,
-        backgroundColor: 'rgba(0, 255, 255, 0.1)',
+        backgroundColor: 'rgba(255, 0, 255, 0.1)',
         foregroundColor: '#FF00FF',
         textColor: 'transparent',
         showNumeric: false
       });
     }
 
-    // Initialize desktop clock visualizations
-    if (this.p1Time) {
-      this.p1ClockVisualization = new ClockVisualization('p1-time', {
-        size: 50,
-        strokeWidth: 6,
-        backgroundColor: 'rgba(255, 0, 255, 0.2)',
-        foregroundColor: '#FF00FF',
-        textColor: '#FFFFFF',
-        fontSize: '12px'
-      });
-    }
-    
-    if (this.p2Time) {
-      this.p2ClockVisualization = new ClockVisualization('p2-time', {
-        size: 50,
-        strokeWidth: 6,
-        backgroundColor: 'rgba(0, 255, 255, 0.2)',
-        foregroundColor: '#00FFFF',
-        textColor: '#FFFFFF',
-        fontSize: '12px'
-      });
-    }
-    
-    // Initialize mobile clock visualizations
-    if (this.mobileP1Time) {
-      this.mobileP1ClockVisualization = new ClockVisualization('mobile-p1-time', {
-        size: 40,
+    if (document.getElementById('hud-time-ring-p2')) {
+      this.hudClockVisualizationP2 = new ClockVisualization('hud-time-ring-p2', {
+        size: 52,
         strokeWidth: 4,
-        backgroundColor: 'rgba(255, 0, 255, 0.2)',
-        foregroundColor: '#FF00FF',
-        textColor: '#FFFFFF',
-        fontSize: '10px'
-      });
-    }
-    
-    if (this.mobileP2Time) {
-      this.mobileP2ClockVisualization = new ClockVisualization('mobile-p2-time', {
-        size: 40,
-        strokeWidth: 4,
-        backgroundColor: 'rgba(0, 255, 255, 0.2)',
+        backgroundColor: 'rgba(0, 255, 255, 0.1)',
         foregroundColor: '#00FFFF',
-        textColor: '#FFFFFF',
-        fontSize: '10px'
+        textColor: 'transparent',
+        showNumeric: false
       });
     }
   }
 
-  // --- NEW: Method to show a generic choice modal ---
   showChoiceModal({ title, choices, showInput = false }) {
     const gameState = window.gameController ? window.gameController.gameState : null;
     const location = gameState ? gameState.getCurrentPlayer().location : null;
@@ -331,30 +319,28 @@ class GameView {
       this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
       this.modalClerkName.textContent = clerk.name;
       this.modalClerkMessage.textContent = clerk.message;
-      this.modalTitle.classList.add('hidden'); // Hide title when clerk is present
+      this.modalTitle.classList.add('hidden');
     } else {
       this.modalClerkContainer.classList.add('hidden');
       this.modalTitle.classList.remove('hidden');
       this.modalTitle.textContent = title;
     }
 
-    this.modalContent.innerHTML = ''; // Clear previous content
-    this.modalButtons.innerHTML = ''; // Clear previous buttons
+    this.modalContent.innerHTML = '';
+    this.modalButtons.innerHTML = '';
 
     if (showInput) {
       this.modalInput.classList.remove('hidden');
-      this.modalInputField.value = ''; // Clear input field
+      this.modalInputField.value = '';
     } else {
       this.modalInput.classList.add('hidden');
     }
 
-    // SPECIAL HANDLING: Use Action Cards for Shopping and College
     if (location === 'Shopping Mall') {
       this.renderActionCards('shopping', SHOPPING_ITEMS);
     } else if (location === 'Community College') {
       this.renderActionCards('college', COURSES);
     } else {
-      // Default button-based choices
       choices.forEach(choice => {
         const button = document.createElement('button');
         button.textContent = choice.text;
@@ -371,12 +357,10 @@ class GameView {
     this.modalOverlay.classList.remove('hidden');
   }
 
-  // --- NEW: Method to hide the modal ---
   hideModal() {
     this.modalOverlay.classList.add('hidden');
   }
 
-  // --- NEW: Method to show job application modal ---
   showJobApplicationModal() {
     const clerk = CLERKS["Employment Agency"];
     if (clerk) {
@@ -391,13 +375,12 @@ class GameView {
       this.modalTitle.textContent = 'Apply for a Job';
     }
 
-    this.modalContent.innerHTML = ''; // Clear previous content
-    this.modalButtons.innerHTML = ''; // Clear previous buttons
-    this.modalInput.classList.add('hidden'); // Hide input field
+    this.modalContent.innerHTML = '';
+    this.modalButtons.innerHTML = '';
+    this.modalInput.classList.add('hidden');
 
     this.renderActionCards('jobs', JOBS);
 
-    // Add cancel button
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Cancel';
     cancelButton.classList.add('btn', 'btn-secondary');
@@ -407,7 +390,6 @@ class GameView {
     this.modalOverlay.classList.remove('hidden');
   }
 
-  // Helper to render Action Cards for different types
   renderActionCards(type, data) {
     const gameState = window.gameController ? window.gameController.gameState : null;
     const player = gameState ? gameState.getCurrentPlayer() : null;
@@ -484,28 +466,21 @@ class GameView {
     this.modalContent.appendChild(cardList);
   }
 
-  // --- NEW: Player Stats Modal Methods ---
   showPlayerStatsModal(playerIndex) {
-    // Get current game state to populate the modal
     const gameState = window.gameController ? window.gameController.gameState : null;
     if (!gameState || !gameState.players[playerIndex - 1]) return;
     
     const player = gameState.players[playerIndex - 1];
     
-    // Set the modal title based on player
     this.playerStatsModalTitle.textContent = playerIndex === 1 ? 'Your Stats' : 'AI Stats';
-    
-    // Set the player-specific color theme
     this.playerStatsModal.className = playerIndex === 1 ? 'player-1' : 'player-2';
     
-    // Populate the modal with player data
     this.modalCash.textContent = `$${player.cash}`;
     this.modalSavings.textContent = `$${player.savings}`;
     this.modalLoan.textContent = `$${player.loan}`;
     this.modalHappiness.textContent = player.happiness;
     
-    // Get education and career information
-    const course = JOBS.find(c => c.educationMilestone === player.educationLevel);
+    const course = COURSES.find(c => c.educationMilestone === player.educationLevel);
     this.modalEducation.textContent = course ? course.name : 'None';
     
     const job = JOBS.find(j => j.level === player.careerLevel);
@@ -514,32 +489,24 @@ class GameView {
     this.modalCar.textContent = player.hasCar ? 'Yes' : 'No';
     this.modalTime.textContent = `${player.time} hours`;
     
-    // Show the modal
     this.playerStatsModalOverlay.classList.remove('hidden');
-    
-    // Prevent body scroll on mobile
     document.body.style.overflow = 'hidden';
   }
   
   hidePlayerStatsModal() {
     this.playerStatsModalOverlay.classList.add('hidden');
-    
-    // Restore body scroll
     document.body.style.overflow = '';
   }
   
-  // Add swipe-to-close functionality for mobile modals
   addSwipeToClose(modalElement) {
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
     
     const handleTouchStart = (e) => {
-      // Only start tracking if touch is near the top of the modal
       const touch = e.touches[0];
       const rect = modalElement.getBoundingClientRect();
       
-      // Check if touch is in the top 25% of the modal
       if (touch.clientY - rect.top < rect.height * 0.25) {
         startY = touch.clientY;
         isDragging = true;
@@ -553,12 +520,8 @@ class GameView {
       currentY = e.touches[0].clientY;
       const deltaY = currentY - startY;
       
-      // Only allow downward swipe
       if (deltaY > 0) {
-        // Apply transform to create the swipe effect
         modalElement.style.transform = `translateY(${deltaY}px)`;
-        
-        // Add opacity based on swipe distance
         const opacity = Math.max(0, 1 - (deltaY / window.innerHeight));
         this.playerStatsModalOverlay.style.backgroundColor = `rgba(0, 0, 0, ${0.8 * opacity})`;
       }
@@ -569,324 +532,110 @@ class GameView {
       
       isDragging = false;
       const deltaY = currentY - startY;
-      const threshold = window.innerHeight * 0.3; // 30% of screen height
+      const threshold = window.innerHeight * 0.3;
       
-      // Reset transition
       modalElement.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
       
       if (deltaY > threshold) {
-        // If swiped far enough, close the modal
         modalElement.style.transform = `translateY(100%)`;
         modalElement.style.opacity = '0';
         
         setTimeout(() => {
           this.hidePlayerStatsModal();
-          // Reset styles after closing
           modalElement.style.transform = '';
           modalElement.style.opacity = '';
           this.playerStatsModalOverlay.style.backgroundColor = '';
         }, 300);
       } else {
-        // If not swiped far enough, snap back
         modalElement.style.transform = '';
         this.playerStatsModalOverlay.style.backgroundColor = '';
       }
     };
     
-    // Add touch event listeners
     modalElement.addEventListener('touchstart', handleTouchStart, { passive: true });
     modalElement.addEventListener('touchmove', handleTouchMove, { passive: true });
     modalElement.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
-  
-  // Method to scroll to the log
-  scrollToLog() {
-    if (this.eventLog) {
-      this.eventLog.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
-  
-  // Method to toggle log visibility
-  toggleLogVisibility() {
-    if (this.eventLog) {
-      const isCollapsed = this.eventLog.classList.contains('collapsed');
-      
-      if (isCollapsed) {
-        // On mobile, show the modal instead of expanding inline
-        if (window.innerWidth <= 768) {
-          this.showGameLogModal();
-        } else {
-          // Expand the log on desktop
-          this.eventLog.classList.remove('collapsed');
-          this.logToggleIcon.textContent = '▼';
-        }
-      } else {
-        // Collapse the log
-        this.eventLog.classList.add('collapsed');
-        this.logToggleIcon.textContent = '▲';
-      }
-    }
-  }
-  
-  // --- NEW: Game Log Modal Methods ---
-  showGameLogModal() {
-    // Get current game state to populate the modal
-    const gameState = window.gameController ? window.gameController.gameState : null;
-    if (!gameState) return;
-    
-    // Clear existing content
-    this.gameLogModalEntries.innerHTML = '';
-    
-    // Get only the log entries from the last player turn and last AI turn
-    const recentLogEntries = this.getRecentLogEntries(gameState);
-    
-    // Populate the modal with recent log entries
-    recentLogEntries.forEach(message => {
-      const p = document.createElement('p');
-      // Handle both old string format and new object format
-      if (typeof message === 'string') {
-        p.textContent = message;
-      } else {
-        p.textContent = message.text;
-        p.classList.add(`log-${message.category}`);
-      }
-      this.gameLogModalEntries.appendChild(p);
-    });
-    
-    // Show the modal
-    this.gameLogModalOverlay.classList.remove('hidden');
-    
-    // Prevent body scroll on mobile
-    document.body.style.overflow = 'hidden';
-    
-    // Publish logOpened event to clear notification badge
-    EventBus.publish('logOpened');
-  }
-  
-  // Helper method to get log entries from the last player turn and last AI turn
-  getRecentLogEntries(gameState) {
-    if (!gameState.log || gameState.log.length === 0) return [];
-    
-    // Find the indices of turn boundaries in the log
-    const turnBoundaries = [];
-    
-    // Look for turn end messages to identify turn boundaries
-    for (let i = 0; i < gameState.log.length; i++) {
-      const message = gameState.log[i];
-      const text = typeof message === 'string' ? message : message.text;
-      
-      // Check if this message indicates the end of a turn
-      if (text.includes('returned home.') || text.includes('paid $50 for daily expenses.')) {
-        turnBoundaries.push(i);
-      }
-    }
-    
-    // If we have at least 2 turn boundaries, get entries from the last two turns
-    if (turnBoundaries.length >= 2) {
-      const lastTurnStart = turnBoundaries[turnBoundaries.length - 2];
-      return gameState.log.slice(0, lastTurnStart);
-    }
-    
-    // If we have only one turn boundary, get entries from the current turn
-    if (turnBoundaries.length === 1) {
-      const lastTurnStart = turnBoundaries[0];
-      return gameState.log.slice(0, lastTurnStart);
-    }
-    
-    // If no turn boundaries found, return all entries (fallback)
-    return gameState.log;
-  }
-  
-  hideGameLogModal() {
-    this.gameLogModalOverlay.classList.add('hidden');
-    
-    // Restore body scroll
-    document.body.style.overflow = '';
+
+  showLoading() {
+    this.loadingOverlay.classList.remove('hidden');
+    this.actionButtons.forEach(btn => btn.disabled = true);
+    document.body.classList.add('loading-active');
   }
 
-  // --- NEW: Loading handlers ---
-// Show the loading overlay and disable action buttons
-showLoading() {
-  this.loadingOverlay.classList.remove('hidden');
-  this.actionButtons.forEach(btn => btn.disabled = true);
-  // Mobile fix: Prevent body scroll
-  document.body.classList.add('loading-active');
-}
-
-// Hide the loading overlay and re-enable action buttons
-hideLoading() {
-  this.loadingOverlay.classList.add('hidden');
-  this.actionButtons.forEach(btn => btn.disabled = false);
-  // Mobile fix: Re-enable body scroll
-  document.body.classList.remove('loading-active');
-}
+  hideLoading() {
+    this.loadingOverlay.classList.add('hidden');
+    this.actionButtons.forEach(btn => btn.disabled = false);
+    document.body.classList.remove('loading-active');
+  }
 
   render(gameState) {
-    // Get player data at the beginning to avoid initialization issues
     const player1 = gameState.players[0];
     const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
-    
-    // --- START: ACTIVE PLAYER HIGHLIGHT ---
-    if (this.player1Panel) this.player1Panel.classList.remove('active');
-    if (this.player2Panel) this.player2Panel.classList.remove('active');
-    if (gameState.currentPlayerIndex === 0) {
-      if (this.player1Panel) this.player1Panel.classList.add('active');
-    } else {
-      if (this.player2Panel) this.player2Panel.classList.add('active');
-    }
-    // --- END: ACTIVE PLAYER HIGHLIGHT ---
-
-    // --- MOBILE STATS UPDATE ---
-    // Update mobile stats bar (only visible on mobile)
-    if (this.mobileP1Cash) {
-        // Update Player 1 mobile stats
-        this.mobileP1Cash.textContent = `$${player1.cash}`;
-        this.mobileP1Savings.textContent = `$${player1.savings}`;
-        this.mobileP1Loan.textContent = `$${player1.loan}`;
-        this.mobileP1Happiness.textContent = player1.happiness;
-        if (this.mobileP1ClockVisualization) {
-          this.mobileP1ClockVisualization.updateTime(player1.time);
-        } else if (this.mobileP1Time) {
-          this.mobileP1Time.textContent = `${player1.time}h`;
-        }
-        
-        // Update active state for mobile
-        if (this.mobileStatP1) {
-            if (gameState.currentPlayerIndex === 0) {
-                this.mobileStatP1.classList.add('active');
-            } else {
-                this.mobileStatP1.classList.remove('active');
-            }
-        }
-    }
-
-    // Update Player 2 mobile stats
-    if (this.mobileP2Cash && player2) {
-        this.mobileP2Cash.textContent = `$${player2.cash}`;
-        this.mobileP2Savings.textContent = `$${player2.savings}`;
-        this.mobileP2Loan.textContent = `$${player2.loan}`;
-        this.mobileP2Happiness.textContent = player2.happiness;
-        if (this.mobileP2ClockVisualization) {
-          this.mobileP2ClockVisualization.updateTime(player2.time);
-        } else if (this.mobileP2Time) {
-          this.mobileP2Time.textContent = `${player2.time}h`;
-        }
-        
-        // Update active state for mobile
-        if (this.mobileStatP2) {
-            if (gameState.currentPlayerIndex === 1) {
-                this.mobileStatP2.classList.add('active');
-            } else {
-                this.mobileStatP2.classList.remove('active');
-            }
-        }
-    }
-    // --- END MOBILE STATS UPDATE ---
-
-    // Player 1
-    if (this.p1Cash) this.p1Cash.textContent = `$${player1.cash}`;
-    if (this.p1Savings) this.p1Savings.textContent = `$${player1.savings}`;
-    if (this.p1Loan) this.p1Loan.textContent = `$${player1.loan}`;
-    if (this.p1Happiness) this.p1Happiness.textContent = player1.happiness;
-    const p1Course = COURSES.find(c => c.educationMilestone === player1.educationLevel);
-    if (this.p1Education) this.p1Education.textContent = p1Course ? p1Course.name : 'None';
-    const p1Job = JOBS.find(j => j.level === player1.careerLevel);
-    if (this.p1Career) this.p1Career.textContent = p1Job ? p1Job.title : 'Unemployed';
-    if (this.p1Car) this.p1Car.textContent = player1.hasCar ? 'Yes' : 'No';
-    if (this.p1ClockVisualization) {
-      this.p1ClockVisualization.updateTime(player1.time);
-    } else if (this.p1Time) {
-      this.p1Time.textContent = `${player1.time} hours`;
-    }
-
-    // Player 2
-    if (player2) {
-        if (this.p2Cash) this.p2Cash.textContent = `$${player2.cash}`;
-        if (this.p2Savings) this.p2Savings.textContent = `$${player2.savings}`;
-        if (this.p2Loan) this.p2Loan.textContent = `$${player2.loan}`;
-        if (this.p2Happiness) this.p2Happiness.textContent = player2.happiness;
-        const p2Course = COURSES.find(c => c.educationMilestone === player2.educationLevel);
-        if (this.p2Education) this.p2Education.textContent = p2Course ? p2Course.name : 'None';
-        const p2Job = JOBS.find(j => j.level === player2.careerLevel);
-        if (this.p2Career) this.p2Career.textContent = p2Job ? p2Job.title : 'Unemployed';
-        if (this.p2Car) this.p2Car.textContent = player2.hasCar ? 'Yes' : 'No';
-        if (this.p2ClockVisualization) {
-          this.p2ClockVisualization.updateTime(player2.time);
-        } else if (this.p2Time) {
-          this.p2Time.textContent = `${player2.time} hours`;
-        }
-    }
-
-    // Game Info
     const currentPlayer = gameState.getCurrentPlayer();
     const currentPlayerIndex = gameState.currentPlayerIndex;
-    
-    // Update HUD
+
+    // Update Command-Orbs
+    if (this.orbP1) {
+      this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
+      this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
+      
+      // Pulse animation on turn switch
+      if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
+        this.orbP1.classList.add('pulse');
+        setTimeout(() => this.orbP1.classList.remove('pulse'), 600);
+      }
+    }
+
+    if (this.orbP2) {
+      this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
+      this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
+      
+      // Pulse animation on turn switch
+      if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
+        this.orbP2.classList.add('pulse');
+        setTimeout(() => this.orbP2.classList.remove('pulse'), 600);
+      }
+    }
+
+    this.lastPlayerIndex = currentPlayerIndex;
+
+    // Update HUD Clock Visualizations
+    if (this.hudClockVisualizationP1) {
+      this.hudClockVisualizationP1.updateTime(player1.time);
+    }
+    if (this.hudClockVisualizationP2 && player2) {
+      this.hudClockVisualizationP2.updateTime(player2.time);
+    }
+
+    // Update HUD Values
     if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
     if (this.hudWeek) this.hudWeek.textContent = gameState.turn;
     if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
-    
-    // Update HUD Avatar & Time Ring
-    if (this.avatarInitials) {
-      this.avatarInitials.textContent = currentPlayerIndex === 0 ? 'P1' : 'AI';
-    }
-    if (this.hudAvatar) {
-      this.hudAvatar.style.background = currentPlayerIndex === 0 
-        ? 'linear-gradient(135deg, var(--neon-pink), #D500F9)' 
-        : 'linear-gradient(135deg, var(--neon-cyan), var(--neon-blue))';
-      this.hudAvatar.style.boxShadow = currentPlayerIndex === 0
-        ? '0 0 15px rgba(255, 0, 255, 0.3)'
-        : '0 0 15px rgba(0, 255, 255, 0.3)';
-    }
-    
-    if (this.hudClockVisualization) {
-      this.hudClockVisualization.options.foregroundColor = currentPlayerIndex === 0 ? '#FF00FF' : '#00FFFF';
-      this.hudClockVisualization.updateTime(currentPlayer.time);
-    }
 
-    // Update News Ticker
+    // News Ticker
     if (this.newsTickerContent && gameState.log.length > 0) {
       const recentEvents = gameState.log
-        .slice(0, 5)
+        .slice(-5)
         .map(entry => typeof entry === 'string' ? entry : entry.text)
         .join('  •  ');
       this.newsTickerContent.textContent = recentEvents;
     }
 
-    // Update location hint with count of available actions
     this.updateLocationHint(currentPlayer.location);
 
-    // Render City Grid if on City screen
     if (this.currentScreenId === 'city') {
       this.renderCityGrid(gameState);
+    } else if (this.currentScreenId === 'life') {
+      this.renderLifeScreen(gameState);
+    } else if (this.currentScreenId === 'inventory') {
+      this.renderInventoryScreen(gameState);
     }
 
-    // Game Log
-    if (this.logContent) {
-        this.logContent.innerHTML = ''; // Clear the log first
-        
-        // Get only the log entries from the last player turn and last AI turn
-        const recentLogEntries = this.getRecentLogEntries(gameState);
-        
-        recentLogEntries.forEach(message => {
-          const p = document.createElement('p');
-          // Handle both old string format and new object format
-          if (typeof message === 'string') {
-            p.textContent = message;
-          } else {
-            p.textContent = message.text;
-            p.classList.add(`log-${message.category}`);
-          }
-          this.logContent.appendChild(p);
-        });
-    }
-
-    // Action Buttons Visibility
+    // Update Action Buttons
     this.actionButtons.forEach(button => {
-        // Remove location-specific class from all buttons first
         button.classList.remove('location-specific');
-        
-        if(button.dataset.action !== 'restEndTurn') { // restEndTurn is always visible
+        if(button.dataset.action !== 'restEndTurn') {
             button.classList.add('hidden');
         }
     });
@@ -953,31 +702,17 @@ hideLoading() {
     }
   }
   
-  // Method to update location hint based on available actions
   updateLocationHint(location) {
     let hintText = '';
     
     switch (location) {
-        case 'Home':
-            hintText = 'Rest and end your turn here';
-            break;
-        case 'Employment Agency':
-            hintText = 'Find work and earn money';
-            break;
-        case 'Community College':
-            hintText = 'Improve your education for better jobs';
-            break;
-        case 'Shopping Mall':
-            hintText = 'Buy items to boost your happiness';
-            break;
-        case 'Used Car Lot':
-            hintText = 'Purchase a car for faster travel';
-            break;
-        case 'Bank':
-            hintText = 'Manage your finances: deposit, withdraw, or take a loan';
-            break;
-        default:
-            hintText = 'Travel to other locations';
+        case 'Home': hintText = 'Rest and end your turn here'; break;
+        case 'Employment Agency': hintText = 'Find work and earn money'; break;
+        case 'Community College': hintText = 'Improve your education for better jobs'; break;
+        case 'Shopping Mall': hintText = 'Buy items to boost your happiness'; break;
+        case 'Used Car Lot': hintText = 'Purchase a car for faster travel'; break;
+        case 'Bank': hintText = 'Manage your finances: deposit, withdraw, or take a loan'; break;
+        default: hintText = 'Travel to other locations';
     }
     
     if (this.locationHint) {
@@ -1022,7 +757,6 @@ hideLoading() {
       this.cityBentoGrid.appendChild(card);
     });
 
-    // Update FAB visibility
     if (this.fabNextWeek) {
       if (currentPlayer.location === 'Home') {
         this.fabNextWeek.classList.remove('hidden');
@@ -1041,6 +775,116 @@ hideLoading() {
       case 'Used Car Lot': return 'Buy a car';
       case 'Bank': return 'Savings & Loans';
       default: return '';
+    }
+  }
+
+  renderLifeScreen(gameState) {
+    const player = gameState.getCurrentPlayer();
+    const index = gameState.currentPlayerIndex;
+
+    if (this.lifeAvatar) {
+      this.lifeAvatar.textContent = index === 0 ? 'P1' : 'AI';
+      this.lifeAvatar.style.background = index === 0 
+        ? 'linear-gradient(135deg, var(--neon-pink), #D500F9)' 
+        : 'linear-gradient(135deg, var(--neon-cyan), var(--neon-blue))';
+    }
+
+    if (this.statusChips) {
+      this.statusChips.innerHTML = '';
+      
+      if (player.time > 12) {
+        const chip = document.createElement('span');
+        chip.className = 'status-chip chip-success';
+        chip.textContent = 'Well-Rested';
+        this.statusChips.appendChild(chip);
+      }
+
+      if (player.hunger > 50) {
+        const chip = document.createElement('span');
+        chip.className = `status-chip ${player.hunger > 80 ? 'chip-danger' : 'chip-warning'}`;
+        chip.textContent = player.hunger > 80 ? 'Starving' : 'Hungry';
+        this.statusChips.appendChild(chip);
+      } else {
+        const chip = document.createElement('span');
+        chip.className = 'status-chip chip-success';
+        chip.textContent = 'Satiated';
+        this.statusChips.appendChild(chip);
+      }
+
+      if (player.loan > 0) {
+        const chip = document.createElement('span');
+        chip.className = 'status-chip chip-danger';
+        chip.textContent = 'In Debt';
+        this.statusChips.appendChild(chip);
+      }
+    }
+
+    const wealth = Math.min(100, Math.round(((player.cash + player.savings) / 10000) * 100));
+    const happiness = player.happiness;
+    const education = Math.min(100, Math.round((player.educationLevel / 5) * 100));
+    const career = Math.min(100, Math.round((player.careerLevel / 5) * 100));
+
+    this.updateGauge('wealth', wealth, '#00E676');
+    this.updateGauge('happiness', happiness, '#FFD600');
+    this.updateGauge('education', education, '#2979FF');
+    this.updateGauge('career', career, '#FF00FF');
+  }
+
+  updateGauge(id, percentage, color) {
+    const container = document.getElementById(`gauge-${id}`);
+    if (!container) return;
+
+    const radius = 45;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (percentage / 100) * circumference;
+
+    container.innerHTML = `
+      <svg viewBox="0 0 100 100" class="gauge-svg">
+        <circle class="gauge-ring-background" cx="50" cy="50" r="${radius}"></circle>
+        <circle class="gauge-ring-fill" cx="50" cy="50" r="${radius}" 
+                style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset}; stroke: ${color};">
+        </circle>
+      </svg>
+      <div class="gauge-percentage">${percentage}%</div>
+    `;
+  }
+
+  renderInventoryScreen(gameState) {
+    const player = gameState.getCurrentPlayer();
+    
+    if (this.essentialsGrid) {
+      this.essentialsGrid.innerHTML = '';
+      const essentials = SHOPPING_ITEMS.filter(i => i.type === 'essential' && i.icon);
+      
+      essentials.forEach(item => {
+        const isOwned = player.inventory.some(i => i.name === item.name);
+        const div = document.createElement('div');
+        div.className = `essential-item ${isOwned ? 'owned' : ''}`;
+        div.innerHTML = Icons[item.icon](32, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)');
+        div.title = item.name;
+        this.essentialsGrid.appendChild(div);
+      });
+    }
+
+    if (this.assetsGrid) {
+      this.assetsGrid.innerHTML = '';
+      const assets = SHOPPING_ITEMS.filter(i => i.type === 'asset');
+
+      assets.forEach(item => {
+        const isOwned = player.inventory.some(i => i.name === item.name);
+        const card = document.createElement('div');
+        card.className = `inventory-card glass ${isOwned ? 'owned' : ''}`;
+        card.innerHTML = `
+          <div class="inventory-card-icon">
+            ${Icons[item.icon](40, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)')}
+          </div>
+          <div class="inventory-card-content">
+            <div class="inventory-card-name">${item.name}</div>
+            <div class="inventory-card-benefit">${item.benefit}</div>
+          </div>
+        `;
+        this.assetsGrid.appendChild(card);
+      });
     }
   }
 }

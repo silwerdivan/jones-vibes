@@ -14,10 +14,15 @@
     <div class="app-shell">
         <header class="hud glass">
             <div class="hud-left">
-                <div class="player-avatar-wrapper">
-                    <div id="hud-time-ring" class="time-ring-container"></div>
-                    <div class="avatar-placeholder" id="hud-avatar">
-                        <span id="avatar-initials">P1</span>
+                <div class="hud-status-orbs">
+                    <div id="orb-p1" class="status-orb active">
+                        <div id="hud-time-ring-p1" class="time-ring-container"></div>
+                        <div class="orb-avatar" id="hud-avatar-p1">P1</div>
+                    </div>
+                    
+                    <div id="orb-p2" class="status-orb inactive">
+                        <div id="hud-time-ring-p2" class="time-ring-container"></div>
+                        <div class="orb-avatar" id="hud-avatar-p2">AI</div>
                     </div>
                 </div>
                 <div class="hud-stats">
@@ -29,6 +34,10 @@
             </div>
             
             <div class="hud-right">
+                <div id="hud-terminal-trigger" class="hud-terminal-btn" aria-label="Open Intel Terminal">
+                    <i class="material-icons">terminal</i>
+                    <span id="terminal-badge" class="terminal-badge hidden">0</span>
+                </div>
                 <div class="hud-stat-item text-right">
                     <span class="hud-label">WEEK</span>
                     <span id="hud-week" class="hud-value">1</span>
@@ -48,180 +57,8 @@
 
         <main class="content-area">
             <section id="screen-city" class="screen">
-                <!-- Mobile stats bar - only visible on small screens -->
-                <div id="mobile-stats" class="mobile-stats" aria-label="Player Statistics">
-                    <div class="mobile-stat-card card" id="mobile-stat-p1">
-                        <div class="mobile-stat-header">
-                            <span class="mobile-player-name">You</span>
-                            <span class="mobile-player-indicator" id="mobile-p1-active"></span>
-                        </div>
-                        <div class="mobile-stat-grid">
-                            <span class="mobile-stat-icon">💰</span>
-                            <span id="mobile-p1-cash" class="mobile-stat-value">$0</span>
-                            <span class="mobile-stat-icon">🏦</span>
-                            <span id="mobile-p1-savings" class="mobile-stat-value">$0</span>
-                            <span class="mobile-stat-icon">💸</span>
-                            <span id="mobile-p1-loan" class="mobile-stat-value">$0</span>
-                            <span class="mobile-stat-icon">😊</span>
-                            <span id="mobile-p1-happiness" class="mobile-stat-value">0</span>
-                            <span class="mobile-stat-icon">⏰</span>
-                            <span id="mobile-p1-time" class="mobile-stat-value">24h</span>
-                        </div>
-                    </div>
-                    <div class="mobile-stat-card card" id="mobile-stat-p2">
-                        <div class="mobile-stat-header">
-                            <span class="mobile-player-name">AI</span>
-                            <span class="mobile-player-indicator" id="mobile-p2-active"></span>
-                        </div>
-                        <div class="mobile-stat-grid">
-                            <span class="mobile-stat-icon">💰</span>
-                            <span id="mobile-p2-cash" class="mobile-stat-value">$0</span>
-                            <span class="mobile-stat-icon">🏦</span>
-                            <span id="mobile-p2-savings" class="mobile-stat-value">$0</span>
-                            <span id="mobile-p2-loan" class="mobile-stat-value">$0</span>
-                            <span class="mobile-stat-icon">😊</span>
-                            <span id="mobile-p2-happiness" class="mobile-stat-value">0</span>
-                            <span id="mobile-p2-time" class="mobile-stat-value">24h</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="city-bento-grid" class="bento-grid">
                     <!-- Bento cards will be dynamically inserted here -->
-                </div>
-
-                <div id="player-1" class="player-panel card glass">
-                    <h2>You</h2>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <span class="stat-icon">💰</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Cash</span>
-                                <span id="p1-cash" class="stat-value currency">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🏦</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Savings</span>
-                                <span id="p1-savings" class="stat-value">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">💸</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Loan</span>
-                                <span id="p1-loan" class="stat-value">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">😊</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Happiness</span>
-                                <span id="p1-happiness" class="stat-value">0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🎓</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Education</span>
-                                <span id="p1-education" class="stat-value">None</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">💼</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Career</span>
-                                <span id="p1-career" class="stat-value">Unemployed</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🚗</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Car</span>
-                                <span id="p1-car" class="stat-value">No</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">⏰</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Time</span>
-                                <span id="p1-time" class="stat-value">24h</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="player-2" class="player-panel card glass">
-                    <h2>AI</h2>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <span class="stat-icon">💰</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Cash</span>
-                                <span id="p2-cash" class="stat-value currency">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🏦</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Savings</span>
-                                <span id="p2-savings" class="stat-value">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">💸</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Loan</span>
-                                <span id="p2-loan" class="stat-value">$0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">😊</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Happiness</span>
-                                <span id="p2-happiness" class="stat-value">0</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🎓</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Education</span>
-                                <span id="p2-education" class="stat-value">None</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">💼</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Career</span>
-                                <span id="p2-career" class="stat-value">Unemployed</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">🚗</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Car</span>
-                                <span id="p2-car" class="stat-value">No</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-icon">⏰</span>
-                            <div class="stat-details">
-                                <span class="stat-label">Time</span>
-                                <span id="p2-time" class="stat-value">24h</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="event-log card glass" data-testid="game-log">
-                    <div class="log-header">
-                        <h3>Game Log</h3>
-                        <button id="log-toggle-btn" class="btn btn-icon" aria-label="Toggle game log">
-                            <span class="log-toggle-icon"><i class="material-icons">arrow_drop_down</i></span>
-                        </button>
-                    </div>
-                    <div class="log-content"></div>
                 </div>
 
                 <div id="location-info" class="location-hint-area">
@@ -246,16 +83,46 @@
             </section>
 
             <section id="screen-life" class="screen hidden">
-                <div class="screen-placeholder card glass">
-                    <h2>Life Dashboard</h2>
-                    <p>Coming soon: Track your goals and biometrics.</p>
+                <div class="life-header card glass">
+                    <div class="life-avatar-container">
+                        <div class="avatar-sm" id="life-avatar">P1</div>
+                    </div>
+                    <div class="status-chips" id="status-chips">
+                        <!-- Dynamic Chips -->
+                    </div>
+                </div>
+                <div class="gauge-grid">
+                    <div class="gauge-card glass" data-gauge="wealth">
+                        <div class="gauge-svg-container" id="gauge-wealth"></div>
+                        <div class="gauge-label">Wealth</div>
+                    </div>
+                    <div class="gauge-card glass" data-gauge="happiness">
+                        <div class="gauge-svg-container" id="gauge-happiness"></div>
+                        <div class="gauge-label">Happiness</div>
+                    </div>
+                    <div class="gauge-card glass" data-gauge="education">
+                        <div class="gauge-svg-container" id="gauge-education"></div>
+                        <div class="gauge-label">Education</div>
+                    </div>
+                    <div class="gauge-card glass" data-gauge="career">
+                        <div class="gauge-svg-container" id="gauge-career"></div>
+                        <div class="gauge-label">Career</div>
+                    </div>
                 </div>
             </section>
 
             <section id="screen-inventory" class="screen hidden">
-                <div class="screen-placeholder card glass">
-                    <h2>Inventory</h2>
-                    <p>Coming soon: Manage your gear and assets.</p>
+                <div class="inventory-section">
+                    <h3 class="section-title">Essentials</h3>
+                    <div id="essentials-grid" class="essentials-grid">
+                        <!-- Dynamic Essential Items -->
+                    </div>
+                </div>
+                <div class="inventory-section">
+                    <h3 class="section-title">Home Assets</h3>
+                    <div id="assets-grid" class="assets-grid">
+                        <!-- Dynamic Asset Cards -->
+                    </div>
                 </div>
             </section>
 
@@ -386,22 +253,20 @@
         </div>
         <!-- END: Player Stats Modal Structure -->
 
-        <!-- START: Game Log Modal Structure -->
-        <div id="game-log-modal-overlay" class="hidden">
-            <div id="game-log-modal">
-                <div class="game-log-modal-header">
-                    <h2>Game Log</h2>
-                    <button id="game-log-modal-close" class="btn btn-icon btn-secondary modal-close-btn"><i class="material-icons">close</i></button>
+        <!-- START: Intel Terminal Structure -->
+        <div id="intel-terminal-overlay" class="hidden">
+            <div id="intel-terminal" class="terminal-window">
+                <div class="scanlines"></div>
+                <div class="terminal-header">
+                    <div class="terminal-title"><i class="material-icons">terminal</i> INTEL_FEED_v4.2</div>
+                    <button id="intel-terminal-close" class="btn btn-icon btn-secondary terminal-close-btn"><i class="material-icons">close</i></button>
                 </div>
-                <div class="swipe-indicator">
-                    <div class="swipe-bar"></div>
-                </div>
-                <div class="game-log-modal-content">
-                    <div id="game-log-modal-entries"></div>
+                <div class="terminal-content">
+                    <div id="terminal-entries" class="terminal-text"></div>
                 </div>
             </div>
         </div>
-        <!-- END: Game Log Modal Structure -->
+        <!-- END: Intel Terminal Structure -->
 
         <!-- START: Loading Overlay -->
         <div id="loading-overlay" class="hidden">
