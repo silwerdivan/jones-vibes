@@ -26,9 +26,12 @@ export const COURSES = [
 ];
 
 export const SHOPPING_ITEMS = [
-    { name: 'Coffee', cost: 5, happinessBoost: 5 },
-    { name: 'Movie Ticket', cost: 15, happinessBoost: 10 },
-    { name: 'New Clothes', cost: 50, happinessBoost: 20 },
-    { name: 'Concert Ticket', cost: 100, happinessBoost: 30 },
-    { name: 'Vacation Package', cost: 500, happinessBoost: 50 },
+    { name: 'Coffee', cost: 5, happinessBoost: 5, type: 'essential' },
+    { name: 'Movie Ticket', cost: 15, happinessBoost: 10, type: 'essential' },
+    { name: 'New Clothes', cost: 50, happinessBoost: 20, type: 'essential', icon: 'clothes', benefit: 'Social Standing +5%' },
+    { name: 'Concert Ticket', cost: 100, happinessBoost: 30, type: 'essential' },
+    { name: 'Fridge', cost: 400, happinessBoost: 10, type: 'asset', icon: 'fridge', benefit: 'Food Waste -50%' },
+    { name: 'Television', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Relaxation +10%' },
+    { name: 'Computer', cost: 1200, happinessBoost: 25, type: 'asset', icon: 'computer', benefit: 'Study Speed +15%' },
+    { name: 'Vacation Package', cost: 500, happinessBoost: 50, type: 'essential' },
 ];

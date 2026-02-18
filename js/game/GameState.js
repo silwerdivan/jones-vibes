@@ -80,11 +80,18 @@ class GameState {
                 'warning'
             );
         }
+
+        // 3. Apply hunger
+        currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + 20);
+        if (currentPlayer.hunger > 50) {
+            currentPlayer.updateHappiness(-5);
+            this.addLogMessage(`${this._getPlayerName(currentPlayer)} is feeling hungry...`, 'warning');
+        }
         
-        // 3. Reset time for the next turn
+        // 4. Reset time for the next turn
         currentPlayer.setTime(24);
 
-        // 4. Reset location to Home
+        // 5. Reset location to Home
         currentPlayer.setLocation("Home");
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} returned home.`,
@@ -214,7 +221,8 @@ class GameState {
     checkWinCondition(player) {
         if (this.gameOver) return;
 
-        const cashCondition = player.cash >= 10000;
+        const totalWealth = player.cash + player.savings;
+        const cashCondition = totalWealth >= 10000;
         const happinessCondition = player.happiness >= 80;
         const educationCondition = player.educationLevel >= 3; // Completed Community College
         const careerCondition = player.careerLevel >= 4; // Junior Manager
@@ -373,6 +381,18 @@ class GameState {
 
         currentPlayer.spendCash(item.cost);
         currentPlayer.updateHappiness(item.happinessBoost);
+
+        // Reset hunger if it's a food-like item (Coffee)
+        if (item.name === 'Coffee') {
+            currentPlayer.hunger = Math.max(0, currentPlayer.hunger - 30);
+        }
+
+        // Add to inventory if it's an asset or certain essentials
+        if (item.type === 'asset' || item.name === 'New Clothes') {
+            if (!currentPlayer.inventory.some(i => i.name === item.name)) {
+                currentPlayer.inventory.push(item);
+            }
+        }
 
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} bought ${item.name}! Happiness increased by ${item.happinessBoost}.`,

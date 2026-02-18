@@ -98,9 +98,10 @@ The objective is to move away from a "board game on a web page" layout to a slee
 - [x] Add tactile animations to Action Cards. [2026-02-16]
 
 ### Phase 4: Life & Inventory
-- [ ] Implement Life Tab with 4 circular progress gauges.
-- [ ] Implement Status Tags (Chips) for player statuses.
-- [ ] Implement Inventory Tab grid for owned equipment.
+- [x] Design Specification for Life & Inventory. [2026-02-17]
+- [x] Implement Life Tab with 4 circular progress gauges. [2026-02-17]
+- [x] Implement Status Tags (Chips) for player statuses. [2026-02-17]
+- [x] Implement Inventory Tab grid for owned equipment. [2026-02-17]
 
 ### Phase 5: Turn Transitions
 - [ ] Implement full-screen Turn Summary modal.

@@ -10,6 +10,8 @@ export default class Player {
         this.location = "Home";
         this.hasCar = false;
         this.loan = 0;
+        this.inventory = [];
+        this.hunger = 0; // 0 is full, higher is hungrier
     }
 
     addCash(amount) {

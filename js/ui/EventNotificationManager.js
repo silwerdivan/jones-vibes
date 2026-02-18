@@ -4,36 +4,21 @@ class EventNotificationManager {
   constructor() {
     this.currentEvent = null;
     this.displayTimeout = null;
-    this.unreadCount = 0;
-    this.displayDuration = 2000; // 2 seconds minimum display time
+    this.displayDuration = 3500; // 3.5 seconds
     
     // DOM elements
     this.eventStrip = null;
     this.eventText = null;
-    this.logIcon = null;
-    this.badge = null;
     
     this.init();
   }
   
   init() {
     this.createEventStrip();
-    this.createLogIcon();
     
     // Subscribe to game events
     EventBus.subscribe('gameEvent', (event) => {
       this.addEvent(event);
-    });
-    
-    // Subscribe to log opened event
-    EventBus.subscribe('logOpened', () => {
-      this.resetUnreadCount();
-    });
-    
-    // Subscribe to add to log event
-    EventBus.subscribe('addToLog', (event) => {
-      // This event is handled by the regular log update in GameState
-      // We don't need to do anything here as the event is already in the log
     });
   }
   
@@ -48,38 +33,31 @@ class EventNotificationManager {
     
     this.eventStrip.appendChild(this.eventText);
     
+    // Add click handler to open terminal
+    this.eventStrip.addEventListener('click', () => {
+      EventBus.publish('logIconClicked');
+      this.hideEvent();
+    });
+
+    // Swipe away logic (simple version)
+    let touchStartX = 0;
+    this.eventStrip.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    this.eventStrip.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      if (Math.abs(touchEndX - touchStartX) > 50) {
+        this.hideEvent();
+      }
+    }, { passive: true });
+    
     // Insert above the action buttons panel
     const actionsPanel = document.getElementById('game-controls');
-    actionsPanel.parentNode.insertBefore(this.eventStrip, actionsPanel);
-  }
-  
-  createLogIcon() {
-    // Create log icon with badge
-    const logIconContainer = document.createElement('div');
-    logIconContainer.id = 'log-icon-container';
-    logIconContainer.className = 'log-icon-container';
-    
-    this.logIcon = document.createElement('div');
-    this.logIcon.id = 'log-icon';
-    this.logIcon.className = 'log-icon';
-    this.logIcon.innerHTML = '📋';
-    
-    this.badge = document.createElement('div');
-    this.badge.id = 'notification-badge';
-    this.badge.className = 'notification-badge hidden';
-    
-    logIconContainer.appendChild(this.logIcon);
-    logIconContainer.appendChild(this.badge);
-    
-    // Add click handler to open log
-    logIconContainer.addEventListener('click', () => {
-      EventBus.publish('logIconClicked');
-    });
-    
-    // Position it in the event log header
-    const eventLogHeader = document.querySelector('.event-log h3');
-    if (eventLogHeader) {
-      eventLogHeader.appendChild(logIconContainer);
+    if (actionsPanel && actionsPanel.parentNode) {
+      actionsPanel.parentNode.insertBefore(this.eventStrip, actionsPanel);
+    } else {
+      document.querySelector('.app-shell').appendChild(this.eventStrip);
     }
   }
   
@@ -90,33 +68,16 @@ class EventNotificationManager {
       this.displayTimeout = null;
     }
     
-    // If there's a current event, send it to log first
-    if (this.currentEvent) {
-      EventBus.publish('addToLog', this.currentEvent);
-    }
-    
     // Set the new event as current
     this.currentEvent = event;
-    this.unreadCount++;
-    this.updateBadge();
     
     // Display the new event immediately
     this.displayEvent(event);
     
-    // Set timeout to send current event to log after display duration
+    // Set timeout to hide event
     this.displayTimeout = setTimeout(() => {
-      this.sendCurrentEventToLog();
+      this.hideEvent();
     }, this.displayDuration);
-  }
-  
-  sendCurrentEventToLog() {
-    if (this.currentEvent) {
-      this.animateToLog(() => {
-        EventBus.publish('addToLog', this.currentEvent);
-        this.currentEvent = null;
-        this.displayTimeout = null;
-      });
-    }
   }
   
   displayEvent(event) {
@@ -133,33 +94,20 @@ class EventNotificationManager {
     // Show the strip with animation
     this.eventStrip.classList.remove('hidden');
     this.eventStrip.classList.add('show');
+    this.eventStrip.classList.remove('shrinking');
   }
   
-  animateToLog(callback) {
-    // Add shrinking animation
+  hideEvent() {
+    // Add shrinking/fade animation
     this.eventStrip.classList.add('shrinking');
     
     // After animation completes, hide the strip
     setTimeout(() => {
       this.eventStrip.classList.remove('show', 'shrinking');
       this.eventStrip.classList.add('hidden');
-      
-      if (callback) callback();
-    }, 500); // Animation duration
-  }
-  
-  updateBadge() {
-    if (this.unreadCount > 0) {
-      this.badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
-      this.badge.classList.remove('hidden');
-    } else {
-      this.badge.classList.add('hidden');
-    }
-  }
-  
-  resetUnreadCount() {
-    this.unreadCount = 0;
-    this.updateBadge();
+      this.currentEvent = null;
+      this.displayTimeout = null;
+    }, 500); 
   }
 }
 
