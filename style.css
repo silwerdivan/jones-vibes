@@ -11,6 +11,7 @@
     --neon-yellow: #FFD600;  /* Energy / Time / Happiness */
     --neon-blue: #2979FF;    /* Education / Status */
     --neon-red: #FF5252;     /* Error / Expense / Alert */
+    --neon-orange: #FF9100;  /* Fast Food / Survival */
 
     /* Glassmorphism */
     --glass-surface: rgba(255, 255, 255, 0.05);

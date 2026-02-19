@@ -352,8 +352,9 @@ class GameView {
       this.modalInput.classList.add('hidden');
     }
 
-    if (location === 'Shopping Mall') {
-      this.renderActionCards('shopping', SHOPPING_ITEMS);
+    if (location === 'Shopping Mall' || location === 'Fast Food') {
+      const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
+      this.renderActionCards('shopping', filteredItems);
     } else if (location === 'Community College') {
       this.renderActionCards('college', COURSES);
     } else {
@@ -448,9 +449,15 @@ class GameView {
         title = item.name;
         isLocked = player && player.cash < item.cost;
         btnText = 'Buy';
+        
+        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>`;
+        if (item.hungerReduction) {
+          boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Hunger</span>`;
+        }
+
         metaHtml = `
           <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
-          <span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>
+          ${boostHtml}
         `;
         action = () => window.gameController.gameState.buyItem(item.name);
       }
@@ -766,6 +773,7 @@ class GameView {
             case 'Employment Agency': iconSvg = Icons.agency(32, '#00FFFF'); break;
             case 'Community College': iconSvg = Icons.cyberChip(32, '#2979FF'); break;
             case 'Shopping Mall': iconSvg = Icons.smartBag(32, '#FFD600'); break;
+            case 'Fast Food': iconSvg = Icons.restaurant(32, '#FF9100'); break;
             case 'Used Car Lot': iconSvg = Icons.hoverCar(32, '#00E676'); break;
             case 'Bank': iconSvg = Icons.cryptoVault(32, '#FF5252'); break;
         }
@@ -837,6 +845,14 @@ class GameView {
                 onClick: () => this.showChoiceModal({ title: 'Select an Item' })
             });
             break;
+        case 'Fast Food':
+            actions.push({
+                label: 'Browse Menu',
+                icon: 'lunch_dining',
+                primary: true,
+                onClick: () => this.showChoiceModal({ title: 'Monolith Burger Menu' })
+            });
+            break;
         case 'Used Car Lot':
             actions.push({
                 label: 'View Inventory',
@@ -876,6 +892,7 @@ class GameView {
         case 'Employment Agency': hintText = 'Find work and earn money'; break;
         case 'Community College': hintText = 'Improve your education for better jobs'; break;
         case 'Shopping Mall': hintText = 'Buy items to boost your happiness'; break;
+        case 'Fast Food': hintText = 'Grab a quick bite to eat'; break;
         case 'Used Car Lot': hintText = 'Purchase a car for faster travel'; break;
         case 'Bank': hintText = 'Manage your finances: deposit, withdraw, or take a loan'; break;
         default: hintText = 'Travel to other locations';
@@ -902,6 +919,7 @@ class GameView {
         case 'Employment Agency': iconSvg = Icons.agency(32, '#00FFFF'); break;
         case 'Community College': iconSvg = Icons.cyberChip(32, '#2979FF'); break;
         case 'Shopping Mall': iconSvg = Icons.smartBag(32, '#FFD600'); break;
+        case 'Fast Food': iconSvg = Icons.restaurant(32, '#FF9100'); break;
         case 'Used Car Lot': iconSvg = Icons.hoverCar(32, '#00E676'); break;
         case 'Bank': iconSvg = Icons.cryptoVault(32, '#FF5252'); break;
       }
@@ -946,6 +964,7 @@ class GameView {
       case 'Employment Agency': return 'Find work';
       case 'Community College': return 'Study courses';
       case 'Shopping Mall': return 'Buy items';
+      case 'Fast Food': return 'Eat food';
       case 'Used Car Lot': return 'Buy a car';
       case 'Bank': return 'Savings & Loans';
       default: return '';

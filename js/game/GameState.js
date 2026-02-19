@@ -449,9 +449,9 @@ class GameState {
         const currentPlayer = this.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
-        if (currentPlayer.location !== 'Shopping Mall') {
+        if (currentPlayer.location !== 'Shopping Mall' && currentPlayer.location !== 'Fast Food') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall to shop.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall or Fast Food to shop.`,
                 'error'
             );
             return false;
@@ -473,8 +473,11 @@ class GameState {
         currentPlayer.spendCash(item.cost);
         currentPlayer.updateHappiness(item.happinessBoost);
 
-        // Reset hunger if it's a food-like item (Coffee)
-        if (item.name === 'Coffee') {
+        // Apply hunger reduction if the item has it
+        if (item.hungerReduction) {
+            currentPlayer.hunger = Math.max(0, currentPlayer.hunger - item.hungerReduction);
+        } else if (item.name === 'Coffee') {
+            // Fallback for legacy coffee if hungerReduction wasn't added to it
             currentPlayer.hunger = Math.max(0, currentPlayer.hunger - 30);
         }
 
