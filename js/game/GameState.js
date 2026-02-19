@@ -329,6 +329,18 @@ class GameState {
         }
     }
 
+    _checkAutoEndTurn() {
+        const player = this.getCurrentPlayer();
+        if (player.time <= 0 && !player.isAI && !this.gameOver) {
+            setTimeout(() => {
+                if (player.time <= 0) { // Double check if time is still 0
+                    this.addLogMessage(`Time is up! Turn ending automatically.`, 'warning');
+                    this.endTurn();
+                }
+            }, 1000);
+        }
+    }
+
     getNextAvailableCourse() {
         const currentPlayer = this.getCurrentPlayer();
         return COURSES.find(course => course.educationMilestone === currentPlayer.educationLevel + 1) || null;
@@ -396,6 +408,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -442,6 +455,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -494,6 +508,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -520,6 +535,7 @@ class GameState {
             );
             this.checkWinCondition(currentPlayer);
             EventBus.publish('stateChanged', this);
+            this._checkAutoEndTurn();
             return true;
         } else {
             this.addLogMessage(
@@ -553,6 +569,7 @@ class GameState {
             );
             this.checkWinCondition(currentPlayer);
             EventBus.publish('stateChanged', this);
+            this._checkAutoEndTurn();
             return true;
         } else {
             this.addLogMessage(
@@ -596,6 +613,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -639,6 +657,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -678,6 +697,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -706,6 +726,7 @@ class GameState {
                 );
                 this.checkWinCondition(currentPlayer);
                 EventBus.publish('stateChanged', this);
+                this._checkAutoEndTurn();
                 return true;
             }
             this.addLogMessage(
@@ -723,6 +744,7 @@ class GameState {
         );
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 
@@ -767,6 +789,7 @@ class GameState {
         // Check win condition since career level might have changed
         this.checkWinCondition(currentPlayer);
         EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
         return true;
     }
 }

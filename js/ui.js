@@ -31,13 +31,7 @@ class GameView {
     // News Ticker
     this.newsTickerContent = document.getElementById('news-ticker-content');
 
-    // Contextual Action Tray
-    this.actionTray = document.getElementById('contextual-action-tray');
-    this.trayIcon = document.getElementById('tray-icon');
-    this.trayLocationName = document.getElementById('tray-location-name');
-    this.trayActions = document.getElementById('tray-actions');
-
-    // Location Hint (Repurposed for tray or hidden if unused)
+    // Location Hint
     this.locationHint = document.getElementById('location-hint');
 
     // --- Modal Element Caching ---
@@ -524,8 +518,18 @@ class GameView {
 
       if (!isLocked) {
         card.onclick = () => {
-          this.hideModal();
+          // Keep modal open for jobs, hide for others
+          if (type !== 'jobs') {
+            this.hideModal();
+          }
           action();
+          
+          // Re-render dashboard for jobs to show potential "Work Shift" update
+          if (type === 'jobs' && window.gameController) {
+              setTimeout(() => {
+                  this.showLocationDashboard('Employment Agency');
+              }, 100);
+          }
         };
       }
 
@@ -632,7 +636,7 @@ class GameView {
   }
 
   hideLoading() {
-    this.loadingOverlay.classList.remove('hidden');
+    this.loadingOverlay.classList.add('hidden');
     document.body.classList.remove('loading-active');
   }
 
@@ -795,50 +799,6 @@ class GameView {
     } else if (this.currentScreenId === 'inventory') {
       this.renderInventoryScreen(gameState);
     }
-
-    this.renderActionTray(gameState);
-  }
-
-  renderActionTray(gameState) {
-    if (!this.actionTray) return;
-
-    const currentPlayer = gameState.getCurrentPlayer();
-    const location = currentPlayer.location;
-
-    if (this.trayLocationName) this.trayLocationName.textContent = location;
-    if (this.trayIcon) {
-        let iconSvg = '';
-        switch (location) {
-            case 'Home': iconSvg = Icons.apartment(32, '#FF00FF'); break;
-            case 'Employment Agency': iconSvg = Icons.agency(32, '#00FFFF'); break;
-            case 'Community College': iconSvg = Icons.cyberChip(32, '#2979FF'); break;
-            case 'Shopping Mall': iconSvg = Icons.smartBag(32, '#FFD600'); break;
-            case 'Fast Food': iconSvg = Icons.restaurant(32, '#FF9100'); break;
-            case 'Used Car Lot': iconSvg = Icons.hoverCar(32, '#00E676'); break;
-            case 'Bank': iconSvg = Icons.cryptoVault(32, '#FF5252'); break;
-        }
-        this.trayIcon.innerHTML = iconSvg;
-    }
-
-    if (this.trayActions) {
-        this.trayActions.innerHTML = '';
-        
-        const actions = this.getLocationActions(location);
-        
-        actions.forEach(action => {
-            const btn = document.createElement('button');
-            btn.className = `btn btn-sm ${action.primary ? 'btn-primary' : 'btn-secondary'}`;
-            btn.innerHTML = `<i class="material-icons">${action.icon}</i> ${action.label}`;
-            btn.onclick = action.onClick;
-            this.trayActions.appendChild(btn);
-        });
-    }
-
-    if (this.currentScreenId === 'city') {
-        this.actionTray.classList.remove('hidden');
-    } else {
-        this.actionTray.classList.add('hidden');
-    }
   }
 
   getLocationActions(location) {
@@ -859,12 +819,6 @@ class GameView {
                 icon: 'work',
                 primary: true,
                 onClick: () => window.gameController.workShift()
-            });
-            actions.push({
-                label: 'Apply',
-                icon: 'description',
-                primary: false,
-                onClick: () => this.showJobApplicationModal()
             });
             break;
         case 'Community College':

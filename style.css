@@ -704,7 +704,7 @@ body {
     border: 1px solid var(--neon-cyan);
     border-radius: var(--radius-lg);
     padding: var(--space-sm) var(--space-md);
-    z-index: 160;
+    z-index: 2100;
     max-width: 90%;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
