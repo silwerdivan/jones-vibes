@@ -763,6 +763,15 @@ class GameState {
             return false;
         }
         
+        // Check if player already has this job or a better one
+        if (currentPlayer.careerLevel >= jobLevel) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} already has a job at this level or higher.`,
+                'info'
+            );
+            return false;
+        }
+
         // Check if player meets education requirements
         if (currentPlayer.educationLevel < job.educationRequired) {
             this.addLogMessage(

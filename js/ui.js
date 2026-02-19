@@ -400,8 +400,19 @@ class GameView {
         btn.className = `btn ${action.primary ? 'btn-primary' : 'btn-secondary'}`;
         btn.innerHTML = `<i class="material-icons">${action.icon}</i> <span>${action.label}</span>`;
         btn.onclick = () => {
-            this.hideModal();
+            // Keep modal open for Work Shift, but hide for others like End Turn
+            if (action.label !== 'Work Shift') {
+                this.hideModal();
+            }
             action.onClick();
+            
+            // If it was Work Shift, re-render to update UI (though stateChanged should do it, 
+            // the dashboard itself needs manual refresh if we don't close it)
+            if (action.label === 'Work Shift') {
+                setTimeout(() => {
+                    this.showLocationDashboard(location);
+                }, 100);
+            }
         };
         
         if (action.primary) {
@@ -429,8 +440,11 @@ class GameView {
             button.classList.add('btn', 'btn-secondary');
             button.onclick = () => {
                 const amount = parseInt(this.modalInputField.value, 10);
-                this.hideModal();
-                choice.action(choice.value, amount); 
+                // Don't hide modal, just perform action and refresh
+                choice.action(choice.value, amount);
+                setTimeout(() => {
+                    this.showLocationDashboard('Bank');
+                }, 100);
             };
             this.modalButtons.appendChild(button);
         });
@@ -461,13 +475,19 @@ class GameView {
       let title = '';
       let metaHtml = '';
       let isLocked = false;
+      let isHired = false;
       let action = () => {};
       let btnText = '';
 
       if (type === 'jobs') {
         title = item.title;
         isLocked = player && player.educationLevel < item.educationRequired;
-        btnText = 'Apply';
+        isHired = player && player.careerLevel === item.level;
+        const isBetterJob = player && player.careerLevel > item.level;
+        
+        btnText = isHired ? 'Hired' : (isBetterJob ? 'Lower Level' : 'Apply');
+        if (isBetterJob) isLocked = true; // Can't re-apply for lower level
+
         metaHtml = `
           <span class="action-card-tag price"><i class="material-icons">payments</i>$${item.wage}/hr</span>
           <span class="action-card-tag"><i class="material-icons">schedule</i>${item.shiftHours}h</span>
@@ -479,9 +499,13 @@ class GameView {
       } else if (type === 'college') {
         title = item.name;
         isLocked = player && player.educationLevel < (item.educationMilestone - 1);
-        btnText = 'Study';
+        const alreadyTaken = player && player.educationLevel >= item.educationMilestone;
+        
+        btnText = alreadyTaken ? 'Completed' : 'Study';
+        if (alreadyTaken) isLocked = true;
+
         metaHtml = `
-          <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
+          <span class="action-card-tag price ${isLocked && !alreadyTaken ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
           <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
         `;
         action = () => window.gameController.gameState.takeCourse(item.id);
@@ -502,7 +526,8 @@ class GameView {
         action = () => window.gameController.gameState.buyItem(item.name);
       }
 
-      if (isLocked) card.classList.add('locked');
+      if (isLocked || isHired) card.classList.add('locked');
+      if (isHired) card.classList.add('hired');
 
       card.innerHTML = `
         <div class="action-card-content">
@@ -510,13 +535,13 @@ class GameView {
           <div class="action-card-meta">${metaHtml}</div>
         </div>
         <div class="action-card-action">
-          <button class="btn btn-primary action-card-btn" ${isLocked ? 'disabled' : ''}>
+          <button class="btn btn-primary action-card-btn" ${isLocked || isHired ? 'disabled' : ''}>
             ${btnText}
           </button>
         </div>
       `;
 
-      if (!isLocked) {
+      if (!isLocked && !isHired) {
         card.onclick = () => {
           // Keep modal open for jobs, hide for others
           if (type !== 'jobs') {
@@ -783,7 +808,7 @@ class GameView {
     const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
     const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
     
-    if (isNewLocation && currentPlayer.location !== 'Home' && !isNewTurn) {
+    if (isNewLocation && currentPlayer.location !== 'Home' && !isNewTurn && !currentPlayer.isAI) {
         setTimeout(() => {
             this.showLocationDashboard(currentPlayer.location);
         }, 300);
