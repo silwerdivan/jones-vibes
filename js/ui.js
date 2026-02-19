@@ -31,10 +31,6 @@ class GameView {
     // News Ticker
     this.newsTickerContent = document.getElementById('news-ticker-content');
 
-    // Log (legacy, now using Intel Terminal)
-    this.logContent = document.querySelector('.log-content');
-    this.eventLog = document.querySelector('.event-log');
-
     // Contextual Action Tray
     this.actionTray = document.getElementById('contextual-action-tray');
     this.trayIcon = document.getElementById('tray-icon');
@@ -51,6 +47,7 @@ class GameView {
     this.modalInput = document.getElementById('choice-modal-input');
     this.modalInputField = document.getElementById('modal-input-amount');
     this.modalButtons = document.getElementById('choice-modal-buttons');
+    this.modalSecondaryActions = document.getElementById('dashboard-secondary-actions');
     this.modalCancel = document.getElementById('modal-cancel-button');
 
     // --- Clerk Element Caching ---
@@ -58,6 +55,9 @@ class GameView {
     this.modalClerkAvatar = document.getElementById('modal-clerk-avatar');
     this.modalClerkName = document.getElementById('modal-clerk-name');
     this.modalClerkMessage = document.getElementById('modal-clerk-message');
+
+    this.lastLocation = null;
+    this.lastPlayerId = null;
 
     // --- PLAYER STATS MODAL ELEMENTS ---
     this.playerStatsModalOverlay = document.getElementById('player-stats-modal-overlay');
@@ -203,9 +203,6 @@ class GameView {
 
     this.terminalEntries.innerHTML = '';
     
-    // Chronological order (oldest at top, newest at bottom)
-    // The log is stored in chronological order in GameState? 
-    // Usually log is pushed to the end. Let's assume it's chronological.
     const logEntries = gameState.log; 
 
     logEntries.forEach(message => {
@@ -221,7 +218,6 @@ class GameView {
 
     this.intelTerminalOverlay.classList.remove('hidden');
     
-    // Auto-scroll to bottom
     const content = this.terminalEntries.parentElement;
     setTimeout(() => {
       content.scrollTop = content.scrollHeight;
@@ -236,7 +232,6 @@ class GameView {
   }
 
   initializeScreenSwitching() {
-    // Populate tab icons
     const iconCity = document.getElementById('icon-city');
     const iconLife = document.getElementById('icon-life');
     const iconInventory = document.getElementById('icon-inventory');
@@ -249,7 +244,6 @@ class GameView {
     if (iconSocial) iconSocial.innerHTML = Icons.comms(20, 'rgba(255, 255, 255, 0.5)');
     if (iconMenu) iconMenu.innerHTML = Icons.system(20, 'rgba(255, 255, 255, 0.5)');
 
-    // Add click listeners to tabs
     this.tabItems.forEach(tab => {
         tab.addEventListener('click', () => {
             const screenId = tab.dataset.screen;
@@ -261,10 +255,8 @@ class GameView {
   switchScreen(screenId) {
     if (this.currentScreenId === screenId) return;
 
-    // Update state
     this.currentScreenId = screenId;
 
-    // Update screens visibility
     this.screens.forEach(screen => {
         if (screen.id === `screen-${screenId}`) {
             screen.classList.remove('hidden');
@@ -273,7 +265,6 @@ class GameView {
         }
     });
 
-    // Update tab active state
     this.tabItems.forEach(tab => {
         const iconContainer = tab.querySelector('.tab-icon');
         const iconSvg = iconContainer ? iconContainer.querySelector('svg') : null;
@@ -281,7 +272,7 @@ class GameView {
         if (tab.dataset.screen === screenId) {
             tab.classList.add('active');
             if (iconSvg) {
-                iconSvg.setAttribute('stroke', '#00FFFF'); // neon-cyan
+                iconSvg.setAttribute('stroke', '#00FFFF');
             }
         } else {
             tab.classList.remove('active');
@@ -291,17 +282,14 @@ class GameView {
         }
     });
 
-    // Trigger immediate render for the new screen
     if (window.gameController && window.gameController.gameState) {
         this.render(window.gameController.gameState);
     }
 
-    // Publish event for other components if needed
     EventBus.publish('screenSwitched', screenId);
   }
 
   initializeClockVisualizations() {
-    // Initialize HUD clock visualizations for Command-Orbs
     if (document.getElementById('hud-time-ring-p1')) {
       this.hudClockVisualizationP1 = new ClockVisualization('hud-time-ring-p1', {
         size: 52,
@@ -344,6 +332,7 @@ class GameView {
 
     this.modalContent.innerHTML = '';
     this.modalButtons.innerHTML = '';
+    this.modalSecondaryActions.innerHTML = '';
 
     if (showInput) {
       this.modalInput.classList.remove('hidden');
@@ -374,37 +363,94 @@ class GameView {
     this.modalOverlay.classList.remove('hidden');
   }
 
-  hideModal() {
-    this.modalOverlay.classList.add('hidden');
-  }
+  showLocationDashboard(location) {
+    const gameState = window.gameController ? window.gameController.gameState : null;
+    if (!gameState) return;
 
-  showJobApplicationModal() {
-    const clerk = CLERKS["Employment Agency"];
+    const player = gameState.getCurrentPlayer();
+    const clerk = CLERKS[location];
+
+    // Setup Header
     if (clerk) {
       this.modalClerkContainer.classList.remove('hidden');
       this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
       this.modalClerkName.textContent = clerk.name;
       this.modalClerkMessage.textContent = clerk.message;
-      this.modalTitle.classList.add('hidden');
     } else {
       this.modalClerkContainer.classList.add('hidden');
-      this.modalTitle.classList.remove('hidden');
-      this.modalTitle.textContent = 'Apply for a Job';
     }
+    
+    this.modalTitle.textContent = location;
+    this.modalTitle.classList.remove('hidden');
 
+    // Setup Content
     this.modalContent.innerHTML = '';
     this.modalButtons.innerHTML = '';
+    this.modalSecondaryActions.innerHTML = '';
     this.modalInput.classList.add('hidden');
 
-    this.renderActionCards('jobs', JOBS);
+    // List Primary Actions (Jobs, Courses, Items)
+    if (location === 'Employment Agency') {
+        this.renderActionCards('jobs', JOBS);
+    } else if (location === 'Community College') {
+        this.renderActionCards('college', COURSES);
+    } else if (location === 'Shopping Mall' || location === 'Fast Food') {
+        const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
+        this.renderActionCards('shopping', filteredItems);
+    }
 
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-    cancelButton.classList.add('btn', 'btn-secondary');
-    cancelButton.onclick = () => this.hideModal();
-    this.modalButtons.appendChild(cancelButton);
+    // Secondary Actions (Work Shift, etc.)
+    const actions = this.getLocationActions(location);
+    actions.forEach(action => {
+        const btn = document.createElement('button');
+        btn.className = `btn ${action.primary ? 'btn-primary' : 'btn-secondary'}`;
+        btn.innerHTML = `<i class="material-icons">${action.icon}</i> <span>${action.label}</span>`;
+        btn.onclick = () => {
+            this.hideModal();
+            action.onClick();
+        };
+        
+        if (action.primary) {
+            this.modalButtons.appendChild(btn);
+        } else {
+            this.modalSecondaryActions.appendChild(btn);
+        }
+    });
+
+    // Special case: Bank
+    if (location === 'Bank') {
+        this.modalInput.classList.remove('hidden');
+        this.modalInputField.value = '';
+        
+        const bankActions = [
+            { text: 'Deposit', value: 'deposit', action: (v, a) => window.gameController.deposit(a) },
+            { text: 'Withdraw', value: 'withdraw', action: (v, a) => window.gameController.withdraw(a) },
+            { text: 'Take Loan', value: 'loan', action: (v, a) => window.gameController.takeLoan(a) },
+            { text: 'Repay Loan', value: 'repay', action: (v, a) => window.gameController.repayLoan(a) }
+        ];
+
+        bankActions.forEach(choice => {
+            const button = document.createElement('button');
+            button.textContent = choice.text;
+            button.classList.add('btn', 'btn-secondary');
+            button.onclick = () => {
+                const amount = parseInt(this.modalInputField.value, 10);
+                this.hideModal();
+                choice.action(choice.value, amount); 
+            };
+            this.modalButtons.appendChild(button);
+        });
+    }
 
     this.modalOverlay.classList.remove('hidden');
+  }
+
+  hideModal() {
+    this.modalOverlay.classList.add('hidden');
+  }
+
+  showJobApplicationModal() {
+    this.showLocationDashboard('Employment Agency');
   }
 
   renderActionCards(type, data) {
@@ -586,7 +632,7 @@ class GameView {
   }
 
   hideLoading() {
-    this.loadingOverlay.classList.add('hidden');
+    this.loadingOverlay.classList.remove('hidden');
     document.body.classList.remove('loading-active');
   }
 
@@ -595,7 +641,6 @@ class GameView {
 
     this.summarySubtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
     
-    // Update totals
     this.summaryCashTotal.textContent = (summary.totals.cashChange >= 0 ? '+$' : '-$') + Math.abs(summary.totals.cashChange).toLocaleString();
     this.summaryCashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
     
@@ -624,14 +669,12 @@ class GameView {
       
       this.eventList.appendChild(card);
       
-      // Staggered animation
       setTimeout(() => {
         card.classList.add('animate-in');
       }, 100 * (index + 1));
     });
 
     this.btnStartNextWeek.onclick = () => {
-      // Haptic Feedback Simulation
       if (window.navigator && window.navigator.vibrate) {
         window.navigator.vibrate(10);
       }
@@ -645,21 +688,12 @@ class GameView {
     this.turnSummaryModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
-    // Animate totals after a short delay
     setTimeout(() => {
       this.animateValue(this.summaryCashTotal, 0, summary.totals.cashChange, 1000, '$');
       this.animateValue(this.summaryHappinessTotal, 0, summary.totals.happinessChange, 1000);
     }, 500);
   }
 
-  /**
-   * Animates a numerical value in a DOM element.
-   * @param {HTMLElement} obj The element to update.
-   * @param {number} start The starting value.
-   * @param {number} end The target value.
-   * @param {number} duration Animation duration in ms.
-   * @param {string} prefix Optional prefix (e.g., '$').
-   */
   animateValue(obj, start, end, duration, prefix = '') {
     if (!obj) return;
     let startTimestamp = null;
@@ -698,12 +732,10 @@ class GameView {
     const currentPlayer = gameState.getCurrentPlayer();
     const currentPlayerIndex = gameState.currentPlayerIndex;
 
-    // Update Command-Orbs
     if (this.orbP1) {
       this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
       this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
       
-      // Pulse animation on turn switch
       if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
         this.orbP1.classList.add('pulse');
         setTimeout(() => this.orbP1.classList.remove('pulse'), 600);
@@ -714,7 +746,6 @@ class GameView {
       this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
       this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
       
-      // Pulse animation on turn switch
       if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
         this.orbP2.classList.add('pulse');
         setTimeout(() => this.orbP2.classList.remove('pulse'), 600);
@@ -723,7 +754,6 @@ class GameView {
 
     this.lastPlayerIndex = currentPlayerIndex;
 
-    // Update HUD Clock Visualizations
     if (this.hudClockVisualizationP1) {
       this.hudClockVisualizationP1.updateTime(player1.time);
     }
@@ -731,12 +761,10 @@ class GameView {
       this.hudClockVisualizationP2.updateTime(player2.time);
     }
 
-    // Update HUD Values
     if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
     if (this.hudWeek) this.hudWeek.textContent = gameState.turn;
     if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
 
-    // News Ticker
     if (this.newsTickerContent && gameState.log.length > 0) {
       const recentEvents = gameState.log
         .slice(-5)
@@ -746,6 +774,19 @@ class GameView {
     }
 
     this.updateLocationHint(currentPlayer.location);
+
+    // --- AUTO-ARRIVAL LOGIC ---
+    const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
+    const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
+    
+    if (isNewLocation && currentPlayer.location !== 'Home' && !isNewTurn) {
+        setTimeout(() => {
+            this.showLocationDashboard(currentPlayer.location);
+        }, 300);
+    }
+
+    this.lastLocation = currentPlayer.location;
+    this.lastPlayerId = currentPlayer.id;
 
     if (this.currentScreenId === 'city') {
       this.renderCityGrid(gameState);
@@ -764,7 +805,6 @@ class GameView {
     const currentPlayer = gameState.getCurrentPlayer();
     const location = currentPlayer.location;
 
-    // Update Tray Info
     if (this.trayLocationName) this.trayLocationName.textContent = location;
     if (this.trayIcon) {
         let iconSvg = '';
@@ -780,7 +820,6 @@ class GameView {
         this.trayIcon.innerHTML = iconSvg;
     }
 
-    // Populate Buttons
     if (this.trayActions) {
         this.trayActions.innerHTML = '';
         
@@ -795,7 +834,6 @@ class GameView {
         });
     }
 
-    // Show/Hide Tray (Only on City screen or if actions available)
     if (this.currentScreenId === 'city') {
         this.actionTray.classList.remove('hidden');
     } else {
@@ -834,7 +872,7 @@ class GameView {
                 label: 'Browse Courses',
                 icon: 'school',
                 primary: true,
-                onClick: () => this.showChoiceModal({ title: 'Select a Course' })
+                onClick: () => this.showLocationDashboard('Community College')
             });
             break;
         case 'Shopping Mall':
@@ -842,7 +880,7 @@ class GameView {
                 label: 'Browse Items',
                 icon: 'shopping_bag',
                 primary: true,
-                onClick: () => this.showChoiceModal({ title: 'Select an Item' })
+                onClick: () => this.showLocationDashboard('Shopping Mall')
             });
             break;
         case 'Fast Food':
@@ -850,7 +888,7 @@ class GameView {
                 label: 'Browse Menu',
                 icon: 'lunch_dining',
                 primary: true,
-                onClick: () => this.showChoiceModal({ title: 'Monolith Burger Menu' })
+                onClick: () => this.showLocationDashboard('Fast Food')
             });
             break;
         case 'Used Car Lot':
@@ -866,7 +904,7 @@ class GameView {
                 label: 'Financial Services',
                 icon: 'account_balance',
                 primary: true,
-                onClick: () => this.showBankModal()
+                onClick: () => this.showLocationDashboard('Bank')
             });
             break;
     }
@@ -875,13 +913,7 @@ class GameView {
   }
 
   showBankModal() {
-      const choices = [
-          { text: 'Deposit', value: 'deposit', action: (v, a) => window.gameController.deposit(a) },
-          { text: 'Withdraw', value: 'withdraw', action: (v, a) => window.gameController.withdraw(a) },
-          { text: 'Take Loan', value: 'loan', action: (v, a) => window.gameController.takeLoan(a) },
-          { text: 'Repay Loan', value: 'repay', action: (v, a) => window.gameController.repayLoan(a) }
-      ];
-      this.showChoiceModal({ title: 'Bank Services', choices, showInput: true });
+      this.showLocationDashboard('Bank');
   }
 
   updateLocationHint(location) {
@@ -936,13 +968,7 @@ class GameView {
             window.gameController.travel(location);
           }
         } else {
-          // Trigger primary interaction for current location
-          const actions = this.getLocationActions(location);
-          if (actions.length > 0) {
-            // If it's a "Browse" type action that opens a modal, trigger it
-            const primaryAction = actions.find(a => a.primary) || actions[0];
-            primaryAction.onClick();
-          }
+            this.showLocationDashboard(location);
         }
       };
 

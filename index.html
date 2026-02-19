@@ -159,36 +159,54 @@
             </button>
         </nav>
 
-        <!-- START: Add the Modal Structure -->
-        <div id="choice-modal-overlay" class="hidden">
-            <div id="choice-modal">
-                <div id="modal-clerk-container" class="clerk-container hidden">
-                    <div class="clerk-avatar-wrapper">
-                        <div id="modal-clerk-avatar" class="clerk-avatar"></div>
+        <!-- START: Location Dashboard (Repurposed Choice Modal) -->
+        <div id="choice-modal-overlay" class="hidden location-dashboard-overlay">
+            <div id="choice-modal" class="location-dashboard">
+                <!-- Swipe Indicator for Mobile -->
+                <div class="swipe-indicator"><div class="swipe-bar"></div></div>
+                
+                <header class="dashboard-header">
+                    <div id="modal-clerk-container" class="clerk-container hidden">
+                        <div class="clerk-avatar-wrapper">
+                            <div id="modal-clerk-avatar" class="clerk-avatar"></div>
+                        </div>
+                        <div class="speech-bubble">
+                            <div id="modal-clerk-name" class="clerk-name">Clerk</div>
+                            <p id="modal-clerk-message" class="clerk-message">Welcome!</p>
+                        </div>
                     </div>
-                    <div class="speech-bubble">
-                        <div id="modal-clerk-name" class="clerk-name">Clerk</div>
-                        <p id="modal-clerk-message" class="clerk-message">Welcome! How can I help you today?</p>
+                    <h2 id="choice-modal-title" class="dashboard-title">Location Name</h2>
+                </header>
+
+                <main class="dashboard-content">
+                    <div id="choice-modal-content" class="dashboard-scroll-area">
+                        <!-- Action Cards go here -->
                     </div>
-                </div>
-                <div class="modal-content">
-                    <h2 id="choice-modal-title">Make a Choice</h2>
-                    <div id="choice-modal-content">
-                        <!-- Content will be dynamically inserted here -->
+                    
+                    <!-- Contextual Input (e.g., Bank amount) -->
+                    <div id="choice-modal-input" class="hidden bank-input-wrapper">
+                        <label for="modal-input-amount">CREDITS</label>
+                        <input type="number" id="modal-input-amount" placeholder="0">
                     </div>
-                    <div id="choice-modal-input" class="hidden">
-                        <input type="number" id="modal-input-amount" placeholder="Enter amount">
+                </main>
+
+                <footer class="dashboard-footer">
+                    <div id="choice-modal-buttons" class="primary-actions-row">
+                        <!-- Primary Action Buttons -->
                     </div>
-                </div>
-                <div class="buttons">
-                    <div id="choice-modal-buttons">
-                        <!-- Buttons will be dynamically inserted here -->
+                    
+                    <div id="dashboard-secondary-actions" class="secondary-actions-row">
+                        <!-- Contextual secondary actions (e.g. Work Shift) -->
                     </div>
-                    <button id="modal-cancel-button" class="btn btn-secondary">Cancel</button>
-                </div>
+
+                    <button id="modal-cancel-button" class="btn btn-leave">
+                        <i class="material-icons">logout</i>
+                        <span>Leave Location</span>
+                    </button>
+                </footer>
             </div>
         </div>
-        <!-- END: Add the Modal Structure -->
+        <!-- END: Location Dashboard -->
 
         <!-- START: Player Stats Modal Structure -->
         <div id="player-stats-modal-overlay" class="hidden">
