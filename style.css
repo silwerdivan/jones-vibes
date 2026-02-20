@@ -262,10 +262,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 10;
+    z-index: 1100; /* Ensure HUD stays above location dashboard */
     border-bottom: 1px solid var(--glass-border);
     background: rgba(13, 0, 21, 0.8);
 }
+
+/* --- FEEDBACK SYSTEM --- */
+.feedback-particle {
+    position: absolute;
+    pointer-events: none;
+    font-weight: 800;
+    font-size: 1.2rem;
+    z-index: 2500;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    animation: float-up 0.8s var(--ease-out-expo) forwards;
+}
+
+@keyframes float-up {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-60px); opacity: 0; }
+}
+
 
 .hud-left, .hud-right {
     display: flex;

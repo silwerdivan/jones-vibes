@@ -399,7 +399,15 @@ class GameView {
         const btn = document.createElement('button');
         btn.className = `btn ${action.primary ? 'btn-primary' : 'btn-secondary'}`;
         btn.innerHTML = `<i class="material-icons">${action.icon}</i> <span>${action.label}</span>`;
-        btn.onclick = () => {
+        btn.onclick = (e) => {
+            // Visual Feedback for Work Shift
+            if (action.label === 'Work Shift') {
+                const job = JOBS.find(j => j.level === player.careerLevel);
+                if (job) {
+                    this.spawnFeedback(e.currentTarget, `+$${job.wage * 8}`, 'success');
+                }
+            }
+
             // Keep modal open for Work Shift, but hide for others like End Turn
             if (action.label !== 'Work Shift') {
                 this.hideModal();
@@ -438,9 +446,16 @@ class GameView {
             const button = document.createElement('button');
             button.textContent = choice.text;
             button.classList.add('btn', 'btn-secondary');
-            button.onclick = () => {
+            button.onclick = (e) => {
                 const amount = parseInt(this.modalInputField.value, 10);
-                // Don't hide modal, just perform action and refresh
+                
+                // Visual feedback
+                if (choice.value === 'deposit' || choice.value === 'repay') {
+                    this.spawnFeedback(e.currentTarget, `-$${amount}`, 'error');
+                } else {
+                    this.spawnFeedback(e.currentTarget, `+$${amount}`, 'success');
+                }
+
                 choice.action(choice.value, amount);
                 setTimeout(() => {
                     this.showLocationDashboard('Bank');
@@ -451,6 +466,24 @@ class GameView {
     }
 
     this.modalOverlay.classList.remove('hidden');
+  }
+
+  spawnFeedback(element, text, type) {
+    const rect = element.getBoundingClientRect();
+    const particle = document.createElement('div');
+    particle.className = `feedback-particle log-${type}`;
+    particle.textContent = text;
+    
+    // Position at the center of the element
+    particle.style.left = `${rect.left + rect.width / 2}px`;
+    particle.style.top = `${rect.top}px`;
+    
+    document.body.appendChild(particle);
+    
+    // Remove after animation
+    setTimeout(() => {
+      particle.remove();
+    }, 800);
   }
 
   hideModal() {
@@ -478,6 +511,8 @@ class GameView {
       let isHired = false;
       let action = () => {};
       let btnText = '';
+      let feedbackType = 'success';
+      let feedbackText = '';
 
       if (type === 'jobs') {
         title = item.title;
@@ -496,6 +531,7 @@ class GameView {
           </span>
         `;
         action = () => window.gameController.applyForJob(item.level);
+        feedbackText = 'HIRED!';
       } else if (type === 'college') {
         title = item.name;
         isLocked = player && player.educationLevel < (item.educationMilestone - 1);
@@ -509,6 +545,8 @@ class GameView {
           <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
         `;
         action = () => window.gameController.gameState.takeCourse(item.id);
+        feedbackText = `-$${item.cost}`;
+        feedbackType = 'error';
       } else if (type === 'shopping') {
         title = item.name;
         isLocked = player && player.cash < item.cost;
@@ -524,6 +562,8 @@ class GameView {
           ${boostHtml}
         `;
         action = () => window.gameController.gameState.buyItem(item.name);
+        feedbackText = `-$${item.cost}`;
+        feedbackType = 'error';
       }
 
       if (isLocked || isHired) card.classList.add('locked');
@@ -542,7 +582,10 @@ class GameView {
       `;
 
       if (!isLocked && !isHired) {
-        card.onclick = () => {
+        card.onclick = (e) => {
+          // Visual feedback
+          this.spawnFeedback(e.currentTarget, feedbackText, feedbackType);
+
           // Keep modal open for jobs, hide for others
           if (type !== 'jobs') {
             this.hideModal();
