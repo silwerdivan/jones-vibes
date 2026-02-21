@@ -38,7 +38,7 @@ Input → Controller → GameState → EventBus → GameView
 | **EventBus** | Propagates change events to all subscribers |
 | **GameView (ui.js)** | Renders state, shows modals, handles animations and overlays |
 
-This design makes the system **fully decoupled**, **testable**, and **reactive**.
+This design makes the system **fully decoupled** and **reactive**.
 
 ---
 
@@ -61,11 +61,6 @@ This design makes the system **fully decoupled**, **testable**, and **reactive**
 - Uses `clamp()` for fluid scaling of font sizes and spacing
 - Buttons meet 44×44px minimum touch area standards
 
-Example responsive behaviors include:
-- `@media (max-width: 768px)` dynamically reorganizing the `.main-grid`
-- Smooth animation transitions on state updates
-- Adaptive typography and spacing across resolutions
-
 ---
 
 ## 🚀 Getting Started
@@ -74,13 +69,6 @@ Example responsive behaviors include:
 
 1. Clone or download the repository.
 2. Open `index.html` in your favorite browser.
-
-**Test the Game**
-
-```bash
-npm install
-npm test
-```
 
 ---
 
@@ -116,14 +104,6 @@ docs/
 
 ---
 
-## 🧪 Testing and Quality
-
-- Unit tests in `tests/` directory using **Jest**
-- Game state, AI logic, and command execution covered
-- Consistent code style with ES modules and modern syntax
-
----
-
 ## 🧾 Documentation References
 
 - `docs/0001-prd-responsive-evolution.md` — Responsive & architectural refactor spec (fully implemented)
@@ -135,4 +115,4 @@ docs/
 ## ✨ Credits
 
 - Inspired by *Jones in the Fast Lane* (Sierra On-Line, 1990)
-- Reimagined with modern web standards by the development team / contributors
+- Reimagined with modern web standards by the development team / contributors.
