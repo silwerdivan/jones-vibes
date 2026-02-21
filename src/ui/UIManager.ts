@@ -5,10 +5,10 @@ import { COURSES } from '../data/courses.js';
 import { LOCATIONS } from '../data/locations.js';
 import { CLERKS } from '../data/clerks.js';
 import { SHOPPING_ITEMS } from '../data/items.js';
-import ClockVisualization from './ClockVisualization.js';
 import Icons from './Icons.js';
 import GameState from '../game/GameState.js';
 import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal } from './components/Modal.js';
+import { HUD } from './components/HUD.js';
 
 class UIManager {
   private screens: NodeListOf<Element>;
@@ -16,19 +16,15 @@ class UIManager {
   private currentScreenId: string;
   private cityBentoGrid: HTMLElement | null;
   private fabNextWeek: HTMLElement | null;
-  private hudCash: HTMLElement | null;
-  private hudWeek: HTMLElement | null;
-  private hudLocation: HTMLElement | null;
-  private orbP1: HTMLElement | null;
-  private orbP2: HTMLElement | null;
-  private newsTickerContent: HTMLElement | null;
-  private locationHint: HTMLElement | null;
   
   // Modals
   private choiceModal: ChoiceModal;
   private playerStatsModal: PlayerStatsModal;
   private intelTerminalModal: IntelTerminalModal;
   private turnSummaryModal: TurnSummaryModal;
+
+  // Components
+  private hud: HUD;
 
   private lastLocation: string | null;
   private lastPlayerId: number | null;
@@ -38,14 +34,8 @@ class UIManager {
   private essentialsGrid: HTMLElement | null;
   private assetsGrid: HTMLElement | null;
   
-  private terminalTrigger: HTMLElement | null;
-  private terminalBadge: HTMLElement | null;
-  private unreadEvents: number;
-  
   private loadingOverlay: HTMLElement | null;
-  private hudClockVisualizationP1: ClockVisualization | null;
-  private hudClockVisualizationP2: ClockVisualization | null;
-  private lastPlayerIndex: number;
+  private locationHint: HTMLElement | null;
 
   constructor() {
     // Screens
@@ -59,20 +49,11 @@ class UIManager {
     this.cityBentoGrid = document.getElementById('city-bento-grid');
     this.fabNextWeek = document.getElementById('fab-next-week');
 
-    // HUD elements
-    this.hudCash = document.getElementById('hud-cash');
-    this.hudWeek = document.getElementById('hud-week');
-    this.hudLocation = document.getElementById('hud-location');
-    
-    // Command-Orb Elements
-    this.orbP1 = document.getElementById('orb-p1');
-    this.orbP2 = document.getElementById('orb-p2');
-
-    // News Ticker
-    this.newsTickerContent = document.getElementById('news-ticker-content');
-
     // Location Hint
     this.locationHint = document.getElementById('location-hint');
+
+    // --- Components ---
+    this.hud = new HUD();
 
     // --- Modals ---
     this.choiceModal = new ChoiceModal();
@@ -89,11 +70,6 @@ class UIManager {
     this.essentialsGrid = document.getElementById('essentials-grid');
     this.assetsGrid = document.getElementById('assets-grid');
 
-    // --- INTEL TERMINAL ELEMENTS ---
-    this.terminalTrigger = document.getElementById('hud-terminal-trigger');
-    this.terminalBadge = document.getElementById('terminal-badge');
-    this.unreadEvents = 0;
-
     // --- LOADING OVERLAY ---
     this.loadingOverlay = document.getElementById('loading-overlay');
     EventBus.subscribe('aiThinkingStart', () => this.showLoading());
@@ -107,25 +83,9 @@ class UIManager {
       this.showTurnSummary(summary);
     });
 
-    // Command-Orb click listeners
-    if (this.orbP1) this.orbP1.addEventListener('click', () => this.showPlayerStatsModal(1));
-    if (this.orbP2) this.orbP2.addEventListener('click', () => this.showPlayerStatsModal(2));
-    
-    // Listen for game events to update unread count
-    EventBus.subscribe('gameEvent', () => {
-      this.unreadEvents++;
-      this.updateTerminalBadge();
-    });
-
-    // Add click listener for terminal trigger
-    if (this.terminalTrigger) {
-      this.terminalTrigger.addEventListener('click', () => this.showIntelTerminal());
-    }
-
-    // Subscribe to log icon click event
-    EventBus.subscribe('logIconClicked', () => {
-      this.showIntelTerminal();
-    });
+    // Listen for HUD events
+    EventBus.subscribe('showPlayerStats', (playerIndex: number) => this.showPlayerStatsModal(playerIndex));
+    EventBus.subscribe('showIntelTerminal', () => this.showIntelTerminal());
     
     // Subscribe to add to log event from EventNotificationManager
     EventBus.subscribe('addToLog', () => {
@@ -145,32 +105,11 @@ class UIManager {
     
     // Initialize Screen Switching
     this.initializeScreenSwitching();
-
-    // Initialize HUD clock visualizations
-    this.hudClockVisualizationP1 = null;
-    this.hudClockVisualizationP2 = null;
-    
-    this.initializeClockVisualizations();
-    this.lastPlayerIndex = -1;
-  }
-
-  updateTerminalBadge() {
-    if (this.terminalBadge) {
-      if (this.unreadEvents > 0) {
-        this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents.toString();
-        this.terminalBadge.classList.remove('hidden');
-      } else {
-        this.terminalBadge.classList.add('hidden');
-      }
-    }
   }
 
   showIntelTerminal() {
     const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     if (!gameState) return;
-
-    this.unreadEvents = 0;
-    this.updateTerminalBadge();
 
     this.intelTerminalModal.updateEntries(gameState.log);
     this.intelTerminalModal.show();
@@ -236,30 +175,6 @@ class UIManager {
     }
 
     EventBus.publish('screenSwitched', screenId);
-  }
-
-  initializeClockVisualizations() {
-    if (document.getElementById('hud-time-ring-p1')) {
-      this.hudClockVisualizationP1 = new ClockVisualization('hud-time-ring-p1', {
-        size: 52,
-        strokeWidth: 4,
-        backgroundColor: 'rgba(255, 0, 255, 0.1)',
-        foregroundColor: '#FF00FF',
-        textColor: 'transparent',
-        showNumeric: false
-      });
-    }
-
-    if (document.getElementById('hud-time-ring-p2')) {
-      this.hudClockVisualizationP2 = new ClockVisualization('hud-time-ring-p2', {
-        size: 52,
-        strokeWidth: 4,
-        backgroundColor: 'rgba(0, 255, 255, 0.1)',
-        foregroundColor: '#00FFFF',
-        textColor: 'transparent',
-        showNumeric: false
-      });
-    }
   }
 
   showChoiceModal({ title, choices, showInput = false }: { title: string, choices: any[], showInput?: boolean }) {
@@ -550,51 +465,9 @@ class UIManager {
   }
 
   render(gameState: GameState) {
-    const player1 = gameState.players[0];
-    const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
+    this.hud.update(gameState);
+
     const currentPlayer = gameState.getCurrentPlayer();
-    const currentPlayerIndex = gameState.currentPlayerIndex;
-
-    if (this.orbP1) {
-      this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
-      this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
-      
-      if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
-        this.orbP1.classList.add('pulse');
-        setTimeout(() => this.orbP1?.classList.remove('pulse'), 600);
-      }
-    }
-
-    if (this.orbP2) {
-      this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
-      this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
-      
-      if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
-        this.orbP2.classList.add('pulse');
-        setTimeout(() => this.orbP2?.classList.remove('pulse'), 600);
-      }
-    }
-
-    this.lastPlayerIndex = currentPlayerIndex;
-
-    if (this.hudClockVisualizationP1) {
-      this.hudClockVisualizationP1.updateTime(player1.time);
-    }
-    if (this.hudClockVisualizationP2 && player2) {
-      this.hudClockVisualizationP2.updateTime(player2.time);
-    }
-
-    if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
-    if (this.hudWeek) this.hudWeek.textContent = gameState.turn.toString();
-    if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
-
-    if (this.newsTickerContent && gameState.log.length > 0) {
-      const recentEvents = gameState.log
-        .slice(-5)
-        .map((entry: any) => typeof entry === 'string' ? entry : entry.text)
-        .join('  •  ');
-      this.newsTickerContent.textContent = recentEvents;
-    }
 
     this.updateLocationHint(currentPlayer.location);
 
