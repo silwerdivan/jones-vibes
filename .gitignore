@@ -24,3 +24,6 @@ yarn-error.log*
 .serena  
 .gemini 
 .aider*
+
+# Build
+dist/
