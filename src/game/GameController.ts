@@ -2,6 +2,7 @@ import { LOCATIONS, LocationName } from '../data/locations.js';
 import { SHOPPING_ITEMS } from '../data/items.js';
 import GameState from './GameState.js';
 import UIManager from '../ui/UIManager.js';
+import EventBus, { UI_EVENTS } from '../EventBus.js';
 
 class GameController {
   public gameState: GameState;
@@ -11,6 +12,24 @@ class GameController {
   constructor(gameState: GameState, uiManager: UIManager) {
     this.gameState = gameState;
     this.uiManager = uiManager; // Store the view reference
+    
+    this.initializeEventSubscriptions();
+  }
+
+  private initializeEventSubscriptions() {
+    EventBus.subscribe(UI_EVENTS.REST_END_TURN, () => this.restEndTurn());
+    EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, () => this.advanceTurn());
+    EventBus.subscribe(UI_EVENTS.WORK_SHIFT, () => this.workShift());
+    EventBus.subscribe(UI_EVENTS.BUY_CAR, () => this.buyCar());
+    EventBus.subscribe(UI_EVENTS.TRAVEL, (destination: string) => this.travel(destination));
+    EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, (amount: number) => this.gameState.deposit(amount));
+    EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, (amount: number) => this.gameState.withdraw(amount));
+    EventBus.subscribe(UI_EVENTS.BANK_LOAN, (amount: number) => this.gameState.takeLoan(amount));
+    EventBus.subscribe(UI_EVENTS.BANK_REPAY, (amount: number) => this.gameState.repayLoan(amount));
+    EventBus.subscribe(UI_EVENTS.APPLY_JOB, (level: number) => this.gameState.applyForJob(level));
+    EventBus.subscribe(UI_EVENTS.TAKE_COURSE, (courseId: number) => this.gameState.takeCourse(courseId));
+    EventBus.subscribe(UI_EVENTS.BUY_ITEM, (itemName: string) => this.gameState.buyItem(itemName));
+    EventBus.subscribe(UI_EVENTS.REQUEST_STATE_REFRESH, () => this.gameState.publishCurrentState());
   }
 
   restEndTurn() {

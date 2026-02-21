@@ -15,9 +15,6 @@ function main() {
   // 3. Instantiate GameController, passing it the gameState and uiManager instances.
   const gameController = new GameController(gameState, uiManager);
 
-  // Expose gameController globally for EventNotificationManager
-  (window as any).gameController = gameController;
-
   // 4. Instantiate EventNotificationManager.
   new EventNotificationManager();
 

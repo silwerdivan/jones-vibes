@@ -16,16 +16,19 @@
 - Cleaned up magic strings and fixed imports across the core game logic files.
 - Verified progress with `npm run build` (error count reduced from 652 to 520, with core logic files `GameState.ts` and `EventBus.ts` now error-free).
 
-## Phase 3: Decoupling the View (The Great Split) - In Progress
+## Phase 3: Decoupling the View (The Great Split) - Completed
 - Created `src/ui/UIManager.ts` as the new entry point for UI logic, replacing `src/ui.ts`.
 - Refactored `UIManager` to be strictly typed and updated all references in `main.ts` and `GameController.ts`.
 - Fixed multiple type errors across `ClockVisualization.ts`, `EventNotificationManager.ts`, `InputManager.ts`, and `Player.ts`.
 - Deleted the old `src/ui.ts` file.
-- Verified progress with `npm run build` (build now successful with 0 errors).
-## Phase 3: Decoupling the View (The Great Split) - Continued`n- Extracted all modal logic into `src/ui/components/Modal.ts` with specialized classes for Choice, PlayerStats, IntelTerminal, and TurnSummary modals.`n- Refactored `UIManager.ts` to use these new Modal components, significantly cleaning up its state and method logic.`n- Moved swipe-to-close functionality into the Modal base class.`n- Verified with successful `npm run build` (0 errors).
-
-## Phase 3: Decoupling the View (The Great Split) - Continued
-- Extracted all HUD logic into src/ui/components/HUD.ts including cash, weeks, clocks, and player orbs.
-- Refactored UIManager.ts to use the new HUD component and listen for HUD-emitted events.
-- Verified with successful 
-pm run build (0 errors).
+- Extracted all modal logic into `src/ui/components/Modal.ts` with specialized classes for Choice, PlayerStats, IntelTerminal, and TurnSummary modals.
+- Refactored `UIManager.ts` to use these new Modal components, significantly cleaning up its state and method logic.
+- Moved swipe-to-close functionality into the Modal base class.
+- Extracted all HUD logic into `src/ui/components/HUD.ts` including cash, weeks, clocks, and player orbs.
+- Refactored `UIManager.ts` to use the new HUD component and listen for HUD-emitted events.
+- **Task 3.4 Completed:** Removed all direct references to `window.gameController` in UI files.
+- Defined `UI_EVENTS` constants in `EventBus.ts` for standardized decoupled communication.
+- Updated `GameController.ts` to subscribe to UI Intent events.
+- Refactored `UIManager.ts` to store `gameState` locally and publish events instead of calling methods directly.
+- Removed global `gameController` exposure in `main.ts`.
+- Verified progress with successful `npm run build` (0 errors).

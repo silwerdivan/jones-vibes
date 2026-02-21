@@ -7,6 +7,25 @@ interface EventBusInterface {
   publish(eventName: string, data?: any): void;
 }
 
+/**
+ * UI Intent Events: Emitted by the UI to request a state change.
+ */
+export const UI_EVENTS = {
+  REST_END_TURN: 'UI_INTENT_REST_END_TURN',
+  ADVANCE_TURN: 'UI_INTENT_ADVANCE_TURN',
+  WORK_SHIFT: 'UI_INTENT_WORK_SHIFT',
+  BUY_CAR: 'UI_INTENT_BUY_CAR',
+  TRAVEL: 'UI_INTENT_TRAVEL',
+  BANK_DEPOSIT: 'UI_INTENT_BANK_DEPOSIT',
+  BANK_WITHDRAW: 'UI_INTENT_BANK_WITHDRAW',
+  BANK_LOAN: 'UI_INTENT_BANK_LOAN',
+  BANK_REPAY: 'UI_INTENT_BANK_REPAY',
+  APPLY_JOB: 'UI_INTENT_APPLY_JOB',
+  TAKE_COURSE: 'UI_INTENT_TAKE_COURSE',
+  BUY_ITEM: 'UI_INTENT_BUY_ITEM',
+  REQUEST_STATE_REFRESH: 'UI_REQUEST_STATE_REFRESH'
+} as const;
+
 const EventBus: EventBusInterface = {
   events: {},
 

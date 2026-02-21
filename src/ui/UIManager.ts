@@ -1,4 +1,4 @@
-import EventBus from '../EventBus.js';
+import EventBus, { UI_EVENTS } from '../EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
 import { JOBS } from '../data/jobs.js';
 import { COURSES } from '../data/courses.js';
@@ -26,8 +26,9 @@ class UIManager {
   // Components
   private hud: HUD;
 
-  private lastLocation: string | null;
-  private lastPlayerId: number | null;
+  private gameState: GameState | null = null;
+  private lastLocation: string | null = null;
+  private lastPlayerId: number | null = null;
   
   private lifeAvatar: HTMLElement | null;
   private statusChips: HTMLElement | null;
@@ -76,6 +77,7 @@ class UIManager {
     EventBus.subscribe('aiThinkingEnd',   () => this.hideLoading());
 
     EventBus.subscribe('stateChanged', (gameState: GameState) => {
+      this.gameState = gameState;
       this.render(gameState);
     });
 
@@ -89,17 +91,13 @@ class UIManager {
     
     // Subscribe to add to log event from EventNotificationManager
     EventBus.subscribe('addToLog', () => {
-      if ((window as any).gameController) {
-        (window as any).gameController.gameState.publishCurrentState();
-      }
+      EventBus.publish(UI_EVENTS.REQUEST_STATE_REFRESH);
     });
     
     // Add click listener for Next Week FAB
     if (this.fabNextWeek) {
         this.fabNextWeek.addEventListener('click', () => {
-            if ((window as any).gameController) {
-                (window as any).gameController.restEndTurn();
-            }
+            EventBus.publish(UI_EVENTS.REST_END_TURN);
         });
     }
     
@@ -108,10 +106,9 @@ class UIManager {
   }
 
   showIntelTerminal() {
-    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
-    if (!gameState) return;
+    if (!this.gameState) return;
 
-    this.intelTerminalModal.updateEntries(gameState.log);
+    this.intelTerminalModal.updateEntries(this.gameState.log);
     this.intelTerminalModal.show();
   }
 
@@ -170,16 +167,15 @@ class UIManager {
         }
     });
 
-    if ((window as any).gameController && (window as any).gameController.gameState) {
-        this.render((window as any).gameController.gameState);
+    if (this.gameState) {
+        this.render(this.gameState);
     }
 
     EventBus.publish('screenSwitched', screenId);
   }
 
   showChoiceModal({ title, choices, showInput = false }: { title: string, choices: any[], showInput?: boolean }) {
-    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
-    const location = gameState ? gameState.getCurrentPlayer().location : null;
+    const location = this.gameState ? this.gameState.getCurrentPlayer().location : null;
     const clerk = location ? (CLERKS as any)[location] : null;
 
     this.choiceModal.setupClerk(clerk, Icons);
@@ -204,10 +200,9 @@ class UIManager {
   }
 
   showLocationDashboard(location: string) {
-    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
-    if (!gameState) return;
+    if (!this.gameState) return;
 
-    const player = gameState.getCurrentPlayer();
+    const player = this.gameState.getCurrentPlayer();
     const clerk = (CLERKS as any)[location];
 
     this.choiceModal.setupClerk(clerk, Icons);
@@ -256,10 +251,10 @@ class UIManager {
         this.choiceModal.showInput(true);
         
         const bankActions = [
-            { text: 'Deposit', value: 'deposit', action: (_: string, a: number) => (window as any).gameController.deposit(a) },
-            { text: 'Withdraw', value: 'withdraw', action: (_: string, a: number) => (window as any).gameController.withdraw(a) },
-            { text: 'Take Loan', value: 'loan', action: (_: string, a: number) => (window as any).gameController.takeLoan(a) },
-            { text: 'Repay Loan', value: 'repay', action: (_: string, a: number) => (window as any).gameController.repayLoan(a) }
+            { text: 'Deposit', value: 'deposit', action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_DEPOSIT, amount) },
+            { text: 'Withdraw', value: 'withdraw', action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_WITHDRAW, amount) },
+            { text: 'Take Loan', value: 'loan', action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_LOAN, amount) },
+            { text: 'Repay Loan', value: 'repay', action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_REPAY, amount) }
         ];
 
         bankActions.forEach(choice => {
@@ -273,7 +268,7 @@ class UIManager {
                     this.spawnFeedback(e.currentTarget as HTMLElement, `+$${amount}`, 'success');
                 }
 
-                choice.action(choice.value, amount);
+                choice.action(amount);
                 setTimeout(() => {
                     this.showLocationDashboard('Bank');
                 }, 100);
@@ -311,8 +306,7 @@ class UIManager {
   }
 
   renderActionCards(type: string, data: any[]) {
-    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
-    const player = gameState ? gameState.getCurrentPlayer() : null;
+    const player = this.gameState ? this.gameState.getCurrentPlayer() : null;
     
     const cardList = document.createElement('div');
     cardList.className = 'action-card-list';
@@ -332,9 +326,9 @@ class UIManager {
 
       if (type === 'jobs') {
         title = item.title;
-        isLocked = player && player.educationLevel < item.educationRequired;
-        isHired = player && player.careerLevel === item.level;
-        const isBetterJob = player && player.careerLevel > item.level;
+        isLocked = !!(player && player.educationLevel < item.educationRequired);
+        isHired = !!(player && player.careerLevel === item.level);
+        const isBetterJob = !!(player && player.careerLevel > item.level);
         
         btnText = isHired ? 'Hired' : (isBetterJob ? 'Lower Level' : 'Apply');
         if (isBetterJob) isLocked = true; // Can't re-apply for lower level
@@ -346,12 +340,12 @@ class UIManager {
             <i class="material-icons">${isLocked ? 'lock' : 'school'}</i>Edu Lvl ${item.educationRequired}
           </span>
         `;
-        action = () => (window as any).gameController.applyForJob(item.level);
+        action = () => EventBus.publish(UI_EVENTS.APPLY_JOB, item.level);
         feedbackText = 'HIRED!';
       } else if (type === 'college') {
         title = item.name;
-        isLocked = player && player.educationLevel < (item.educationMilestone - 1);
-        const alreadyTaken = player && player.educationLevel >= item.educationMilestone;
+        isLocked = !!(player && player.educationLevel < (item.educationMilestone - 1));
+        const alreadyTaken = !!(player && player.educationLevel >= item.educationMilestone);
         
         btnText = alreadyTaken ? 'Completed' : 'Study';
         if (alreadyTaken) isLocked = true;
@@ -360,12 +354,12 @@ class UIManager {
           <span class="action-card-tag price ${isLocked && !alreadyTaken ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
           <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
         `;
-        action = () => (window as any).gameController.gameState.takeCourse(item.id);
+        action = () => EventBus.publish(UI_EVENTS.TAKE_COURSE, item.id);
         feedbackText = `-$${item.cost}`;
         feedbackType = 'error';
       } else if (type === 'shopping') {
         title = item.name;
-        isLocked = player && player.cash < item.cost;
+        isLocked = !!(player && player.cash < item.cost);
         btnText = 'Buy';
         
         let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>`;
@@ -377,7 +371,7 @@ class UIManager {
           <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
           ${boostHtml}
         `;
-        action = () => (window as any).gameController.gameState.buyItem(item.name);
+        action = () => EventBus.publish(UI_EVENTS.BUY_ITEM, item.name);
         feedbackText = `-$${item.cost}`;
         feedbackType = 'error';
       }
@@ -409,7 +403,7 @@ class UIManager {
           action();
           
           // Re-render dashboard for jobs to show potential "Work Shift" update
-          if (type === 'jobs' && (window as any).gameController) {
+          if (type === 'jobs') {
               setTimeout(() => {
                   this.showLocationDashboard('Employment Agency');
               }, 100);
@@ -424,10 +418,9 @@ class UIManager {
   }
 
   showPlayerStatsModal(playerIndex: number) {
-    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
-    if (!gameState || !gameState.players[playerIndex - 1]) return;
+    if (!this.gameState || !this.gameState.players[playerIndex - 1]) return;
     
-    const player = gameState.players[playerIndex - 1];
+    const player = this.gameState.players[playerIndex - 1];
     this.playerStatsModal.update(player, COURSES, JOBS, playerIndex);
     this.playerStatsModal.show();
   }
@@ -453,9 +446,7 @@ class UIManager {
       }
       
       this.turnSummaryModal.hide();
-      if ((window as any).gameController) {
-        (window as any).gameController.advanceTurn();
-      }
+      EventBus.publish(UI_EVENTS.ADVANCE_TURN);
     });
     this.turnSummaryModal.show();
   }
@@ -502,7 +493,7 @@ class UIManager {
                 label: 'Rest / End Turn',
                 icon: 'bedtime',
                 primary: true,
-                onClick: () => (window as any).gameController.restEndTurn()
+                onClick: () => EventBus.publish(UI_EVENTS.REST_END_TURN)
             });
             break;
         case 'Employment Agency':
@@ -510,7 +501,7 @@ class UIManager {
                 label: 'Work Shift',
                 icon: 'work',
                 primary: true,
-                onClick: () => (window as any).gameController.workShift()
+                onClick: () => EventBus.publish(UI_EVENTS.WORK_SHIFT)
             });
             break;
         case 'Community College':
@@ -542,7 +533,7 @@ class UIManager {
                 label: 'View Inventory',
                 icon: 'directions_car',
                 primary: true,
-                onClick: () => (window as any).gameController.buyCar()
+                onClick: () => EventBus.publish(UI_EVENTS.BUY_CAR)
             });
             break;
         case 'Bank':
@@ -610,9 +601,7 @@ class UIManager {
 
       card.onclick = () => {
         if (currentPlayer.location !== location) {
-          if ((window as any).gameController) {
-            (window as any).gameController.travel(location);
-          }
+          EventBus.publish(UI_EVENTS.TRAVEL, location);
         } else {
             this.showLocationDashboard(location);
         }
