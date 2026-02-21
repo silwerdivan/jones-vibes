@@ -1,13 +1,25 @@
+interface ClockOptions {
+    size: number;
+    strokeWidth: number;
+    backgroundColor: string;
+    foregroundColor: string;
+    textColor: string;
+    fontSize: string;
+    fontFamily: string;
+    showNumeric: boolean;
+    animationDuration: number;
+}
+
 class ClockVisualization {
     private container: HTMLElement | null;
-    private options: any;
+    private options: ClockOptions;
     private currentHours: number;
     private svg!: SVGSVGElement;
     private backgroundCircle!: SVGCircleElement;
     private foregroundCircle!: SVGCircleElement;
     private textElement?: SVGTextElement;
 
-    constructor(containerId: string, options: any = {}) {
+    constructor(containerId: string, options: Partial<ClockOptions> = {}) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
             throw new Error(`Container with id "${containerId}" not found`);
@@ -23,8 +35,7 @@ class ClockVisualization {
             fontSize: options.fontSize || '14px',
             fontFamily: options.fontFamily || 'VT323, monospace',
             showNumeric: options.showNumeric !== undefined ? options.showNumeric : true,
-            animationDuration: options.animationDuration || 500,
-            ...options
+            animationDuration: options.animationDuration || 500
         };
 
         this.currentHours = 24;

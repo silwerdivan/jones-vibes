@@ -176,7 +176,7 @@ class TimeSystem {
             EventBus.publish('aiThinkingStart');
             // Delay AI processing so player can see the turn transition
             setTimeout(() => {
-                (this.gameState as any).processAITurn();
+                this.gameState.processAITurn();
             }, 1000);
         }
     }

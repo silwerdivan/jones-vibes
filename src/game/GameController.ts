@@ -73,7 +73,7 @@ class GameController {
       choices: [{
         text: 'Confirm Deposit',
         value: null,
-        action: (_: any, amount: number | null) => {
+        action: (_: any, amount?: number) => {
           if (amount && amount > 0) {
             this.economySystem.deposit(amount);
           }
@@ -89,7 +89,7 @@ class GameController {
       choices: [{
         text: 'Confirm Withdraw',
         value: null,
-        action: (_: any, amount: number | null) => {
+        action: (_: any, amount?: number) => {
           if (amount && amount > 0) {
             this.economySystem.withdraw(amount);
           }
@@ -105,7 +105,7 @@ class GameController {
       choices: [{
         text: 'Confirm Loan',
         value: null,
-        action: (_: any, amount: number | null) => {
+        action: (_: any, amount?: number) => {
           if (amount && amount > 0) {
             this.economySystem.takeLoan(amount);
           }
@@ -121,7 +121,7 @@ class GameController {
       choices: [{
         text: 'Confirm Repayment',
         value: null,
-        action: (_: any, amount: number | null) => {
+        action: (_: any, amount?: number) => {
           if (amount && amount > 0) {
             this.economySystem.repayLoan(amount);
           }

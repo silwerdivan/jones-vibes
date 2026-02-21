@@ -3,14 +3,10 @@ import { JOBS } from '../data/jobs';
 import { COURSES } from '../data/courses';
 import EventBus from '../EventBus';
 import AIController from './AIController';
-import { Course, Job } from '../models/types';
+import { Course, Job, AIAction, LogMessage } from '../models/types';
 import { LocationName } from '../data/locations';
-
-interface LogMessage {
-    text: string;
-    category: string;
-    timestamp: string;
-}
+import type EconomySystem from '../systems/EconomySystem';
+import type TimeSystem from '../systems/TimeSystem';
 
 class GameState {
     players: Player[];
@@ -92,7 +88,7 @@ class GameState {
         }
     }
 
-    handleAIAction(aiAction: any): void {
+    handleAIAction(aiAction: AIAction): void {
         // 1) no action → end AI turn immediately
         if (!aiAction || !aiAction.action) {
             EventBus.publish('aiThinkingEnd');
@@ -199,13 +195,13 @@ class GameState {
         }
     }
 
-    private _economySystem: any = null;
-    setEconomySystem(system: any) {
+    private _economySystem: EconomySystem | null = null;
+    setEconomySystem(system: EconomySystem) {
         this._economySystem = system;
     }
 
-    private _timeSystem: any = null;
-    setTimeSystem(system: any) {
+    private _timeSystem: TimeSystem | null = null;
+    setTimeSystem(system: TimeSystem) {
         this._timeSystem = system;
     }
 

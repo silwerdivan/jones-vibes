@@ -1,6 +1,7 @@
 import GameState from '../../game/GameState.js';
 import ClockVisualization from '../ClockVisualization.js';
 import EventBus from '../../EventBus.js';
+import { LogMessage } from '../../models/types.js';
 
 export class HUD {
     private hudCash: HTMLElement | null;
@@ -124,7 +125,7 @@ export class HUD {
         if (this.newsTickerContent && gameState.log.length > 0) {
             const recentEvents = gameState.log
                 .slice(-5)
-                .map((entry: any) => typeof entry === 'string' ? entry : entry.text)
+                .map((entry: LogMessage) => entry.text)
                 .join('  •  ');
             this.newsTickerContent.textContent = recentEvents;
         }

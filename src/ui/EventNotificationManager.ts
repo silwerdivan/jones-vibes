@@ -1,7 +1,8 @@
 import EventBus from '../EventBus.js';
+import { LogMessage } from '../models/types.js';
 
 class EventNotificationManager {
-  private displayTimeout: any;
+  private displayTimeout: ReturnType<typeof setTimeout> | null;
   private displayDuration: number;
   private eventStrip!: HTMLElement;
   private eventText!: HTMLElement;
@@ -17,7 +18,7 @@ class EventNotificationManager {
     this.createEventStrip();
     
     // Subscribe to game events
-    EventBus.subscribe('gameEvent', (event: any) => {
+    EventBus.subscribe('gameEvent', (event: LogMessage) => {
       this.addEvent(event);
     });
   }
@@ -62,7 +63,7 @@ class EventNotificationManager {
     }
   }
   
-  addEvent(event: any) {
+  addEvent(event: LogMessage) {
     // Clear any existing timeout
     if (this.displayTimeout) {
       clearTimeout(this.displayTimeout);
@@ -78,9 +79,9 @@ class EventNotificationManager {
     }, this.displayDuration);
   }
   
-  displayEvent(event: any) {
+  displayEvent(event: LogMessage) {
     // Set event text and category
-    this.eventText.textContent = typeof event === 'string' ? event : event.text;
+    this.eventText.textContent = event.text;
     
     // Add category class if available
     if (event && event.category) {

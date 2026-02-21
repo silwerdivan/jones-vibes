@@ -9,6 +9,9 @@ import Icons from './Icons.js';
 import GameState from '../game/GameState.js';
 import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal } from './components/Modal.js';
 import { HUD } from './components/HUD.js';
+import { TurnSummary, Choice, LocationAction, Item, Course, Job, IconRegistry, Clerk } from '../models/types.js';
+
+type ClerkRegistry = Record<string, Clerk>;
 
 class UIManager {
   private screens: NodeListOf<Element>;
@@ -81,7 +84,7 @@ class UIManager {
       this.render(gameState);
     });
 
-    EventBus.subscribe('turnEnded', (summary: any) => {
+    EventBus.subscribe('turnEnded', (summary: TurnSummary) => {
       this.showTurnSummary(summary);
     });
 
@@ -174,11 +177,11 @@ class UIManager {
     EventBus.publish('screenSwitched', screenId);
   }
 
-  showChoiceModal({ title, choices, showInput = false }: { title: string, choices: any[], showInput?: boolean }) {
+  showChoiceModal({ title, choices, showInput = false }: { title: string, choices: Choice[], showInput?: boolean }) {
     const location = this.gameState ? this.gameState.getCurrentPlayer().location : null;
-    const clerk = location ? (CLERKS as any)[location] : null;
+    const clerk = location ? (CLERKS as ClerkRegistry)[location] : null;
 
-    this.choiceModal.setupClerk(clerk, Icons);
+    this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
     this.choiceModal.clearContent();
     this.choiceModal.showInput(showInput);
 
@@ -203,9 +206,9 @@ class UIManager {
     if (!this.gameState) return;
 
     const player = this.gameState.getCurrentPlayer();
-    const clerk = (CLERKS as any)[location];
+    const clerk = (CLERKS as ClerkRegistry)[location];
 
-    this.choiceModal.setupClerk(clerk, Icons);
+    this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
     this.choiceModal.clearContent();
     this.choiceModal.showInput(false);
 
@@ -235,7 +238,7 @@ class UIManager {
             if (action.label !== 'Work Shift') {
                 this.choiceModal.hide();
             }
-            action.onClick();
+            action.onClick(e);
             
             // If it was Work Shift, re-render to update UI
             if (action.label === 'Work Shift') {
@@ -305,7 +308,7 @@ class UIManager {
     this.showLocationDashboard('Employment Agency');
   }
 
-  renderActionCards(type: string, data: any[]) {
+  renderActionCards(type: 'jobs' | 'college' | 'shopping', data: any[]) {
     const player = this.gameState ? this.gameState.getCurrentPlayer() : null;
     
     const cardList = document.createElement('div');
@@ -325,54 +328,57 @@ class UIManager {
       let feedbackText = '';
 
       if (type === 'jobs') {
-        title = item.title;
-        isLocked = !!(player && player.educationLevel < item.educationRequired);
-        isHired = !!(player && player.careerLevel === item.level);
-        const isBetterJob = !!(player && player.careerLevel > item.level);
+        const job = item as Job;
+        title = job.title;
+        isLocked = !!(player && player.educationLevel < job.educationRequired);
+        isHired = !!(player && player.careerLevel === job.level);
+        const isBetterJob = !!(player && player.careerLevel > job.level);
         
         btnText = isHired ? 'Hired' : (isBetterJob ? 'Lower Level' : 'Apply');
         if (isBetterJob) isLocked = true; // Can't re-apply for lower level
 
         metaHtml = `
-          <span class="action-card-tag price"><i class="material-icons">payments</i>$${item.wage}/hr</span>
-          <span class="action-card-tag"><i class="material-icons">schedule</i>${item.shiftHours}h</span>
+          <span class="action-card-tag price"><i class="material-icons">payments</i>$${job.wage}/hr</span>
+          <span class="action-card-tag"><i class="material-icons">schedule</i>${job.shiftHours}h</span>
           <span class="action-card-tag requirement ${isLocked ? 'locked' : ''}">
-            <i class="material-icons">${isLocked ? 'lock' : 'school'}</i>Edu Lvl ${item.educationRequired}
+            <i class="material-icons">${isLocked ? 'lock' : 'school'}</i>Edu Lvl ${job.educationRequired}
           </span>
         `;
-        action = () => EventBus.publish(UI_EVENTS.APPLY_JOB, item.level);
+        action = () => EventBus.publish(UI_EVENTS.APPLY_JOB, job.level);
         feedbackText = 'HIRED!';
       } else if (type === 'college') {
-        title = item.name;
-        isLocked = !!(player && player.educationLevel < (item.educationMilestone - 1));
-        const alreadyTaken = !!(player && player.educationLevel >= item.educationMilestone);
+        const course = item as Course;
+        title = course.name;
+        isLocked = !!(player && player.educationLevel < (course.educationMilestone - 1));
+        const alreadyTaken = !!(player && player.educationLevel >= course.educationMilestone);
         
         btnText = alreadyTaken ? 'Completed' : 'Study';
         if (alreadyTaken) isLocked = true;
 
         metaHtml = `
-          <span class="action-card-tag price ${isLocked && !alreadyTaken ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
-          <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
+          <span class="action-card-tag price ${isLocked && !alreadyTaken ? 'locked' : ''}"><i class="material-icons">payments</i>$${course.cost}</span>
+          <span class="action-card-tag"><i class="material-icons">history</i>${course.time}h total</span>
         `;
-        action = () => EventBus.publish(UI_EVENTS.TAKE_COURSE, item.id);
-        feedbackText = `-$${item.cost}`;
+        action = () => EventBus.publish(UI_EVENTS.TAKE_COURSE, course.id);
+        feedbackText = `-$${course.cost}`;
         feedbackType = 'error';
       } else if (type === 'shopping') {
-        title = item.name;
-        isLocked = !!(player && player.cash < item.cost);
+        const shoppingItem = item as Item;
+        title = shoppingItem.name;
+        isLocked = !!(player && player.cash < shoppingItem.cost);
         btnText = 'Buy';
         
-        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>`;
-        if (item.hungerReduction) {
-          boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Hunger</span>`;
+        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${shoppingItem.happinessBoost} Happy</span>`;
+        if (shoppingItem.hungerReduction) {
+          boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${shoppingItem.hungerReduction} Hunger</span>`;
         }
 
         metaHtml = `
-          <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
+          <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${shoppingItem.cost}</span>
           ${boostHtml}
         `;
-        action = () => EventBus.publish(UI_EVENTS.BUY_ITEM, item.name);
-        feedbackText = `-$${item.cost}`;
+        action = () => EventBus.publish(UI_EVENTS.BUY_ITEM, shoppingItem.name);
+        feedbackText = `-$${shoppingItem.cost}`;
         feedbackType = 'error';
       }
 
@@ -439,7 +445,7 @@ class UIManager {
     document.body.classList.remove('loading-active');
   }
 
-  showTurnSummary(summary: any) {
+  showTurnSummary(summary: TurnSummary) {
     this.turnSummaryModal.update(summary, () => {
       if ((window as any).navigator && (window as any).navigator.vibrate) {
         (window as any).navigator.vibrate(10);
@@ -484,8 +490,8 @@ class UIManager {
     }
   }
 
-  getLocationActions(location: string) {
-    const actions: any[] = [];
+  getLocationActions(location: string): LocationAction[] {
+    const actions: LocationAction[] = [];
     
     switch (location) {
         case 'Home':
@@ -711,10 +717,10 @@ class UIManager {
       const essentials = SHOPPING_ITEMS.filter(i => i.type === 'essential' && i.icon);
       
       essentials.forEach(item => {
-        const isOwned = player.inventory.some((i: any) => i.name === item.name);
+        const isOwned = player.inventory.some((i: Item) => i.name === item.name);
         const div = document.createElement('div');
         div.className = `essential-item ${isOwned ? 'owned' : ''}`;
-        if (item.icon) div.innerHTML = (Icons as any)[item.icon](32, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)');
+        if (item.icon) div.innerHTML = (Icons as unknown as IconRegistry)[item.icon](32, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)');
         div.title = item.name;
         this.essentialsGrid?.appendChild(div);
       });
@@ -725,16 +731,16 @@ class UIManager {
       const assets = SHOPPING_ITEMS.filter(i => i.type === 'asset');
 
       assets.forEach(item => {
-        const isOwned = player.inventory.some((i: any) => i.name === item.name);
+        const isOwned = player.inventory.some((i: Item) => i.name === item.name);
         const card = document.createElement('div');
         card.className = `inventory-card glass ${isOwned ? 'owned' : ''}`;
         card.innerHTML = `
           <div class="inventory-card-icon">
-            ${item.icon ? (Icons as any)[item.icon](40, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)') : ''}
+            ${item.icon ? (Icons as unknown as IconRegistry)[item.icon](40, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)') : ''}
           </div>
           <div class="inventory-card-content">
             <div class="inventory-card-name">${item.name}</div>
-            <div class="inventory-card-benefit">${(item as any).benefit}</div>
+            <div class="inventory-card-benefit">${item.benefit}</div>
           </div>
         `;
         this.assetsGrid?.appendChild(card);

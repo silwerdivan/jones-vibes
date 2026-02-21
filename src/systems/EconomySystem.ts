@@ -20,8 +20,7 @@ class EconomySystem {
 
     private _checkAutoEndTurn(): void {
         // This is a bit of a leak, but necessary for parity with existing logic
-        // We call the private method on gameState via any or make it public
-        (this.gameState as any)._checkAutoEndTurn();
+        this.gameState._checkAutoEndTurn();
     }
 
     buyItem(itemName: string): boolean {

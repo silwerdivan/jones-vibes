@@ -91,9 +91,9 @@ src/
 ### Phase 5: Cleanup & Optimization
 *Goal: Polish and Performance.*
 
-- [ ] **Task 5.1:** Remove all `@ts-nocheck` and fix remaining type errors.
-- [ ] **Task 5.2:** Implement strict `null` checks.
-- [ ] **Task 5.3:** Optimize asset loading (if any heavy assets exist).
+- [x] **Task 5.1:** Remove all `@ts-nocheck` and fix remaining type errors.
+- [x] **Task 5.2:** Implement strict `null` checks.
+- [x] **Task 5.3:** Optimize asset loading (if any heavy assets exist).
 
 ---
 

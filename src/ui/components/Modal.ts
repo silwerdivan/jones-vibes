@@ -1,4 +1,5 @@
 import EventBus from '../../EventBus.js';
+import { Clerk, IconRegistry, PlayerState, Course, Job, LogMessage, TurnSummary } from '../../models/types.js';
 
 export interface ModalConfig {
   title?: string;
@@ -128,10 +129,10 @@ export class ChoiceModal extends Modal {
     }
   }
 
-  public setupClerk(clerk: any, Icons: any): void {
+  public setupClerk(clerk: Clerk | null, Icons: IconRegistry): void {
     if (clerk && this.clerkContainer) {
       this.clerkContainer.classList.remove('hidden');
-      if (this.clerkAvatar) this.clerkAvatar.innerHTML = (Icons as any)[clerk.icon](40, '#00FFFF');
+      if (this.clerkAvatar) this.clerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
       if (this.clerkName) this.clerkName.textContent = clerk.name;
       if (this.clerkMessage) this.clerkMessage.textContent = clerk.message;
       this.titleElement?.classList.add('hidden');
@@ -160,7 +161,7 @@ export class ChoiceModal extends Modal {
     return this.inputField ? parseInt(this.inputField.value, 10) : 0;
   }
 
-  public addPrimaryButton(text: string, onClick: (amount: number | null) => void): void {
+  public addPrimaryButton(text: string, onClick: (amount: number) => void): void {
     const button = document.createElement('button');
     button.textContent = text;
     button.classList.add('btn', 'btn-primary');
@@ -224,7 +225,7 @@ export class PlayerStatsModal extends Modal {
     if (modalElement) this.addSwipeToClose(modalElement);
   }
 
-  public update(player: any, COURSES: any[], JOBS: any[], playerIndex: number): void {
+  public update(player: PlayerState, COURSES: Course[], JOBS: Job[], playerIndex: number): void {
     const modalElement = document.getElementById('player-stats-modal');
     if (modalElement) modalElement.className = playerIndex === 1 ? 'player-1' : 'player-2';
     
@@ -233,10 +234,10 @@ export class PlayerStatsModal extends Modal {
     if (this.loan) this.loan.textContent = `$${player.loan}`;
     if (this.happiness) this.happiness.textContent = player.happiness.toString();
     
-    const course = COURSES.find((c: any) => c.educationMilestone === player.educationLevel);
+    const course = COURSES.find((c: Course) => c.educationMilestone === player.educationLevel);
     if (this.education) this.education.textContent = course ? course.name : 'None';
     
-    const job = JOBS.find((j: any) => j.level === player.careerLevel);
+    const job = JOBS.find((j: Job) => j.level === player.careerLevel);
     if (this.career) this.career.textContent = job ? job.title : 'Unemployed';
     
     if (this.car) this.car.textContent = player.hasCar ? 'Yes' : 'No';
@@ -255,11 +256,11 @@ export class IntelTerminalModal extends Modal {
     closeBtn?.addEventListener('click', () => this.hide());
   }
 
-  public updateEntries(logEntries: any[]): void {
+  public updateEntries(logEntries: LogMessage[]): void {
     if (this.entries) {
       this.entries.innerHTML = '';
       
-      logEntries.forEach((message: any) => {
+      logEntries.forEach((message: LogMessage) => {
         const p = document.createElement('p');
         if (typeof message === 'string') {
           p.textContent = message;
@@ -296,7 +297,7 @@ export class TurnSummaryModal extends Modal {
     this.nextWeekBtn = document.getElementById('btn-start-next-week');
   }
 
-  public update(summary: any, onNextWeek: () => void): void {
+  public update(summary: TurnSummary, onNextWeek: () => void): void {
     if (this.subtitle) this.subtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
     
     if (this.cashTotal) {
@@ -312,7 +313,7 @@ export class TurnSummaryModal extends Modal {
     if (this.eventList) {
         this.eventList.innerHTML = '';
         
-        summary.events.forEach((event: any, index: number) => {
+        summary.events.forEach((event, index: number) => {
           const card = document.createElement('div');
           card.className = `event-card ${event.type}`;
           

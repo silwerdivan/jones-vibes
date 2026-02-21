@@ -1,3 +1,7 @@
+export interface IconRegistry {
+    [key: string]: (size?: number, color?: string) => string;
+}
+
 export interface Job {
     level: number;
     title: string;
@@ -32,7 +36,7 @@ export interface Clerk {
 }
 
 export interface PlayerState {
-    id: any;
+    id: number;
     cash: number;
     savings: number;
     happiness: number;
@@ -48,4 +52,47 @@ export interface PlayerState {
     weeklyIncome: number;
     weeklyExpenses: number;
     weeklyHappinessChange: number;
+}
+
+export interface TurnEvent {
+    type: string;
+    label: string;
+    value: number;
+    unit: string;
+    icon: string;
+}
+
+export interface TurnSummary {
+    player: number;
+    playerName: string;
+    week: number;
+    events: TurnEvent[];
+    totals: {
+        cashChange: number;
+        happinessChange: number;
+    };
+}
+
+export interface LogMessage {
+    text: string;
+    category: string;
+    timestamp: string;
+}
+
+export interface AIAction {
+    action: string;
+    params?: any;
+}
+
+export interface Choice {
+    text: string;
+    value?: any;
+    action: (value?: any, amount?: number) => void;
+}
+
+export interface LocationAction {
+    label: string;
+    icon: string;
+    primary: boolean;
+    onClick: (e: MouseEvent) => void;
 }
