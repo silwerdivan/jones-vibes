@@ -1,6 +1,10 @@
 import EventBus from './EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
-import { JOBS, COURSES, LOCATIONS, CLERKS, SHOPPING_ITEMS } from './game/gameData.js';
+import { JOBS } from './data/jobs.js';
+import { COURSES } from './data/courses.js';
+import { LOCATIONS } from './data/locations.js';
+import { CLERKS } from './data/clerks.js';
+import { SHOPPING_ITEMS } from './data/items.js';
 import ClockVisualization from './ui/ClockVisualization.js';
 import Icons from './ui/Icons.js';
 

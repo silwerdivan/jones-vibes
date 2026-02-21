@@ -1,7 +1,16 @@
-import { COURSES, SHOPPING_ITEMS, JOBS } from './gameData.js';
+import { COURSES } from '../data/courses';
+import { SHOPPING_ITEMS } from '../data/items';
+import { JOBS } from '../data/jobs';
+import Player from './Player';
+import GameState from './GameState';
+
+interface AIAction {
+    action: string;
+    params?: any;
+}
 
 class AIController {
-    takeTurn(gameState, player) {
+    takeTurn(gameState: GameState, player: Player): AIAction {
         const currentJob = JOBS.find(job => job.level === player.careerLevel);
         const workShiftHours = currentJob ? currentJob.shiftHours : 8; // Default to 8 if no job
 

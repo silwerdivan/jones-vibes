@@ -2,8 +2,11 @@
   "name": "250927-jones-in-the-fastlane-vibes",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-  },
+    "scripts": {
+      "dev": "vite",
+      "build": "tsc && vite build",
+      "preview": "vite preview"
+    },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/silwerdivan/jones-vibes.git"
@@ -17,5 +20,8 @@
   "homepage": "https://github.com/silwerdivan/jones-vibes#readme",
   "description": "",
   "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }

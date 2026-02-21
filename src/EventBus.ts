@@ -1,5 +1,13 @@
 // A simple pub/sub module for decoupled communication.
-const EventBus = {
+type Callback = (data?: any) => void;
+
+interface EventBusInterface {
+  events: Record<string, Callback[]>;
+  subscribe(eventName: string, callback: Callback): void;
+  publish(eventName: string, data?: any): void;
+}
+
+const EventBus: EventBusInterface = {
   events: {},
 
   /**
@@ -7,7 +15,7 @@ const EventBus = {
    * @param {string} eventName The name of the event (e.g., 'stateChanged').
    * @param {function} callback The function to execute when the event is published.
    */
-  subscribe(eventName, callback) {
+  subscribe(eventName: string, callback: Callback): void {
     if (!this.events[eventName]) {
       this.events[eventName] = [];
     }
@@ -19,7 +27,7 @@ const EventBus = {
    * @param {string} eventName The name of the event to publish.
    * @param {*} data The data to pass to all subscribed callbacks.
    */
-  publish(eventName, data) {
+  publish(eventName: string, data?: any): void {
     if (this.events[eventName]) {
       this.events[eventName].forEach(callback => {
         // Pass the data to the callback.

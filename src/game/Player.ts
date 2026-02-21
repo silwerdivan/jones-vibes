@@ -1,5 +1,26 @@
+import { Item, LocationName } from '../models/types';
+
 export default class Player {
-    constructor(id) {
+    id: number;
+    cash: number;
+    savings: number;
+    happiness: number;
+    educationLevel: number;
+    careerLevel: number;
+    time: number;
+    location: LocationName;
+    hasCar: boolean;
+    loan: number;
+    inventory: Item[];
+    hunger: number;
+    timeDeficit: number;
+    weeklyIncome: number;
+    weeklyExpenses: number;
+    weeklyHappinessChange: number;
+    isAI: boolean = false;
+    name: string = '';
+
+    constructor(id: number) {
         this.id = id;
         this.cash = 0;
         this.savings = 0;
@@ -20,12 +41,12 @@ export default class Player {
         this.weeklyHappinessChange = 0;
     }
 
-    addCash(amount) {
+    addCash(amount: number): void {
         this.cash += amount;
         this.weeklyIncome += amount;
     }
 
-    spendCash(amount) {
+    spendCash(amount: number): boolean {
         if (this.cash >= amount) {
             this.cash -= amount;
             this.weeklyExpenses += amount;
@@ -34,7 +55,7 @@ export default class Player {
         return false;
     }
 
-    updateHappiness(points) {
+    updateHappiness(points: number): void {
         const oldHappiness = this.happiness;
         this.happiness += points;
         if (this.happiness > 100) {
@@ -45,41 +66,41 @@ export default class Player {
         this.weeklyHappinessChange += (this.happiness - oldHappiness);
     }
 
-    resetWeeklyStats() {
+    resetWeeklyStats(): void {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklyHappinessChange = 0;
     }
 
-    advanceEducation() {
+    advanceEducation(): void {
         this.educationLevel++;
     }
 
-    advanceCareer() {
+    advanceCareer(): void {
         this.careerLevel++;
     }
 
-    deductTime(hours) {
+    deductTime(hours: number): void {
         this.time -= hours;
     }
 
-    setTime(hours) {
+    setTime(hours: number): void {
         this.time = hours;
     }
 
-    setLocation(newLocation) {
+    setLocation(newLocation: LocationName): void {
         this.location = newLocation;
     }
 
-    giveCar() {
+    giveCar(): void {
         this.hasCar = true;
     }
 
-    takeLoan(amount) {
+    takeLoan(amount: number): void {
         this.loan += amount;
     }
 
-    repayLoan(amount) {
+    repayLoan(amount: number): boolean {
         if (this.loan >= amount) {
             this.loan -= amount;
             return true;
@@ -87,7 +108,7 @@ export default class Player {
         return false;
     }
 
-    deposit(amount) {
+    deposit(amount: number): boolean {
         if (this.cash >= amount) {
             this.cash -= amount;
             this.savings += amount;
@@ -96,7 +117,7 @@ export default class Player {
         return false;
     }
 
-    withdraw(amount) {
+    withdraw(amount: number): boolean {
         if (this.savings >= amount) {
             this.savings -= amount;
             this.cash += amount;

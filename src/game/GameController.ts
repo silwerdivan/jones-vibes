@@ -1,4 +1,6 @@
-import { LOCATIONS, COURSES, SHOPPING_ITEMS } from './gameData.js'; // We need game data now
+import { LOCATIONS } from '../data/locations.js';
+import { COURSES } from '../data/courses.js';
+import { SHOPPING_ITEMS } from '../data/items.js';
 
 class GameController {
   // We need a reference to the view to show modals

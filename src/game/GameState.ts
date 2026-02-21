@@ -1,10 +1,46 @@
-import Player from './Player.js';
-import { JOBS, COURSES, SHOPPING_ITEMS } from './gameData.js'; // LOCATIONS is unused, can be removed
-import EventBus from '../EventBus.js';
-import AIController from './AIController.js'; // --- 1. IMPORT THE AI CONTROLLER
+import Player from './Player';
+import { JOBS } from '../data/jobs';
+import { COURSES } from '../data/courses';
+import { SHOPPING_ITEMS } from '../data/items';
+import EventBus from '../EventBus';
+import AIController from './AIController';
+import { Course, Job } from '../models/types';
+import { LocationName } from '../data/locations';
+
+interface LogMessage {
+    text: string;
+    category: string;
+    timestamp: string;
+}
+
+interface TurnSummary {
+    player: number;
+    playerName: string;
+    week: number;
+    events: Array<{
+        type: string;
+        label: string;
+        value: number;
+        unit: string;
+        icon: string;
+    }>;
+    totals: {
+        cashChange: number;
+        happinessChange: number;
+    };
+}
 
 class GameState {
-    constructor(numberOfPlayers, isPlayer2AI = false) {
+    players: Player[];
+    currentPlayerIndex: number;
+    turn: number;
+    DAILY_EXPENSE: number;
+    gameOver: boolean;
+    winner: Player | null;
+    aiController: AIController | null;
+    log: LogMessage[];
+
+    constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
             throw new Error("Game can only be played with 1 or 2 players.");
         }
@@ -28,24 +64,24 @@ class GameState {
         this.gameOver = false;
         this.winner = null;
 
-        this.aiController = isPlayer2AI ? new AIController() : null; // --- 2. INSTANTIATE THE AI CONTROLLER
+        this.aiController = isPlayer2AI ? new AIController() : null;
         this.log = [];
     }
 
-    _formatMoney(amount) {
+    _formatMoney(amount: number): string {
         return `$${amount.toLocaleString()}`;
     }
 
-    _getPlayerName(player) {
+    _getPlayerName(player: Player): string {
         return player.name || `Player ${player.id}`;
     }
 
-    publishCurrentState() {
+    publishCurrentState(): void {
         EventBus.publish('stateChanged', this);
     }
 
-    addLogMessage(message, category = 'info') {
-        const formattedMessage = {
+    addLogMessage(message: string, category: string = 'info'): void {
+        const formattedMessage: LogMessage = {
             text: message,
             category: category,
             timestamp: new Date().toLocaleTimeString()
@@ -57,13 +93,14 @@ class GameState {
         
         EventBus.publish('stateChanged', this);
     }
-    getCurrentPlayer() {
+
+    getCurrentPlayer(): Player {
         return this.players[this.currentPlayerIndex];
     }
 
-    endTurn() {
+    endTurn(): TurnSummary {
         const currentPlayer = this.getCurrentPlayer();
-        const summary = {
+        const summary: TurnSummary = {
             player: currentPlayer.id,
             playerName: this._getPlayerName(currentPlayer),
             week: this.turn,
@@ -180,14 +217,11 @@ class GameState {
         // Publish turn ended with summary
         EventBus.publish('turnEnded', summary);
         
-        // Advance player logic is now moved to advanceTurn()
-        // so that the UI can show the summary before advancing
-        
         EventBus.publish('stateChanged', this);
         return summary;
     }
 
-    advanceTurn() {
+    advanceTurn(): void {
         // Advance to the next player
         this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
 
@@ -200,7 +234,7 @@ class GameState {
         // Notify state change for the new player's turn
         EventBus.publish('stateChanged', this);
 
-        // --- 3. ADD AI TURN LOGIC ---
+        // ADD AI TURN LOGIC
         if (nextPlayer.isAI && this.aiController) {
             // Notify view to show loading
             EventBus.publish('aiThinkingStart');
@@ -211,105 +245,106 @@ class GameState {
         }
     }
 
-    processAITurn() {
+    processAITurn(): void {
         const currentPlayer = this.getCurrentPlayer();
-    this.addLogMessage(
-        `🤔 ${this._getPlayerName(currentPlayer)} is contemplating their next move...`,
-        'info'
-    );
-        const aiAction = this.aiController.takeTurn(this, currentPlayer);
-        this.handleAIAction(aiAction);
-    }
-
-    // --- 4. NEW METHOD TO HANDLE THE AI'S CHOSEN ACTION ---
-    handleAIAction(aiAction) {
-    // 1) no action → end AI turn immediately
-    if (!aiAction || !aiAction.action) {
-        EventBus.publish('aiThinkingEnd');
-        this.endTurn();
-        return;
-    }
-
-    // 2) explicit 'pass' → end AI turn
-    if (aiAction.action === 'pass') {
         this.addLogMessage(
-            `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
+            `🤔 ${this._getPlayerName(currentPlayer)} is contemplating their next move...`,
             'info'
         );
-        EventBus.publish('aiThinkingEnd');
-        this.endTurn();
-        return;
-    }
-
-    // 3) otherwise, carry out the action
-    let success = false;
-    let actionDescription = `AI decides to: ${aiAction.action}`;
-    if (aiAction.params) {
-        actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
-    }
-    this.addLogMessage(actionDescription, 'info');
-
-    switch(aiAction.action) {
-        case 'travel':
-            success = this.travel(aiAction.params.destination);
-            break;
-        case 'workShift':
-            success = this.workShift();
-            break;
-        case 'applyForJob':
-            success = this.applyForJob(aiAction.params.jobLevel);
-            break;
-        case 'takeCourse':
-            success = this.takeCourse(aiAction.params.courseId);
-            break;
-        case 'buyItem':
-            success = this.buyItem(aiAction.params.itemName);
-            break;
-        case 'buyCar':
-            success = this.buyCar();
-            break;
-        case 'deposit':
-            success = this.deposit(aiAction.params.amount);
-            break;
-        case 'withdraw':
-            success = this.withdraw(aiAction.params.amount);
-            break;
-        case 'takeLoan':
-            success = this.takeLoan(aiAction.params.amount);
-            break;
-        case 'repayLoan':
-            success = this.repayLoan(aiAction.params.amount);
-            break;
-        default:
-            console.warn(`AI tried an unknown action: ${aiAction.action}`);
-            success = false;
-            break;
-    }
-
-    const playerHasTime = this.getCurrentPlayer().time > 0;
-
-    if (success && playerHasTime) {
-        // AI still has time → decide next move
-        this.checkWinCondition(this.getCurrentPlayer());
-        this.addLogMessage(
-            `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
-            'info'
-        );
-        setTimeout(() => this.processAITurn(), 1000);
-    } else {
-        // AI turn ends (either success but no time left, or action failed)
-        if (!success) {
-            this.addLogMessage(
-                `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
-                'warning'
-            );
+        if (this.aiController) {
+            const aiAction = this.aiController.takeTurn(this, currentPlayer);
+            this.handleAIAction(aiAction);
         }
-        EventBus.publish('aiThinkingEnd');
-        this.endTurn();
     }
-}
 
-    checkWinCondition(player) {
+    handleAIAction(aiAction: any): void {
+        // 1) no action → end AI turn immediately
+        if (!aiAction || !aiAction.action) {
+            EventBus.publish('aiThinkingEnd');
+            this.endTurn();
+            return;
+        }
+
+        // 2) explicit 'pass' → end AI turn
+        if (aiAction.action === 'pass') {
+            this.addLogMessage(
+                `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
+                'info'
+            );
+            EventBus.publish('aiThinkingEnd');
+            this.endTurn();
+            return;
+        }
+
+        // 3) otherwise, carry out the action
+        let success = false;
+        let actionDescription = `AI decides to: ${aiAction.action}`;
+        if (aiAction.params) {
+            actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
+        }
+        this.addLogMessage(actionDescription, 'info');
+
+        switch(aiAction.action) {
+            case 'travel':
+                success = this.travel(aiAction.params.destination);
+                break;
+            case 'workShift':
+                success = this.workShift();
+                break;
+            case 'applyForJob':
+                success = this.applyForJob(aiAction.params.jobLevel);
+                break;
+            case 'takeCourse':
+                success = this.takeCourse(aiAction.params.courseId);
+                break;
+            case 'buyItem':
+                success = this.buyItem(aiAction.params.itemName);
+                break;
+            case 'buyCar':
+                success = this.buyCar();
+                break;
+            case 'deposit':
+                success = this.deposit(aiAction.params.amount);
+                break;
+            case 'withdraw':
+                success = this.withdraw(aiAction.params.amount);
+                break;
+            case 'takeLoan':
+                success = this.takeLoan(aiAction.params.amount);
+                break;
+            case 'repayLoan':
+                success = this.repayLoan(aiAction.params.amount);
+                break;
+            default:
+                console.warn(`AI tried an unknown action: ${aiAction.action}`);
+                success = false;
+                break;
+        }
+
+        const playerHasTime = this.getCurrentPlayer().time > 0;
+
+        if (success && playerHasTime) {
+            // AI still has time → decide next move
+            this.checkWinCondition(this.getCurrentPlayer());
+            this.addLogMessage(
+                `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
+                'info'
+            );
+            setTimeout(() => this.processAITurn(), 1000);
+        } else {
+            // AI turn ends (either success but no time left, or action failed)
+            if (!success) {
+                this.addLogMessage(
+                    `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
+                    'warning'
+                );
+            }
+            EventBus.publish('aiThinkingEnd');
+            this.endTurn();
+        }
+    }
+
+    checkWinCondition(player: Player): void {
         if (this.gameOver) return;
 
         const totalWealth = player.cash + player.savings;
@@ -329,7 +364,7 @@ class GameState {
         }
     }
 
-    _checkAutoEndTurn() {
+    _checkAutoEndTurn(): void {
         const player = this.getCurrentPlayer();
         if (player.time <= 0 && !player.isAI && !this.gameOver) {
             setTimeout(() => {
@@ -341,16 +376,16 @@ class GameState {
         }
     }
 
-    getNextAvailableCourse() {
+    getNextAvailableCourse(): Course | null {
         const currentPlayer = this.getCurrentPlayer();
         return COURSES.find(course => course.educationMilestone === currentPlayer.educationLevel + 1) || null;
     }
 
-    _getAvailableJobs(player) {
+    _getAvailableJobs(player: Player): Job[] {
         return JOBS.filter(job => player.educationLevel >= job.educationRequired);
     }
 
-    workShift() {
+    workShift(): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Employment Agency') {
@@ -412,7 +447,7 @@ class GameState {
         return true;
     }
 
-    takeCourse(courseId) {
+    takeCourse(courseId: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
         const course = COURSES.find(c => c.id === courseId);
 
@@ -459,7 +494,7 @@ class GameState {
         return true;
     }
 
-    buyItem(itemName) {
+    buyItem(itemName: string): boolean {
         const currentPlayer = this.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
@@ -512,7 +547,7 @@ class GameState {
         return true;
     }
 
-    deposit(amount) {
+    deposit(amount: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Bank') {
@@ -546,7 +581,7 @@ class GameState {
         }
     }
 
-    withdraw(amount) {
+    withdraw(amount: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Bank') {
@@ -580,7 +615,7 @@ class GameState {
         }
     }
 
-    takeLoan(amount) {
+    takeLoan(amount: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
         const MAX_LOAN = 2500;
 
@@ -617,7 +652,7 @@ class GameState {
         return true;
     }
 
-    repayLoan(amount) {
+    repayLoan(amount: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Bank') {
@@ -661,7 +696,7 @@ class GameState {
         return true;
     }
 
-    buyCar() {
+    buyCar(): boolean {
         const currentPlayer = this.getCurrentPlayer();
         const CAR_COST = 3000;
 
@@ -701,7 +736,7 @@ class GameState {
         return true;
     }
 
-    travel(destination) {
+    travel(destination: LocationName): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location === destination) {
@@ -748,7 +783,7 @@ class GameState {
         return true;
     }
 
-    applyForJob(jobLevel) {
+    applyForJob(jobLevel: number): boolean {
         const currentPlayer = this.getCurrentPlayer();
         
         // Find the job by level
