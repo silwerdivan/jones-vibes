@@ -1,5 +1,13 @@
 class ClockVisualization {
-    constructor(containerId, options = {}) {
+    private container: HTMLElement | null;
+    private options: any;
+    private currentHours: number;
+    private svg!: SVGSVGElement;
+    private backgroundCircle!: SVGCircleElement;
+    private foregroundCircle!: SVGCircleElement;
+    private textElement?: SVGTextElement;
+
+    constructor(containerId: string, options: any = {}) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
             throw new Error(`Container with id "${containerId}" not found`);
@@ -26,29 +34,29 @@ class ClockVisualization {
     init() {
         // Create the SVG element for the clock
         this.svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        this.svg.setAttribute('width', this.options.size);
-        this.svg.setAttribute('height', this.options.size);
+        this.svg.setAttribute('width', this.options.size.toString());
+        this.svg.setAttribute('height', this.options.size.toString());
         this.svg.setAttribute('viewBox', `0 0 ${this.options.size} ${this.options.size}`);
         this.svg.style.display = 'block';
 
         // Create background circle
         this.backgroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        this.backgroundCircle.setAttribute('cx', this.options.size / 2);
-        this.backgroundCircle.setAttribute('cy', this.options.size / 2);
-        this.backgroundCircle.setAttribute('r', (this.options.size / 2) - (this.options.strokeWidth / 2));
+        this.backgroundCircle.setAttribute('cx', (this.options.size / 2).toString());
+        this.backgroundCircle.setAttribute('cy', (this.options.size / 2).toString());
+        this.backgroundCircle.setAttribute('r', ((this.options.size / 2) - (this.options.strokeWidth / 2)).toString());
         this.backgroundCircle.setAttribute('fill', 'none');
         this.backgroundCircle.setAttribute('stroke', this.options.backgroundColor);
-        this.backgroundCircle.setAttribute('stroke-width', this.options.strokeWidth);
+        this.backgroundCircle.setAttribute('stroke-width', this.options.strokeWidth.toString());
         this.svg.appendChild(this.backgroundCircle);
 
         // Create foreground circle (the pie chart)
         this.foregroundCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        this.foregroundCircle.setAttribute('cx', this.options.size / 2);
-        this.foregroundCircle.setAttribute('cy', this.options.size / 2);
-        this.foregroundCircle.setAttribute('r', (this.options.size / 2) - (this.options.strokeWidth / 2));
+        this.foregroundCircle.setAttribute('cx', (this.options.size / 2).toString());
+        this.foregroundCircle.setAttribute('cy', (this.options.size / 2).toString());
+        this.foregroundCircle.setAttribute('r', ((this.options.size / 2) - (this.options.strokeWidth / 2)).toString());
         this.foregroundCircle.setAttribute('fill', 'none');
         this.foregroundCircle.setAttribute('stroke', this.options.foregroundColor);
-        this.foregroundCircle.setAttribute('stroke-width', this.options.strokeWidth);
+        this.foregroundCircle.setAttribute('stroke-width', this.options.strokeWidth.toString());
         this.foregroundCircle.setAttribute('stroke-dasharray', '0 1000');
         this.foregroundCircle.setAttribute('transform', `rotate(-90 ${this.options.size / 2} ${this.options.size / 2})`);
         this.foregroundCircle.style.transition = `stroke-dasharray ${this.options.animationDuration}ms ease-in-out`;
@@ -57,8 +65,8 @@ class ClockVisualization {
         // Create text element for numeric time display
         if (this.options.showNumeric) {
             this.textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            this.textElement.setAttribute('x', this.options.size / 2);
-            this.textElement.setAttribute('y', this.options.size / 2);
+            this.textElement.setAttribute('x', (this.options.size / 2).toString());
+            this.textElement.setAttribute('y', (this.options.size / 2).toString());
             this.textElement.setAttribute('text-anchor', 'middle');
             this.textElement.setAttribute('dominant-baseline', 'middle');
             this.textElement.setAttribute('fill', this.options.textColor);
@@ -69,14 +77,16 @@ class ClockVisualization {
         }
 
         // Clear container and append the SVG
-        this.container.innerHTML = '';
-        this.container.appendChild(this.svg);
+        if (this.container) {
+            this.container.innerHTML = '';
+            this.container.appendChild(this.svg);
+        }
 
         // Set initial state
         this.updateTime(24);
     }
 
-    updateTime(hours) {
+    updateTime(hours: number) {
         // Ensure hours is within valid range
         hours = Math.max(0, Math.min(24, hours));
         this.currentHours = hours;
@@ -112,7 +122,7 @@ class ClockVisualization {
     }
 
     // Helper method to calculate a darker version of a color
-    getDarkerColor(color, intensity) {
+    getDarkerColor(color: string, intensity: number) {
         // If intensity is 0, return the original color
         if (intensity === 0) return color;
         
@@ -128,9 +138,13 @@ class ClockVisualization {
         } else if (color.startsWith('rgb')) {
             // RGB color format
             const matches = color.match(/\d+/g);
-            r = parseInt(matches[0]);
-            g = parseInt(matches[1]);
-            b = parseInt(matches[2]);
+            if (matches) {
+                r = parseInt(matches[0]);
+                g = parseInt(matches[1]);
+                b = parseInt(matches[2]);
+            } else {
+                return color;
+            }
         } else {
             // Default to cyan for named colors
             return color;

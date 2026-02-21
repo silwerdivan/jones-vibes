@@ -1,14 +1,14 @@
 import EventBus from '../EventBus.js';
 
 class EventNotificationManager {
+  private displayTimeout: any;
+  private displayDuration: number;
+  private eventStrip!: HTMLElement;
+  private eventText!: HTMLElement;
+
   constructor() {
-    this.currentEvent = null;
     this.displayTimeout = null;
     this.displayDuration = 3500; // 3.5 seconds
-    
-    // DOM elements
-    this.eventStrip = null;
-    this.eventText = null;
     
     this.init();
   }
@@ -17,7 +17,7 @@ class EventNotificationManager {
     this.createEventStrip();
     
     // Subscribe to game events
-    EventBus.subscribe('gameEvent', (event) => {
+    EventBus.subscribe('gameEvent', (event: any) => {
       this.addEvent(event);
     });
   }
@@ -41,11 +41,11 @@ class EventNotificationManager {
 
     // Swipe away logic (simple version)
     let touchStartX = 0;
-    this.eventStrip.addEventListener('touchstart', (e) => {
+    this.eventStrip.addEventListener('touchstart', (e: TouchEvent) => {
       touchStartX = e.touches[0].clientX;
     }, { passive: true });
 
-    this.eventStrip.addEventListener('touchend', (e) => {
+    this.eventStrip.addEventListener('touchend', (e: TouchEvent) => {
       const touchEndX = e.changedTouches[0].clientX;
       if (Math.abs(touchEndX - touchStartX) > 50) {
         this.hideEvent();
@@ -57,19 +57,17 @@ class EventNotificationManager {
     if (actionsPanel && actionsPanel.parentNode) {
       actionsPanel.parentNode.insertBefore(this.eventStrip, actionsPanel);
     } else {
-      document.querySelector('.app-shell').appendChild(this.eventStrip);
+      const appShell = document.querySelector('.app-shell');
+      if (appShell) appShell.appendChild(this.eventStrip);
     }
   }
   
-  addEvent(event) {
+  addEvent(event: any) {
     // Clear any existing timeout
     if (this.displayTimeout) {
       clearTimeout(this.displayTimeout);
       this.displayTimeout = null;
     }
-    
-    // Set the new event as current
-    this.currentEvent = event;
     
     // Display the new event immediately
     this.displayEvent(event);
@@ -80,7 +78,7 @@ class EventNotificationManager {
     }, this.displayDuration);
   }
   
-  displayEvent(event) {
+  displayEvent(event: any) {
     // Set event text and category
     this.eventText.textContent = typeof event === 'string' ? event : event.text;
     
@@ -105,7 +103,6 @@ class EventNotificationManager {
     setTimeout(() => {
       this.eventStrip.classList.remove('show', 'shrinking');
       this.eventStrip.classList.add('hidden');
-      this.currentEvent = null;
       this.displayTimeout = null;
     }, 500); 
   }

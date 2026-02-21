@@ -10,7 +10,7 @@ interface AIAction {
 }
 
 class AIController {
-    takeTurn(gameState: GameState, player: Player): AIAction {
+    takeTurn(_gameState: GameState, player: Player): AIAction {
         const currentJob = JOBS.find(job => job.level === player.careerLevel);
         const workShiftHours = currentJob ? currentJob.shiftHours : 8; // Default to 8 if no job
 

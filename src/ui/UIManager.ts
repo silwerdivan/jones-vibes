@@ -1,14 +1,74 @@
-import EventBus from './EventBus.js';
+import EventBus from '../EventBus.js';
 // --- 1. IMPORT GAME DATA TO USE FOR LOOKUPS ---
-import { JOBS } from './data/jobs.js';
-import { COURSES } from './data/courses.js';
-import { LOCATIONS } from './data/locations.js';
-import { CLERKS } from './data/clerks.js';
-import { SHOPPING_ITEMS } from './data/items.js';
-import ClockVisualization from './ui/ClockVisualization.js';
-import Icons from './ui/Icons.js';
+import { JOBS } from '../data/jobs.js';
+import { COURSES } from '../data/courses.js';
+import { LOCATIONS } from '../data/locations.js';
+import { CLERKS } from '../data/clerks.js';
+import { SHOPPING_ITEMS } from '../data/items.js';
+import ClockVisualization from './ClockVisualization.js';
+import Icons from './Icons.js';
+import GameState from '../game/GameState.js';
 
-class GameView {
+class UIManager {
+  private screens: NodeListOf<Element>;
+  private tabItems: NodeListOf<Element>;
+  private currentScreenId: string;
+  private cityBentoGrid: HTMLElement | null;
+  private fabNextWeek: HTMLElement | null;
+  private hudCash: HTMLElement | null;
+  private hudWeek: HTMLElement | null;
+  private hudLocation: HTMLElement | null;
+  private orbP1: HTMLElement | null;
+  private orbP2: HTMLElement | null;
+  private newsTickerContent: HTMLElement | null;
+  private locationHint: HTMLElement | null;
+  private modalOverlay: HTMLElement | null;
+  private modalTitle: HTMLElement | null;
+  private modalContent: HTMLElement | null;
+  private modalInput: HTMLElement | null;
+  private modalInputField: HTMLInputElement | null;
+  private modalButtons: HTMLElement | null;
+  private modalSecondaryActions: HTMLElement | null;
+  private modalCancel: HTMLElement | null;
+  private modalClerkContainer: HTMLElement | null;
+  private modalClerkAvatar: HTMLElement | null;
+  private modalClerkName: HTMLElement | null;
+  private modalClerkMessage: HTMLElement | null;
+  private lastLocation: string | null;
+  private lastPlayerId: number | null;
+  private playerStatsModalOverlay: HTMLElement | null;
+  private playerStatsModal: HTMLElement | null;
+  private playerStatsModalTitle: HTMLElement | null;
+  private playerStatsModalClose: HTMLElement | null;
+  private modalCash: HTMLElement | null;
+  private modalSavings: HTMLElement | null;
+  private modalLoan: HTMLElement | null;
+  private modalHappiness: HTMLElement | null;
+  private modalEducation: HTMLElement | null;
+  private modalCareer: HTMLElement | null;
+  private modalCar: HTMLElement | null;
+  private modalTime: HTMLElement | null;
+  private lifeAvatar: HTMLElement | null;
+  private statusChips: HTMLElement | null;
+  private essentialsGrid: HTMLElement | null;
+  private assetsGrid: HTMLElement | null;
+  private intelTerminalOverlay: HTMLElement | null;
+  private terminalTrigger: HTMLElement | null;
+  private terminalBadge: HTMLElement | null;
+  private terminalEntries: HTMLElement | null;
+  private terminalClose: HTMLElement | null;
+  private unreadEvents: number;
+  private turnSummaryModal: HTMLElement | null;
+  private eventList: HTMLElement | null;
+  private summarySubtitle: HTMLElement | null;
+  private summaryCashTotal: HTMLElement | null;
+  private summaryHappinessTotal: HTMLElement | null;
+  private btnStartNextWeek: HTMLElement | null;
+  private loadingOverlay: HTMLElement | null;
+  private hudClockVisualizationP1: ClockVisualization | null;
+  private hudClockVisualizationP2: ClockVisualization | null;
+  private lastPlayerIndex: number;
+
   constructor() {
     // Screens
     this.screens = document.querySelectorAll('.screen');
@@ -29,8 +89,6 @@ class GameView {
     // Command-Orb Elements
     this.orbP1 = document.getElementById('orb-p1');
     this.orbP2 = document.getElementById('orb-p2');
-    this.hudAvatarP1 = document.getElementById('hud-avatar-p1');
-    this.hudAvatarP2 = document.getElementById('hud-avatar-p2');
 
     // News Ticker
     this.newsTickerContent = document.getElementById('news-ticker-content');
@@ -43,7 +101,7 @@ class GameView {
     this.modalTitle = document.getElementById('choice-modal-title');
     this.modalContent = document.getElementById('choice-modal-content');
     this.modalInput = document.getElementById('choice-modal-input');
-    this.modalInputField = document.getElementById('modal-input-amount');
+    this.modalInputField = document.getElementById('modal-input-amount') as HTMLInputElement;
     this.modalButtons = document.getElementById('choice-modal-buttons');
     this.modalSecondaryActions = document.getElementById('dashboard-secondary-actions');
     this.modalCancel = document.getElementById('modal-cancel-button');
@@ -98,12 +156,12 @@ class GameView {
     EventBus.subscribe('aiThinkingStart', () => this.showLoading());
     EventBus.subscribe('aiThinkingEnd',   () => this.hideLoading());
 
-    EventBus.subscribe('stateChanged', (gameState) => {
+    EventBus.subscribe('stateChanged', (gameState: GameState) => {
       this.render(gameState);
     });
 
     // Listen for turn ended to show summary
-    EventBus.subscribe('turnEnded', (summary) => {
+    EventBus.subscribe('turnEnded', (summary: any) => {
       this.showTurnSummary(summary);
     });
 
@@ -128,7 +186,7 @@ class GameView {
     if (this.orbP2) this.orbP2.addEventListener('click', () => this.showPlayerStatsModal(2));
     
     // Listen for game events to update unread count
-    EventBus.subscribe('gameEvent', (event) => {
+    EventBus.subscribe('gameEvent', () => {
       this.unreadEvents++;
       this.updateTerminalBadge();
     });
@@ -155,17 +213,17 @@ class GameView {
     });
     
     // Subscribe to add to log event from EventNotificationManager
-    EventBus.subscribe('addToLog', (event) => {
-      if (window.gameController) {
-        window.gameController.gameState.publishCurrentState();
+    EventBus.subscribe('addToLog', () => {
+      if ((window as any).gameController) {
+        (window as any).gameController.gameState.publishCurrentState();
       }
     });
     
     // Add click listener for Next Week FAB
     if (this.fabNextWeek) {
         this.fabNextWeek.addEventListener('click', () => {
-            if (window.gameController) {
-                window.gameController.restEndTurn();
+            if ((window as any).gameController) {
+                (window as any).gameController.restEndTurn();
             }
         });
     }
@@ -184,7 +242,7 @@ class GameView {
   updateTerminalBadge() {
     if (this.terminalBadge) {
       if (this.unreadEvents > 0) {
-        this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents;
+        this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents.toString();
         this.terminalBadge.classList.remove('hidden');
       } else {
         this.terminalBadge.classList.add('hidden');
@@ -193,39 +251,43 @@ class GameView {
   }
 
   showIntelTerminal() {
-    const gameState = window.gameController ? window.gameController.gameState : null;
+    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     if (!gameState) return;
 
     this.unreadEvents = 0;
     this.updateTerminalBadge();
 
-    this.terminalEntries.innerHTML = '';
-    
-    const logEntries = gameState.log; 
+    if (this.terminalEntries) {
+        this.terminalEntries.innerHTML = '';
+        
+        const logEntries = gameState.log; 
 
-    logEntries.forEach(message => {
-      const p = document.createElement('p');
-      if (typeof message === 'string') {
-        p.textContent = message;
-      } else {
-        p.textContent = message.text;
-        p.className = `log-${message.category}`;
-      }
-      this.terminalEntries.appendChild(p);
-    });
+        logEntries.forEach((message: any) => {
+          const p = document.createElement('p');
+          if (typeof message === 'string') {
+            p.textContent = message;
+          } else {
+            p.textContent = message.text;
+            p.className = `log-${message.category}`;
+          }
+          this.terminalEntries?.appendChild(p);
+        });
+    }
 
-    this.intelTerminalOverlay.classList.remove('hidden');
+    this.intelTerminalOverlay?.classList.remove('hidden');
     
-    const content = this.terminalEntries.parentElement;
-    setTimeout(() => {
-      content.scrollTop = content.scrollHeight;
-    }, 50);
+    const content = this.terminalEntries?.parentElement;
+    if (content) {
+        setTimeout(() => {
+          content.scrollTop = content.scrollHeight;
+        }, 50);
+    }
 
     document.body.style.overflow = 'hidden';
   }
 
   hideIntelTerminal() {
-    this.intelTerminalOverlay.classList.add('hidden');
+    this.intelTerminalOverlay?.classList.add('hidden');
     document.body.style.overflow = '';
   }
 
@@ -244,13 +306,13 @@ class GameView {
 
     this.tabItems.forEach(tab => {
         tab.addEventListener('click', () => {
-            const screenId = tab.dataset.screen;
-            this.switchScreen(screenId);
+            const screenId = (tab as HTMLElement).dataset.screen;
+            if (screenId) this.switchScreen(screenId);
         });
     });
   }
 
-  switchScreen(screenId) {
+  switchScreen(screenId: string) {
     if (this.currentScreenId === screenId) return;
 
     this.currentScreenId = screenId;
@@ -267,7 +329,7 @@ class GameView {
         const iconContainer = tab.querySelector('.tab-icon');
         const iconSvg = iconContainer ? iconContainer.querySelector('svg') : null;
 
-        if (tab.dataset.screen === screenId) {
+        if ((tab as HTMLElement).dataset.screen === screenId) {
             tab.classList.add('active');
             if (iconSvg) {
                 iconSvg.setAttribute('stroke', '#00FFFF');
@@ -280,8 +342,8 @@ class GameView {
         }
     });
 
-    if (window.gameController && window.gameController.gameState) {
-        this.render(window.gameController.gameState);
+    if ((window as any).gameController && (window as any).gameController.gameState) {
+        this.render((window as any).gameController.gameState);
     }
 
     EventBus.publish('screenSwitched', screenId);
@@ -311,32 +373,32 @@ class GameView {
     }
   }
 
-  showChoiceModal({ title, choices, showInput = false }) {
-    const gameState = window.gameController ? window.gameController.gameState : null;
+  showChoiceModal({ title, choices, showInput = false }: { title: string, choices: any[], showInput?: boolean }) {
+    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     const location = gameState ? gameState.getCurrentPlayer().location : null;
-    const clerk = CLERKS[location];
+    const clerk = location ? (CLERKS as any)[location] : null;
 
-    if (clerk) {
+    if (clerk && this.modalClerkContainer) {
       this.modalClerkContainer.classList.remove('hidden');
-      this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
-      this.modalClerkName.textContent = clerk.name;
-      this.modalClerkMessage.textContent = clerk.message;
-      this.modalTitle.classList.add('hidden');
+      if (this.modalClerkAvatar) this.modalClerkAvatar.innerHTML = (Icons as any)[clerk.icon](40, '#00FFFF');
+      if (this.modalClerkName) this.modalClerkName.textContent = clerk.name;
+      if (this.modalClerkMessage) this.modalClerkMessage.textContent = clerk.message;
+      this.modalTitle?.classList.add('hidden');
     } else {
-      this.modalClerkContainer.classList.add('hidden');
-      this.modalTitle.classList.remove('hidden');
-      this.modalTitle.textContent = title;
+      this.modalClerkContainer?.classList.add('hidden');
+      this.modalTitle?.classList.remove('hidden');
+      if (this.modalTitle) this.modalTitle.textContent = title;
     }
 
-    this.modalContent.innerHTML = '';
-    this.modalButtons.innerHTML = '';
-    this.modalSecondaryActions.innerHTML = '';
+    if (this.modalContent) this.modalContent.innerHTML = '';
+    if (this.modalButtons) this.modalButtons.innerHTML = '';
+    if (this.modalSecondaryActions) this.modalSecondaryActions.innerHTML = '';
 
     if (showInput) {
-      this.modalInput.classList.remove('hidden');
-      this.modalInputField.value = '';
+      this.modalInput?.classList.remove('hidden');
+      if (this.modalInputField) this.modalInputField.value = '';
     } else {
-      this.modalInput.classList.add('hidden');
+      this.modalInput?.classList.add('hidden');
     }
 
     if (location === 'Shopping Mall' || location === 'Fast Food') {
@@ -350,42 +412,44 @@ class GameView {
         button.textContent = choice.text;
         button.classList.add('btn', 'btn-primary');
         button.onclick = () => {
-          const amount = showInput ? parseInt(this.modalInputField.value, 10) : null;
+          const amount = showInput && this.modalInputField ? parseInt(this.modalInputField.value, 10) : null;
           this.hideModal();
           choice.action(choice.value, amount); 
         };
-        this.modalButtons.appendChild(button);
+        this.modalButtons?.appendChild(button);
       });
     }
 
-    this.modalOverlay.classList.remove('hidden');
+    this.modalOverlay?.classList.remove('hidden');
   }
 
-  showLocationDashboard(location) {
-    const gameState = window.gameController ? window.gameController.gameState : null;
+  showLocationDashboard(location: string) {
+    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     if (!gameState) return;
 
     const player = gameState.getCurrentPlayer();
-    const clerk = CLERKS[location];
+    const clerk = (CLERKS as any)[location];
 
     // Setup Header
-    if (clerk) {
+    if (clerk && this.modalClerkContainer) {
       this.modalClerkContainer.classList.remove('hidden');
-      this.modalClerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
-      this.modalClerkName.textContent = clerk.name;
-      this.modalClerkMessage.textContent = clerk.message;
+      if (this.modalClerkAvatar) this.modalClerkAvatar.innerHTML = (Icons as any)[clerk.icon](40, '#00FFFF');
+      if (this.modalClerkName) this.modalClerkName.textContent = clerk.name;
+      if (this.modalClerkMessage) this.modalClerkMessage.textContent = clerk.message;
     } else {
-      this.modalClerkContainer.classList.add('hidden');
+      this.modalClerkContainer?.classList.add('hidden');
     }
     
-    this.modalTitle.textContent = location;
-    this.modalTitle.classList.remove('hidden');
+    if (this.modalTitle) {
+        this.modalTitle.textContent = location;
+        this.modalTitle.classList.remove('hidden');
+    }
 
     // Setup Content
-    this.modalContent.innerHTML = '';
-    this.modalButtons.innerHTML = '';
-    this.modalSecondaryActions.innerHTML = '';
-    this.modalInput.classList.add('hidden');
+    if (this.modalContent) this.modalContent.innerHTML = '';
+    if (this.modalButtons) this.modalButtons.innerHTML = '';
+    if (this.modalSecondaryActions) this.modalSecondaryActions.innerHTML = '';
+    this.modalInput?.classList.add('hidden');
 
     // List Primary Actions (Jobs, Courses, Items)
     if (location === 'Employment Agency') {
@@ -408,7 +472,7 @@ class GameView {
             if (action.label === 'Work Shift') {
                 const job = JOBS.find(j => j.level === player.careerLevel);
                 if (job) {
-                    this.spawnFeedback(e.currentTarget, `+$${job.wage * 8}`, 'success');
+                    this.spawnFeedback(e.currentTarget as HTMLElement, `+$${job.wage * 8}`, 'success');
                 }
             }
 
@@ -428,22 +492,22 @@ class GameView {
         };
         
         if (action.primary) {
-            this.modalButtons.appendChild(btn);
+            this.modalButtons?.appendChild(btn);
         } else {
-            this.modalSecondaryActions.appendChild(btn);
+            this.modalSecondaryActions?.appendChild(btn);
         }
     });
 
     // Special case: Bank
     if (location === 'Bank') {
-        this.modalInput.classList.remove('hidden');
-        this.modalInputField.value = '';
+        this.modalInput?.classList.remove('hidden');
+        if (this.modalInputField) this.modalInputField.value = '';
         
         const bankActions = [
-            { text: 'Deposit', value: 'deposit', action: (v, a) => window.gameController.deposit(a) },
-            { text: 'Withdraw', value: 'withdraw', action: (v, a) => window.gameController.withdraw(a) },
-            { text: 'Take Loan', value: 'loan', action: (v, a) => window.gameController.takeLoan(a) },
-            { text: 'Repay Loan', value: 'repay', action: (v, a) => window.gameController.repayLoan(a) }
+            { text: 'Deposit', value: 'deposit', action: (_: string, a: number) => (window as any).gameController.deposit(a) },
+            { text: 'Withdraw', value: 'withdraw', action: (_: string, a: number) => (window as any).gameController.withdraw(a) },
+            { text: 'Take Loan', value: 'loan', action: (_: string, a: number) => (window as any).gameController.takeLoan(a) },
+            { text: 'Repay Loan', value: 'repay', action: (_: string, a: number) => (window as any).gameController.repayLoan(a) }
         ];
 
         bankActions.forEach(choice => {
@@ -451,13 +515,13 @@ class GameView {
             button.textContent = choice.text;
             button.classList.add('btn', 'btn-secondary');
             button.onclick = (e) => {
-                const amount = parseInt(this.modalInputField.value, 10);
+                const amount = this.modalInputField ? parseInt(this.modalInputField.value, 10) : 0;
                 
                 // Visual feedback
                 if (choice.value === 'deposit' || choice.value === 'repay') {
-                    this.spawnFeedback(e.currentTarget, `-$${amount}`, 'error');
+                    this.spawnFeedback(e.currentTarget as HTMLElement, `-$${amount}`, 'error');
                 } else {
-                    this.spawnFeedback(e.currentTarget, `+$${amount}`, 'success');
+                    this.spawnFeedback(e.currentTarget as HTMLElement, `+$${amount}`, 'success');
                 }
 
                 choice.action(choice.value, amount);
@@ -465,14 +529,14 @@ class GameView {
                     this.showLocationDashboard('Bank');
                 }, 100);
             };
-            this.modalButtons.appendChild(button);
+            this.modalButtons?.appendChild(button);
         });
     }
 
-    this.modalOverlay.classList.remove('hidden');
+    this.modalOverlay?.classList.remove('hidden');
   }
 
-  spawnFeedback(element, text, type) {
+  spawnFeedback(element: HTMLElement, text: string, type: string) {
     const rect = element.getBoundingClientRect();
     const particle = document.createElement('div');
     particle.className = `feedback-particle log-${type}`;
@@ -491,15 +555,15 @@ class GameView {
   }
 
   hideModal() {
-    this.modalOverlay.classList.add('hidden');
+    this.modalOverlay?.classList.add('hidden');
   }
 
   showJobApplicationModal() {
     this.showLocationDashboard('Employment Agency');
   }
 
-  renderActionCards(type, data) {
-    const gameState = window.gameController ? window.gameController.gameState : null;
+  renderActionCards(type: string, data: any[]) {
+    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     const player = gameState ? gameState.getCurrentPlayer() : null;
     
     const cardList = document.createElement('div');
@@ -534,7 +598,7 @@ class GameView {
             <i class="material-icons">${isLocked ? 'lock' : 'school'}</i>Edu Lvl ${item.educationRequired}
           </span>
         `;
-        action = () => window.gameController.applyForJob(item.level);
+        action = () => (window as any).gameController.applyForJob(item.level);
         feedbackText = 'HIRED!';
       } else if (type === 'college') {
         title = item.name;
@@ -548,7 +612,7 @@ class GameView {
           <span class="action-card-tag price ${isLocked && !alreadyTaken ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
           <span class="action-card-tag"><i class="material-icons">history</i>${item.time}h total</span>
         `;
-        action = () => window.gameController.gameState.takeCourse(item.id);
+        action = () => (window as any).gameController.gameState.takeCourse(item.id);
         feedbackText = `-$${item.cost}`;
         feedbackType = 'error';
       } else if (type === 'shopping') {
@@ -565,7 +629,7 @@ class GameView {
           <span class="action-card-tag price ${isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
           ${boostHtml}
         `;
-        action = () => window.gameController.gameState.buyItem(item.name);
+        action = () => (window as any).gameController.gameState.buyItem(item.name);
         feedbackText = `-$${item.cost}`;
         feedbackType = 'error';
       }
@@ -588,7 +652,7 @@ class GameView {
       if (!isLocked && !isHired) {
         card.onclick = (e) => {
           // Visual feedback
-          this.spawnFeedback(e.currentTarget, feedbackText, feedbackType);
+          this.spawnFeedback(e.currentTarget as HTMLElement, feedbackText, feedbackType);
 
           // Keep modal open for jobs, hide for others
           if (type !== 'jobs') {
@@ -597,7 +661,7 @@ class GameView {
           action();
           
           // Re-render dashboard for jobs to show potential "Work Shift" update
-          if (type === 'jobs' && window.gameController) {
+          if (type === 'jobs' && (window as any).gameController) {
               setTimeout(() => {
                   this.showLocationDashboard('Employment Agency');
               }, 100);
@@ -608,47 +672,47 @@ class GameView {
       cardList.appendChild(card);
     });
 
-    this.modalContent.appendChild(cardList);
+    this.modalContent?.appendChild(cardList);
   }
 
-  showPlayerStatsModal(playerIndex) {
-    const gameState = window.gameController ? window.gameController.gameState : null;
+  showPlayerStatsModal(playerIndex: number) {
+    const gameState = (window as any).gameController ? (window as any).gameController.gameState : null;
     if (!gameState || !gameState.players[playerIndex - 1]) return;
     
     const player = gameState.players[playerIndex - 1];
     
-    this.playerStatsModalTitle.textContent = playerIndex === 1 ? 'Your Stats' : 'AI Stats';
-    this.playerStatsModal.className = playerIndex === 1 ? 'player-1' : 'player-2';
+    if (this.playerStatsModalTitle) this.playerStatsModalTitle.textContent = playerIndex === 1 ? 'Your Stats' : 'AI Stats';
+    if (this.playerStatsModal) this.playerStatsModal.className = playerIndex === 1 ? 'player-1' : 'player-2';
     
-    this.modalCash.textContent = `$${player.cash}`;
-    this.modalSavings.textContent = `$${player.savings}`;
-    this.modalLoan.textContent = `$${player.loan}`;
-    this.modalHappiness.textContent = player.happiness;
+    if (this.modalCash) this.modalCash.textContent = `$${player.cash}`;
+    if (this.modalSavings) this.modalSavings.textContent = `$${player.savings}`;
+    if (this.modalLoan) this.modalLoan.textContent = `$${player.loan}`;
+    if (this.modalHappiness) this.modalHappiness.textContent = player.happiness.toString();
     
     const course = COURSES.find(c => c.educationMilestone === player.educationLevel);
-    this.modalEducation.textContent = course ? course.name : 'None';
+    if (this.modalEducation) this.modalEducation.textContent = course ? course.name : 'None';
     
     const job = JOBS.find(j => j.level === player.careerLevel);
-    this.modalCareer.textContent = job ? job.title : 'Unemployed';
+    if (this.modalCareer) this.modalCareer.textContent = job ? job.title : 'Unemployed';
     
-    this.modalCar.textContent = player.hasCar ? 'Yes' : 'No';
-    this.modalTime.textContent = `${player.time} hours`;
+    if (this.modalCar) this.modalCar.textContent = player.hasCar ? 'Yes' : 'No';
+    if (this.modalTime) this.modalTime.textContent = `${player.time} hours`;
     
-    this.playerStatsModalOverlay.classList.remove('hidden');
+    this.playerStatsModalOverlay?.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
   
   hidePlayerStatsModal() {
-    this.playerStatsModalOverlay.classList.add('hidden');
+    this.playerStatsModalOverlay?.classList.add('hidden');
     document.body.style.overflow = '';
   }
   
-  addSwipeToClose(modalElement) {
+  addSwipeToClose(modalElement: HTMLElement) {
     let startY = 0;
     let currentY = 0;
     let isDragging = false;
     
-    const handleTouchStart = (e) => {
+    const handleTouchStart = (e: TouchEvent) => {
       const touch = e.touches[0];
       const rect = modalElement.getBoundingClientRect();
       
@@ -659,7 +723,7 @@ class GameView {
       }
     };
     
-    const handleTouchMove = (e) => {
+    const handleTouchMove = (e: TouchEvent) => {
       if (!isDragging) return;
       
       currentY = e.touches[0].clientY;
@@ -668,7 +732,7 @@ class GameView {
       if (deltaY > 0) {
         modalElement.style.transform = `translateY(${deltaY}px)`;
         const opacity = Math.max(0, 1 - (deltaY / window.innerHeight));
-        this.playerStatsModalOverlay.style.backgroundColor = `rgba(0, 0, 0, ${0.8 * opacity})`;
+        if (this.playerStatsModalOverlay) this.playerStatsModalOverlay.style.backgroundColor = `rgba(0, 0, 0, ${0.8 * opacity})`;
       }
     };
     
@@ -689,11 +753,11 @@ class GameView {
           this.hidePlayerStatsModal();
           modalElement.style.transform = '';
           modalElement.style.opacity = '';
-          this.playerStatsModalOverlay.style.backgroundColor = '';
+          if (this.playerStatsModalOverlay) this.playerStatsModalOverlay.style.backgroundColor = '';
         }, 300);
       } else {
         modalElement.style.transform = '';
-        this.playerStatsModalOverlay.style.backgroundColor = '';
+        if (this.playerStatsModalOverlay) this.playerStatsModalOverlay.style.backgroundColor = '';
       }
     };
     
@@ -703,77 +767,85 @@ class GameView {
   }
 
   showLoading() {
-    this.loadingOverlay.classList.remove('hidden');
+    this.loadingOverlay?.classList.remove('hidden');
     document.body.classList.add('loading-active');
   }
 
   hideLoading() {
-    this.loadingOverlay.classList.add('hidden');
+    this.loadingOverlay?.classList.add('hidden');
     document.body.classList.remove('loading-active');
   }
 
-  showTurnSummary(summary) {
+  showTurnSummary(summary: any) {
     if (!this.turnSummaryModal) return;
 
-    this.summarySubtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
+    if (this.summarySubtitle) this.summarySubtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
     
-    this.summaryCashTotal.textContent = (summary.totals.cashChange >= 0 ? '+$' : '-$') + Math.abs(summary.totals.cashChange).toLocaleString();
-    this.summaryCashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
+    if (this.summaryCashTotal) {
+        this.summaryCashTotal.textContent = (summary.totals.cashChange >= 0 ? '+$' : '-$') + Math.abs(summary.totals.cashChange).toLocaleString();
+        this.summaryCashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
+    }
     
-    this.summaryHappinessTotal.textContent = (summary.totals.happinessChange >= 0 ? '+' : '') + summary.totals.happinessChange;
-    this.summaryHappinessTotal.className = `total-value ${summary.totals.happinessChange >= 0 ? 'log-success' : 'log-error'}`;
+    if (this.summaryHappinessTotal) {
+        this.summaryHappinessTotal.textContent = (summary.totals.happinessChange >= 0 ? '+' : '') + summary.totals.happinessChange;
+        this.summaryHappinessTotal.className = `total-value ${summary.totals.happinessChange >= 0 ? 'log-success' : 'log-error'}`;
+    }
 
-    this.btnStartNextWeek.textContent = "START NEXT WEEK →";
+    if (this.btnStartNextWeek) this.btnStartNextWeek.textContent = "START NEXT WEEK →";
 
-    this.eventList.innerHTML = '';
-    
-    summary.events.forEach((event, index) => {
-      const card = document.createElement('div');
-      card.className = `event-card ${event.type}`;
-      
-      const valueText = (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
-      
-      card.innerHTML = `
-        <div class="event-icon-circle">
-          <i class="material-icons">${event.icon}</i>
-        </div>
-        <div class="event-info">
-          <span class="event-name">${event.label}</span>
-          <span class="event-amount">${valueText}</span>
-        </div>
-      `;
-      
-      this.eventList.appendChild(card);
-      
-      setTimeout(() => {
-        card.classList.add('animate-in');
-      }, 100 * (index + 1));
-    });
+    if (this.eventList) {
+        this.eventList.innerHTML = '';
+        
+        summary.events.forEach((event: any, index: number) => {
+          const card = document.createElement('div');
+          card.className = `event-card ${event.type}`;
+          
+          const valueText = (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
+          
+          card.innerHTML = `
+            <div class="event-icon-circle">
+              <i class="material-icons">${event.icon}</i>
+            </div>
+            <div class="event-info">
+              <span class="event-name">${event.label}</span>
+              <span class="event-amount">${valueText}</span>
+            </div>
+          `;
+          
+          this.eventList?.appendChild(card);
+          
+          setTimeout(() => {
+            card.classList.add('animate-in');
+          }, 100 * (index + 1));
+        });
+    }
 
-    this.btnStartNextWeek.onclick = () => {
-      if (window.navigator && window.navigator.vibrate) {
-        window.navigator.vibrate(10);
-      }
-      
-      this.hideTurnSummary();
-      if (window.gameController) {
-        window.gameController.advanceTurn();
-      }
-    };
+    if (this.btnStartNextWeek) {
+        this.btnStartNextWeek.onclick = () => {
+          if ((window as any).navigator && (window as any).navigator.vibrate) {
+            (window as any).navigator.vibrate(10);
+          }
+          
+          this.hideTurnSummary();
+          if ((window as any).gameController) {
+            (window as any).gameController.advanceTurn();
+          }
+        };
+    }
 
     this.turnSummaryModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
     setTimeout(() => {
-      this.animateValue(this.summaryCashTotal, 0, summary.totals.cashChange, 1000, '$');
-      this.animateValue(this.summaryHappinessTotal, 0, summary.totals.happinessChange, 1000);
+      if (this.summaryCashTotal) this.animateValue(this.summaryCashTotal, 0, summary.totals.cashChange, 1000, '$');
+      if (this.summaryHappinessTotal) this.animateValue(this.summaryHappinessTotal, 0, summary.totals.happinessChange, 1000);
     }, 500);
   }
 
-  animateValue(obj, start, end, duration, prefix = '') {
+  animateValue(obj: HTMLElement, start: number, end: number, duration: number, prefix = '') {
     if (!obj) return;
-    let startTimestamp = null;
-    const step = (timestamp) => {
+    let startTimestamp: number | null = null;
+    const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
       const current = Math.floor(progress * (end - start) + start);
@@ -802,7 +874,7 @@ class GameView {
     }
   }
 
-  render(gameState) {
+  render(gameState: GameState) {
     const player1 = gameState.players[0];
     const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
     const currentPlayer = gameState.getCurrentPlayer();
@@ -814,7 +886,7 @@ class GameView {
       
       if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
         this.orbP1.classList.add('pulse');
-        setTimeout(() => this.orbP1.classList.remove('pulse'), 600);
+        setTimeout(() => this.orbP1?.classList.remove('pulse'), 600);
       }
     }
 
@@ -824,7 +896,7 @@ class GameView {
       
       if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
         this.orbP2.classList.add('pulse');
-        setTimeout(() => this.orbP2.classList.remove('pulse'), 600);
+        setTimeout(() => this.orbP2?.classList.remove('pulse'), 600);
       }
     }
 
@@ -838,13 +910,13 @@ class GameView {
     }
 
     if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
-    if (this.hudWeek) this.hudWeek.textContent = gameState.turn;
+    if (this.hudWeek) this.hudWeek.textContent = gameState.turn.toString();
     if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
 
     if (this.newsTickerContent && gameState.log.length > 0) {
       const recentEvents = gameState.log
         .slice(-5)
-        .map(entry => typeof entry === 'string' ? entry : entry.text)
+        .map((entry: any) => typeof entry === 'string' ? entry : entry.text)
         .join('  •  ');
       this.newsTickerContent.textContent = recentEvents;
     }
@@ -873,8 +945,8 @@ class GameView {
     }
   }
 
-  getLocationActions(location) {
-    const actions = [];
+  getLocationActions(location: string) {
+    const actions: any[] = [];
     
     switch (location) {
         case 'Home':
@@ -882,7 +954,7 @@ class GameView {
                 label: 'Rest / End Turn',
                 icon: 'bedtime',
                 primary: true,
-                onClick: () => window.gameController.restEndTurn()
+                onClick: () => (window as any).gameController.restEndTurn()
             });
             break;
         case 'Employment Agency':
@@ -890,7 +962,7 @@ class GameView {
                 label: 'Work Shift',
                 icon: 'work',
                 primary: true,
-                onClick: () => window.gameController.workShift()
+                onClick: () => (window as any).gameController.workShift()
             });
             break;
         case 'Community College':
@@ -922,7 +994,7 @@ class GameView {
                 label: 'View Inventory',
                 icon: 'directions_car',
                 primary: true,
-                onClick: () => window.gameController.buyCar()
+                onClick: () => (window as any).gameController.buyCar()
             });
             break;
         case 'Bank':
@@ -942,7 +1014,7 @@ class GameView {
       this.showLocationDashboard('Bank');
   }
 
-  updateLocationHint(location) {
+  updateLocationHint(location: string) {
     let hintText = '';
     
     switch (location) {
@@ -961,7 +1033,7 @@ class GameView {
     }
   }
 
-  renderCityGrid(gameState) {
+  renderCityGrid(gameState: GameState) {
     if (!this.cityBentoGrid) return;
 
     const currentPlayer = gameState.getCurrentPlayer();
@@ -990,15 +1062,15 @@ class GameView {
 
       card.onclick = () => {
         if (currentPlayer.location !== location) {
-          if (window.gameController) {
-            window.gameController.travel(location);
+          if ((window as any).gameController) {
+            (window as any).gameController.travel(location);
           }
         } else {
             this.showLocationDashboard(location);
         }
       };
 
-      this.cityBentoGrid.appendChild(card);
+      this.cityBentoGrid?.appendChild(card);
     });
 
     if (this.fabNextWeek) {
@@ -1010,7 +1082,7 @@ class GameView {
     }
   }
 
-  getLocationSummary(location) {
+  getLocationSummary(location: string) {
     switch (location) {
       case 'Home': return 'Rest and end turn';
       case 'Employment Agency': return 'Find work';
@@ -1023,7 +1095,7 @@ class GameView {
     }
   }
 
-  renderLifeScreen(gameState) {
+  renderLifeScreen(gameState: GameState) {
     const player = gameState.getCurrentPlayer();
     const index = gameState.currentPlayerIndex;
 
@@ -1075,7 +1147,7 @@ class GameView {
     this.updateGauge('career', career, '#FF00FF');
   }
 
-  updateGauge(id, percentage, color) {
+  updateGauge(id: string, percentage: number, color: string) {
     const container = document.getElementById(`gauge-${id}`);
     if (!container) return;
 
@@ -1094,7 +1166,7 @@ class GameView {
     `;
   }
 
-  renderInventoryScreen(gameState) {
+  renderInventoryScreen(gameState: GameState) {
     const player = gameState.getCurrentPlayer();
     
     if (this.essentialsGrid) {
@@ -1102,12 +1174,12 @@ class GameView {
       const essentials = SHOPPING_ITEMS.filter(i => i.type === 'essential' && i.icon);
       
       essentials.forEach(item => {
-        const isOwned = player.inventory.some(i => i.name === item.name);
+        const isOwned = player.inventory.some((i: any) => i.name === item.name);
         const div = document.createElement('div');
         div.className = `essential-item ${isOwned ? 'owned' : ''}`;
-        div.innerHTML = Icons[item.icon](32, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)');
+        if (item.icon) div.innerHTML = (Icons as any)[item.icon](32, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)');
         div.title = item.name;
-        this.essentialsGrid.appendChild(div);
+        this.essentialsGrid?.appendChild(div);
       });
     }
 
@@ -1116,22 +1188,22 @@ class GameView {
       const assets = SHOPPING_ITEMS.filter(i => i.type === 'asset');
 
       assets.forEach(item => {
-        const isOwned = player.inventory.some(i => i.name === item.name);
+        const isOwned = player.inventory.some((i: any) => i.name === item.name);
         const card = document.createElement('div');
         card.className = `inventory-card glass ${isOwned ? 'owned' : ''}`;
         card.innerHTML = `
           <div class="inventory-card-icon">
-            ${Icons[item.icon](40, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)')}
+            ${item.icon ? (Icons as any)[item.icon](40, isOwned ? '#00FFFF' : 'rgba(255,255,255,0.2)') : ''}
           </div>
           <div class="inventory-card-content">
             <div class="inventory-card-name">${item.name}</div>
-            <div class="inventory-card-benefit">${item.benefit}</div>
+            <div class="inventory-card-benefit">${(item as any).benefit}</div>
           </div>
         `;
-        this.assetsGrid.appendChild(card);
+        this.assetsGrid?.appendChild(card);
       });
     }
   }
 }
 
-export default GameView;
+export default UIManager;

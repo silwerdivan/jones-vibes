@@ -1,6 +1,6 @@
 import GameState from './game/GameState.js';
 import GameController from './game/GameController.js';
-import GameView from './ui.js';
+import UIManager from './ui/UIManager.js';
 import InputManager from './InputManager.js';
 import EventNotificationManager from './ui/EventNotificationManager.js';
 
@@ -9,17 +9,17 @@ function main() {
   // 1. Instantiate GameState.
   const gameState = new GameState(2, true); // 2 players, P2 is AI.
 
-  // 2. Instantiate GameView.
-  const gameView = new GameView(); // GameView constructor runs here, subscribes to stateChanged
+  // 2. Instantiate UIManager.
+  const uiManager = new UIManager(); // UIManager constructor runs here, subscribes to stateChanged
 
-  // 3. Instantiate GameController, passing it the gameState and gameView instances.
-  const gameController = new GameController(gameState, gameView);
+  // 3. Instantiate GameController, passing it the gameState and uiManager instances.
+  const gameController = new GameController(gameState, uiManager);
 
   // Expose gameController globally for EventNotificationManager
-  window.gameController = gameController;
+  (window as any).gameController = gameController;
 
   // 4. Instantiate EventNotificationManager.
-  const eventNotificationManager = new EventNotificationManager();
+  new EventNotificationManager();
 
   // 5. Instantiate InputManager, passing it the gameController.
   const inputManager = new InputManager(gameController);

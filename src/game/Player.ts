@@ -1,4 +1,5 @@
-import { Item, LocationName } from '../models/types';
+import { Item } from '../models/types';
+import { LocationName } from '../data/locations';
 
 export default class Player {
     id: number;

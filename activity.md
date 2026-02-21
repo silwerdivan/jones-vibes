@@ -15,3 +15,10 @@
 - Typed `src/EventBus.ts` and addressed several "implicit any" and argument mismatch errors.
 - Cleaned up magic strings and fixed imports across the core game logic files.
 - Verified progress with `npm run build` (error count reduced from 652 to 520, with core logic files `GameState.ts` and `EventBus.ts` now error-free).
+
+## Phase 3: Decoupling the View (The Great Split) - In Progress
+- Created `src/ui/UIManager.ts` as the new entry point for UI logic, replacing `src/ui.ts`.
+- Refactored `UIManager` to be strictly typed and updated all references in `main.ts` and `GameController.ts`.
+- Fixed multiple type errors across `ClockVisualization.ts`, `EventNotificationManager.ts`, `InputManager.ts`, and `Player.ts`.
+- Deleted the old `src/ui.ts` file.
+- Verified progress with `npm run build` (build now successful with 0 errors).

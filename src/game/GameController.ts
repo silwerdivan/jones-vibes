@@ -1,12 +1,16 @@
-import { LOCATIONS } from '../data/locations.js';
-import { COURSES } from '../data/courses.js';
+import { LOCATIONS, LocationName } from '../data/locations.js';
 import { SHOPPING_ITEMS } from '../data/items.js';
+import GameState from './GameState.js';
+import UIManager from '../ui/UIManager.js';
 
 class GameController {
+  public gameState: GameState;
+  public uiManager: UIManager;
+
   // We need a reference to the view to show modals
-  constructor(gameState, gameView) {
+  constructor(gameState: GameState, uiManager: UIManager) {
     this.gameState = gameState;
-    this.gameView = gameView; // Store the view reference
+    this.uiManager = uiManager; // Store the view reference
   }
 
   restEndTurn() {
@@ -22,7 +26,7 @@ class GameController {
   }
 
   buyCar() {
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'Buy a Car?',
       choices: [{
         text: 'Buy Hovercar ($3,000)',
@@ -32,32 +36,32 @@ class GameController {
     });
   }
 
-  travel(destination) {
+  travel(destination?: string) {
     if (destination) {
-      this.gameState.travel(destination);
+      this.gameState.travel(destination as LocationName);
       return;
     }
     const currentPlayer = this.gameState.getCurrentPlayer();
     const availableDestinations = LOCATIONS.filter(loc => loc !== currentPlayer.location);
     
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'Where to travel?',
       choices: availableDestinations.map(dest => ({
         text: dest,
         value: dest,
-        action: (dest) => this.gameState.travel(dest)
+        action: (dest: string) => this.gameState.travel(dest as LocationName)
       }))
     });
   }
   
   deposit() {
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'How much to deposit?',
       showInput: true,
       choices: [{
         text: 'Confirm Deposit',
         value: null,
-        action: (_, amount) => {
+        action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
             this.gameState.deposit(amount);
           }
@@ -67,13 +71,13 @@ class GameController {
   }
 
   withdraw() {
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'How much to withdraw?',
       showInput: true,
       choices: [{
         text: 'Confirm Withdraw',
         value: null,
-        action: (_, amount) => {
+        action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
             this.gameState.withdraw(amount);
           }
@@ -83,13 +87,13 @@ class GameController {
   }
 
   takeLoan() {
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'How much for loan?',
       showInput: true,
       choices: [{
         text: 'Confirm Loan',
         value: null,
-        action: (_, amount) => {
+        action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
             this.gameState.takeLoan(amount);
           }
@@ -99,13 +103,13 @@ class GameController {
   }
 
   repayLoan() {
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'How much to repay?',
       showInput: true,
       choices: [{
         text: 'Confirm Repayment',
         value: null,
-        action: (_, amount) => {
+        action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
             this.gameState.repayLoan(amount);
           }
@@ -115,13 +119,12 @@ class GameController {
   }
 
   buyItem() {
-    const currentPlayer = this.gameState.getCurrentPlayer();
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
         title: 'What to buy?',
         choices: SHOPPING_ITEMS.map(item => ({
             text: `${item.name} ($${item.cost})`,
             value: item.name,
-            action: (itemName) => this.gameState.buyItem(itemName)
+            action: (itemName: string) => this.gameState.buyItem(itemName)
         }))
     });
   }
@@ -133,17 +136,17 @@ class GameController {
       return;
     }
     
-    this.gameView.showChoiceModal({
+    this.uiManager.showChoiceModal({
       title: 'Take a Course?',
       choices: [{
         text: `${nextCourse.name} ($${nextCourse.cost})`,
         value: nextCourse.id,
-        action: (courseId) => this.gameState.takeCourse(courseId)
+        action: (courseId: string) => this.gameState.takeCourse(parseInt(courseId, 10))
       }]
     });
   }
 
-  applyForJob(jobLevel) {
+  applyForJob(jobLevel?: number) {
     if (jobLevel !== undefined) {
       // Called from modal with specific job level
       const success = this.gameState.applyForJob(jobLevel);
@@ -151,7 +154,7 @@ class GameController {
       return success;
     } else {
       // Called from button click - show modal
-      this.gameView.showJobApplicationModal();
+      this.uiManager.showJobApplicationModal();
       return false;
     }
   }
