@@ -3,41 +3,34 @@ import { SHOPPING_ITEMS } from '../data/items.js';
 import GameState from './GameState.js';
 import UIManager from '../ui/UIManager.js';
 import EventBus, { UI_EVENTS } from '../EventBus.js';
+import EconomySystem from '../systems/EconomySystem.js';
+import TimeSystem from '../systems/TimeSystem.js';
 
 class GameController {
   public gameState: GameState;
   public uiManager: UIManager;
+  public economySystem: EconomySystem;
+  public timeSystem: TimeSystem;
 
   // We need a reference to the view to show modals
-  constructor(gameState: GameState, uiManager: UIManager) {
+  constructor(gameState: GameState, uiManager: UIManager, economySystem: EconomySystem, timeSystem: TimeSystem) {
     this.gameState = gameState;
     this.uiManager = uiManager; // Store the view reference
+    this.economySystem = economySystem;
+    this.timeSystem = timeSystem;
     
     this.initializeEventSubscriptions();
   }
 
   private initializeEventSubscriptions() {
-    EventBus.subscribe(UI_EVENTS.REST_END_TURN, () => this.restEndTurn());
-    EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, () => this.advanceTurn());
+    // Only subscribe to events that trigger UI logic (modals)
     EventBus.subscribe(UI_EVENTS.WORK_SHIFT, () => this.workShift());
-    EventBus.subscribe(UI_EVENTS.BUY_CAR, () => this.buyCar());
     EventBus.subscribe(UI_EVENTS.TRAVEL, (destination: string) => this.travel(destination));
-    EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, (amount: number) => this.gameState.deposit(amount));
-    EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, (amount: number) => this.gameState.withdraw(amount));
-    EventBus.subscribe(UI_EVENTS.BANK_LOAN, (amount: number) => this.gameState.takeLoan(amount));
-    EventBus.subscribe(UI_EVENTS.BANK_REPAY, (amount: number) => this.gameState.repayLoan(amount));
-    EventBus.subscribe(UI_EVENTS.APPLY_JOB, (level: number) => this.gameState.applyForJob(level));
-    EventBus.subscribe(UI_EVENTS.TAKE_COURSE, (courseId: number) => this.gameState.takeCourse(courseId));
-    EventBus.subscribe(UI_EVENTS.BUY_ITEM, (itemName: string) => this.gameState.buyItem(itemName));
+    EventBus.subscribe(UI_EVENTS.APPLY_JOB, (level: number) => this.applyForJob(level));
+    EventBus.subscribe(UI_EVENTS.TAKE_COURSE, (courseId: number) => this.takeCourse(courseId));
     EventBus.subscribe(UI_EVENTS.REQUEST_STATE_REFRESH, () => this.gameState.publishCurrentState());
-  }
-
-  restEndTurn() {
-    this.gameState.endTurn();
-  }
-
-  advanceTurn() {
-    this.gameState.advanceTurn();
+    
+    // Direct system actions are now routed in main.ts
   }
 
   workShift() {
@@ -50,7 +43,7 @@ class GameController {
       choices: [{
         text: 'Buy Hovercar ($3,000)',
         value: null,
-        action: () => this.gameState.buyCar()
+        action: () => this.economySystem.buyCar()
       }]
     });
   }
@@ -82,7 +75,7 @@ class GameController {
         value: null,
         action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
-            this.gameState.deposit(amount);
+            this.economySystem.deposit(amount);
           }
         }
       }]
@@ -98,7 +91,7 @@ class GameController {
         value: null,
         action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
-            this.gameState.withdraw(amount);
+            this.economySystem.withdraw(amount);
           }
         }
       }]
@@ -114,7 +107,7 @@ class GameController {
         value: null,
         action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
-            this.gameState.takeLoan(amount);
+            this.economySystem.takeLoan(amount);
           }
         }
       }]
@@ -130,7 +123,7 @@ class GameController {
         value: null,
         action: (_: any, amount: number | null) => {
           if (amount && amount > 0) {
-            this.gameState.repayLoan(amount);
+            this.economySystem.repayLoan(amount);
           }
         }
       }]
@@ -143,12 +136,17 @@ class GameController {
         choices: SHOPPING_ITEMS.map(item => ({
             text: `${item.name} ($${item.cost})`,
             value: item.name,
-            action: (itemName: string) => this.gameState.buyItem(itemName)
+            action: (itemName: string) => this.economySystem.buyItem(itemName)
         }))
     });
   }
 
-  takeCourse() {
+  takeCourse(courseId?: number) {
+    if (courseId !== undefined) {
+        this.gameState.takeCourse(courseId);
+        return;
+    }
+
     const nextCourse = this.gameState.getNextAvailableCourse();
     if (!nextCourse) {
       this.gameState.addLogMessage("No more courses available.", 'warning');

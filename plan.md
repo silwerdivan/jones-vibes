@@ -84,9 +84,9 @@ src/
 ### Phase 4: Logic Segregation (System Architecture)
 *Goal: Slim down `GameController`.*
 
-- [ ] **Task 4.1:** Create `EconomySystem`. Move `deposit`, `withdraw`, `buyItem` logic here.
-- [ ] **Task 4.2:** Create `TimeSystem`. Move `endTurn`, `advanceWeek` logic here.
-- [ ] **Task 4.3:** Update `main.ts` to listen for UI events and route them to the correct System.
+- [x] **Task 4.1:** Create `EconomySystem`. Move `deposit`, `withdraw`, `buyItem` logic here.
+- [x] **Task 4.2:** Create `TimeSystem`. Move `endTurn`, `advanceWeek` logic here.
+- [x] **Task 4.3:** Update `main.ts` to listen for UI events and route them to the correct System.
 
 ### Phase 5: Cleanup & Optimization
 *Goal: Polish and Performance.*

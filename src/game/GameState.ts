@@ -1,7 +1,6 @@
 import Player from './Player';
 import { JOBS } from '../data/jobs';
 import { COURSES } from '../data/courses';
-import { SHOPPING_ITEMS } from '../data/items';
 import EventBus from '../EventBus';
 import AIController from './AIController';
 import { Course, Job } from '../models/types';
@@ -11,23 +10,6 @@ interface LogMessage {
     text: string;
     category: string;
     timestamp: string;
-}
-
-interface TurnSummary {
-    player: number;
-    playerName: string;
-    week: number;
-    events: Array<{
-        type: string;
-        label: string;
-        value: number;
-        unit: string;
-        icon: string;
-    }>;
-    totals: {
-        cashChange: number;
-        happinessChange: number;
-    };
 }
 
 class GameState {
@@ -98,153 +80,6 @@ class GameState {
         return this.players[this.currentPlayerIndex];
     }
 
-    endTurn(): TurnSummary {
-        const currentPlayer = this.getCurrentPlayer();
-        const summary: TurnSummary = {
-            player: currentPlayer.id,
-            playerName: this._getPlayerName(currentPlayer),
-            week: this.turn,
-            events: [],
-            totals: {
-                cashChange: 0,
-                happinessChange: 0
-            }
-        };
-
-        // 1. Add overall weekly earnings if any
-        if (currentPlayer.weeklyIncome > 0) {
-            summary.events.push({
-                type: 'income',
-                label: 'Weekly Earnings',
-                value: currentPlayer.weeklyIncome,
-                unit: '$',
-                icon: 'payments'
-            });
-        }
-
-        // 2. Add overall weekly shopping/travel expenses if any
-        if (currentPlayer.weeklyExpenses > 0) {
-            summary.events.push({
-                type: 'expense',
-                label: 'Shopping & Travel',
-                value: -currentPlayer.weeklyExpenses,
-                unit: '$',
-                icon: 'shopping_cart'
-            });
-        }
-
-        // 3. Apply daily expenses (weekend)
-        currentPlayer.spendCash(this.DAILY_EXPENSE);
-        summary.events.push({
-            type: 'expense',
-            label: 'Weekend Expenses',
-            value: -this.DAILY_EXPENSE,
-            unit: '$',
-            icon: 'home'
-        });
-
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.DAILY_EXPENSE)} for weekend expenses.`,
-            'expense'
-        );
-
-        // 4. Apply loan interest
-        if (currentPlayer.loan > 0) {
-            const interest = Math.round(currentPlayer.loan * 0.10); // 10% interest
-            currentPlayer.loan += interest;
-            // Record this as an expense in the tracker
-            currentPlayer.weeklyExpenses += interest;
-            
-            summary.events.push({
-                type: 'warning',
-                label: 'Loan Interest',
-                value: -interest,
-                unit: '$',
-                icon: 'account_balance'
-            });
-            
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in loan interest.`,
-                'warning'
-            );
-        }
-
-        // 5. Apply hunger
-        currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + 20);
-        if (currentPlayer.hunger > 50) {
-            currentPlayer.updateHappiness(-5);
-            summary.events.push({
-                type: 'warning',
-                label: 'Hunger Penalty',
-                value: -5,
-                unit: 'Happiness',
-                icon: 'restaurant'
-            });
-            this.addLogMessage(`${this._getPlayerName(currentPlayer)} is feeling hungry...`, 'warning');
-        }
-
-        // 6. Calculate totals from tracked stats
-        summary.totals.cashChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
-        summary.totals.happinessChange = currentPlayer.weeklyHappinessChange;
-
-        // Reset weekly stats for the next week
-        currentPlayer.resetWeeklyStats();
-        
-        // 7. Reset time for the next turn, accounting for any deficit
-        const timeDeficit = currentPlayer.timeDeficit;
-        currentPlayer.setTime(24 - timeDeficit);
-        
-        if (timeDeficit > 0) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} started with ${timeDeficit} hour${timeDeficit > 1 ? 's' : ''} less due to incomplete travel.`,
-                'warning'
-            );
-            currentPlayer.timeDeficit = 0;
-        }
-
-        // 8. Reset location to Home
-        currentPlayer.setLocation("Home");
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} returned home.`,
-            'info'
-        );
-
-        // Ensure AI loading state is cleared if it was the AI's turn
-        if (currentPlayer.isAI) {
-            EventBus.publish('aiThinkingEnd');
-        }
-
-        // Publish turn ended with summary
-        EventBus.publish('turnEnded', summary);
-        
-        EventBus.publish('stateChanged', this);
-        return summary;
-    }
-
-    advanceTurn(): void {
-        // Advance to the next player
-        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
-
-        if (this.currentPlayerIndex === 0) {
-            this.turn++;
-        }
-        
-        const nextPlayer = this.getCurrentPlayer();
-        
-        // Notify state change for the new player's turn
-        EventBus.publish('stateChanged', this);
-
-        // ADD AI TURN LOGIC
-        if (nextPlayer.isAI && this.aiController) {
-            // Notify view to show loading
-            EventBus.publish('aiThinkingStart');
-            // Delay AI processing so player can see the turn transition
-            setTimeout(() => {
-                this.processAITurn();
-            }, 1000);
-        }
-    }
-
     processAITurn(): void {
         const currentPlayer = this.getCurrentPlayer();
         this.addLogMessage(
@@ -261,7 +96,7 @@ class GameState {
         // 1) no action → end AI turn immediately
         if (!aiAction || !aiAction.action) {
             EventBus.publish('aiThinkingEnd');
-            this.endTurn();
+            if (this._timeSystem) this._timeSystem.endTurn();
             return;
         }
 
@@ -272,7 +107,7 @@ class GameState {
                 'info'
             );
             EventBus.publish('aiThinkingEnd');
-            this.endTurn();
+            if (this._timeSystem) this._timeSystem.endTurn();
             return;
         }
 
@@ -298,22 +133,22 @@ class GameState {
                 success = this.takeCourse(aiAction.params.courseId);
                 break;
             case 'buyItem':
-                success = this.buyItem(aiAction.params.itemName);
+                success = this._economySystem ? this._economySystem.buyItem(aiAction.params.itemName) : false;
                 break;
             case 'buyCar':
-                success = this.buyCar();
+                success = this._economySystem ? this._economySystem.buyCar() : false;
                 break;
             case 'deposit':
-                success = this.deposit(aiAction.params.amount);
+                success = this._economySystem ? this._economySystem.deposit(aiAction.params.amount) : false;
                 break;
             case 'withdraw':
-                success = this.withdraw(aiAction.params.amount);
+                success = this._economySystem ? this._economySystem.withdraw(aiAction.params.amount) : false;
                 break;
             case 'takeLoan':
-                success = this.takeLoan(aiAction.params.amount);
+                success = this._economySystem ? this._economySystem.takeLoan(aiAction.params.amount) : false;
                 break;
             case 'repayLoan':
-                success = this.repayLoan(aiAction.params.amount);
+                success = this._economySystem ? this._economySystem.repayLoan(aiAction.params.amount) : false;
                 break;
             default:
                 console.warn(`AI tried an unknown action: ${aiAction.action}`);
@@ -340,7 +175,7 @@ class GameState {
                 );
             }
             EventBus.publish('aiThinkingEnd');
-            this.endTurn();
+            if (this._timeSystem) this._timeSystem.endTurn();
         }
     }
 
@@ -364,13 +199,23 @@ class GameState {
         }
     }
 
+    private _economySystem: any = null;
+    setEconomySystem(system: any) {
+        this._economySystem = system;
+    }
+
+    private _timeSystem: any = null;
+    setTimeSystem(system: any) {
+        this._timeSystem = system;
+    }
+
     _checkAutoEndTurn(): void {
         const player = this.getCurrentPlayer();
         if (player.time <= 0 && !player.isAI && !this.gameOver) {
             setTimeout(() => {
                 if (player.time <= 0) { // Double check if time is still 0
                     this.addLogMessage(`Time is up! Turn ending automatically.`, 'warning');
-                    this.endTurn();
+                    if (this._timeSystem) this._timeSystem.endTurn();
                 }
             }, 1000);
         }
@@ -486,248 +331,6 @@ class GameState {
 
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} completed ${course.name}! Education level is now ${currentPlayer.educationLevel}.`,
-            'success'
-        );
-        this.checkWinCondition(currentPlayer);
-        EventBus.publish('stateChanged', this);
-        this._checkAutoEndTurn();
-        return true;
-    }
-
-    buyItem(itemName: string): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-        const item = SHOPPING_ITEMS.find(i => i.name === itemName);
-
-        if (currentPlayer.location !== 'Shopping Mall' && currentPlayer.location !== 'Fast Food') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall or Fast Food to shop.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (!item) {
-            this.addLogMessage('Item not found.', 'error');
-            return false;
-        }
-
-        if (currentPlayer.cash < item.cost) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(item.cost)} to buy ${item.name}.`,
-                'error'
-            );
-            return false;
-        }
-
-        currentPlayer.spendCash(item.cost);
-        currentPlayer.updateHappiness(item.happinessBoost);
-
-        // Apply hunger reduction if the item has it
-        if (item.hungerReduction) {
-            currentPlayer.hunger = Math.max(0, currentPlayer.hunger - item.hungerReduction);
-        } else if (item.name === 'Coffee') {
-            // Fallback for legacy coffee if hungerReduction wasn't added to it
-            currentPlayer.hunger = Math.max(0, currentPlayer.hunger - 30);
-        }
-
-        // Add to inventory if it's an asset or certain essentials
-        if (item.type === 'asset' || item.name === 'New Clothes') {
-            if (!currentPlayer.inventory.some(i => i.name === item.name)) {
-                currentPlayer.inventory.push(item);
-            }
-        }
-
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Happiness increased by ${item.happinessBoost}.`,
-            'success'
-        );
-        this.checkWinCondition(currentPlayer);
-        EventBus.publish('stateChanged', this);
-        this._checkAutoEndTurn();
-        return true;
-    }
-
-    deposit(amount: number): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-
-        if (currentPlayer.location !== 'Bank') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to deposit cash.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (amount <= 0) {
-            this.addLogMessage('Deposit amount must be positive.', 'error');
-            return false;
-        }
-
-        if (currentPlayer.deposit(amount)) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} deposited ${this._formatMoney(amount)}.`,
-                'success'
-            );
-            this.checkWinCondition(currentPlayer);
-            EventBus.publish('stateChanged', this);
-            this._checkAutoEndTurn();
-            return true;
-        } else {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough cash to deposit.`,
-                'error'
-            );
-            return false;
-        }
-    }
-
-    withdraw(amount: number): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-
-        if (currentPlayer.location !== 'Bank') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to withdraw cash.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (amount <= 0) {
-            this.addLogMessage('Withdrawal amount must be positive.', 'error');
-            return false;
-        }
-
-        if (currentPlayer.withdraw(amount)) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} withdrew ${this._formatMoney(amount)}.`,
-                'success'
-            );
-            this.checkWinCondition(currentPlayer);
-            EventBus.publish('stateChanged', this);
-            this._checkAutoEndTurn();
-            return true;
-        } else {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough savings to withdraw.`,
-                'error'
-            );
-            return false;
-        }
-    }
-
-    takeLoan(amount: number): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-        const MAX_LOAN = 2500;
-
-        if (currentPlayer.location !== 'Bank') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to take a loan.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (amount <= 0) {
-            this.addLogMessage('Loan amount must be positive.', 'error');
-            return false;
-        }
-
-        if (currentPlayer.loan + amount > MAX_LOAN) {
-            this.addLogMessage(
-                `Cannot exceed the ${this._formatMoney(MAX_LOAN)} loan cap. Current loan: ${this._formatMoney(currentPlayer.loan)}.`,
-                'error'
-            );
-            return false;
-        }
-
-        currentPlayer.takeLoan(amount);
-        currentPlayer.addCash(amount);
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} took a loan of ${this._formatMoney(amount)}. Total loan: ${this._formatMoney(currentPlayer.loan)}.`,
-            'warning'
-        );
-        this.checkWinCondition(currentPlayer);
-        EventBus.publish('stateChanged', this);
-        this._checkAutoEndTurn();
-        return true;
-    }
-
-    repayLoan(amount: number): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-
-        if (currentPlayer.location !== 'Bank') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to repay a loan.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (amount <= 0) {
-            this.addLogMessage('Repayment amount must be positive.', 'error');
-            return false;
-        }
-
-        if (currentPlayer.cash < amount) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough cash to repay this amount.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (amount > currentPlayer.loan) {
-            this.addLogMessage(
-                `Repayment amount (${this._formatMoney(amount)}) cannot exceed outstanding loan (${this._formatMoney(currentPlayer.loan)}).`,
-                'error'
-            );
-            return false;
-        }
-
-        currentPlayer.spendCash(amount);
-        currentPlayer.repayLoan(amount);
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} repaid ${this._formatMoney(amount)}. Remaining loan: ${this._formatMoney(currentPlayer.loan)}.`,
-            'success'
-        );
-        this.checkWinCondition(currentPlayer);
-        EventBus.publish('stateChanged', this);
-        this._checkAutoEndTurn();
-        return true;
-    }
-
-    buyCar(): boolean {
-        const currentPlayer = this.getCurrentPlayer();
-        const CAR_COST = 3000;
-
-        if (currentPlayer.location !== 'Used Car Lot') {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Used Car Lot to buy a car.`,
-                'error'
-            );
-            return false;
-        }
-
-        if (currentPlayer.hasCar) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} already owns a car.`,
-                'warning'
-            );
-            return false;
-        }
-
-        if (currentPlayer.cash < CAR_COST) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(CAR_COST)} to buy a car.`,
-                'error'
-            );
-            return false;
-        }
-
-        currentPlayer.spendCash(CAR_COST);
-        currentPlayer.giveCar();
-        this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} bought a car!`,
             'success'
         );
         this.checkWinCondition(currentPlayer);

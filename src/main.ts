@@ -3,25 +3,45 @@ import GameController from './game/GameController.js';
 import UIManager from './ui/UIManager.js';
 import InputManager from './InputManager.js';
 import EventNotificationManager from './ui/EventNotificationManager.js';
+import EconomySystem from './systems/EconomySystem.js';
+import TimeSystem from './systems/TimeSystem.js';
+import EventBus, { UI_EVENTS } from './EventBus.js';
 
 // The main entry point for the application.
 function main() {
   // 1. Instantiate GameState.
   const gameState = new GameState(2, true); // 2 players, P2 is AI.
 
-  // 2. Instantiate UIManager.
+  // 2. Instantiate Systems.
+  const economySystem = new EconomySystem(gameState);
+  const timeSystem = new TimeSystem(gameState);
+  
+  gameState.setEconomySystem(economySystem);
+  gameState.setTimeSystem(timeSystem);
+
+  // 3. Setup System Event Routing (Task 4.3)
+  EventBus.subscribe(UI_EVENTS.REST_END_TURN, () => timeSystem.endTurn());
+  EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, () => timeSystem.advanceTurn());
+  EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, (amount: number) => economySystem.deposit(amount));
+  EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, (amount: number) => economySystem.withdraw(amount));
+  EventBus.subscribe(UI_EVENTS.BANK_LOAN, (amount: number) => economySystem.takeLoan(amount));
+  EventBus.subscribe(UI_EVENTS.BANK_REPAY, (amount: number) => economySystem.repayLoan(amount));
+  EventBus.subscribe(UI_EVENTS.BUY_ITEM, (itemName: string) => economySystem.buyItem(itemName));
+  EventBus.subscribe(UI_EVENTS.BUY_CAR, () => economySystem.buyCar());
+
+  // 4. Instantiate UIManager.
   const uiManager = new UIManager(); // UIManager constructor runs here, subscribes to stateChanged
 
-  // 3. Instantiate GameController, passing it the gameState and uiManager instances.
-  const gameController = new GameController(gameState, uiManager);
+  // 5. Instantiate GameController, passing it the gameState, uiManager and system instances.
+  const gameController = new GameController(gameState, uiManager, economySystem, timeSystem);
 
-  // 4. Instantiate EventNotificationManager.
+  // 6. Instantiate EventNotificationManager.
   new EventNotificationManager();
 
-  // 5. Instantiate InputManager, passing it the gameController.
+  // 7. Instantiate InputManager, passing it the gameController.
   const inputManager = new InputManager(gameController);
 
-  // 6. Call inputManager.initialize().
+  // 8. Call inputManager.initialize().
   inputManager.initialize();
 
   // --- FIX: Manually trigger the first render after everything is set up ---

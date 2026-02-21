@@ -3,7 +3,7 @@
 ## Overview
 
 **Jones in the Fast Lane** is a browser-based, turn-based life simulation game inspired by the 1990 Sierra classic.  
-This version is entirely built with **vanilla JavaScript, HTML, and CSS**, using a modern architectural and responsive foundation.
+This version is built with **TypeScript, Vite, and CSS**, using a modern modular architecture and responsive foundation.
 
 Compete to achieve career success, education milestones, happiness, and wealth faster than your rival — human or AI.
 
@@ -13,7 +13,7 @@ Compete to achieve career success, education milestones, happiness, and wealth f
 
 - **Single-player vs AI** or **two-player (hotseat)** gameplay
 - **AI-driven turns** with strategic decision-making
-- **Reactively updating UI** — no manual DOM refresh logic
+- **Event-driven, reactive UI** — state changes propagate automatically through a typed Event Bus
 - **Modal-based actions** for interaction consistency
 - **Responsive layout** scaling from widescreen to mobile
 - **Thematic synthwave aesthetic**: neon borders, glowing panels, and VHS vibes
@@ -27,29 +27,31 @@ Compete to achieve career success, education milestones, happiness, and wealth f
 The game follows a clear, event-driven flow:
 
 ```
-Input → Controller → GameState → EventBus → GameView
+Input → EventBus → Systems/GameState → EventBus → UIManager
 ```
 
 | Layer | Responsibility |
 |-------|----------------|
-| **InputManager** | Abstracts mouse/touch inputs, maps UI interactions to game commands |
-| **GameController** | Interprets player decisions, calls appropriate GameState actions |
-| **GameState** | Holds the canonical state of the world and business rules |
-| **EventBus** | Propagates change events to all subscribers |
-| **GameView (ui.js)** | Renders state, shows modals, handles animations and overlays |
+| **InputManager** | Abstracts mouse/touch inputs, maps UI interactions to UI events. |
+| **GameController** | Orchestrates UI-specific logic (e.g. modals) and publishes game intents. |
+| **Systems** | (Economy, Time) Handles specific domain logic and updates the GameState. |
+| **GameState** | Holds the canonical state of the world and data entities. |
+| **EventBus** | Propagates typed change events to all subscribers. |
+| **UIManager** | Orchestrates rendering logic and component updates. |
 
-This design makes the system **fully decoupled** and **reactive**.
+This design makes the system **fully decoupled**, **modular**, and **testable**.
 
 ---
 
 ## 🧠 Key Technical Features
 
-- **Observer Pattern:** game state publishes `stateChanged` events; view re-renders automatically
-- **Command Pattern:** InputManager executes controller commands
-- **AI System:** separate module makes decisions and triggers state updates
-- **Touch-First Responsiveness:** buttons and modals adapted for mobile ergonomics
-- **Loading Overlay for AI:** non-blocking feedback during computer's turn
-- **Sticky Action Bar:** mobile usability optimization for persistent access to actions
+- **TypeScript:** Strict typing for players, items, and events ensures data integrity.
+- **System-Based Logic:** Domain logic is segregated into dedicated systems (Economy, Time) for better maintainability.
+- **Observer Pattern:** Game state publishes typed events; the UI re-renders automatically.
+- **Vite:** Modern tooling for fast development and optimized production builds.
+- **AI System:** Separate module makes decisions and triggers state updates via game systems.
+- **Touch-First Responsiveness:** Buttons and modals adapted for mobile ergonomics.
+- **Sticky Action Bar:** Mobile usability optimization for persistent access to actions.
 
 ---
 
@@ -65,40 +67,54 @@ This design makes the system **fully decoupled** and **reactive**.
 
 ## 🚀 Getting Started
 
-**Run the Game**
-
 1. Clone or download the repository.
-2. Open `index.html` in your favorite browser.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open the provided local URL (usually `http://localhost:5173`) in your browser.
+
+### Production Build
+
+To create an optimized production build and preview it:
+```bash
+npm run build
+npm run preview
+```
 
 ---
 
 ## 🧰 Repository Structure
 
 ```
-index.html
-style.css
-js/
-  app.js                 # Entry point
-  EventBus.js            # Observer event system
-  InputManager.js        # Unified input routing
-  ui.js (GameView)       # Reactive rendering and modals
-  game/
-    GameState.js         # Game state and rules
-    GameController.js    # Command controller
-    AIController.js      # AI decision engine
-    Player.js            # Player model
-    gameData.js          # Game constants and content
-docs/
-  0001-prd-responsive-evolution.md
+src/
+  main.ts                # Composition Root & Event Hub
+  EventBus.ts            # Typed Event Emitter
+  InputManager.ts        # Unified input routing
+  data/                  # Static Game Data (typed)
+  systems/               # Domain-specific logic (Economy, Time)
+  game/                  # Core state and AI controllers
+    GameState.ts         # Single Source of Truth
+    GameController.ts    # UI orchestration controller
+    AIController.ts      # AI decision engine
+    Player.ts            # Player model
+  models/                # Interfaces & Shared Types
+  ui/                    # Rendering Logic (The "View")
+    UIManager.ts         # Main UI Orchestrator
+    components/          # Reusable UI components (HUD, Modal)
 ```
 
 ---
 
 ## 🧭 Design Philosophy
 
-- **Minimal JavaScript-driven layout** — CSS Grid does the heavy lifting.
-- **Intrinsic responsiveness** — gracefully adapts across screen sizes.
-- **Event-driven architecture** — every UI update flows from `EventBus` events.
+- **Modular TypeScript Architecture** — logic is separated from presentation.
+- **Intrinsic responsiveness** — gracefully adapts across screen sizes via CSS.
+- **Event-driven communication** — UI updates flow through a central, typed bus.
 - **Accessible by design** — larger touch targets, scalable text, color-contrasted UI.
 - **Stylized nostalgia** — neon-glow synth aesthetic rooted in 80s arcade culture.
 
@@ -106,9 +122,9 @@ docs/
 
 ## 🧾 Documentation References
 
-- `docs/0001-prd-responsive-evolution.md` — Responsive & architectural refactor spec (fully implemented)
-- `docs/spec.md` — Core game mechanics and design
-- `docs/visual-upgrade-refactor-plan.md` — Aesthetic and UI modernization plan
+- `plan.md` — Active modernization and refactoring roadmap.
+- `docs/0001-prd-responsive-evolution.md` — Responsive & architectural refactor spec (fully implemented).
+- `docs/spec.md` — Core game mechanics and design.
 
 ---
 
