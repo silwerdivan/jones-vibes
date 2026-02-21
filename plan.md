@@ -77,7 +77,7 @@ src/
 *Goal: Break `ui.js` into manageable components.*
 
 - [x] **Task 3.1:** Create `UIManager.ts` as the new entry point for UI.
-- [ ] **Task 3.2:** Extract `Modal` logic into `src/ui/components/Modal.ts`. It should have methods like `show(config)` and emit events on close/action.
+- [x] **Task 3.2:** Extract `Modal` logic into `src/ui/components/Modal.ts`. It should have methods like `show(config)` and emit events on close/action.
 - [ ] **Task 3.3:** Extract `HUD` logic (cash, weeks, clocks) into `src/ui/components/HUD.ts`.
 - [ ] **Task 3.4:** Remove direct references to `window.gameController` in UI files. Replace with `EventBus.emit('ACTION_NAME', payload)`.
 
