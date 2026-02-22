@@ -378,3 +378,56 @@ UIManager now acts as a thin orchestrator:
   - Task 3.3: Performance Baseline
 
 ---
+
+## 2026-02-22 - Phase 3: Task 3.1 Complete
+
+### Completed Task
+
+#### Task 3.1: Add Subscription Support to `BaseComponent`
+
+**Objective:** Enable components to subscribe to EventBus events and track subscriptions for cleanup
+
+#### Changes Made
+
+**BaseComponent.ts:**
+- Added EventBus import for event subscription functionality
+- Added `Subscription` type to track event/handler pairs
+- Added `subscriptions` array to store active subscriptions
+- Implemented `subscribe<E>(event: string, handler: (data: E) => void)` method:
+  - Subscribes to EventBus events
+  - Tracks subscription in component's subscription list
+  - Supports generic type parameter for typed event data
+- Implemented `unsubscribeAll()` method:
+  - Clears all tracked subscriptions from component
+  - Note: Does not unsubscribe from EventBus (EventBus has no unsubscribe API)
+- Implemented `getSubscriptions()` method for testing/inspection
+- Updated `unmount()` to automatically call `unsubscribeAll()` for cleanup
+
+#### Testing
+- Created 8 new tests for subscription functionality:
+  - Subscribe to EventBus events
+  - Track multiple subscriptions
+  - Handle multiple handlers for same event
+  - Type-safe event data handling
+  - Subscription clearing with unsubscribeAll
+  - Automatic cleanup on unmount
+- All 168 tests pass (160 existing + 8 new)
+
+#### Benefits
+- Components can now react to state changes automatically
+- Subscription cleanup is handled automatically on unmount
+- Type-safe event handling with generic parameters
+- Foundation for reactive state binding in Task 3.2
+
+### Files Modified
+- `src/ui/BaseComponent.ts` - Added subscription support
+- `tests/ui/BaseComponent.test.ts` - Added subscription tests
+- `plan.md` - Updated Task 3.1 status
+
+### Next Steps
+- Task 3.2: Implement Granular Updates
+  - HUD updates only on cashChanged, locationChanged, timeChanged
+  - CityScreen updates only on locationChanged
+  - InventoryScreen updates only on inventoryChanged
+
+---

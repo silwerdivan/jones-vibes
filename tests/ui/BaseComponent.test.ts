@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import BaseComponent from '../../src/ui/BaseComponent.js';
+import EventBus from '../../src/EventBus.js';
 
 interface TestState {
     value: string;
@@ -110,6 +111,85 @@ describe('BaseComponent', () => {
             }
             const comp = new IncompleteComponent('div');
             expect(() => comp.render()).toThrow('Not implemented');
+        });
+    });
+
+    describe('subscribe', () => {
+        it('should subscribe to EventBus events', () => {
+            const handler = vi.fn();
+            component.subscribe('testEvent', handler);
+            EventBus.publish('testEvent', { value: 42 });
+            expect(handler).toHaveBeenCalledWith({ value: 42 });
+        });
+
+        it('should track subscriptions', () => {
+            const handler = vi.fn();
+            component.subscribe('event1', handler);
+            component.subscribe('event2', handler);
+            const subs = component.getSubscriptions();
+            expect(subs).toHaveLength(2);
+            expect(subs[0].event).toBe('event1');
+            expect(subs[1].event).toBe('event2');
+        });
+
+        it('should handle multiple handlers for same event', () => {
+            const handler1 = vi.fn();
+            const handler2 = vi.fn();
+            component.subscribe('multiEvent', handler1);
+            component.subscribe('multiEvent', handler2);
+            EventBus.publish('multiEvent', 'data');
+            expect(handler1).toHaveBeenCalledWith('data');
+            expect(handler2).toHaveBeenCalledWith('data');
+        });
+
+        it('should return typed data to handler', () => {
+            interface TestData {
+                message: string;
+                count: number;
+            }
+            const handler = vi.fn((data: TestData) => {
+                return data.message;
+            });
+            component.subscribe<TestData>('typedEvent', handler);
+            EventBus.publish('typedEvent', { message: 'hello', count: 5 });
+            expect(handler).toHaveBeenCalledWith({ message: 'hello', count: 5 });
+        });
+    });
+
+    describe('unsubscribeAll', () => {
+        it('should clear all tracked subscriptions', () => {
+            const handler = vi.fn();
+            component.subscribe('event1', handler);
+            component.subscribe('event2', handler);
+            expect(component.getSubscriptions()).toHaveLength(2);
+            component.unsubscribeAll();
+            expect(component.getSubscriptions()).toHaveLength(0);
+        });
+
+        it('should track subscriptions but not unsubscribe from EventBus', () => {
+            const handler = vi.fn();
+            component.subscribe('persistentEvent', handler);
+            component.unsubscribeAll();
+            EventBus.publish('persistentEvent', 'still works');
+            expect(handler).toHaveBeenCalledWith('still works');
+        });
+    });
+
+    describe('unmount with subscriptions', () => {
+        it('should call unsubscribeAll when unmounted', () => {
+            const unsubscribeSpy = vi.spyOn(component, 'unsubscribeAll');
+            component.mount(container);
+            component.unmount();
+            expect(unsubscribeSpy).toHaveBeenCalled();
+        });
+
+        it('should clear subscriptions on unmount', () => {
+            const handler = vi.fn();
+            component.subscribe('cleanupEvent', handler);
+            component.mount(container);
+            expect(component.getSubscriptions()).toHaveLength(1);
+            component.unmount();
+            expect(component.getSubscriptions()).toHaveLength(0);
         });
     });
 });

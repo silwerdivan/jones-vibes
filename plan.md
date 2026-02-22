@@ -298,6 +298,14 @@ After extracting components, UIManager should become a thin orchestrator:
 - `unsubscribeAll()` for cleanup
 - Consider a `connect(store)` pattern if appropriate
 
+**Status:** ✅ Complete
+- Added EventBus import and Subscription type
+- Implemented `subscribe<E>(event, handler)` method with type safety
+- Implemented `unsubscribeAll()` to clear tracked subscriptions
+- Implemented `getSubscriptions()` for testing/inspection
+- Automatic cleanup via `unmount()` calling `unsubscribeAll()`
+- Added 8 new tests for subscription functionality
+
 #### Task 3.2: Implement Granular Updates
 
 **Current Problem:** Any state change triggers a full `render()` of the active screen.
@@ -321,10 +329,11 @@ After extracting components, UIManager should become a thin orchestrator:
 - Establish acceptable thresholds (< 16ms for 60fps)
 
 **Acceptance Criteria (Phase 3):**
-- [ ] Components auto-update on relevant events
-- [ ] Manual `render()` calls are eliminated from UIManager
-- [ ] Performance metrics are logged in dev mode
-- [ ] No unnecessary re-renders
+- [x] BaseComponent subscription support added (Task 3.1)
+- [ ] Components auto-update on relevant events (Task 3.2)
+- [ ] Manual `render()` calls are eliminated from UIManager (Task 3.2)
+- [ ] Performance metrics are logged in dev mode (Task 3.3)
+- [ ] No unnecessary re-renders (Task 3.2)
 
 ---
 
