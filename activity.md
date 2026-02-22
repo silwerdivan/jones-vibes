@@ -182,3 +182,55 @@
 - Task 2.2: Create CityScreen.ts and Gauge.ts
 - Task 2.3: Create LifeScreen.ts and InventoryScreen.ts
 - Task 2.4: Reduce UIManager.ts Scope
+
+## 2026-02-22 - Phase 2: Task 2.2 Complete
+
+### Completed Task
+
+#### Task 2.2: Create CityScreen.ts and Gauge.ts
+
+#### Task 2.2: Create CityScreen.ts and Gauge.ts
+- Created src/ui/components/shared/Gauge.ts - Reusable SVG gauge component
+  - Accepts value, max (default 100), color, and label parameters
+  - Renders circular progress gauge with SVG
+  - Includes static factory method Gauge.create(config) for quick instantiation
+  - Handles edge cases: clamps percentage 0-100, prevents division by zero
+- Created src/ui/components/screens/CityScreen.ts - City grid screen component
+  - Extends BaseComponent<GameState>
+  - Creates own DOM structure: bento grid, FAB button, location hint
+  - Renders all 7 locations with icons and summaries
+  - Handles travel clicks (publishes TRAVEL event)
+  - Handles current location clicks (publishes showLocationDashboard event)
+  - Shows/hides FAB based on current location (visible only at Home)
+  - Updates location hint text dynamically based on location
+
+#### Testing
+- Created tests/ui/components/shared/Gauge.test.ts with 19 passing tests covering:
+  - Element creation and structure
+  - Percentage calculations with various inputs
+  - Color application (handles hex to rgb conversion)
+  - Custom max values
+  - Edge cases (zero values, division by zero, clamping)
+  - Factory method
+  - Mount/unmount lifecycle
+- Created tests/ui/components/screens/CityScreen.test.ts with 25 passing tests covering:
+  - Component initialization and structure
+  - Rendering all location cards
+  - Active state highlighting
+  - FAB visibility logic
+  - Location hint updates
+  - Click handling (travel vs dashboard)
+  - Event publishing
+  - Re-rendering when location changes
+
+### Files Created
+- src/ui/components/shared/Gauge.ts
+- src/ui/components/screens/CityScreen.ts
+- tests/ui/components/shared/Gauge.test.ts
+- tests/ui/components/screens/CityScreen.test.ts
+
+### Current Test Count: 115 passing tests
+
+### Next Steps
+- Task 2.3: Create LifeScreen.ts and InventoryScreen.ts
+- Task 2.4: Reduce UIManager.ts Scope
