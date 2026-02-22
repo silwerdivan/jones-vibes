@@ -83,6 +83,39 @@
 - Task 1.3: Extract StatusOrb.ts (optional, nice to have)
 - Task 1.4: Create ScreenManager.ts
 
+## 2026-02-22 - Phase 1: Task 1.4 Complete
+
+### Completed Task
+
+#### Task 1.4: Create `ScreenManager.ts`
+- Created `src/ui/components/screens/ScreenManager.ts` extending `BaseComponent`
+- Features implemented:
+  - `registerScreen(id: string, component: BaseComponent)` - Registers screens as components
+  - `registerTab(id: string, iconName: string, label: string)` - Registers navigation tabs
+  - `switchScreen(id: string)` - Switches between screens with hide/show logic
+  - Emits `screenSwitched` event via EventBus with { screenId, previousScreenId }
+  - Manages tab active states and icon colors
+  - `setTabIcon()` helper for setting SVG icons on tabs
+  - Creates own DOM structure: content area + tab bar
+
+#### Testing
+- Created `tests/ui/components/screens/ScreenManager.test.ts` with 21 passing tests covering:
+  - Initialization and structure
+  - Screen registration and lifecycle
+  - Tab registration and active states
+  - Screen switching functionality
+  - Event publishing
+  - Tab icon management
+  - Mount/unmount lifecycle
+
+### Files Created
+- `src/ui/components/screens/ScreenManager.ts`
+- `tests/ui/components/screens/ScreenManager.test.ts`
+
+### Next Steps
+- Integrate ScreenManager into UIManager (Phase 2)
+- Continue with Phase 2 template decoupling tasks
+
 ## 2026-02-22 - Phase 1: Task 1.1 Complete
 
 ### Completed Task
@@ -112,6 +145,3 @@
 ### Files Modified
 - `package.json` (added test scripts and dependencies)
 - `README.md` (added Testing section)
-
-### Next Steps
-- Task 1.2: Refactor HUD.ts to self-render using BaseComponent

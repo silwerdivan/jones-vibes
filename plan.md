@@ -188,6 +188,8 @@ The HUD contains two status orbs (P1/P2). Extract into a reusable component.
 - [x] `index.html` HUD section is empty (or removed entirely)
 - [x] HUD component creates its own DOM structure
 - [x] All HUD tests pass
+- [x] ScreenManager component created with register/switch methods
+- [x] ScreenManager tests pass (21 tests)
 - [ ] Screen switching still works
 - [ ] No visual regression
 
