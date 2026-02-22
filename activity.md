@@ -145,3 +145,40 @@
 ### Files Modified
 - `package.json` (added test scripts and dependencies)
 - `README.md` (added Testing section)
+
+---
+
+## 2026-02-22 - Phase 2: Task 2.1 Complete
+
+### Completed Task
+
+#### Task 2.1: Create `ActionCard.ts`
+- Created `src/ui/components/shared/ActionCard.ts` with factory function pattern (not class-based for performance with lists)
+- Features implemented:
+  - `createActionCard(type, data, config)` - Factory function that creates action card DOM elements
+  - `createActionCardList(type, items, config)` - Creates a container with multiple cards
+  - Supports three card types: 'jobs', 'college', 'shopping'
+  - Handles state logic internally (locked, hired, completed states)
+  - Generates meta tags with appropriate icons and styling
+  - Callback-based click handling with feedback data
+- State handling:
+  - Jobs: Checks education requirements, career level, hired status
+  - College: Checks prerequisites, already completed courses
+  - Shopping: Checks affordability (cash >= cost)
+
+#### Testing
+- Created `tests/ui/components/shared/ActionCard.test.ts` with 21 passing tests covering:
+  - Job cards (structure, hired state, locked state, education requirements)
+  - College cards (structure, completed state, prerequisites)
+  - Shopping cards (structure, affordability, happiness/hunger display)
+  - Card list creation
+  - Edge cases (null player, missing onClick)
+
+### Files Created
+- `src/ui/components/shared/ActionCard.ts`
+- `tests/ui/components/shared/ActionCard.test.ts`
+
+### Next Steps
+- Task 2.2: Create CityScreen.ts and Gauge.ts
+- Task 2.3: Create LifeScreen.ts and InventoryScreen.ts
+- Task 2.4: Reduce UIManager.ts Scope
