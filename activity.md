@@ -38,3 +38,38 @@
 ### Next Steps
 - Proceed to Phase 1: Shell Extraction
 - Start with Task 1.1: Create `BaseComponent.ts`
+
+---
+
+## 2026-02-22 - Phase 1: Task 1.1 Complete
+
+### Completed Task
+
+#### Task 1.1: Create `BaseComponent.ts`
+- Created `src/ui/BaseComponent.ts` with abstract base class pattern
+- Features implemented:
+  - Constructor accepts `tagName`, `className`, and optional `id`
+  - Stores reference to created element
+  - Abstract `render(state)` method for subclasses
+  - `getElement()` returns the element
+  - `mount(parent)` appends to parent
+  - `unmount()` removes from DOM
+  - `isMounted()` for checking mount state
+
+#### Testing Infrastructure Setup
+- Installed Vitest, @vitest/coverage-v8, jsdom
+- Created `vitest.config.ts` with jsdom environment
+- Added `npm test` and `npm run test:watch` scripts to package.json
+- Created `tests/ui/BaseComponent.test.ts` with 13 passing tests
+
+### Files Created
+- `src/ui/BaseComponent.ts`
+- `vitest.config.ts`
+- `tests/ui/BaseComponent.test.ts`
+
+### Files Modified
+- `package.json` (added test scripts and dependencies)
+- `README.md` (added Testing section)
+
+### Next Steps
+- Task 1.2: Refactor HUD.ts to self-render using BaseComponent

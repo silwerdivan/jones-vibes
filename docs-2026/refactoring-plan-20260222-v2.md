@@ -109,10 +109,10 @@ Document all `EventBus.subscribe()` calls:
 **Deliverable:** A diagram or table showing event flow.
 
 **Acceptance Criteria (Phase 0):**
-- [x] `refactoring-docs-20260222/dom-selectors-audit.md` exists and is complete
-- [x] `refactoring-docs-20260222/html-strings-audit.md` exists and is complete
-- [x] `refactoring-docs-20260222/event-flow-diagram.md` exists and is complete
-- [x] All audits reviewed and approved before Phase 1 begins
+- [ ] `refactoring-docs-20260222/dom-selectors-audit.md` exists and is complete
+- [ ] `refactoring-docs-20260222/html-strings-audit.md` exists and is complete
+- [ ] `refactoring-docs-20260222/event-flow-diagram.md` exists and is complete
+- [ ] All audits reviewed and approved before Phase 1 begins
 
 ---
 
@@ -133,9 +133,9 @@ Create the abstract base class in `src/ui/BaseComponent.ts`:
 - `unmount()` removes from DOM
 
 **Testing:** Create `tests/ui/BaseComponent.test.ts`:
-- [x] Test element creation with tag and class
-- [x] Test mount/unmount cycle
-- [x] Test that abstract render throws if not implemented
+- Test element creation with tag and class
+- Test mount/unmount cycle
+- Test that abstract render throws if not implemented
 
 #### Task 1.2: Refactor `HUD.ts` to Self-Render
 
@@ -376,3 +376,17 @@ Consider adding a visual regression tool:
 | Visual regression | Manual testing after each phase; consider visual regression in Phase 4 |
 | Over-engineering | Use factory functions for simple cases; don't force class pattern |
 | Scope creep | Stick to phased approach; don't skip phases |
+
+---
+
+## Next Steps for the Junior Dev
+
+1. **Start with Phase 0:** Create the audit documents. This will take 1-2 hours but save days of confusion.
+2. **Commit after each task:** Small, atomic commits make rollback easy.
+3. **Test visually:** After each phase, play the game end-to-end.
+4. **Ask questions:** If a task is unclear, ask before implementing.
+
+---
+
+*Generated: 2026-02-22*
+*Based on: `refactoring-plan-20260221.md` with enhancements*

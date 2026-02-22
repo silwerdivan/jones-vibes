@@ -13,6 +13,7 @@ Instructions:
 5. Update `README.md` to be in line with the latest changes made, if need be.
 6. If verified, mark [x] in `plan.md` and append a summary to `activity.md`.
 7. Commit your changes.
+8. **CRITICAL:** Complete ONLY ONE task at a time. After committing, STOP and wait for user instruction before starting the next task.
 
 Constraints:
 - Do NOT output conversational text.

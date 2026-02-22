@@ -86,6 +86,18 @@ npm run build
 npm run preview
 ```
 
+### Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+Run tests in watch mode during development:
+```bash
+npm run test:watch
+```
+
 ---
 
 ## 🧰 Repository Structure
