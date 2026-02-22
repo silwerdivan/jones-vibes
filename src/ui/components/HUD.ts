@@ -210,7 +210,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.newsTickerContent = element;
     }
 
-    render(gameState: GameState): void {
+    protected _render(gameState: GameState): void {
         const player1 = gameState.players[0];
         const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
         const currentPlayer = gameState.getCurrentPlayer();

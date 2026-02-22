@@ -15,7 +15,7 @@ export default class Gauge extends BaseComponent<GaugeConfig> {
         super('div', 'gauge-container');
     }
 
-    render(config: GaugeConfig): void {
+    protected _render(config: GaugeConfig): void {
         const { value, max = 100, color, label } = config;
         const rawPercentage = max === 0 ? 0 : (value / max) * 100;
         const percentage = Math.min(100, Math.max(0, Math.round(rawPercentage)));
@@ -41,7 +41,7 @@ export default class Gauge extends BaseComponent<GaugeConfig> {
      */
     static create(config: GaugeConfig): HTMLElement {
         const gauge = new Gauge();
-        gauge.render(config);
+        gauge._render(config);
         return gauge.getElement();
     }
 }

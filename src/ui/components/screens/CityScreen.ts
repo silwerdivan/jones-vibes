@@ -15,8 +15,6 @@ export default class CityScreen extends BaseComponent<GameState> {
     private fabNextWeek: HTMLElement;
     private locationHint: HTMLElement;
 
-    private currentGameState: GameState | null = null;
-
     constructor() {
         super('section', 'screen');
         this.element.id = 'screen-city';
@@ -49,27 +47,23 @@ export default class CityScreen extends BaseComponent<GameState> {
     private setupGranularSubscriptions(): void {
         // Subscribe to location changes for targeted re-rendering
         this.subscribe(STATE_EVENTS.LOCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.currentGameState = gameState;
             const currentPlayer = gameState.getCurrentPlayer();
             this.updateLocationDisplay(currentPlayer.location as LocationName);
         });
 
         // Subscribe to player changes
         this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.currentGameState = gameState;
             const currentPlayer = gameState.getCurrentPlayer();
             this.updateLocationDisplay(currentPlayer.location as LocationName);
         });
 
         // Full render on turn change (week advance)
         this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.currentGameState = gameState;
             this.render(gameState);
         });
 
         // Fallback for stateChanged events
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
-            this.currentGameState = gameState;
             this.render(gameState);
         });
     }
@@ -81,8 +75,7 @@ export default class CityScreen extends BaseComponent<GameState> {
         this.updateLocationHint(currentLocation);
     }
 
-    render(gameState: GameState): void {
-        this.currentGameState = gameState;
+    protected _render(gameState: GameState): void {
         const currentPlayer = gameState.getCurrentPlayer();
         const currentLocation = currentPlayer.location as LocationName;
 

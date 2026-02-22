@@ -70,7 +70,7 @@ export default class InventoryScreen extends BaseComponent<GameState> {
         return grid;
     }
 
-    render(gameState: GameState): void {
+    protected _render(gameState: GameState): void {
         const player = gameState.getCurrentPlayer();
 
         this.renderEssentials(player.inventory);

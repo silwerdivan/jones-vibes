@@ -7,7 +7,7 @@ interface TestState {
 }
 
 class ConcreteComponent extends BaseComponent<TestState> {
-    render(state: TestState): void {
+    protected _render(state: TestState): void {
         this.element.textContent = state.value;
     }
 }
@@ -103,14 +103,14 @@ describe('BaseComponent', () => {
     });
 
     describe('abstract behavior', () => {
-        it('should require render method to be implemented', () => {
+        it('should require _render method to be implemented', () => {
             class IncompleteComponent extends BaseComponent<unknown> {
-                render(): void {
+                protected _render(): void {
                     throw new Error('Not implemented');
                 }
             }
             const comp = new IncompleteComponent('div');
-            expect(() => comp.render()).toThrow('Not implemented');
+            expect(() => comp.render({})).toThrow('Not implemented');
         });
     });
 

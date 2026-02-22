@@ -121,7 +121,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
         });
     }
 
-    render(gameState: GameState): void {
+    protected _render(gameState: GameState): void {
         const player = gameState.getCurrentPlayer();
         const index = gameState.currentPlayerIndex;
 

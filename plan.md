@@ -381,16 +381,32 @@ After extracting components, UIManager should become a thin orchestrator:
 
 **Goal:** Establish metrics for render performance.
 
-**Requirements:**
-- Add performance logging to `BaseComponent.render()`
-- Measure time from state change to DOM update
-- Establish acceptable thresholds (< 16ms for 60fps)
+**Status:** ✅ COMPLETE
+
+**Implementation:**
+- Added `PerformanceMetrics` type to track render performance statistics
+- Added performance tracking fields to BaseComponent:
+  - `renderCount`: total number of renders
+  - `totalRenderTime`: cumulative render time
+  - `lastRenderTime`: time of most recent render
+  - `maxRenderTime`: slowest render time
+  - `minRenderTime`: fastest render time
+- Changed abstract `render(state)` to public concrete method that:
+  - Measures render time using `performance.now()`
+  - Calls abstract `_render(state)` for actual rendering
+  - Tracks metrics and logs performance warnings
+- Added performance thresholds:
+  - 16ms threshold for 60fps target (console.log)
+  - 33ms threshold for 30fps warning (console.warn)
+- Added `getPerformanceMetrics()` method to retrieve stats
+- Added `resetPerformanceMetrics()` method to reset counters
+- Updated all components to use `_render()` instead of `render()`
 
 **Acceptance Criteria (Phase 3):**
 - [x] BaseComponent subscription support added (Task 3.1)
 - [x] Components auto-update on relevant events (Task 3.2)
 - [x] Manual `render()` calls are eliminated from UIManager (Task 3.2)
-- [ ] Performance metrics are logged in dev mode (Task 3.3)
+- [x] Performance metrics are logged in dev mode (Task 3.3)
 - [x] No unnecessary re-renders (Task 3.2)
 
 ---

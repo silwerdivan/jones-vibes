@@ -432,6 +432,79 @@ UIManager now acts as a thin orchestrator:
 
 ---
 
+## 2026-02-22 - Phase 3: Task 3.3 Complete
+
+### Completed Task
+
+#### Task 3.3: Performance Baseline
+
+**Objective:** Add performance metrics tracking and logging to BaseComponent
+
+#### Changes Made
+
+**BaseComponent.ts:**
+- Added `PerformanceMetrics` type with fields:
+  - `renderCount`: total renders
+  - `totalRenderTime`: cumulative render time
+  - `lastRenderTime`: most recent render time
+  - `maxRenderTime`: slowest render
+  - `minRenderTime`: fastest render
+- Added performance constants:
+  - `PERF_THRESHOLD = 16ms` (60fps target)
+  - `PERF_WARNING_THRESHOLD = 33ms` (30fps warning)
+- Refactored `render(state)` method:
+  - Now a public concrete method that wraps `_render()`
+  - Measures time using `performance.now()`
+  - Tracks metrics automatically
+  - Calls `_logPerformance()` to log warnings
+- Changed abstract method to `_render(state)`:
+  - All subclasses now implement `_render` instead of `render`
+- Added `getPerformanceMetrics()` method to retrieve stats
+- Added `resetPerformanceMetrics()` method to reset counters
+- Added private `_logPerformance()` method:
+  - Logs to console when render exceeds 16ms
+  - Logs warning when render exceeds 33ms
+  - Includes component name and timing info
+
+**Updated Components:**
+- HUD.ts: `render()` → `_render()`
+- CityScreen.ts: `render()` → `_render()` + removed unused `currentGameState` field
+- LifeScreen.ts: `render()` → `_render()`
+- InventoryScreen.ts: `render()` → `_render()`
+- Gauge.ts: `render()` → `_render()` + updated `create()` factory
+
+**Test Updates:**
+- Updated `tests/ui/BaseComponent.test.ts`:
+  - `ConcreteComponent.render()` → `ConcreteComponent._render()`
+  - Updated abstract behavior test to use `_render()`
+
+#### Performance Logging Output
+During test runs, performance warnings are now logged:
+- `[ComponentName] Render time: XXms (threshold: 16ms). Above 60fps target.`
+- `[ComponentName] Slow render detected: XXms (threshold: 33ms). This may cause frame drops below 30fps.`
+
+#### Results
+- All 178 tests pass
+- Performance metrics are automatically tracked for all components
+- Slow renders are logged as warnings in development
+- No breaking changes to component API
+
+### Files Modified
+- `src/ui/BaseComponent.ts` - Performance tracking implementation
+- `src/ui/components/HUD.ts` - Renamed render to _render
+- `src/ui/components/screens/CityScreen.ts` - Renamed render to _render, removed unused field
+- `src/ui/components/screens/LifeScreen.ts` - Renamed render to _render
+- `src/ui/components/screens/InventoryScreen.ts` - Renamed render to _render
+- `src/ui/components/shared/Gauge.ts` - Renamed render to _render
+- `tests/ui/BaseComponent.test.ts` - Updated test component implementations
+
+### Next Steps
+- Phase 4: Testing Infrastructure (Optional)
+  - Task 4.1: Setup Component Testing Helpers
+  - Task 4.2: Add Visual Regression Baseline
+
+---
+
 ## 2026-02-22 - Phase 3: Task 3.2 Complete
 
 ### Completed Task
