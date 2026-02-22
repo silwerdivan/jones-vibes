@@ -48,6 +48,7 @@ This design makes the system **fully decoupled**, **modular**, and **testable**.
 - **TypeScript:** Strict typing for players, items, and events ensures data integrity.
 - **System-Based Logic:** Domain logic is segregated into dedicated systems (Economy, Time) for better maintainability.
 - **Observer Pattern:** Game state publishes typed events; the UI re-renders automatically.
+- **Component-Based UI:** UI components extend `BaseComponent` for self-rendering and lifecycle management.
 - **Vite:** Modern tooling for fast development and optimized production builds.
 - **AI System:** Separate module makes decisions and triggers state updates via game systems.
 - **Touch-First Responsiveness:** Buttons and modals adapted for mobile ergonomics.
@@ -117,6 +118,7 @@ src/
   models/                # Interfaces & Shared Types
   ui/                    # Rendering Logic (The "View")
     UIManager.ts         # Main UI Orchestrator
+    BaseComponent.ts     # Abstract base class for UI components
     components/          # Reusable UI components (HUD, Modal)
 ```
 

@@ -1,37 +1,85 @@
+import BaseComponent from '../BaseComponent.js';
 import GameState from '../../game/GameState.js';
 import ClockVisualization from '../ClockVisualization.js';
 import EventBus from '../../EventBus.js';
 import { LogMessage } from '../../models/types.js';
 
-export class HUD {
-    private hudCash: HTMLElement | null;
-    private hudWeek: HTMLElement | null;
-    private hudLocation: HTMLElement | null;
-    private orbP1: HTMLElement | null;
-    private orbP2: HTMLElement | null;
-    private terminalBadge: HTMLElement | null;
-    private newsTickerContent: HTMLElement | null;
+export default class HUD extends BaseComponent<GameState> {
+    private hudCash!: HTMLElement;
+    private hudWeek!: HTMLElement;
+    private hudLocation!: HTMLElement;
+    private orbP1!: HTMLElement;
+    private orbP2!: HTMLElement;
+    private terminalBadge!: HTMLElement;
+    private timeRingP1!: HTMLElement;
+    private timeRingP2!: HTMLElement;
+    private terminalTrigger!: HTMLElement;
     private hudClockVisualizationP1: ClockVisualization | null = null;
     private hudClockVisualizationP2: ClockVisualization | null = null;
     private lastPlayerIndex: number = -1;
     private unreadEvents: number = 0;
+    private newsTickerContent: HTMLElement | null = null;
 
     constructor() {
-        this.hudCash = document.getElementById('hud-cash');
-        this.hudWeek = document.getElementById('hud-week');
-        this.hudLocation = document.getElementById('hud-location');
-        this.orbP1 = document.getElementById('orb-p1');
-        this.orbP2 = document.getElementById('orb-p2');
-        this.terminalBadge = document.getElementById('terminal-badge');
-        this.newsTickerContent = document.getElementById('news-ticker-content');
-
+        super('header', 'hud glass');
+        this.buildDOM();
+        this.initializeReferences();
         this.initializeClockVisualizations();
         this.setupEventListeners();
     }
 
-    private initializeClockVisualizations() {
-        if (document.getElementById('hud-time-ring-p1')) {
-            this.hudClockVisualizationP1 = new ClockVisualization('hud-time-ring-p1', {
+    private buildDOM(): void {
+        this.element.innerHTML = `
+            <div class="hud-left">
+                <div class="hud-status-orbs">
+                    <div class="status-orb active" data-orb="p1">
+                        <div class="time-ring-container" data-time-ring="p1"></div>
+                        <div class="orb-avatar" data-avatar="p1">P1</div>
+                    </div>
+                    <div class="status-orb inactive" data-orb="p2">
+                        <div class="time-ring-container" data-time-ring="p2"></div>
+                        <div class="orb-avatar" data-avatar="p2">AI</div>
+                    </div>
+                </div>
+                <div class="hud-stats">
+                    <div class="hud-stat-item">
+                        <span class="hud-label">CREDITS</span>
+                        <span class="hud-value currency" data-cash>$0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="hud-terminal-btn" aria-label="Open Intel Terminal" data-terminal-trigger>
+                    <i class="material-icons">terminal</i>
+                    <span class="terminal-badge hidden" data-terminal-badge>0</span>
+                </div>
+                <div class="hud-stat-item text-right">
+                    <span class="hud-label">WEEK</span>
+                    <span class="hud-value" data-week>1</span>
+                </div>
+                <div class="hud-stat-item text-right">
+                    <span class="hud-label">ZONE</span>
+                    <span class="hud-value" data-location>Home</span>
+                </div>
+            </div>
+        `;
+    }
+
+    private initializeReferences(): void {
+        this.orbP1 = this.element.querySelector('[data-orb="p1"]')!;
+        this.orbP2 = this.element.querySelector('[data-orb="p2"]')!;
+        this.timeRingP1 = this.element.querySelector('[data-time-ring="p1"]')!;
+        this.timeRingP2 = this.element.querySelector('[data-time-ring="p2"]')!;
+        this.hudCash = this.element.querySelector('[data-cash]')!;
+        this.hudWeek = this.element.querySelector('[data-week]')!;
+        this.hudLocation = this.element.querySelector('[data-location]')!;
+        this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
+        this.terminalTrigger = this.element.querySelector('[data-terminal-trigger]')!;
+    }
+
+    private initializeClockVisualizations(): void {
+        if (this.timeRingP1) {
+            this.hudClockVisualizationP1 = new ClockVisualization(this.timeRingP1, {
                 size: 52,
                 strokeWidth: 4,
                 backgroundColor: 'rgba(255, 0, 255, 0.1)',
@@ -41,8 +89,8 @@ export class HUD {
             });
         }
 
-        if (document.getElementById('hud-time-ring-p2')) {
-            this.hudClockVisualizationP2 = new ClockVisualization('hud-time-ring-p2', {
+        if (this.timeRingP2) {
+            this.hudClockVisualizationP2 = new ClockVisualization(this.timeRingP2, {
                 size: 52,
                 strokeWidth: 4,
                 backgroundColor: 'rgba(0, 255, 255, 0.1)',
@@ -53,27 +101,21 @@ export class HUD {
         }
     }
 
-    private setupEventListeners() {
+    private setupEventListeners(): void {
         EventBus.subscribe('gameEvent', () => {
             this.unreadEvents++;
             this.updateTerminalBadge();
         });
 
-        const orbP1 = document.getElementById('orb-p1');
-        const orbP2 = document.getElementById('orb-p2');
-        if (orbP1) orbP1.addEventListener('click', () => EventBus.publish('showPlayerStats', 1));
-        if (orbP2) orbP2.addEventListener('click', () => EventBus.publish('showPlayerStats', 2));
+        this.orbP1.addEventListener('click', () => EventBus.publish('showPlayerStats', 1));
+        this.orbP2.addEventListener('click', () => EventBus.publish('showPlayerStats', 2));
 
-        const terminalTrigger = document.getElementById('hud-terminal-trigger');
-        if (terminalTrigger) {
-            terminalTrigger.addEventListener('click', () => {
-                this.unreadEvents = 0;
-                this.updateTerminalBadge();
-                EventBus.publish('showIntelTerminal');
-            });
-        }
-        
-        // Listen for log icon clicked (from mobile UI)
+        this.terminalTrigger.addEventListener('click', () => {
+            this.unreadEvents = 0;
+            this.updateTerminalBadge();
+            EventBus.publish('showIntelTerminal');
+        });
+
         EventBus.subscribe('logIconClicked', () => {
             this.unreadEvents = 0;
             this.updateTerminalBadge();
@@ -81,29 +123,29 @@ export class HUD {
         });
     }
 
-    public update(gameState: GameState) {
+    setNewsTickerContent(element: HTMLElement): void {
+        this.newsTickerContent = element;
+    }
+
+    render(gameState: GameState): void {
         const player1 = gameState.players[0];
         const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
         const currentPlayer = gameState.getCurrentPlayer();
         const currentPlayerIndex = gameState.currentPlayerIndex;
 
         // Update Orbs
-        if (this.orbP1) {
-            this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
-            this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
-            if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
-                this.orbP1.classList.add('pulse');
-                setTimeout(() => this.orbP1?.classList.remove('pulse'), 600);
-            }
+        this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
+        this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
+        if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
+            this.orbP1.classList.add('pulse');
+            setTimeout(() => this.orbP1.classList.remove('pulse'), 600);
         }
 
-        if (this.orbP2) {
-            this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
-            this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
-            if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
-                this.orbP2.classList.add('pulse');
-                setTimeout(() => this.orbP2?.classList.remove('pulse'), 600);
-            }
+        this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
+        this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
+        if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
+            this.orbP2.classList.add('pulse');
+            setTimeout(() => this.orbP2.classList.remove('pulse'), 600);
         }
 
         this.lastPlayerIndex = currentPlayerIndex;
@@ -117,9 +159,9 @@ export class HUD {
         }
 
         // Update Stats
-        if (this.hudCash) this.hudCash.textContent = `$${currentPlayer.cash}`;
-        if (this.hudWeek) this.hudWeek.textContent = gameState.turn.toString();
-        if (this.hudLocation) this.hudLocation.textContent = currentPlayer.location;
+        this.hudCash.textContent = `$${currentPlayer.cash}`;
+        this.hudWeek.textContent = gameState.turn.toString();
+        this.hudLocation.textContent = currentPlayer.location;
 
         // Update News Ticker
         if (this.newsTickerContent && gameState.log.length > 0) {
@@ -131,14 +173,12 @@ export class HUD {
         }
     }
 
-    private updateTerminalBadge() {
-        if (this.terminalBadge) {
-            if (this.unreadEvents > 0) {
-                this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents.toString();
-                this.terminalBadge.classList.remove('hidden');
-            } else {
-                this.terminalBadge.classList.add('hidden');
-            }
+    private updateTerminalBadge(): void {
+        if (this.unreadEvents > 0) {
+            this.terminalBadge.textContent = this.unreadEvents > 99 ? '99+' : this.unreadEvents.toString();
+            this.terminalBadge.classList.remove('hidden');
+        } else {
+            this.terminalBadge.classList.add('hidden');
         }
     }
 }

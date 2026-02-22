@@ -36,10 +36,52 @@
 - `refactoring-docs-20260222/event-flow-diagram.md`
 
 ### Next Steps
-- Proceed to Phase 1: Shell Extraction
-- Start with Task 1.1: Create `BaseComponent.ts`
+- Task 1.2: Refactor HUD.ts to self-render using BaseComponent
 
 ---
+
+## 2026-02-22 - Phase 1: Task 1.2 Complete
+
+### Completed Task
+
+#### Task 1.2: Refactor HUD.ts to Self-Render
+- Refactored `src/ui/components/HUD.ts` to extend `BaseComponent<GameState>`
+- Moved all HUD HTML structure from `index.html` into HUD's constructor
+- Replaced `document.getElementById()` calls with `this.element.querySelector()` on internal elements
+- Updated `ClockVisualization.ts` to accept either string ID or HTMLElement for better component integration
+- Updated `UIManager.ts` to:
+  - Import HUD as default export (was named export)
+  - Mount HUD to `.app-shell` before the news ticker
+  - Set up news ticker content reference
+  - Call `render()` instead of `update()` method
+- Reduced `index.html` by removing hardcoded HUD section (removed ~35 lines)
+- Removed 7 `document.getElementById()` calls from HUD constructor
+
+#### Testing
+- Created `tests/ui/components/HUD.test.ts` with 16 passing tests covering:
+  - Element creation with correct classes
+  - Internal DOM structure
+  - Mount/unmount lifecycle
+  - Render method functionality
+  - Player switching and state updates
+  - BaseComponent method inheritance
+
+#### Mistake Note
+- **Path Error**: Initially tried to read `src/ui/HUD.ts` but the file is actually at `src/ui/components/HUD.ts`. Used `glob` tool to find the correct path.
+
+### Files Created
+- `tests/ui/components/HUD.test.ts`
+
+### Files Modified
+- `src/ui/components/HUD.ts` - Complete refactor to extend BaseComponent
+- `src/ui/ClockVisualization.ts` - Updated constructor to accept HTMLElement
+- `src/ui/UIManager.ts` - Updated HUD import, mounting, and render calls
+- `index.html` - Removed hardcoded HUD header element
+- `README.md` - Added component-based UI to key features
+
+### Next Steps
+- Task 1.3: Extract StatusOrb.ts (optional, nice to have)
+- Task 1.4: Create ScreenManager.ts
 
 ## 2026-02-22 - Phase 1: Task 1.1 Complete
 

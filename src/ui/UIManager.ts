@@ -8,7 +8,7 @@ import { SHOPPING_ITEMS } from '../data/items.js';
 import Icons from './Icons.js';
 import GameState from '../game/GameState.js';
 import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal } from './components/Modal.js';
-import { HUD } from './components/HUD.js';
+import HUD from './components/HUD.js';
 import { TurnSummary, Choice, LocationAction, Item, Course, Job, IconRegistry, Clerk } from '../models/types.js';
 
 type ClerkRegistry = Record<string, Clerk>;
@@ -58,6 +58,20 @@ class UIManager {
 
     // --- Components ---
     this.hud = new HUD();
+    // Mount HUD to app-shell at the beginning
+    const appShell = document.querySelector('.app-shell') as HTMLElement;
+    const newsTicker = document.querySelector('.news-ticker');
+    const newsTickerContent = document.getElementById('news-ticker-content');
+    if (appShell) {
+        this.hud.mount(appShell);
+        // Move HUD element before news ticker if it exists
+        if (newsTicker && this.hud.getElement().parentElement === appShell) {
+            appShell.insertBefore(this.hud.getElement(), newsTicker);
+        }
+    }
+    if (newsTickerContent) {
+        this.hud.setNewsTickerContent(newsTickerContent);
+    }
 
     // --- Modals ---
     this.choiceModal = new ChoiceModal();
@@ -462,7 +476,7 @@ class UIManager {
   }
 
   render(gameState: GameState) {
-    this.hud.update(gameState);
+    this.hud.render(gameState);
 
     const currentPlayer = gameState.getCurrentPlayer();
 

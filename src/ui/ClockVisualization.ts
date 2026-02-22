@@ -19,10 +19,14 @@ class ClockVisualization {
     private foregroundCircle!: SVGCircleElement;
     private textElement?: SVGTextElement;
 
-    constructor(containerId: string, options: Partial<ClockOptions> = {}) {
-        this.container = document.getElementById(containerId);
-        if (!this.container) {
-            throw new Error(`Container with id "${containerId}" not found`);
+    constructor(containerIdOrElement: string | HTMLElement, options: Partial<ClockOptions> = {}) {
+        if (typeof containerIdOrElement === 'string') {
+            this.container = document.getElementById(containerIdOrElement);
+            if (!this.container) {
+                throw new Error(`Container with id "${containerIdOrElement}" not found`);
+            }
+        } else {
+            this.container = containerIdOrElement;
         }
 
         // Default options

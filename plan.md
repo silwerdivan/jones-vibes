@@ -185,9 +185,9 @@ The HUD contains two status orbs (P1/P2). Extract into a reusable component.
 - Emits `screenSwitched` event
 
 **Acceptance Criteria (Phase 1):**
-- [ ] `index.html` HUD section is empty (or removed entirely)
-- [ ] HUD component creates its own DOM structure
-- [ ] All HUD tests pass
+- [x] `index.html` HUD section is empty (or removed entirely)
+- [x] HUD component creates its own DOM structure
+- [x] All HUD tests pass
 - [ ] Screen switching still works
 - [ ] No visual regression
 
