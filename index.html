@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jones in the Fast Lane</title>
+    <title>Jones in the Fastlane</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;800&family=Press+Start+2P&family=VT323&family=Orbitron:wght@800&display=swap" rel="stylesheet">
@@ -14,98 +14,13 @@
     <div class="app-shell">
         <div class="news-ticker glass">
             <div class="ticker-content" id="news-ticker-content">
-                Welcome to Jones in the Fast Lane! | Build wealth, education and happiness! | Visit the Employment Agency to find work.
+                Welcome to Jones in the Fastlane! | Build wealth, education and happiness! | Visit the Employment Agency to find work.
             </div>
         </div>
 
         <main class="content-area">
-            <section id="screen-city" class="screen">
-                <div id="city-bento-grid" class="bento-grid">
-                    <!-- Bento cards will be dynamically inserted here -->
-                </div>
-            </section>
-
-            <section id="screen-life" class="screen hidden">
-                <div class="life-header card glass">
-                    <div class="life-avatar-container">
-                        <div class="avatar-sm" id="life-avatar">P1</div>
-                    </div>
-                    <div class="status-chips" id="status-chips">
-                        <!-- Dynamic Chips -->
-                    </div>
-                </div>
-                <div class="gauge-grid">
-                    <div class="gauge-card glass" data-gauge="wealth">
-                        <div class="gauge-svg-container" id="gauge-wealth"></div>
-                        <div class="gauge-label">Wealth</div>
-                    </div>
-                    <div class="gauge-card glass" data-gauge="happiness">
-                        <div class="gauge-svg-container" id="gauge-happiness"></div>
-                        <div class="gauge-label">Happiness</div>
-                    </div>
-                    <div class="gauge-card glass" data-gauge="education">
-                        <div class="gauge-svg-container" id="gauge-education"></div>
-                        <div class="gauge-label">Education</div>
-                    </div>
-                    <div class="gauge-card glass" data-gauge="career">
-                        <div class="gauge-svg-container" id="gauge-career"></div>
-                        <div class="gauge-label">Career</div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="screen-inventory" class="screen hidden">
-                <div class="inventory-section">
-                    <h3 class="section-title">Essentials</h3>
-                    <div id="essentials-grid" class="essentials-grid">
-                        <!-- Dynamic Essential Items -->
-                    </div>
-                </div>
-                <div class="inventory-section">
-                    <h3 class="section-title">Home Assets</h3>
-                    <div id="assets-grid" class="assets-grid">
-                        <!-- Dynamic Asset Cards -->
-                    </div>
-                </div>
-            </section>
-
-            <section id="screen-social" class="screen hidden">
-                <div class="screen-placeholder card glass">
-                    <h2>Social</h2>
-                    <p>Coming soon: Connect with other residents.</p>
-                </div>
-            </section>
-
-            <section id="screen-menu" class="screen hidden">
-                <div class="screen-placeholder card glass">
-                    <h2>System Menu</h2>
-                    <p>Coming soon: Settings and game options.</p>
-                </div>
-            </section>
+            <!-- Screens will be dynamically inserted here by ScreenManager -->
         </main>
-
-        <nav class="tab-bar glass">
-            <button class="tab-item active" data-screen="city" aria-label="City">
-                <span class="tab-icon" id="icon-city"></span>
-                <span class="tab-label">City</span>
-            </button>
-            <button class="tab-item" data-screen="life" aria-label="Life">
-                <span class="tab-icon" id="icon-life"></span>
-                <span class="tab-label">Life</span>
-            </button>
-            <button class="tab-item" data-screen="inventory" aria-label="Inventory">
-                <span class="tab-icon" id="icon-inventory"></span>
-                <span class="tab-label">Items</span>
-            </button>
-            <button class="tab-item" data-screen="social" aria-label="Social">
-                <span class="tab-icon" id="icon-social"></span>
-                <span class="tab-label">Social</span>
-            </button>
-            <button class="tab-item" data-screen="menu" aria-label="Menu">
-                <span class="tab-icon" id="icon-menu"></span>
-                <span class="tab-label">Menu</span>
-            </button>
-        </nav>
 
         <!-- START: Location Dashboard (Repurposed Choice Modal) -->
         <div id="choice-modal-overlay" class="hidden location-dashboard-overlay">
@@ -262,13 +177,6 @@
           <p class="loading-text">AI is thinking...</p>
         </div>
         <!-- END: Loading Overlay -->
-
-        <!-- START: Floating Action Button -->
-        <button id="fab-next-week" class="fab-next-week hidden" aria-label="Next Week">
-            <i class="material-icons">fast_forward</i>
-            <span class="fab-label">Next Week</span>
-        </button>
-        <!-- END: Floating Action Button -->
 
     </div>
 

@@ -48,7 +48,10 @@ This design makes the system **fully decoupled**, **modular**, and **testable**.
 - **TypeScript:** Strict typing for players, items, and events ensures data integrity.
 - **System-Based Logic:** Domain logic is segregated into dedicated systems (Economy, Time) for better maintainability.
 - **Observer Pattern:** Game state publishes typed events; the UI re-renders automatically.
-- **Component-Based UI:** UI components extend `BaseComponent` for self-rendering and lifecycle management.
+- **Component-Based UI:** Self-rendering components extend `BaseComponent` with encapsulated DOM and lifecycle management:
+  - `CityScreen`, `LifeScreen`, `InventoryScreen` - Main screen components
+  - `HUD`, `Gauge`, `ActionCard` - Reusable UI widgets
+  - `ScreenManager` - Handles screen switching and tab navigation
 - **Vite:** Modern tooling for fast development and optimized production builds.
 - **AI System:** Separate module makes decisions and triggers state updates via game systems.
 - **Touch-First Responsiveness:** Buttons and modals adapted for mobile ergonomics.

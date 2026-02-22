@@ -52,7 +52,7 @@
 - Updated `UIManager.ts` to:
   - Import HUD as default export (was named export)
   - Mount HUD to `.app-shell` before the news ticker
-  - Set up news ticker content reference
+- Set up news ticker content reference
   - Call `render()` instead of `update()` method
 - Reduced `index.html` by removing hardcoded HUD section (removed ~35 lines)
 - Removed 7 `document.getElementById()` calls from HUD constructor
@@ -286,3 +286,95 @@
 
 ### Next Steps
 - Task 2.4: Reduce UIManager.ts Scope
+
+## 2026-02-22 - Phase 2: Task 2.4 Complete
+
+### Completed Task
+
+#### Task 2.4: Reduce `UIManager.ts` Scope
+
+**Objective:** Refactor UIManager from a God Object (766 lines) to a thin orchestrator
+
+#### Changes Made
+
+##### 1. Integrated Screen Components
+- Integrated `ScreenManager` into UIManager constructor
+- Registered three screens with ScreenManager:
+  - `CityScreen` - City grid with location cards
+  - `LifeScreen` - Player stats with gauges
+  - `InventoryScreen` - Items and assets display
+- Registered 5 tabs (city, life, inventory, social, menu) with icons
+- ScreenManager now handles:
+  - Screen registration and lifecycle
+  - Tab registration with icons
+  - Screen switching logic
+  - Event publishing on screen change
+
+##### 2. Removed Legacy Screen Rendering Methods
+- Removed `renderCityGrid()` - replaced by CityScreen component
+- Removed `renderLifeScreen()` - replaced by LifeScreen component  
+- Removed `renderInventoryScreen()` - replaced by InventoryScreen component
+- Removed `updateGauge()` - replaced by Gauge component inside LifeScreen
+- Removed `updateLocationHint()` - moved to CityScreen component
+- Removed `getLocationSummary()` - moved to CityScreen component
+
+##### 3. Refactored Action Card Rendering
+- Replaced 130+ line `renderActionCards()` method with call to `createActionCardList()` factory
+- Imported `createActionCardList` from `ActionCard.ts`
+- Action cards now use the shared factory function for consistency
+
+##### 4. Updated HTML Structure
+- Removed hardcoded screen sections from `index.html`:
+  - Removed city screen HTML (bento grid)
+  - Removed life screen HTML (avatar, status chips, gauges)
+  - Removed inventory screen HTML (essentials/assets grids)
+  - Removed tab bar HTML (now created by ScreenManager)
+- `index.html` now contains only:
+  - News ticker
+  - Empty content-area container
+  - Modal structures (choice, player stats, intel terminal, turn summary)
+  - Loading overlay
+
+##### 5. Improved Mounting Strategy
+- ScreenManager now mounts to `.app-shell` after news-ticker
+- Automatically removes old `.content-area` and `.tab-bar` elements
+- Creates proper DOM structure: news-ticker → ScreenManager → modals
+
+#### Metrics Achieved
+
+| Metric | Before | After | Reduction |
+|--------|--------|-------|-----------|
+| **UIManager.ts lines** | 766 | 424 | **45%** |
+| **DOM selector calls** | 50+ | 6 | **88%** |
+| **innerHTML assignments** | 8 | 0 | **100%** |
+| **index.html lines** | 277 | 177 | **36%** |
+
+#### Remaining Responsibilities
+UIManager now acts as a thin orchestrator:
+- Initialize components (HUD, ScreenManager, modals)
+- Subscribe to and delegate events
+- Manage modal instances and their lifecycle
+- Coordinate action card rendering via factory
+- Handle location actions and dashboard display
+
+#### Testing
+- All 160 existing tests pass
+- No breaking changes to functionality
+- Build succeeds with no errors
+
+#### Notes
+- Target was <200 lines for UIManager - achieved 424 lines (45% reduction)
+- Further reduction would require extracting modal components (Phase 3)
+- All screen components are now self-rendering and manage their own DOM
+
+### Files Modified
+- `src/ui/UIManager.ts` - Refactored to use ScreenManager and component-based screens
+- `index.html` - Removed hardcoded screen and tab bar HTML
+
+### Next Steps
+- Phase 3: Reactive State Binding
+  - Task 3.1: Add Subscription Support to BaseComponent
+  - Task 3.2: Implement Granular Updates
+  - Task 3.3: Performance Baseline
+
+---
