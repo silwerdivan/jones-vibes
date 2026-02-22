@@ -1,56 +1,40 @@
-# Activity Log - 2026-02-21
+# Activity Log
 
-## Phase 1: Tooling & Environment Completed
-- Initialized `package.json` with `vite`, `typescript`, and `@types/node`.
-- Created `tsconfig.json` with strict settings.
-- Moved all JavaScript files from `js/` to `src/` and renamed them to `.ts`.
-- Renamed `src/app.ts` to `src/main.ts` as the new entry point.
-- Updated `index.html` to reference `/src/main.ts` as a module script.
-- Verified setup with `npm run build` (confirmed 652 type errors as expected for the initial migration).
+## 2026-02-22 - Phase 0: Dependency Audit Complete
 
-## Phase 2: The Data Layer (Typing the Domain) Completed
-- Created `src/models/types.ts` with foundational interfaces (`PlayerState`, `Job`, `Course`, `Item`, `Clerk`).
-- Converted all game data files in `src/data/` to strictly typed TypeScript files.
-- Refactored `src/game/GameState.ts`, `src/game/Player.ts`, and `src/game/AIController.ts` to use these types.
-- Typed `src/EventBus.ts` and addressed several "implicit any" and argument mismatch errors.
-- Cleaned up magic strings and fixed imports across the core game logic files.
-- Verified progress with `npm run build` (error count reduced from 652 to 520, with core logic files `GameState.ts` and `EventBus.ts` now error-free).
+### Completed Tasks
 
-## Phase 3: Decoupling the View (The Great Split) - Completed
-- Created `src/ui/UIManager.ts` as the new entry point for UI logic, replacing `src/ui.ts`.
-- Refactored `UIManager` to be strictly typed and updated all references in `main.ts` and `GameController.ts`.
-- Fixed multiple type errors across `ClockVisualization.ts`, `EventNotificationManager.ts`, `InputManager.ts`, and `Player.ts`.
-- Deleted the old `src/ui.ts` file.
-- Extracted all modal logic into `src/ui/components/Modal.ts` with specialized classes for Choice, PlayerStats, IntelTerminal, and TurnSummary modals.
-- Refactored `UIManager.ts` to use these new Modal components, significantly cleaning up its state and method logic.
-- Moved swipe-to-close functionality into the Modal base class.
-- Extracted all HUD logic into `src/ui/components/HUD.ts` including cash, weeks, clocks, and player orbs.
-- Refactored `UIManager.ts` to use the new HUD component and listen for HUD-emitted events.
-- **Task 3.4 Completed:** Removed all direct references to `window.gameController` in UI files.
-- Defined `UI_EVENTS` constants in `EventBus.ts` for standardized decoupled communication.
-- Updated `GameController.ts` to subscribe to UI Intent events.
-- Refactored `UIManager.ts` to store `gameState` locally and publish events instead of calling methods directly.
-- Removed global `gameController` exposure in `main.ts`.
-- Verified progress with successful `npm run build` (0 errors).
+#### Task 0.1: DOM Selector Inventory
+- Created `refactoring-docs-20260222/dom-selectors-audit.md`
+- Found 62 total DOM selector calls across the codebase:
+  - 58 `getElementById()` calls
+  - 2 `querySelector()` calls
+  - 2 `querySelectorAll()` calls
+- Modal.ts has the most (32 calls), followed by UIManager.ts (16 calls) and HUD.ts (12 calls)
+- Identified High/Medium/Low priority refactoring targets
 
-## Phase 4: Logic Segregation (System Architecture) - Completed
-- Created src/systems/EconomySystem.ts and moved deposit, withdraw, buyItem, 	akeLoan, 
-epayLoan, and buyCar logic from GameState.ts.
-- Created src/systems/TimeSystem.ts and moved endTurn and advanceTurn logic from GameState.ts.
-- Refactored GameState.ts to be a pure state container, delegating complex logic to the new systems.
-- Updated main.ts to act as the Composition Root and Event Hub, subscribing to UI events and routing them to the appropriate Systems.
-- Slimmed down GameController.ts by removing direct system subscriptions and focusing on UI orchestration (modals).
-- Verified progress with successful \
-pm run build\ (0 errors).
+#### Task 0.2: HTML String Inventory
+- Created `refactoring-docs-20260222/html-strings-audit.md`
+- Found 22 innerHTML assignments, 8 containing template strings
+- Key refactor targets:
+  - `renderActionCards()` - 11 lines per card, high complexity
+  - `updateGauge()` - 9 lines, SVG gauge generation
+  - `renderCityGrid()` - 5 lines per card
+  - `renderInventoryScreen()` - 12 lines per card
+- Recommended factory functions: `createActionCard`, `createGauge`, `createBentoCard`, `createStatusChip`, `createInventoryCard`
 
+#### Task 0.3: Event Subscription Map
+- Created `refactoring-docs-20260222/event-flow-diagram.md`
+- Documented all EventBus subscriptions and publications
+- 15+ unique events identified
+- Key insight: `stateChanged` is published by 4 different files, potentially causing unnecessary re-renders
+- Recommended: More granular events (`cashChanged`, `locationChanged`, `inventoryChanged`) for Phase 3 optimization
 
-## Phase 5: Cleanup & Optimization - Completed
-- **Task 5.1 & 5.2 Completed:** Removed all remaining '@ts-nocheck' (confirmed 0 matches) and fixed all remaining type errors.
-- Replaced approximately 40 'any' types with strict interfaces across UIManager.ts, GameState.ts, Modal.ts, HUD.ts, ClockVisualization.ts, and EventNotificationManager.ts.
-- Implemented specific interfaces like AIAction, Choice, LocationAction, and IconRegistry in src/models/types.ts.
-- Fixed several 'null vs undefined' type mismatches in GameController.ts and UIManager.ts.
-- **Task 5.3 Completed:** Verified asset loading; confirmed all UI icons are programmatically generated SVGs and no heavy external assets exist.
-- Verified final progress with successful 
-pm run build (0 errors).
-- Project 'Jones Vibes' modernization successfully completed.
+### Files Created
+- `refactoring-docs-20260222/dom-selectors-audit.md`
+- `refactoring-docs-20260222/html-strings-audit.md`
+- `refactoring-docs-20260222/event-flow-diagram.md`
 
+### Next Steps
+- Proceed to Phase 1: Shell Extraction
+- Start with Task 1.1: Create `BaseComponent.ts`
