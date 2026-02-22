@@ -2,6 +2,7 @@ import BaseComponent from '../../BaseComponent.js';
 import GameState from '../../../game/GameState.js';
 import { SHOPPING_ITEMS } from '../../../data/items.js';
 import Icons from '../../Icons.js';
+import EventBus, { STATE_EVENTS } from '../../../EventBus.js';
 import type { Item, IconRegistry } from '../../../models/types.js';
 
 export default class InventoryScreen extends BaseComponent<GameState> {
@@ -24,6 +25,30 @@ export default class InventoryScreen extends BaseComponent<GameState> {
 
         this.element.appendChild(this.essentialsSection);
         this.element.appendChild(this.assetsSection);
+
+        this.setupGranularSubscriptions();
+    }
+
+    private setupGranularSubscriptions(): void {
+        // Subscribe to inventory changes for targeted updates
+        this.subscribe(STATE_EVENTS.INVENTORY_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.render(gameState);
+        });
+
+        // Subscribe to player changes
+        this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.render(gameState);
+        });
+
+        // Subscribe to turn changes
+        this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.render(gameState);
+        });
+
+        // Fallback for stateChanged events
+        EventBus.subscribe('stateChanged', (gameState: GameState) => {
+            this.render(gameState);
+        });
     }
 
     private createSection(title: string): HTMLElement {

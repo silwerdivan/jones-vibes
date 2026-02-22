@@ -1,7 +1,7 @@
 import Player from './Player';
 import { JOBS } from '../data/jobs';
 import { COURSES } from '../data/courses';
-import EventBus from '../EventBus';
+import EventBus, { STATE_EVENTS } from '../EventBus';
 import AIController from './AIController';
 import { Course, Job, AIAction, LogMessage } from '../models/types';
 import { LocationName } from '../data/locations';
@@ -283,6 +283,11 @@ class GameState {
             'success'
         );
         this.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: earnings, gameState: this });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
+        if (jobToWork.level > currentPlayer.careerLevel) {
+            EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobToWork.level, gameState: this });
+        }
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();
         return true;
@@ -330,6 +335,9 @@ class GameState {
             'success'
         );
         this.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -course.cost, gameState: this });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
+        EventBus.publish(STATE_EVENTS.EDUCATION_CHANGED, { player: currentPlayer, level: currentPlayer.educationLevel, gameState: this });
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();
         return true;
@@ -377,6 +385,8 @@ class GameState {
             'info'
         );
         this.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
+        EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: destination, gameState: this });
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();
         return true;
@@ -431,6 +441,7 @@ class GameState {
         
         // Check win condition since career level might have changed
         this.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobLevel, gameState: this });
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();
         return true;

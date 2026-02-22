@@ -1,6 +1,7 @@
 import BaseComponent from '../../BaseComponent.js';
 import GameState from '../../../game/GameState.js';
 import Gauge from '../shared/Gauge.js';
+import EventBus, { STATE_EVENTS } from '../../../EventBus.js';
 
 export interface LifeScreenGauge {
     id: string;
@@ -76,6 +77,48 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         this.element.appendChild(lifeHeader);
         this.element.appendChild(this.gaugeGrid);
+
+        this.setupGranularSubscriptions();
+    }
+
+    private setupGranularSubscriptions(): void {
+        // Subscribe to specific state changes for targeted updates
+        this.subscribe(STATE_EVENTS.CASH_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateGauges(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.SAVINGS_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateGauges(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.HAPPINESS_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateGauges(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.HUNGER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.renderStatusChips(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.EDUCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateGauges(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.CAREER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateGauges(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.render(gameState);
+        });
+
+        this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.render(gameState);
+        });
+
+        // Fallback for stateChanged events
+        EventBus.subscribe('stateChanged', (gameState: GameState) => {
+            this.render(gameState);
+        });
     }
 
     render(gameState: GameState): void {

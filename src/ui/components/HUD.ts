@@ -1,7 +1,7 @@
 import BaseComponent from '../BaseComponent.js';
 import GameState from '../../game/GameState.js';
 import ClockVisualization from '../ClockVisualization.js';
-import EventBus from '../../EventBus.js';
+import EventBus, { STATE_EVENTS } from '../../EventBus.js';
 import { LogMessage } from '../../models/types.js';
 
 export default class HUD extends BaseComponent<GameState> {
@@ -26,6 +26,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.initializeReferences();
         this.initializeClockVisualizations();
         this.setupEventListeners();
+        this.setupGranularSubscriptions();
     }
 
     private buildDOM(): void {
@@ -121,6 +122,88 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateTerminalBadge();
             EventBus.publish('showIntelTerminal');
         });
+    }
+
+    private setupGranularSubscriptions(): void {
+        // Subscribe to specific state changes for targeted updates
+        this.subscribe(STATE_EVENTS.CASH_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateCash(gameState);
+        });
+
+        this.subscribe(STATE_EVENTS.TIME_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateClocks(gameState);
+        });
+
+        this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateOrbs(gameState);
+            this.updateCash(gameState);
+            this.updateClocks(gameState);
+            this.updateLocation(gameState);
+        });
+
+        this.subscribe(STATE_EVENTS.LOCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateLocation(gameState);
+        });
+
+        this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateWeek(gameState);
+            this.updateOrbs(gameState);
+            this.updateCash(gameState);
+            this.updateClocks(gameState);
+            this.updateLocation(gameState);
+        });
+
+        // Listen for stateChanged as a fallback for initial load and legacy updates
+        EventBus.subscribe('stateChanged', (gameState: GameState) => {
+            this.render(gameState);
+        });
+    }
+
+    private updateCash(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        this.hudCash.textContent = `$${currentPlayer.cash}`;
+    }
+
+    private updateWeek(gameState: GameState): void {
+        this.hudWeek.textContent = gameState.turn.toString();
+    }
+
+    private updateLocation(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        this.hudLocation.textContent = currentPlayer.location;
+    }
+
+    private updateClocks(gameState: GameState): void {
+        const player1 = gameState.players[0];
+        const player2 = gameState.players.length > 1 ? gameState.players[1] : null;
+        
+        if (this.hudClockVisualizationP1) {
+            this.hudClockVisualizationP1.updateTime(player1.time);
+        }
+        if (this.hudClockVisualizationP2 && player2) {
+            this.hudClockVisualizationP2.updateTime(player2.time);
+        }
+    }
+
+    private updateOrbs(gameState: GameState): void {
+        const currentPlayerIndex = gameState.currentPlayerIndex;
+
+        // Update Orbs
+        this.orbP1.classList.toggle('active', currentPlayerIndex === 0);
+        this.orbP1.classList.toggle('inactive', currentPlayerIndex !== 0);
+        if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 0) {
+            this.orbP1.classList.add('pulse');
+            setTimeout(() => this.orbP1.classList.remove('pulse'), 600);
+        }
+
+        this.orbP2.classList.toggle('active', currentPlayerIndex === 1);
+        this.orbP2.classList.toggle('inactive', currentPlayerIndex !== 1);
+        if (this.lastPlayerIndex !== currentPlayerIndex && currentPlayerIndex === 1) {
+            this.orbP2.classList.add('pulse');
+            setTimeout(() => this.orbP2.classList.remove('pulse'), 600);
+        }
+
+        this.lastPlayerIndex = currentPlayerIndex;
     }
 
     setNewsTickerContent(element: HTMLElement): void {

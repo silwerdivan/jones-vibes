@@ -1,7 +1,7 @@
 import Player from '../game/Player';
 import GameState from '../game/GameState';
 import { SHOPPING_ITEMS } from '../data/items';
-import EventBus from '../EventBus';
+import EventBus, { STATE_EVENTS } from '../EventBus';
 
 class EconomySystem {
     private gameState: GameState;
@@ -71,6 +71,12 @@ class EconomySystem {
             'success'
         );
         this.gameState.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -item.cost, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: item.happinessBoost, gameState: this.gameState });
+        if (item.hungerReduction) {
+            EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: -item.hungerReduction, gameState: this.gameState });
+        }
+        EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
         return true;
@@ -98,6 +104,8 @@ class EconomySystem {
                 'success'
             );
             this.gameState.checkWinCondition(currentPlayer);
+            EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
             this._checkAutoEndTurn();
             return true;
@@ -132,6 +140,8 @@ class EconomySystem {
                 'success'
             );
             this.gameState.checkWinCondition(currentPlayer);
+            EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
             this._checkAutoEndTurn();
             return true;
@@ -176,6 +186,8 @@ class EconomySystem {
             'warning'
         );
         this.gameState.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
         return true;
@@ -220,6 +232,8 @@ class EconomySystem {
             'success'
         );
         this.gameState.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
         return true;
@@ -260,6 +274,8 @@ class EconomySystem {
             'success'
         );
         this.gameState.checkWinCondition(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
         return true;

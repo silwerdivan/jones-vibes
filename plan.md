@@ -308,16 +308,74 @@ After extracting components, UIManager should become a thin orchestrator:
 
 #### Task 3.2: Implement Granular Updates
 
-**Current Problem:** Any state change triggers a full `render()` of the active screen.
+**Status:** ✅ COMPLETE
 
-**Target State:**
-- HUD updates only on `cashChanged`, `locationChanged`, `timeChanged`
-- CityScreen updates only on `locationChanged`
-- InventoryScreen updates only on `inventoryChanged`
+**Changes Made:**
+- Added `STATE_EVENTS` constants to `EventBus.ts` with 12 granular event types:
+  - CASH_CHANGED, SAVINGS_CHANGED, LOAN_CHANGED
+  - TIME_CHANGED, LOCATION_CHANGED, INVENTORY_CHANGED
+  - HAPPINESS_CHANGED, HUNGER_CHANGED
+  - CAREER_CHANGED, EDUCATION_CHANGED
+  - PLAYER_CHANGED, TURN_CHANGED
+
+- Updated GameState.ts methods to publish granular events:
+  - `workShift()`: publishes CASH_CHANGED, TIME_CHANGED, CAREER_CHANGED
+  - `takeCourse()`: publishes CASH_CHANGED, TIME_CHANGED, EDUCATION_CHANGED
+  - `travel()`: publishes TIME_CHANGED, LOCATION_CHANGED
+  - `applyForJob()`: publishes CAREER_CHANGED
+
+- Updated EconomySystem.ts methods to publish granular events:
+  - `buyItem()`: publishes CASH_CHANGED, HAPPINESS_CHANGED, HUNGER_CHANGED, INVENTORY_CHANGED
+  - `deposit()`: publishes CASH_CHANGED, SAVINGS_CHANGED
+  - `withdraw()`: publishes CASH_CHANGED, SAVINGS_CHANGED
+  - `takeLoan()`: publishes CASH_CHANGED, LOAN_CHANGED
+  - `repayLoan()`: publishes CASH_CHANGED, LOAN_CHANGED
+  - `buyCar()`: publishes CASH_CHANGED, INVENTORY_CHANGED
+
+- Updated TimeSystem.ts methods:
+  - `endTurn()`: publishes TURN_CHANGED, TIME_CHANGED, LOCATION_CHANGED, HUNGER_CHANGED, CASH_CHANGED, LOAN_CHANGED
+  - `advanceTurn()`: publishes PLAYER_CHANGED
+
+- Updated HUD component to auto-update via granular subscriptions:
+  - CASH_CHANGED: updates cash display
+  - TIME_CHANGED: updates clock visualizations
+  - PLAYER_CHANGED: updates orbs, cash, clocks, location
+  - LOCATION_CHANGED: updates location display
+  - TURN_CHANGED: updates week, orbs, cash, clocks, location
+
+- Updated CityScreen component:
+  - LOCATION_CHANGED: updates bento grid, FAB visibility, location hint
+  - PLAYER_CHANGED: re-renders for new player context
+  - TURN_CHANGED: full re-render on week advance
+
+- Updated LifeScreen component:
+  - CASH_CHANGED, SAVINGS_CHANGED: updates wealth gauge
+  - HAPPINESS_CHANGED: updates happiness gauge
+  - HUNGER_CHANGED: updates status chips
+  - EDUCATION_CHANGED: updates education gauge
+  - CAREER_CHANGED: updates career gauge
+  - PLAYER_CHANGED, TURN_CHANGED: full re-render
+
+- Updated InventoryScreen component:
+  - INVENTORY_CHANGED: re-renders inventory grids
+  - PLAYER_CHANGED, TURN_CHANGED: full re-render
+
+- Updated UIManager.ts:
+  - Removed manual `render()` calls to screen components
+  - `handleAutoArrival()` now only handles dashboard popup logic
+  - Components auto-update via their own event subscriptions
 
 **Testing:**
-- Test that HUD doesn't re-render when inventory changes
-- Test that CityScreen doesn't re-render when cash changes
+- Created `tests/state-events.test.ts` with 10 passing tests
+- Tests verify all STATE_EVENTS constants exist
+- Tests verify granular events are published during gameplay actions
+- Tests verify event payload structure includes player and gameState
+
+**Results:**
+- Components now only re-render when their specific data changes
+- HUD no longer re-renders on inventory changes
+- CityScreen no longer re-renders on cash changes
+- All 178 tests pass
 
 #### Task 3.3: Performance Baseline
 
@@ -330,10 +388,10 @@ After extracting components, UIManager should become a thin orchestrator:
 
 **Acceptance Criteria (Phase 3):**
 - [x] BaseComponent subscription support added (Task 3.1)
-- [ ] Components auto-update on relevant events (Task 3.2)
-- [ ] Manual `render()` calls are eliminated from UIManager (Task 3.2)
+- [x] Components auto-update on relevant events (Task 3.2)
+- [x] Manual `render()` calls are eliminated from UIManager (Task 3.2)
 - [ ] Performance metrics are logged in dev mode (Task 3.3)
-- [ ] No unnecessary re-renders (Task 3.2)
+- [x] No unnecessary re-renders (Task 3.2)
 
 ---
 

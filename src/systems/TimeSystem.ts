@@ -1,6 +1,6 @@
 import GameState from '../game/GameState';
 import Player from '../game/Player';
-import EventBus from '../EventBus';
+import EventBus, { STATE_EVENTS } from '../EventBus';
 
 interface TurnSummary {
     player: number;
@@ -83,6 +83,7 @@ class TimeSystem {
             `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for weekend expenses.`,
             'expense'
         );
+        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
 
         // 4. Apply loan interest
         if (currentPlayer.loan > 0) {
@@ -103,6 +104,7 @@ class TimeSystem {
                 `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in loan interest.`,
                 'warning'
             );
+            EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: interest, gameState: this.gameState });
         }
 
         // 5. Apply hunger
@@ -117,7 +119,9 @@ class TimeSystem {
                 icon: 'restaurant'
             });
             this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} is feeling hungry...`, 'warning');
+            EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
         }
+        EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: 20, gameState: this.gameState });
 
         // 6. Calculate totals from tracked stats
         summary.totals.cashChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
@@ -153,6 +157,13 @@ class TimeSystem {
         // Publish turn ended with summary
         EventBus.publish('turnEnded', summary);
         
+        EventBus.publish(STATE_EVENTS.TURN_CHANGED, { 
+            turn: this.gameState.turn, 
+            player: this.gameState.getCurrentPlayer(),
+            gameState: this.gameState 
+        });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: 'Home', gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         return summary;
     }
@@ -166,6 +177,12 @@ class TimeSystem {
         }
         
         const nextPlayer = this.gameState.getCurrentPlayer();
+        
+        EventBus.publish(STATE_EVENTS.PLAYER_CHANGED, { 
+            previousPlayer: this.gameState.players[(this.gameState.currentPlayerIndex - 1 + this.gameState.players.length) % this.gameState.players.length],
+            currentPlayer: nextPlayer,
+            gameState: this.gameState 
+        });
         
         // Notify state change for the new player's turn
         EventBus.publish('stateChanged', this.gameState);

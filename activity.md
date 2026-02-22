@@ -431,3 +431,117 @@ UIManager now acts as a thin orchestrator:
   - InventoryScreen updates only on inventoryChanged
 
 ---
+
+## 2026-02-22 - Phase 3: Task 3.2 Complete
+
+### Completed Task
+
+#### Task 3.2: Implement Granular Updates
+
+**Objective:** Enable components to auto-update on specific state changes instead of relying on generic stateChanged events
+
+#### Changes Made
+
+**EventBus.ts:**
+- Added `STATE_EVENTS` constant object with 12 granular event types:
+  - CASH_CHANGED, SAVINGS_CHANGED, LOAN_CHANGED
+  - TIME_CHANGED, LOCATION_CHANGED, INVENTORY_CHANGED
+  - HAPPINESS_CHANGED, HUNGER_CHANGED
+  - CAREER_CHANGED, EDUCATION_CHANGED
+  - PLAYER_CHANGED, TURN_CHANGED
+
+**GameState.ts:**
+- Imported STATE_EVENTS from EventBus
+- Updated `workShift()` to publish CASH_CHANGED, TIME_CHANGED, and CAREER_CHANGED
+- Updated `takeCourse()` to publish CASH_CHANGED, TIME_CHANGED, and EDUCATION_CHANGED
+- Updated `travel()` to publish TIME_CHANGED and LOCATION_CHANGED
+- Updated `applyForJob()` to publish CAREER_CHANGED
+
+**EconomySystem.ts:**
+- Imported STATE_EVENTS from EventBus
+- Updated `buyItem()` to publish CASH_CHANGED, HAPPINESS_CHANGED, HUNGER_CHANGED, and INVENTORY_CHANGED
+- Updated `deposit()` to publish CASH_CHANGED and SAVINGS_CHANGED
+- Updated `withdraw()` to publish CASH_CHANGED and SAVINGS_CHANGED
+- Updated `takeLoan()` to publish CASH_CHANGED and LOAN_CHANGED
+- Updated `repayLoan()` to publish CASH_CHANGED and LOAN_CHANGED
+- Updated `buyCar()` to publish CASH_CHANGED and INVENTORY_CHANGED
+
+**TimeSystem.ts:**
+- Imported STATE_EVENTS from EventBus
+- Updated `endTurn()` to publish TURN_CHANGED, TIME_CHANGED, LOCATION_CHANGED, HUNGER_CHANGED, HAPPINESS_CHANGED, CASH_CHANGED, and LOAN_CHANGED
+- Updated `advanceTurn()` to publish PLAYER_CHANGED
+
+**HUD.ts:**
+- Added `setupGranularSubscriptions()` method
+- Subscribes to CASH_CHANGED for cash display updates
+- Subscribes to TIME_CHANGED for clock visualization updates
+- Subscribes to PLAYER_CHANGED for orb, cash, clock, and location updates
+- Subscribes to LOCATION_CHANGED for location display updates
+- Subscribes to TURN_CHANGED for week, orb, cash, clock, and location updates
+- Extracted update methods: `updateCash()`, `updateWeek()`, `updateLocation()`, `updateClocks()`, `updateOrbs()`
+
+**CityScreen.ts:**
+- Added `setupGranularSubscriptions()` method
+- Subscribes to LOCATION_CHANGED to update bento grid, FAB visibility, and location hint
+- Subscribes to PLAYER_CHANGED and TURN_CHANGED for full re-renders
+- Added `updateLocationDisplay()` helper method for targeted updates
+
+**LifeScreen.ts:**
+- Added `setupGranularSubscriptions()` method
+- Subscribes to CASH_CHANGED and SAVINGS_CHANGED for wealth gauge
+- Subscribes to HAPPINESS_CHANGED for happiness gauge
+- Subscribes to HUNGER_CHANGED for status chips
+- Subscribes to EDUCATION_CHANGED for education gauge
+- Subscribes to CAREER_CHANGED for career gauge
+- Subscribes to PLAYER_CHANGED and TURN_CHANGED for full re-renders
+
+**InventoryScreen.ts:**
+- Added `setupGranularSubscriptions()` method
+- Subscribes to INVENTORY_CHANGED for inventory grid updates
+- Subscribes to PLAYER_CHANGED and TURN_CHANGED for full re-renders
+
+**UIManager.ts:**
+- Removed manual `render()` calls to screen components
+- Refactored `render()` into `handleAutoArrival()` for dashboard popup logic only
+- Components now auto-update via their own event subscriptions
+
+#### Testing
+- Created `tests/state-events.test.ts` with 10 new tests:
+  - All STATE_EVENTS constants exist
+  - CASH_CHANGED published when earning money
+  - TIME_CHANGED published when time is deducted
+  - LOCATION_CHANGED published when traveling
+  - EDUCATION_CHANGED published when completing courses
+  - CAREER_CHANGED published when applying for jobs
+  - CASH_CHANGED and INVENTORY_CHANGED published when buying items
+  - TURN_CHANGED published when turn ends
+  - PLAYER_CHANGED published when advancing to next player
+  - All event payloads include player and gameState
+
+#### Results
+- Total test count: 178 tests (168 existing + 10 new)
+- All tests pass
+- Components now only re-render when their specific data changes
+- Performance improvement: no more unnecessary full-screen re-renders
+
+### Files Created
+- `tests/state-events.test.ts` - Tests for granular event handling
+
+### Files Modified
+- `src/EventBus.ts` - Added STATE_EVENTS constants
+- `src/game/GameState.ts` - Publish granular events
+- `src/systems/EconomySystem.ts` - Publish granular events
+- `src/systems/TimeSystem.ts` - Publish granular events
+- `src/ui/components/HUD.ts` - Subscribe to granular events
+- `src/ui/components/screens/CityScreen.ts` - Subscribe to granular events
+- `src/ui/components/screens/LifeScreen.ts` - Subscribe to granular events
+- `src/ui/components/screens/InventoryScreen.ts` - Subscribe to granular events
+- `src/ui/UIManager.ts` - Removed manual render calls
+
+### Next Steps
+- Task 3.3: Performance Baseline (Optional)
+  - Add performance logging to measure render times
+  - Establish acceptable thresholds (< 16ms for 60fps)
+  - Verify no unnecessary re-renders occur
+
+---

@@ -115,7 +115,9 @@ class UIManager {
 
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
             this.gameState = gameState;
-            this.render(gameState);
+            // Components now auto-update via granular event subscriptions
+            // Only handle auto-arrival logic here
+            this.handleAutoArrival();
         });
 
         EventBus.subscribe('turnEnded', (summary: TurnSummary) => {
@@ -325,19 +327,12 @@ class UIManager {
         this.turnSummaryModal.hide();
     }
 
-    render(gameState: GameState) {
-        this.hud.render(gameState);
+    private handleAutoArrival(): void {
+        if (!this.gameState) return;
 
-        const currentPlayer = gameState.getCurrentPlayer();
-        const currentScreenId = this.screenManager.getCurrentScreenId();
+        const currentPlayer = this.gameState.getCurrentPlayer();
 
-        // Render current screen
-        const currentScreen = this.screenManager.getScreenComponent(currentScreenId);
-        if (currentScreen) {
-            (currentScreen as any).render(gameState);
-        }
-
-        // Auto-arrival logic
+        // Auto-arrival logic - show dashboard when arriving at a new location
         const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
@@ -349,6 +344,14 @@ class UIManager {
 
         this.lastLocation = currentPlayer.location;
         this.lastPlayerId = currentPlayer.id;
+    }
+
+    // Legacy render method - components now auto-update via granular event subscriptions
+    render(gameState: GameState): void {
+        // This method is kept for backward compatibility but components
+        // now subscribe to granular events for automatic updates
+        this.gameState = gameState;
+        this.handleAutoArrival();
     }
 
     getLocationActions(location: string): LocationAction[] {

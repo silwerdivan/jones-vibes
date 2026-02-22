@@ -1,5 +1,5 @@
 import BaseComponent from '../../BaseComponent.js';
-import EventBus, { UI_EVENTS } from '../../../EventBus.js';
+import EventBus, { UI_EVENTS, STATE_EVENTS } from '../../../EventBus.js';
 import Icons from '../../Icons.js';
 import GameState from '../../../game/GameState.js';
 import { LOCATIONS, LocationName } from '../../../data/locations.js';
@@ -14,6 +14,8 @@ export default class CityScreen extends BaseComponent<GameState> {
     private bentoGrid: HTMLElement;
     private fabNextWeek: HTMLElement;
     private locationHint: HTMLElement;
+
+    private currentGameState: GameState | null = null;
 
     constructor() {
         super('section', 'screen');
@@ -40,9 +42,47 @@ export default class CityScreen extends BaseComponent<GameState> {
         this.locationHint.id = 'location-hint';
         this.locationHint.className = 'location-hint';
         this.element.appendChild(this.locationHint);
+
+        this.setupGranularSubscriptions();
+    }
+
+    private setupGranularSubscriptions(): void {
+        // Subscribe to location changes for targeted re-rendering
+        this.subscribe(STATE_EVENTS.LOCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.currentGameState = gameState;
+            const currentPlayer = gameState.getCurrentPlayer();
+            this.updateLocationDisplay(currentPlayer.location as LocationName);
+        });
+
+        // Subscribe to player changes
+        this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.currentGameState = gameState;
+            const currentPlayer = gameState.getCurrentPlayer();
+            this.updateLocationDisplay(currentPlayer.location as LocationName);
+        });
+
+        // Full render on turn change (week advance)
+        this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.currentGameState = gameState;
+            this.render(gameState);
+        });
+
+        // Fallback for stateChanged events
+        EventBus.subscribe('stateChanged', (gameState: GameState) => {
+            this.currentGameState = gameState;
+            this.render(gameState);
+        });
+    }
+
+    private updateLocationDisplay(currentLocation: LocationName): void {
+        // Re-render the bento grid to update active state
+        this.renderBentoGrid(currentLocation);
+        this.updateFabVisibility(currentLocation);
+        this.updateLocationHint(currentLocation);
     }
 
     render(gameState: GameState): void {
+        this.currentGameState = gameState;
         const currentPlayer = gameState.getCurrentPlayer();
         const currentLocation = currentPlayer.location as LocationName;
 
