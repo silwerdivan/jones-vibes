@@ -108,7 +108,7 @@
     background: rgba(13, 0, 21, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 3100;
+    z-index: 4100;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -273,15 +273,20 @@ body {
 
 /* --- HUD --- */
 .hud {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: auto;
     min-height: calc(85px + env(safe-area-inset-top));
     padding: env(safe-area-inset-top) var(--space-md) 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 1100; /* Ensure HUD stays above location dashboard */
+    z-index: 4000; /* Re-ensuring orbs are on top of everything */
     border-bottom: 1px solid var(--glass-border);
-    background: rgba(13, 0, 21, 0.8);
+    background: rgba(13, 0, 21, 0.9);
+    backdrop-filter: blur(10px);
 }
 
 /* --- FEEDBACK SYSTEM --- */
@@ -748,7 +753,7 @@ body {
     border: 1px solid var(--neon-cyan);
     border-radius: var(--radius-lg);
     padding: var(--space-sm) var(--space-md);
-    z-index: 3200;
+    z-index: 4200;
     max-width: 90%;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
@@ -806,12 +811,15 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 3000;
+    padding-top: calc(85px + env(safe-area-inset-top)); /* Space for HUD */
 }
 
 #choice-modal-overlay.location-dashboard-overlay {
     background: rgba(13, 0, 21, 0.85);
     backdrop-filter: blur(20px);
     align-items: flex-end;
+    padding-top: calc(85px + env(safe-area-inset-top));
+    z-index: 3000;
 }
 
 #choice-modal-overlay:not(.hidden), 
