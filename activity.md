@@ -628,3 +628,24 @@ During test runs, performance warnings are now logged:
 ### Impact
 Restoring these IDs fixes visual regressions where player-specific neon styling (glows and gradients) was lost due to CSS selectors relying on these specific IDs.
 
+
+---
+
+## 2026-02-23 - Phase B: EventBus Hardening Complete
+
+### Completed Task
+
+#### Task: Implement EventBus Unsubscribe and BaseComponent Cleanup
+- Implemented unsubscribe(eventName, callback) in src/EventBus.ts
+- Updated BaseComponent.ts's unsubscribeAll() to properly remove listeners from EventBus
+- Fixed a critical architectural issue where stale event handlers persisted after component unmount, leading to memory leaks and duplicate renders
+- Updated 	ests/ui/BaseComponent.test.ts to verify that components properly unsubscribe on unmount
+- Created 	ests/EventBus.test.ts to verify the new unsubscribe functionality
+
+#### Testing
+- Created 	ests/EventBus.test.ts (5 passing tests)
+- Updated 	ests/ui/BaseComponent.test.ts (22 passing tests)
+- All 184 tests across the project pass successfully
+
+### Impact
+This fix eliminates the memory leak and "ghost" re-render issues identified in the regression analysis. Components now have a clean lifecycle where they only react to events while they are actually active and mounted.

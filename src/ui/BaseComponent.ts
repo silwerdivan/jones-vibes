@@ -90,6 +90,9 @@ export default abstract class BaseComponent<T = unknown> {
     }
 
     unsubscribeAll(): void {
+        this.subscriptions.forEach(sub => {
+            EventBus.unsubscribe(sub.event, sub.handler);
+        });
         this.subscriptions = [];
     }
 

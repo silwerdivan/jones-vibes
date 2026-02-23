@@ -166,12 +166,12 @@ describe('BaseComponent', () => {
             expect(component.getSubscriptions()).toHaveLength(0);
         });
 
-        it('should track subscriptions but not unsubscribe from EventBus', () => {
+        it('should properly unsubscribe from EventBus', () => {
             const handler = vi.fn();
             component.subscribe('persistentEvent', handler);
             component.unsubscribeAll();
-            EventBus.publish('persistentEvent', 'still works');
-            expect(handler).toHaveBeenCalledWith('still works');
+            EventBus.publish('persistentEvent', 'should not work');
+            expect(handler).not.toHaveBeenCalled();
         });
     });
 
@@ -190,6 +190,15 @@ describe('BaseComponent', () => {
             expect(component.getSubscriptions()).toHaveLength(1);
             component.unmount();
             expect(component.getSubscriptions()).toHaveLength(0);
+        });
+
+        it('should stop event handlers from firing after unmount', () => {
+            const handler = vi.fn();
+            component.subscribe('afterUnmountEvent', handler);
+            component.mount(container);
+            component.unmount();
+            EventBus.publish('afterUnmountEvent', 'data');
+            expect(handler).not.toHaveBeenCalled();
         });
     });
 });

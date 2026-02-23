@@ -4,6 +4,7 @@ type Callback = (data?: any) => void;
 interface EventBusInterface {
   events: Record<string, Callback[]>;
   subscribe(eventName: string, callback: Callback): void;
+  unsubscribe(eventName: string, callback: Callback): void;
   publish(eventName: string, data?: any): void;
 }
 
@@ -59,6 +60,17 @@ const EventBus: EventBusInterface = {
       this.events[eventName] = [];
     }
     this.events[eventName].push(callback);
+  },
+
+  /**
+   * Unsubscribe from an event.
+   * @param {string} eventName The name of the event.
+   * @param {function} callback The function to remove.
+   */
+  unsubscribe(eventName: string, callback: Callback): void {
+    if (this.events[eventName]) {
+      this.events[eventName] = this.events[eventName].filter(cb => cb !== callback);
+    }
   },
 
   /**

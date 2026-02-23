@@ -60,8 +60,8 @@ The `EventBus.ts` implementation **lacks an `unsubscribe` method**.
 - [ ] Update `style.css` to prefer class-based or data-attribute selectors where possible to avoid ID coupling.
 
 ### Phase B: EventBus Hardening
-- [ ] Implement `unsubscribe(eventName, callback)` in `EventBus.ts`.
-- [ ] Update `BaseComponent.ts` to properly call `EventBus.unsubscribe()` for every tracked subscription during `unmount()`.
+- [x] Implement `unsubscribe(eventName, callback)` in `EventBus.ts`.
+- [x] Update `BaseComponent.ts` to properly call `EventBus.unsubscribe()` for every tracked subscription during `unmount()`.
 
 ### Phase C: Screen Completeness
 - [ ] Register placeholder/empty components for "Social" and "Menu" to ensure the Tab Bar remains functional.
