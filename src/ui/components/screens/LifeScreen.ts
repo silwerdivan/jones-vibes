@@ -18,8 +18,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
     private gauges: Map<string, Gauge> = new Map();
 
     constructor() {
-        super('section', 'screen hidden');
-        this.element.id = 'screen-life';
+        super('section', 'screen');
 
         this.createStructure();
     }

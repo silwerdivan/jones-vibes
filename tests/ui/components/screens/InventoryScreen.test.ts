@@ -17,12 +17,10 @@ describe('InventoryScreen', () => {
     });
 
     describe('Initialization', () => {
-        it('should create a section element with correct id and class', () => {
+        it('should create a section element with correct class', () => {
             const element = inventoryScreen.getElement();
             expect(element.tagName.toLowerCase()).toBe('section');
-            expect(element.id).toBe('screen-inventory');
             expect(element.classList.contains('screen')).toBe(true);
-            expect(element.classList.contains('hidden')).toBe(true);
         });
 
         it('should create essentials section with title', () => {

@@ -29,7 +29,6 @@ describe('CityScreen', () => {
         it('should create a screen section element', () => {
             const element = cityScreen.getElement();
             expect(element.tagName.toLowerCase()).toBe('section');
-            expect(element.id).toBe('screen-city');
             expect(element.classList.contains('screen')).toBe(true);
         });
 
@@ -44,7 +43,7 @@ describe('CityScreen', () => {
             const fab = cityScreen.getFabElement();
             expect(fab).not.toBeNull();
             expect(fab.id).toBe('fab-next-week');
-            expect(fab.classList.contains('fab')).toBe(true);
+            expect(fab.classList.contains('fab-next-week')).toBe(true);
         });
 
         it('should create location hint element', () => {

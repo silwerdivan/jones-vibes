@@ -12,8 +12,7 @@ export default class InventoryScreen extends BaseComponent<GameState> {
     private assetsGrid: HTMLElement;
 
     constructor() {
-        super('section', 'screen hidden');
-        this.element.id = 'screen-inventory';
+        super('section', 'screen');
 
         this.essentialsSection = this.createSection('Essentials');
         this.essentialsGrid = this.createGrid('essentials-grid');

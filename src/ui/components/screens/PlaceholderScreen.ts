@@ -6,7 +6,7 @@ export default class PlaceholderScreen extends BaseComponent<GameState> {
     private message: string;
 
     constructor(title: string, message: string) {
-        super('section', 'screen hidden');
+        super('section', 'screen');
         this.title = title;
         this.message = message;
         this.buildDOM();

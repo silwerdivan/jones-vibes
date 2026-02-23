@@ -17,7 +17,6 @@ export default class CityScreen extends BaseComponent<GameState> {
 
     constructor() {
         super('section', 'screen');
-        this.element.id = 'screen-city';
 
         this.bentoGrid = document.createElement('div');
         this.bentoGrid.id = 'city-bento-grid';
@@ -26,7 +25,7 @@ export default class CityScreen extends BaseComponent<GameState> {
 
         this.fabNextWeek = document.createElement('button');
         this.fabNextWeek.id = 'fab-next-week';
-        this.fabNextWeek.className = 'fab hidden';
+        this.fabNextWeek.className = 'fab-next-week hidden';
         this.fabNextWeek.innerHTML = `
             <i class="material-icons">bedtime</i>
             <span>Rest / End Turn</span>

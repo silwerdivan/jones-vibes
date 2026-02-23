@@ -875,7 +875,7 @@ body {
 }
 
 @media (min-width: 400px) {
-    .primary-actions-row { grid-template-columns: 1fr 1fr; }
+    .primary-actions-row { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 }
 
 .btn-leave {

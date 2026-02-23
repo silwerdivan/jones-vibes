@@ -16,12 +16,10 @@ describe('LifeScreen', () => {
     });
 
     describe('Initialization', () => {
-        it('should create a section element with correct id and class', () => {
+        it('should create a section element with correct class', () => {
             const element = lifeScreen.getElement();
             expect(element.tagName.toLowerCase()).toBe('section');
-            expect(element.id).toBe('screen-life');
             expect(element.classList.contains('screen')).toBe(true);
-            expect(element.classList.contains('hidden')).toBe(true);
         });
 
         it('should create life header with avatar and status chips', () => {
