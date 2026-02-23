@@ -108,7 +108,7 @@
     background: rgba(13, 0, 21, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 2000;
+    z-index: 3100;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -230,6 +230,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Ensure app stays at the top on mobile, center only on larger screens */
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+    }
 }
 
 .app-shell {
@@ -741,7 +748,7 @@ body {
     border: 1px solid var(--neon-cyan);
     border-radius: var(--radius-lg);
     padding: var(--space-sm) var(--space-md);
-    z-index: 2100;
+    z-index: 3200;
     max-width: 90%;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
@@ -798,7 +805,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 3000;
 }
 
 #choice-modal-overlay.location-dashboard-overlay {
