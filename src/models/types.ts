@@ -94,5 +94,6 @@ export interface LocationAction {
     label: string;
     icon: string;
     primary: boolean;
+    className?: string;
     onClick: (e: MouseEvent) => void;
 }

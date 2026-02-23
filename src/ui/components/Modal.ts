@@ -176,19 +176,18 @@ export class ChoiceModal extends Modal {
     this.content?.appendChild(card);
   }
 
-  public addSecondaryButton(label: string, icon: string, isPrimary: boolean, onClick: (e: MouseEvent) => void): void {
-    const btn = document.createElement('button');
-    btn.className = `btn ${isPrimary ? 'btn-primary' : 'btn-secondary'}`;
-    btn.innerHTML = `<i class="material-icons">${icon}</i> <span>${label}</span>`;
-    btn.onclick = onClick;
-    
-    if (isPrimary) {
-        this.primaryButtons?.appendChild(btn);
-    } else {
-        this.secondaryActions?.appendChild(btn);
+    public addSecondaryButton(label: string, icon: string, isPrimary: boolean, onClick: (e: MouseEvent) => void, customClass?: string): void {
+      const btn = document.createElement('button');
+      btn.className = `btn ${isPrimary ? 'btn-primary' : 'btn-secondary'} ${customClass || ''}`;
+      btn.innerHTML = `<i class="material-icons">${icon}</i> <span>${label}</span>`;
+      btn.onclick = onClick;
+  
+      if (isPrimary) {
+          this.primaryButtons?.appendChild(btn);
+      } else {
+          this.secondaryActions?.appendChild(btn);
+      }
     }
-  }
-
   public setContent(element: HTMLElement): void {
     if (this.content) {
         this.content.innerHTML = '';

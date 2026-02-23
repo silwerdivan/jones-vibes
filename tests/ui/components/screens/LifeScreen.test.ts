@@ -59,7 +59,7 @@ describe('LifeScreen', () => {
 
             const avatar = lifeScreen.getLifeAvatar();
             expect(avatar.textContent).toBe('P1');
-            expect(avatar.style.background).toContain('neon-pink');
+            expect(avatar.dataset.player).toBe('1');
         });
 
         it('should update avatar for AI player', () => {
@@ -70,7 +70,7 @@ describe('LifeScreen', () => {
 
             const avatar = lifeScreen.getLifeAvatar();
             expect(avatar.textContent).toBe('AI');
-            expect(avatar.style.background).toContain('neon-cyan');
+            expect(avatar.dataset.player).toBe('2');
         });
 
         it('should render Well-Rested chip when time > 12', () => {

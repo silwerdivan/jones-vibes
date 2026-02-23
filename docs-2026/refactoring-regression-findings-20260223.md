@@ -56,13 +56,13 @@ The `EventBus.ts` implementation **lacks an `unsubscribe` method**.
 ## 5. Recommendation Plan
 
 ### Phase A: CSS/ID Alignment
-- [x] Modify `HUD.ts` and `LifeScreen.ts` to restore critical IDs (`#orb-p1`, etc.).
-- [x] Update `style.css` to prefer class-based or data-attribute selectors where possible to avoid ID coupling.
+- Modify `HUD.ts` and `LifeScreen.ts` to restore critical IDs (`#orb-p1`, etc.).
+- Update `style.css` to prefer class-based or data-attribute selectors where possible to avoid ID coupling.
 
 ### Phase B: EventBus Hardening
-- [x] Implement `unsubscribe(eventName, callback)` in `EventBus.ts`.
-- [x] Update `BaseComponent.ts` to properly call `EventBus.unsubscribe()` for every tracked subscription during `unmount()`.
+- Implement `unsubscribe(eventName, callback)` in `EventBus.ts`.
+- Update `BaseComponent.ts` to properly call `EventBus.unsubscribe()` for every tracked subscription during `unmount()`.
 
 ### Phase C: Screen Completeness
-- [x] Register placeholder/empty components for "Social" and "Menu" to ensure the Tab Bar remains functional.
-- [x] Audit `UIManager.ts` to ensure "Primary" actions in the dashboard are rendered with higher visual priority than "Secondary" actions.
+- Register placeholder/empty components for "Social" and "Menu" to ensure the Tab Bar remains functional.
+- Audit `UIManager.ts` to ensure "Primary" actions in the dashboard are rendered with higher visual priority than "Secondary" actions.

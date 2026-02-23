@@ -11,6 +11,7 @@ import ScreenManager from './components/screens/ScreenManager.js';
 import CityScreen from './components/screens/CityScreen.js';
 import LifeScreen from './components/screens/LifeScreen.js';
 import InventoryScreen from './components/screens/InventoryScreen.js';
+import PlaceholderScreen from './components/screens/PlaceholderScreen.js';
 import { createActionCardList } from './components/shared/ActionCard.js';
 import { TurnSummary, Choice, LocationAction, Item, Course, Job, IconRegistry, Clerk } from '../models/types.js';
 
@@ -23,6 +24,8 @@ class UIManager {
     private cityScreen: CityScreen;
     private lifeScreen: LifeScreen;
     private inventoryScreen: InventoryScreen;
+    private socialScreen: PlaceholderScreen;
+    private menuScreen: PlaceholderScreen;
 
     // Modals
     private choiceModal: ChoiceModal;
@@ -43,6 +46,8 @@ class UIManager {
         this.cityScreen = new CityScreen();
         this.lifeScreen = new LifeScreen();
         this.inventoryScreen = new InventoryScreen();
+        this.socialScreen = new PlaceholderScreen('Social Feed', 'Comms system offline. Re-establishing connection with the grid...');
+        this.menuScreen = new PlaceholderScreen('System Menu', 'System settings are locked during the prototype phase.');
 
         // Mount HUD
         const appShell = document.querySelector('.app-shell') as HTMLElement;
@@ -77,6 +82,8 @@ class UIManager {
         this.screenManager.registerScreen('city', this.cityScreen);
         this.screenManager.registerScreen('life', this.lifeScreen);
         this.screenManager.registerScreen('inventory', this.inventoryScreen);
+        this.screenManager.registerScreen('social', this.socialScreen);
+        this.screenManager.registerScreen('menu', this.menuScreen);
 
         // Register tabs
         this.screenManager.registerTab('city', 'cityGrid', 'City');
@@ -206,7 +213,7 @@ class UIManager {
                         this.showLocationDashboard(location);
                     }, 100);
                 }
-            });
+            }, action.className);
         });
 
         if (location === 'Bank') {
@@ -363,6 +370,7 @@ class UIManager {
                     label: 'Rest / End Turn',
                     icon: 'bedtime',
                     primary: true,
+                    className: 'btn-rest',
                     onClick: () => EventBus.publish(UI_EVENTS.REST_END_TURN)
                 });
                 break;

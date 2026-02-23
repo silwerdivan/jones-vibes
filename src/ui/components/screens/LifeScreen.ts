@@ -134,9 +134,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
     private updateAvatar(playerIndex: number): void {
         const isPlayer1 = playerIndex === 0;
         this.lifeAvatar.textContent = isPlayer1 ? 'P1' : 'AI';
-        this.lifeAvatar.style.background = isPlayer1
-            ? 'linear-gradient(135deg, var(--neon-pink), #D500F9)'
-            : 'linear-gradient(135deg, var(--neon-cyan), var(--neon-blue))';
+        this.lifeAvatar.dataset.player = isPlayer1 ? '1' : '2';
     }
 
     private renderStatusChips(player: {

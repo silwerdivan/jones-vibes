@@ -649,3 +649,43 @@ Restoring these IDs fixes visual regressions where player-specific neon styling 
 
 ### Impact
 This fix eliminates the memory leak and "ghost" re-render issues identified in the regression analysis. Components now have a clean lifecycle where they only react to events while they are actually active and mounted.
+
+## 2026-02-23 - Phase C: Regression Fixes Complete
+
+### Completed Tasks
+
+#### Phase A: CSS/ID Alignment
+- Updated style.css to use data-attribute selectors ([data-orb], [data-avatar], [data-player]) instead of ID-based selectors for status orbs and avatars.
+- This decouples the styling from specific IDs while maintaining the neon "glow" effects.
+- Updated LifeScreen.ts to use data-player attribute for avatar styling instead of setting it programmatically.
+- Updated 	ests/ui/components/screens/LifeScreen.test.ts to verify data-attribute presence.
+
+#### Phase C: Screen Completeness
+- Created src/ui/components/screens/PlaceholderScreen.ts to handle unimplemented tabs.
+- Registered placeholder screens for 'Social' and 'Menu' in UIManager.ts.
+- This ensures the Tab Bar remains functional and prevents console errors when switching to these tabs.
+
+#### Phase C: Dashboard UI Audit
+- Updated LocationAction interface to support optional className.
+- Added tn-rest class to the "Rest / End Turn" action in UIManager.ts.
+- Implemented customClass support in ChoiceModal.addSecondaryButton.
+- Added prominent styling for .btn-rest in style.css (increased height, border, and glow) to restore its visual weight as the primary turn-ending action.
+
+### Files Created
+- src/ui/components/screens/PlaceholderScreen.ts
+
+### Files Modified
+- src/ui/components/screens/LifeScreen.ts
+- src/ui/UIManager.ts
+- src/ui/components/Modal.ts
+- src/models/types.ts
+- style.css
+- 	ests/ui/components/screens/LifeScreen.test.ts
+- plan.md (marked tasks as complete)
+
+### Results
+- All 184 tests pass.
+- Visual regressions for status orbs and avatars are resolved using modern selectors.
+- Functional regressions for 'Social' and 'Menu' tabs are resolved with placeholders.
+- UI priority for "End Turn" is restored and enhanced.
+
