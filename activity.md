@@ -611,10 +611,20 @@ During test runs, performance warnings are now logged:
 - `src/ui/components/screens/InventoryScreen.ts` - Subscribe to granular events
 - `src/ui/UIManager.ts` - Removed manual render calls
 
-### Next Steps
-- Task 3.3: Performance Baseline (Optional)
-  - Add performance logging to measure render times
-  - Establish acceptable thresholds (< 16ms for 60fps)
-  - Verify no unnecessary re-renders occur
-
 ---
+
+## 2026-02-23 - Regression Fix: CSS/ID Alignment
+
+### Completed Task
+
+#### Task: Restore Critical IDs in HUD and LifeScreen
+- Restored missing IDs in `src/ui/components/HUD.ts`:
+  - `#orb-p1`, `#orb-p2` for status orb containers
+  - `#hud-avatar-p1`, `#hud-avatar-p2` for orb avatars
+- Restored missing ID in `src/ui/components/screens/LifeScreen.ts`:
+  - `#life-avatar` for the player avatar
+- Verified changes with `npm test` (all 178 tests passing)
+
+### Impact
+Restoring these IDs fixes visual regressions where player-specific neon styling (glows and gradients) was lost due to CSS selectors relying on these specific IDs.
+

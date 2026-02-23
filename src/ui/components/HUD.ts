@@ -33,13 +33,13 @@ export default class HUD extends BaseComponent<GameState> {
         this.element.innerHTML = `
             <div class="hud-left">
                 <div class="hud-status-orbs">
-                    <div class="status-orb active" data-orb="p1">
+                    <div class="status-orb active" id="orb-p1" data-orb="p1">
                         <div class="time-ring-container" data-time-ring="p1"></div>
-                        <div class="orb-avatar" data-avatar="p1">P1</div>
+                        <div class="orb-avatar" id="hud-avatar-p1" data-avatar="p1">P1</div>
                     </div>
-                    <div class="status-orb inactive" data-orb="p2">
+                    <div class="status-orb inactive" id="orb-p2" data-orb="p2">
                         <div class="time-ring-container" data-time-ring="p2"></div>
-                        <div class="orb-avatar" data-avatar="p2">AI</div>
+                        <div class="orb-avatar" id="hud-avatar-p2" data-avatar="p2">AI</div>
                     </div>
                 </div>
                 <div class="hud-stats">

@@ -33,6 +33,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         this.lifeAvatar = document.createElement('div');
         this.lifeAvatar.className = 'avatar-sm';
+        this.lifeAvatar.id = 'life-avatar';
         this.lifeAvatar.textContent = 'P1';
         avatarContainer.appendChild(this.lifeAvatar);
 
