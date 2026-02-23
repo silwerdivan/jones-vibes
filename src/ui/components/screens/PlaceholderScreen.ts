@@ -24,7 +24,7 @@ export default class PlaceholderScreen extends BaseComponent<GameState> {
         `;
     }
 
-    protected _render(gameState: GameState): void {
+    protected _render(_gameState: GameState): void {
         // No dynamic content for now
     }
 }

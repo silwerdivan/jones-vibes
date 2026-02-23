@@ -130,7 +130,7 @@ export default class ScreenManager extends BaseComponent<unknown> {
         return this.screens.get(id);
     }
 
-    render(): void {
+    protected _render(_gameState: unknown): void {
         // ScreenManager doesn't need to render itself, 
         // it manages the rendering of child screens
     }
