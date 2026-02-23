@@ -127,6 +127,9 @@ export class ChoiceModal extends Modal {
     if (this.cancelButton) {
       this.cancelButton.addEventListener('click', () => this.hide());
     }
+
+    const modalElement = document.getElementById('choice-modal');
+    if (modalElement) this.addSwipeToClose(modalElement);
   }
 
   public setupClerk(clerk: Clerk | null, Icons: IconRegistry): void {

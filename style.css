@@ -236,7 +236,7 @@ body {
     width: 100%;
     max-width: 480px;
     height: 100vh;
-    height: 100svh;
+    height: 100dvh; /* Use dynamic viewport height for better mobile support */
     display: flex;
     flex-direction: column;
     background: var(--bg-deep);
@@ -244,6 +244,15 @@ body {
     overflow: hidden;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
     z-index: 2;
+}
+
+.screen-manager {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
 }
 
 /* --- GLASS MATERIAL --- */
@@ -257,8 +266,9 @@ body {
 
 /* --- HUD --- */
 .hud {
-    height: 85px;
-    padding: 0 var(--space-md);
+    height: auto;
+    min-height: calc(85px + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) var(--space-md) 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -434,9 +444,9 @@ body {
 
 /* --- TAB BAR --- */
 .tab-bar {
-    height: 70px;
-    padding: 0 var(--space-md);
-    padding-bottom: env(safe-area-inset-bottom);
+    min-height: calc(70px + env(safe-area-inset-bottom));
+    height: auto;
+    padding: 0 var(--space-md) env(safe-area-inset-bottom);
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -451,12 +461,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.2s ease;
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-sm);
     min-width: 60px;
+    height: 70px;
 }
 
 .tab-item .tab-icon {
@@ -821,9 +833,11 @@ body {
     display: flex !important;
     flex-direction: column !important;
     max-height: 90vh !important;
+    max-height: 90dvh !important;
     width: 100% !important;
     max-width: 480px !important;
     padding: var(--space-lg) !important;
+    padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom)) !important;
     border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
     text-align: left !important;
     gap: var(--space-md) !important;
@@ -1370,7 +1384,7 @@ body {
 /* Floating Action Button */
 .fab-next-week {
     position: fixed;
-    bottom: 90px;
+    bottom: calc(70px + 20px + env(safe-area-inset-bottom));
     right: 20px;
     width: 60px;
     height: 60px;
