@@ -415,12 +415,8 @@ class UIManager {
                 });
                 break;
             case 'Bank':
-                actions.push({
-                    label: 'Financial Services',
-                    icon: 'account_balance',
-                    primary: true,
-                    onClick: () => this.showLocationDashboard('Bank')
-                });
+                // Financial services actions (Deposit, Withdraw, etc.) are added 
+                // separately in showLocationDashboard to handle the contextual input.
                 break;
         }
 
