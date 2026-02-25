@@ -6,6 +6,7 @@ import EventNotificationManager from './ui/EventNotificationManager.js';
 import EconomySystem from './systems/EconomySystem.js';
 import TimeSystem from './systems/TimeSystem.js';
 import EventBus, { UI_EVENTS } from './EventBus.js';
+import { PersistenceService } from './services/PersistenceService.js';
 
 // The main entry point for the application.
 function main() {
@@ -43,6 +44,11 @@ function main() {
 
   // 8. Call inputManager.initialize().
   inputManager.initialize();
+
+  // --- Auto-Save Setup ---
+  EventBus.subscribe('stateChanged', (state: GameState) => {
+    PersistenceService.saveGame(state.toJSON());
+  });
 
   // --- FIX: Manually trigger the first render after everything is set up ---
   gameState.publishCurrentState();
