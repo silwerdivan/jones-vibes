@@ -9,7 +9,6 @@ Instructions:
 1. Pick the SINGLE highest priority unchecked task.
 2. Implement it.
 3. Run verification (e.g., `npm test; npm run build`).
-4. **IMPORTANT:** Use Windows PowerShell commands (e.g., use `dir` instead of `ls`, `type` instead of `cat`). Chain commands with `;` instead of `&&`.
 5. Update `README.md` to be in line with the latest changes made, if need be.
 6. If verified, mark [x] in `game-persistence-docs-20260225/game-persistence-plan.md` and append a summary to `game-persistence-docs-20260225/game-persistence-activity.md`.
 7. Commit your changes.
