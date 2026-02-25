@@ -12,8 +12,10 @@ import CityScreen from './components/screens/CityScreen.js';
 import LifeScreen from './components/screens/LifeScreen.js';
 import InventoryScreen from './components/screens/InventoryScreen.js';
 import PlaceholderScreen from './components/screens/PlaceholderScreen.js';
+import SystemScreen from './components/screens/SystemScreen.js';
 import { createActionCardList } from './components/shared/ActionCard.js';
 import { TurnSummary, Choice, LocationAction, Item, Course, Job, IconRegistry, Clerk } from '../models/types.js';
+import { PersistenceService } from '../services/PersistenceService.js';
 
 type ClerkRegistry = Record<string, Clerk>;
 
@@ -25,7 +27,7 @@ class UIManager {
     private lifeScreen: LifeScreen;
     private inventoryScreen: InventoryScreen;
     private socialScreen: PlaceholderScreen;
-    private menuScreen: PlaceholderScreen;
+    private menuScreen: SystemScreen;
 
     // Modals
     private choiceModal: ChoiceModal;
@@ -47,7 +49,7 @@ class UIManager {
         this.lifeScreen = new LifeScreen();
         this.inventoryScreen = new InventoryScreen();
         this.socialScreen = new PlaceholderScreen('Social Feed', 'Comms system offline. Re-establishing connection with the grid...');
-        this.menuScreen = new PlaceholderScreen('System Menu', 'System settings are locked during the prototype phase.');
+        this.menuScreen = new SystemScreen();
 
         // Mount HUD
         const appShell = document.querySelector('.app-shell') as HTMLElement;
@@ -133,6 +135,23 @@ class UIManager {
 
         EventBus.subscribe('showPlayerStats', (playerIndex: number) => this.showPlayerStatsModal(playerIndex));
         EventBus.subscribe('showIntelTerminal', () => this.showIntelTerminal());
+
+        EventBus.subscribe(UI_EVENTS.RESTART_GAME, () => {
+            this.choiceModal.setupClerk(null, Icons as unknown as IconRegistry);
+            this.choiceModal.clearContent();
+            this.choiceModal.showInput(false);
+            
+            this.choiceModal.addPrimaryButton('Restart', () => {
+                PersistenceService.clearGame();
+                window.location.reload();
+            });
+            
+            this.choiceModal.addSecondaryButton('Cancel', 'close', false, () => {
+                this.choiceModal.hide();
+            });
+            
+            this.choiceModal.show({ title: 'Restart Simulation?' });
+        });
 
         EventBus.subscribe('addToLog', () => {
             EventBus.publish(UI_EVENTS.REQUEST_STATE_REFRESH);
