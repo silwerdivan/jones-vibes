@@ -154,6 +154,9 @@ class TimeSystem {
             EventBus.publish('aiThinkingEnd');
         }
 
+        // Persist summary in GameState
+        this.gameState.pendingTurnSummary = summary;
+
         // Publish turn ended with summary
         EventBus.publish('turnEnded', summary);
         
@@ -169,6 +172,9 @@ class TimeSystem {
     }
 
     advanceTurn(): void {
+        // Clear pending summary as we are moving to next turn
+        this.gameState.pendingTurnSummary = null;
+
         // Advance to the next player
         this.gameState.currentPlayerIndex = (this.gameState.currentPlayerIndex + 1) % this.gameState.players.length;
 

@@ -63,4 +63,31 @@ describe('GameState Serialization', () => {
         expect(newGameState.winner).toBeDefined();
         expect(newGameState.winner?.id).toBe(gameState.players[0].id);
     });
+
+    it('should serialize and deserialize pendingTurnSummary correctly', () => {
+        const summary = {
+            player: 1,
+            playerName: 'Player 1',
+            week: 1,
+            events: [{
+                type: 'income',
+                label: 'Test',
+                value: 100,
+                unit: '$',
+                icon: 'money'
+            }],
+            totals: {
+                cashChange: 100,
+                happinessChange: 0
+            }
+        };
+
+        gameState.pendingTurnSummary = summary;
+
+        const json = gameState.toJSON();
+        expect(json.pendingTurnSummary).toEqual(summary);
+
+        const newGameState = GameState.fromJSON(json);
+        expect(newGameState.pendingTurnSummary).toEqual(summary);
+    });
 });

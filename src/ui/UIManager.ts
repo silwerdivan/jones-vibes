@@ -39,6 +39,7 @@ class UIManager {
     private gameState: GameState | null = null;
     private lastLocation: string | null = null;
     private lastPlayerId: number | null = null;
+    private isSummaryShown: boolean = false;
     private loadingOverlay: HTMLElement | null;
 
     constructor() {
@@ -125,8 +126,12 @@ class UIManager {
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
             this.gameState = gameState;
             // Components now auto-update via granular event subscriptions
-            // Only handle auto-arrival logic here
+            // Only handle auto-arrival and pending summary logic here
             this.handleAutoArrival();
+
+            if (gameState.pendingTurnSummary && !this.isSummaryShown) {
+                this.showTurnSummary(gameState.pendingTurnSummary);
+            }
         });
 
         EventBus.subscribe('turnEnded', (summary: TurnSummary) => {
@@ -339,10 +344,12 @@ class UIManager {
     }
 
     showTurnSummary(summary: TurnSummary) {
+        this.isSummaryShown = true;
         this.turnSummaryModal.update(summary, () => {
             if ((window as any).navigator && (window as any).navigator.vibrate) {
                 (window as any).navigator.vibrate(10);
             }
+            this.isSummaryShown = false;
             this.turnSummaryModal.hide();
             EventBus.publish(UI_EVENTS.ADVANCE_TURN);
         });
@@ -350,6 +357,7 @@ class UIManager {
     }
 
     hideTurnSummary() {
+        this.isSummaryShown = false;
         this.turnSummaryModal.hide();
     }
 

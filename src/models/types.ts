@@ -64,6 +64,7 @@ export interface GameStateState {
     winnerId: number | null;
     log: LogMessage[];
     isPlayer2AI: boolean;
+    pendingTurnSummary?: TurnSummary | null;
 }
 
 export interface TurnEvent {

@@ -9,16 +9,18 @@ export abstract class Modal {
   protected overlay: HTMLElement | null;
   protected titleElement: HTMLElement | null;
   
-  constructor(overlayId: string, titleId?: string) {
+  constructor(overlayId: string, titleId?: string, closableByOverlay: boolean = true) {
     this.overlay = document.getElementById(overlayId);
     this.titleElement = titleId ? document.getElementById(titleId) : null;
     
     // Default: clicking the overlay hides it (if it's not the actual modal content)
-    this.overlay?.addEventListener('click', (e) => {
-        if (e.target === this.overlay) {
-            this.hide();
-        }
-    });
+    if (closableByOverlay) {
+        this.overlay?.addEventListener('click', (e) => {
+            if (e.target === this.overlay) {
+                this.hide();
+            }
+        });
+    }
   }
 
   public show(config: ModalConfig = {}): void {
@@ -291,7 +293,7 @@ export class TurnSummaryModal extends Modal {
   private nextWeekBtn: HTMLElement | null;
 
   constructor() {
-    super('turn-summary-modal');
+    super('turn-summary-modal', undefined, false);
     this.eventList = document.getElementById('event-list');
     this.subtitle = document.getElementById('summary-subtitle');
     this.cashTotal = document.getElementById('summary-cash-total');

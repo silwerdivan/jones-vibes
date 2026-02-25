@@ -17,6 +17,7 @@ class GameState {
     winner: Player | null;
     aiController: AIController | null;
     log: LogMessage[];
+    pendingTurnSummary: TurnSummary | null = null;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -54,7 +55,8 @@ class GameState {
             gameOver: this.gameOver,
             winnerId: this.winner ? this.winner.id : null,
             log: [...this.log],
-            isPlayer2AI: !!this.aiController
+            isPlayer2AI: !!this.aiController,
+            pendingTurnSummary: this.pendingTurnSummary
         };
     }
 
@@ -68,6 +70,7 @@ class GameState {
             gameState.winner = gameState.players.find(p => p.id === data.winnerId) || null;
         }
         gameState.log = [...data.log];
+        gameState.pendingTurnSummary = data.pendingTurnSummary || null;
         return gameState;
     }
 

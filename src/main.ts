@@ -61,6 +61,16 @@ function main() {
 
   // --- FIX: Manually trigger the first render after everything is set up ---
   gameState.publishCurrentState();
+
+  // Resume AI turn if it's an AI's turn and no summary is pending
+  const currentPlayer = gameState.getCurrentPlayer();
+  if (currentPlayer.isAI && !gameState.pendingTurnSummary && !gameState.gameOver) {
+      console.log('Resuming AI turn...');
+      EventBus.publish('aiThinkingStart');
+      setTimeout(() => {
+          gameState.processAITurn();
+      }, 1000);
+  }
 }
 
 // Start the game when the DOM is ready.
