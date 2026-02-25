@@ -52,6 +52,8 @@ export interface PlayerState {
     weeklyIncome: number;
     weeklyExpenses: number;
     weeklyHappinessChange: number;
+    isAI: boolean;
+    name: string;
 }
 
 export interface TurnEvent {

@@ -4,7 +4,7 @@
 Implement a mechanism to save and load game state using `localStorage` to ensure the game is continuable across browser refreshes, especially on mobile devices. Provide a "Restart Game" option in the System Menu.
 
 ## Tasks
-- [ ] Implement serialization in `Player.ts` (toJSON/fromJSON)
+- [x] Implement serialization in `Player.ts` (toJSON/fromJSON)
 - [ ] Implement serialization in `GameState.ts` (serialize/deserialize)
 - [ ] Create `PersistenceService.ts` in `src/services/`
 - [ ] Integrate auto-save into `GameState` or `main.ts` via `EventBus`

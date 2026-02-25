@@ -1,4 +1,4 @@
-import { Item } from '../models/types';
+import { Item, PlayerState } from '../models/types';
 import { LocationName } from '../data/locations';
 
 export default class Player {
@@ -40,6 +40,51 @@ export default class Player {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklyHappinessChange = 0;
+    }
+
+    toJSON(): PlayerState {
+        return {
+            id: this.id,
+            cash: this.cash,
+            savings: this.savings,
+            happiness: this.happiness,
+            educationLevel: this.educationLevel,
+            careerLevel: this.careerLevel,
+            time: this.time,
+            location: this.location,
+            hasCar: this.hasCar,
+            loan: this.loan,
+            inventory: [...this.inventory],
+            hunger: this.hunger,
+            timeDeficit: this.timeDeficit,
+            weeklyIncome: this.weeklyIncome,
+            weeklyExpenses: this.weeklyExpenses,
+            weeklyHappinessChange: this.weeklyHappinessChange,
+            isAI: this.isAI,
+            name: this.name
+        };
+    }
+
+    static fromJSON(data: PlayerState): Player {
+        const player = new Player(data.id);
+        player.cash = data.cash;
+        player.savings = data.savings;
+        player.happiness = data.happiness;
+        player.educationLevel = data.educationLevel;
+        player.careerLevel = data.careerLevel;
+        player.time = data.time;
+        player.location = data.location as LocationName;
+        player.hasCar = data.hasCar;
+        player.loan = data.loan;
+        player.inventory = [...data.inventory];
+        player.hunger = data.hunger;
+        player.timeDeficit = data.timeDeficit;
+        player.weeklyIncome = data.weeklyIncome;
+        player.weeklyExpenses = data.weeklyExpenses;
+        player.weeklyHappinessChange = data.weeklyHappinessChange;
+        player.isAI = data.isAI;
+        player.name = data.name;
+        return player;
     }
 
     addCash(amount: number): void {
