@@ -8,7 +8,7 @@ Implement a mechanism to save and load game state using `localStorage` to ensure
 - [x] Implement serialization in `GameState.ts` (serialize/deserialize)
 - [x] Create `PersistenceService.ts` in `src/services/`
 - [x] Integrate auto-save into `GameState` or `main.ts` via `EventBus`
-- [ ] Update `main.ts` to load existing save data on startup
+- [x] Update `main.ts` to load existing save data on startup
 - [ ] Replace `PlaceholderScreen` for "Menu" with a functional `SystemScreen`
 - [ ] Add "Restart Game" functionality with confirmation modal in `SystemScreen`
 

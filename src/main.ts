@@ -10,8 +10,17 @@ import { PersistenceService } from './services/PersistenceService.js';
 
 // The main entry point for the application.
 function main() {
-  // 1. Instantiate GameState.
-  const gameState = new GameState(2, true); // 2 players, P2 is AI.
+  // 1. Try to load existing game state, otherwise instantiate a new one.
+  const savedData = PersistenceService.loadGame();
+  let gameState: GameState;
+
+  if (savedData) {
+    console.log('Loading saved game state...');
+    gameState = GameState.fromJSON(savedData);
+  } else {
+    console.log('Starting new game...');
+    gameState = new GameState(2, true); // 2 players, P2 is AI.
+  }
 
   // 2. Instantiate Systems.
   const economySystem = new EconomySystem(gameState);
