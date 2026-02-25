@@ -13,7 +13,8 @@ Compete to achieve career success, education milestones, happiness, and wealth f
 
 - **Single-player vs AI** or **two-player (hotseat)** gameplay
 - **AI-driven turns** with strategic decision-making
-- **Auto-save persistence** — Game state is automatically saved to `localStorage` on every change and restored on startup.
+- **Auto-save persistence** — Game state (stats, progress, and current UI context) is automatically saved to `localStorage` on every change and restored on startup.
+- **State-Driven UI** — The interface is a reflection of the persisted `GameState`, ensuring you return to the same screen, location dashboard, and even open choice modals after a refresh.
 - **System Menu** — Restart the simulation anytime to start a fresh game.
 - **Event-driven, reactive UI** — state changes propagate automatically through a typed Event Bus
 - **Modal-based actions** for interaction consistency

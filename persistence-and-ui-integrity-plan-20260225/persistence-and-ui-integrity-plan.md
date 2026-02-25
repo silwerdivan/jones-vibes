@@ -38,9 +38,9 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
     - Ensure AI "thinking" states and turn transitions are fully resumable (expanding on the recent bugfix).
 
 ## Stage 4: Testing & Validation
-- [ ] **Task 4.1: Persistence Stress Test**
+- [x] **Task 4.1: Persistence Stress Test**
     - Create a test suite that simulates refreshes at every major interaction point (Travel, Work, Bank, Shopping).
-- [ ] **Task 4.2: UI Integrity Audit**
+- [x] **Task 4.2: UI Integrity Audit**
     - Verify that no "gatekeeper" UI elements (modals that block progress) can be bypassed or lost via a browser refresh.
 
 ## Summary of Architectural Change
