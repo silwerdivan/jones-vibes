@@ -32,7 +32,7 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
 ## Stage 3: Robust Bootstrapping & AI Continuity
 **Goal:** Eliminate race conditions during game startup.
 
-- [ ] **Task 3.1: Unified Initialization Flow**
+- [x] **Task 3.1: Unified Initialization Flow**
     - Refactor `main.ts` to ensure `UIManager` and all systems are fully registered before the first `stateChanged` event is fired.
 - [ ] **Task 3.2: AI State Recovery**
     - Ensure AI "thinking" states and turn transitions are fully resumable (expanding on the recent bugfix).

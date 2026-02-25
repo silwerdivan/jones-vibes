@@ -119,6 +119,27 @@ class UIManager {
         });
     }
 
+    private isRehydrated: boolean = false;
+
+    private rehydrate(gameState: GameState): void {
+        console.log('Rehydrating UI from state...');
+        
+        // 1. Restore active screen
+        if (gameState.activeScreenId) {
+            this.switchScreen(gameState.activeScreenId);
+        }
+
+        // 2. Restore active location dashboard
+        if (gameState.activeLocationDashboard) {
+            this.showLocationDashboard(gameState.activeLocationDashboard);
+        }
+
+        // 3. Restore active choice modal
+        if (gameState.activeChoiceContext) {
+            this.showChoiceModal(gameState.activeChoiceContext);
+        }
+    }
+
     private subscribeToEvents(): void {
         EventBus.subscribe('aiThinkingStart', () => this.showLoading());
         EventBus.subscribe('aiThinkingEnd', () => this.hideLoading());
@@ -132,6 +153,13 @@ class UIManager {
 
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
             this.gameState = gameState;
+
+            // Perform one-time rehydration if we haven't yet
+            if (!this.isRehydrated) {
+                this.isRehydrated = true;
+                this.rehydrate(gameState);
+            }
+
             // Components now auto-update via granular event subscriptions
             // Only handle auto-arrival and pending summary logic here
             this.handleAutoArrival();

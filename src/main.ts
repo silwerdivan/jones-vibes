@@ -8,28 +8,34 @@ import TimeSystem from './systems/TimeSystem.js';
 import EventBus, { UI_EVENTS } from './EventBus.js';
 import { PersistenceService } from './services/PersistenceService.js';
 
-// The main entry point for the application.
+/**
+ * Unified Initialization Flow
+ */
 function main() {
-  // 1. Try to load existing game state, otherwise instantiate a new one.
+  console.group('Game Initialization');
+
+  // PHASE 1: Data Preparation
   const savedData = PersistenceService.loadGame();
   let gameState: GameState;
 
   if (savedData) {
-    console.log('Loading saved game state...');
+    console.log('PHASE 1: Loading saved game state...');
     gameState = GameState.fromJSON(savedData);
   } else {
-    console.log('Starting new game...');
+    console.log('PHASE 1: Starting new game...');
     gameState = new GameState(2, true); // 2 players, P2 is AI.
   }
 
-  // 2. Instantiate Systems.
+  // PHASE 2: System Registration
+  console.log('PHASE 2: Registering Systems...');
   const economySystem = new EconomySystem(gameState);
   const timeSystem = new TimeSystem(gameState);
   
   gameState.setEconomySystem(economySystem);
   gameState.setTimeSystem(timeSystem);
 
-  // 3. Setup System Event Routing (Task 4.3)
+  // PHASE 3: Event Routing
+  console.log('PHASE 3: Setting up Event Routing...');
   EventBus.subscribe(UI_EVENTS.REST_END_TURN, () => timeSystem.endTurn());
   EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, () => timeSystem.advanceTurn());
   EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, (amount: number) => economySystem.deposit(amount));
@@ -39,46 +45,23 @@ function main() {
   EventBus.subscribe(UI_EVENTS.BUY_ITEM, (itemName: string) => economySystem.buyItem(itemName));
   EventBus.subscribe(UI_EVENTS.BUY_CAR, () => economySystem.buyCar());
 
-  // 4. Instantiate UIManager.
-  const uiManager = new UIManager(); // UIManager constructor runs here, subscribes to stateChanged
-
-  // 4.1 Switch to the persisted active screen if available
-  if (gameState.activeScreenId) {
-    uiManager.switchScreen(gameState.activeScreenId);
-  }
-
-  // 4.2 Restore active location dashboard if available
-  if (gameState.activeLocationDashboard) {
-    setTimeout(() => {
-        uiManager.showLocationDashboard(gameState.activeLocationDashboard!);
-    }, 100);
-  }
-
-  // 4.3 Restore active choice modal if available
-  if (gameState.activeChoiceContext) {
-    setTimeout(() => {
-        uiManager.showChoiceModal(gameState.activeChoiceContext!);
-    }, 150);
-  }
-
-  // 5. Instantiate GameController, passing it the gameState, uiManager and system instances.
+  // PHASE 4: Manager & UI Initialization
+  console.log('PHASE 4: Initializing Managers & UI...');
+  const uiManager = new UIManager();
   const gameController = new GameController(gameState, uiManager, economySystem, timeSystem);
-
-  // 6. Instantiate EventNotificationManager.
   new EventNotificationManager();
-
-  // 7. Instantiate InputManager, passing it the gameController.
   const inputManager = new InputManager(gameController);
-
-  // 8. Call inputManager.initialize().
   inputManager.initialize();
 
-  // --- Auto-Save Setup ---
+  // PHASE 5: Persistence Logic
+  console.log('PHASE 5: Setting up Persistence...');
   EventBus.subscribe('stateChanged', (state: GameState) => {
     PersistenceService.saveGame(state.toJSON());
   });
 
-  // --- FIX: Manually trigger the first render after everything is set up ---
+  // PHASE 6: Activation
+  console.log('PHASE 6: Activating Simulation...');
+  // This triggers UIManager.rehydrate() via the stateChanged subscription
   gameState.publishCurrentState();
 
   // Resume AI turn if it's an AI's turn and no summary is pending
@@ -90,6 +73,9 @@ function main() {
           gameState.processAITurn();
       }, 1000);
   }
+
+  console.groupEnd();
+  console.log('Simulation ready.');
 }
 
 // Start the game when the DOM is ready.

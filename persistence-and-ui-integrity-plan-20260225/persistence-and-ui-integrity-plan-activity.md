@@ -20,3 +20,8 @@
     - Updated `UIManager.showChoiceModal` to publish `choiceModalSwitched` events and resolve actions via `EventBus` using the provided `actionId`.
     - Modified `main.ts` to restore the active choice modal on startup, providing a seamless "resume" experience even in the middle of a multi-choice interaction.
     - Added unit tests in `GameState.test.ts` to verify serialization and deserialization of choice contexts.
+- Implemented **Task 3.1: Unified Initialization Flow**. 
+    - Refactored `main.ts` into a clean, six-phase initialization sequence (Data Prep, System Registration, Event Routing, Manager Initialization, Persistence Setup, and Activation).
+    - Moved UI rehydration logic from `main.ts` into a dedicated `rehydrate` method in `UIManager`.
+    - Updated `UIManager` to automatically perform one-time rehydration upon receiving the first `stateChanged` event, eliminating race conditions and removing the need for `setTimeout` hacks in the boot sequence.
+    - Verified that all systems and managers are fully registered and subscribed before the simulation is activated.
