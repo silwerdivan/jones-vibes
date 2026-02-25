@@ -15,7 +15,7 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
     - Add `activeLocationDashboard` (string | null) to `GameStateState`.
     - Update `UIManager` to set this value when `showLocationDashboard(location)` is called.
     - Update `UIManager` bootstrapping to re-open the dashboard if a value exists in the state.
-- [ ] **Task 1.3: Include "Home" in Dashboard System**
+- [x] **Task 1.3: Include "Home" in Dashboard System**
     - Currently, "Home" is a special case using a FAB.
     - Standardize Home as a dashboard-capable location to allow the "Rest" action to persist/restore just like "Work" or "Shop".
 

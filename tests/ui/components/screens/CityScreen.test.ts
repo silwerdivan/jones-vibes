@@ -39,13 +39,6 @@ describe('CityScreen', () => {
             expect(grid.classList.contains('bento-grid')).toBe(true);
         });
 
-        it('should create FAB button', () => {
-            const fab = cityScreen.getFabElement();
-            expect(fab).not.toBeNull();
-            expect(fab.id).toBe('fab-next-week');
-            expect(fab.classList.contains('fab-next-week')).toBe(true);
-        });
-
         it('should create location hint element', () => {
             const hint = cityScreen.getLocationHint();
             expect(hint).not.toBeNull();
@@ -77,22 +70,6 @@ describe('CityScreen', () => {
                 card.querySelector('.bento-card-title')?.textContent === 'Home'
             );
             expect(homeCard?.classList.contains('active')).toBe(true);
-        });
-
-        it('should show FAB when at Home', () => {
-            gameState.getCurrentPlayer().location = 'Home';
-            cityScreen.mount(container);
-            cityScreen.render(gameState);
-
-            expect(cityScreen.getFabElement().classList.contains('hidden')).toBe(false);
-        });
-
-        it('should hide FAB when not at Home', () => {
-            gameState.getCurrentPlayer().location = 'Bank';
-            cityScreen.mount(container);
-            cityScreen.render(gameState);
-
-            expect(cityScreen.getFabElement().classList.contains('hidden')).toBe(true);
         });
 
         it('should update location hint text', () => {
@@ -163,18 +140,6 @@ describe('CityScreen', () => {
             bankCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
             expect(mockPublish).toHaveBeenCalledWith('showLocationDashboard', 'Bank');
-        });
-    });
-
-    describe('FAB click handling', () => {
-        it('should publish REST_END_TURN when FAB is clicked', () => {
-            const mockPublish = vi.fn();
-            EventBus.publish = mockPublish;
-
-            cityScreen.mount(container);
-            cityScreen.getFabElement().dispatchEvent(new MouseEvent('click', { bubbles: true }));
-
-            expect(mockPublish).toHaveBeenCalledWith(UI_EVENTS.REST_END_TURN);
         });
     });
 

@@ -12,7 +12,6 @@ export interface BentoCardConfig {
 
 export default class CityScreen extends BaseComponent<GameState> {
     private bentoGrid: HTMLElement;
-    private fabNextWeek: HTMLElement;
     private locationHint: HTMLElement;
 
     constructor() {
@@ -22,18 +21,6 @@ export default class CityScreen extends BaseComponent<GameState> {
         this.bentoGrid.id = 'city-bento-grid';
         this.bentoGrid.className = 'bento-grid';
         this.element.appendChild(this.bentoGrid);
-
-        this.fabNextWeek = document.createElement('button');
-        this.fabNextWeek.id = 'fab-next-week';
-        this.fabNextWeek.className = 'fab-next-week hidden';
-        this.fabNextWeek.innerHTML = `
-            <i class="material-icons">bedtime</i>
-            <span>Rest / End Turn</span>
-        `;
-        this.fabNextWeek.addEventListener('click', () => {
-            EventBus.publish(UI_EVENTS.REST_END_TURN);
-        });
-        this.element.appendChild(this.fabNextWeek);
 
         this.locationHint = document.createElement('div');
         this.locationHint.id = 'location-hint';
@@ -70,7 +57,6 @@ export default class CityScreen extends BaseComponent<GameState> {
     private updateLocationDisplay(currentLocation: LocationName): void {
         // Re-render the bento grid to update active state
         this.renderBentoGrid(currentLocation);
-        this.updateFabVisibility(currentLocation);
         this.updateLocationHint(currentLocation);
     }
 
@@ -79,7 +65,6 @@ export default class CityScreen extends BaseComponent<GameState> {
         const currentLocation = currentPlayer.location as LocationName;
 
         this.renderBentoGrid(currentLocation);
-        this.updateFabVisibility(currentLocation);
         this.updateLocationHint(currentLocation);
     }
 
@@ -150,14 +135,6 @@ export default class CityScreen extends BaseComponent<GameState> {
         }
     }
 
-    private updateFabVisibility(currentLocation: LocationName): void {
-        if (currentLocation === 'Home') {
-            this.fabNextWeek.classList.remove('hidden');
-        } else {
-            this.fabNextWeek.classList.add('hidden');
-        }
-    }
-
     private updateLocationHint(location: LocationName): void {
         let hintText = '';
         
@@ -173,10 +150,6 @@ export default class CityScreen extends BaseComponent<GameState> {
         }
         
         this.locationHint.textContent = hintText;
-    }
-
-    getFabElement(): HTMLElement {
-        return this.fabNextWeek;
     }
 
     getBentoGrid(): HTMLElement {
