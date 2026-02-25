@@ -13,3 +13,10 @@
 - Implemented **Task 1.1: Persist Active Screen**. Added `activeScreenId` to `GameStateState`, updated `GameState` to serialize and listen for `screenSwitched` events, and modified `main.ts` to restore the active screen on startup via `UIManager.switchScreen`.
 - Implemented **Task 1.2: Persist Location Dashboard**. Added `activeLocationDashboard` to `GameStateState`, updated `GameState` to serialize and listen for `dashboardSwitched` events, and modified `UIManager` to publish these events when showing or hiding location dashboards. Updated `main.ts` to restore the active dashboard on startup.
 - Implemented **Task 1.3: Include "Home" in Dashboard System**. Removed the Floating Action Button (FAB) from `CityScreen` and standardized "Home" as a dashboard-capable location. Updated `UIManager.handleAutoArrival` to automatically show the Home dashboard upon arrival (including at game start), ensuring a consistent, state-driven UI experience. Updated `CityScreen.test.ts` to reflect these changes.
+- Implemented **Task 2.1: Formalize "Choice" Actions** and **Task 2.2: Refactor ChoiceModal Persistence**.
+    - Updated `Choice` interface to include `actionId` (mapping to `UI_EVENTS`), allowing choice-based modals to be fully serializable.
+    - Updated `GameState` to store and persist `activeChoiceContext`, stripping function callbacks during serialization to ensure JSON safety.
+    - Refactored `GameController` to use `actionId` for travel, shopping, and bank actions instead of anonymous functions.
+    - Updated `UIManager.showChoiceModal` to publish `choiceModalSwitched` events and resolve actions via `EventBus` using the provided `actionId`.
+    - Modified `main.ts` to restore the active choice modal on startup, providing a seamless "resume" experience even in the middle of a multi-choice interaction.
+    - Added unit tests in `GameState.test.ts` to verify serialization and deserialization of choice contexts.

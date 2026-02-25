@@ -43,7 +43,7 @@ class GameController {
       choices: [{
         text: 'Buy Hovercar ($3,000)',
         value: null,
-        action: () => this.economySystem.buyCar()
+        actionId: 'BUY_CAR'
       }]
     });
   }
@@ -61,7 +61,7 @@ class GameController {
       choices: availableDestinations.map(dest => ({
         text: dest,
         value: dest,
-        action: (dest: string) => this.gameState.travel(dest as LocationName)
+        actionId: 'TRAVEL'
       }))
     });
   }
@@ -73,11 +73,7 @@ class GameController {
       choices: [{
         text: 'Confirm Deposit',
         value: null,
-        action: (_: any, amount?: number) => {
-          if (amount && amount > 0) {
-            this.economySystem.deposit(amount);
-          }
-        }
+        actionId: 'BANK_DEPOSIT'
       }]
     });
   }
@@ -89,11 +85,7 @@ class GameController {
       choices: [{
         text: 'Confirm Withdraw',
         value: null,
-        action: (_: any, amount?: number) => {
-          if (amount && amount > 0) {
-            this.economySystem.withdraw(amount);
-          }
-        }
+        actionId: 'BANK_WITHDRAW'
       }]
     });
   }
@@ -105,11 +97,7 @@ class GameController {
       choices: [{
         text: 'Confirm Loan',
         value: null,
-        action: (_: any, amount?: number) => {
-          if (amount && amount > 0) {
-            this.economySystem.takeLoan(amount);
-          }
-        }
+        actionId: 'BANK_LOAN'
       }]
     });
   }
@@ -121,11 +109,7 @@ class GameController {
       choices: [{
         text: 'Confirm Repayment',
         value: null,
-        action: (_: any, amount?: number) => {
-          if (amount && amount > 0) {
-            this.economySystem.repayLoan(amount);
-          }
-        }
+        actionId: 'BANK_REPAY'
       }]
     });
   }
@@ -136,7 +120,7 @@ class GameController {
         choices: SHOPPING_ITEMS.map(item => ({
             text: `${item.name} ($${item.cost})`,
             value: item.name,
-            action: (itemName: string) => this.economySystem.buyItem(itemName)
+            actionId: 'BUY_ITEM'
         }))
     });
   }
@@ -158,7 +142,7 @@ class GameController {
       choices: [{
         text: `${nextCourse.name} ($${nextCourse.cost})`,
         value: nextCourse.id,
-        action: (courseId: string) => this.gameState.takeCourse(parseInt(courseId, 10))
+        actionId: 'TAKE_COURSE'
       }]
     });
   }

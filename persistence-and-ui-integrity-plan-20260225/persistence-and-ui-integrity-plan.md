@@ -22,10 +22,10 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
 ## Stage 2: Data-Driven Modals (Structural Refinement)
 **Goal:** Solve the "stuck" state caused by transient modals with non-serializable callbacks.
 
-- [ ] **Task 2.1: Formalize "Choice" Actions**
+- [x] **Task 2.1: Formalize "Choice" Actions**
     - Instead of passing anonymous functions to `showChoiceModal`, create an `ActionRegistry` or use string-based action IDs.
     - This allows the `GameState` to say "The player is currently choosing a [BankAction]" without needing to serialize a Javascript function.
-- [ ] **Task 2.2: Refactor ChoiceModal Persistence**
+- [x] **Task 2.2: Refactor ChoiceModal Persistence**
     - Add `activeChoiceContext` to `GameState`.
     - If a refresh occurs during a "Confirm Loan" choice, the UI should be able to reconstruct that specific modal view from the data.
 

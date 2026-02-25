@@ -20,6 +20,7 @@ class GameState {
     pendingTurnSummary: TurnSummary | null = null;
     activeScreenId: string;
     activeLocationDashboard: string | null;
+    activeChoiceContext: any | null;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -49,6 +50,7 @@ class GameState {
         this.log = [];
         this.activeScreenId = 'city';
         this.activeLocationDashboard = null;
+        this.activeChoiceContext = null;
 
         // Subscribe to screen switches to keep persistence in sync
         EventBus.subscribe('screenSwitched', (data: { screenId: string }) => {
@@ -65,9 +67,29 @@ class GameState {
                 EventBus.publish('stateChanged', this);
             }
         });
+
+        // Subscribe to choice modal switches to keep persistence in sync
+        EventBus.subscribe('choiceModalSwitched', (data: any | null) => {
+            this.activeChoiceContext = data;
+            EventBus.publish('stateChanged', this);
+        });
     }
 
     toJSON(): GameStateState {
+        // Strip functions from activeChoiceContext if it exists
+        let serializableChoiceContext = null;
+        if (this.activeChoiceContext) {
+            serializableChoiceContext = {
+                ...this.activeChoiceContext,
+                choices: Array.isArray(this.activeChoiceContext.choices) 
+                    ? this.activeChoiceContext.choices.map((c: any) => {
+                        const { action, ...rest } = c;
+                        return rest;
+                    })
+                    : []
+            };
+        }
+
         return {
             players: this.players.map(p => p.toJSON()),
             currentPlayerIndex: this.currentPlayerIndex,
@@ -78,7 +100,8 @@ class GameState {
             isPlayer2AI: !!this.aiController,
             pendingTurnSummary: this.pendingTurnSummary,
             activeScreenId: this.activeScreenId,
-            activeLocationDashboard: this.activeLocationDashboard
+            activeLocationDashboard: this.activeLocationDashboard,
+            activeChoiceContext: serializableChoiceContext
         };
     }
 
@@ -95,6 +118,7 @@ class GameState {
         gameState.pendingTurnSummary = data.pendingTurnSummary || null;
         gameState.activeScreenId = data.activeScreenId || 'city';
         gameState.activeLocationDashboard = data.activeLocationDashboard || null;
+        gameState.activeChoiceContext = data.activeChoiceContext || null;
         return gameState;
     }
 

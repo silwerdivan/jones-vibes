@@ -103,4 +103,29 @@ describe('GameState Serialization', () => {
         expect(restored.activeScreenId).toBe('inventory');
         expect(restored.activeLocationDashboard).toBe('Bank');
     });
+
+    it('should correctly serialize and deserialize activeChoiceContext', () => {
+        const choiceContext = {
+            title: 'Test Choice',
+            showInput: true,
+            choices: [
+                { text: 'Option 1', value: 1, actionId: 'TRAVEL' as any },
+                { text: 'Option 2', action: () => {} }
+            ]
+        };
+        
+        gameState.activeChoiceContext = choiceContext;
+        
+        const json = gameState.toJSON();
+        
+        // Functions should be stripped
+        expect(json.activeChoiceContext.choices[1].action).toBeUndefined();
+        expect(json.activeChoiceContext.choices[0].actionId).toBe('TRAVEL');
+        expect(json.activeChoiceContext.title).toBe('Test Choice');
+        
+        const restored = GameState.fromJSON(json);
+        expect(restored.activeChoiceContext.title).toBe('Test Choice');
+        expect(restored.activeChoiceContext.choices.length).toBe(2);
+        expect(restored.activeChoiceContext.choices[0].text).toBe('Option 1');
+    });
 });

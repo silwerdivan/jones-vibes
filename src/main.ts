@@ -54,6 +54,13 @@ function main() {
     }, 100);
   }
 
+  // 4.3 Restore active choice modal if available
+  if (gameState.activeChoiceContext) {
+    setTimeout(() => {
+        uiManager.showChoiceModal(gameState.activeChoiceContext!);
+    }, 150);
+  }
+
   // 5. Instantiate GameController, passing it the gameState, uiManager and system instances.
   const gameController = new GameController(gameState, uiManager, economySystem, timeSystem);
 

@@ -1,3 +1,5 @@
+import { UI_EVENTS } from '../EventBus.js';
+
 export interface IconRegistry {
     [key: string]: (size?: number, color?: string) => string;
 }
@@ -67,6 +69,7 @@ export interface GameStateState {
     pendingTurnSummary?: TurnSummary | null;
     activeScreenId: string;
     activeLocationDashboard: string | null;
+    activeChoiceContext: ActiveChoiceContext | null;
 }
 
 export interface TurnEvent {
@@ -102,7 +105,14 @@ export interface AIAction {
 export interface Choice {
     text: string;
     value?: any;
-    action: (value?: any, amount?: number) => void;
+    actionId?: keyof typeof UI_EVENTS;
+    action?: (value?: any, amount?: number) => void;
+}
+
+export interface ActiveChoiceContext {
+    title: string;
+    choices: Choice[];
+    showInput?: boolean;
 }
 
 export interface LocationAction {

@@ -126,6 +126,7 @@ class UIManager {
         EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
             if (data.modalId === 'choice-modal-overlay') {
                 EventBus.publish('dashboardSwitched', { location: null });
+                EventBus.publish('choiceModalSwitched', null);
             }
         });
 
@@ -183,6 +184,9 @@ class UIManager {
         const location = this.gameState ? this.gameState.getCurrentPlayer().location : null;
         const clerk = location ? (CLERKS as ClerkRegistry)[location] : null;
 
+        // Publish event for persistence
+        EventBus.publish('choiceModalSwitched', { title, choices, showInput });
+
         this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
@@ -196,7 +200,12 @@ class UIManager {
             choices.forEach(choice => {
                 this.choiceModal.addPrimaryButton(choice.text, (amount) => {
                     this.choiceModal.hide();
-                    choice.action(choice.value, amount);
+                    if (choice.actionId) {
+                        const payload = (choice.value !== undefined && choice.value !== null) ? choice.value : amount;
+                        EventBus.publish(UI_EVENTS[choice.actionId], payload);
+                    } else if (choice.action) {
+                        choice.action(choice.value, amount);
+                    }
                 });
             });
         }
