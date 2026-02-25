@@ -418,10 +418,11 @@ class UIManager {
         const currentPlayer = this.gameState.getCurrentPlayer();
 
         // Auto-arrival logic - show dashboard when arriving at a new location
+        // We skip "Home" to prevent accidental end-turn clicks at the start of a turn
         const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
-        if (isNewLocation && !isNewTurn && !currentPlayer.isAI) {
+        if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.location !== 'Home') {
             setTimeout(() => {
                 this.showLocationDashboard(currentPlayer.location);
             }, 300);
