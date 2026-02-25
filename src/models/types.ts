@@ -70,6 +70,7 @@ export interface GameStateState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: ActiveChoiceContext | null;
+    isAIThinking?: boolean;
 }
 
 export interface TurnEvent {

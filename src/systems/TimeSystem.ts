@@ -196,7 +196,10 @@ class TimeSystem {
         // ADD AI TURN LOGIC
         if (nextPlayer.isAI && this.gameState.aiController) {
             // Notify view to show loading
+            this.gameState.isAIThinking = true;
             EventBus.publish('aiThinkingStart');
+            EventBus.publish('stateChanged', this.gameState);
+            
             // Delay AI processing so player can see the turn transition
             setTimeout(() => {
                 this.gameState.processAITurn();

@@ -138,6 +138,11 @@ class UIManager {
         if (gameState.activeChoiceContext) {
             this.showChoiceModal(gameState.activeChoiceContext);
         }
+
+        // 4. Restore AI thinking state
+        if (gameState.isAIThinking) {
+            this.showLoading();
+        }
     }
 
     private subscribeToEvents(): void {

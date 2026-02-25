@@ -25,3 +25,9 @@
     - Moved UI rehydration logic from `main.ts` into a dedicated `rehydrate` method in `UIManager`.
     - Updated `UIManager` to automatically perform one-time rehydration upon receiving the first `stateChanged` event, eliminating race conditions and removing the need for `setTimeout` hacks in the boot sequence.
     - Verified that all systems and managers are fully registered and subscribed before the simulation is activated.
+- Implemented **Task 3.2: AI State Recovery**.
+    - Added `isAIThinking` to `GameStateState` and `GameState` to track the AI's "contemplation" phase.
+    - Updated `GameState.processAITurn` and `handleAIAction` to manage the `isAIThinking` flag.
+    - Modified `UIManager.rehydrate` to immediately restore the "Thinking" overlay if the AI was active when saved.
+    - Updated `main.ts` to resume the AI's decision-making process based on the persisted `isAIThinking` state, ensuring AI turns continue seamlessly after a browser refresh.
+    - Added unit tests in `GameState.test.ts` to verify persistence of the AI thinking state.

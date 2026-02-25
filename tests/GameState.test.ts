@@ -128,4 +128,20 @@ describe('GameState Serialization', () => {
         expect(restored.activeChoiceContext.choices.length).toBe(2);
         expect(restored.activeChoiceContext.choices[0].text).toBe('Option 1');
     });
+
+    it('should persist isAIThinking state', () => {
+        gameState.isAIThinking = true;
+        
+        const json = gameState.toJSON();
+        expect(json.isAIThinking).toBe(true);
+        
+        const restored = GameState.fromJSON(json);
+        expect(restored.isAIThinking).toBe(true);
+        
+        gameState.isAIThinking = false;
+        const json2 = gameState.toJSON();
+        expect(json2.isAIThinking).toBe(false);
+        const restored2 = GameState.fromJSON(json2);
+        expect(restored2.isAIThinking).toBe(false);
+    });
 });

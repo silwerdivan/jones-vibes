@@ -64,14 +64,23 @@ function main() {
   // This triggers UIManager.rehydrate() via the stateChanged subscription
   gameState.publishCurrentState();
 
-  // Resume AI turn if it's an AI's turn and no summary is pending
-  const currentPlayer = gameState.getCurrentPlayer();
-  if (currentPlayer.isAI && !gameState.pendingTurnSummary && !gameState.gameOver) {
-      console.log('Resuming AI turn...');
-      EventBus.publish('aiThinkingStart');
+  // Resume AI turn if it was thinking when saved
+  if (gameState.isAIThinking && !gameState.gameOver) {
+      console.log('Resuming AI thinking...');
+      // UIManager.rehydrate already called showLoading() via stateChanged publish
       setTimeout(() => {
           gameState.processAITurn();
       }, 1000);
+  } else {
+      // Fallback: Resume AI turn if it's an AI's turn and no summary is pending
+      const currentPlayer = gameState.getCurrentPlayer();
+      if (currentPlayer.isAI && !gameState.pendingTurnSummary && !gameState.gameOver) {
+          console.log('Resuming AI turn...');
+          EventBus.publish('aiThinkingStart');
+          setTimeout(() => {
+              gameState.processAITurn();
+          }, 1000);
+      }
   }
 
   console.groupEnd();

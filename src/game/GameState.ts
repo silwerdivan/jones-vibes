@@ -21,6 +21,7 @@ class GameState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: any | null;
+    isAIThinking: boolean = false;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -101,7 +102,8 @@ class GameState {
             pendingTurnSummary: this.pendingTurnSummary,
             activeScreenId: this.activeScreenId,
             activeLocationDashboard: this.activeLocationDashboard,
-            activeChoiceContext: serializableChoiceContext
+            activeChoiceContext: serializableChoiceContext,
+            isAIThinking: this.isAIThinking
         };
     }
 
@@ -119,6 +121,7 @@ class GameState {
         gameState.activeScreenId = data.activeScreenId || 'city';
         gameState.activeLocationDashboard = data.activeLocationDashboard || null;
         gameState.activeChoiceContext = data.activeChoiceContext || null;
+        gameState.isAIThinking = data.isAIThinking || false;
         return gameState;
     }
 
@@ -154,6 +157,7 @@ class GameState {
 
     processAITurn(): void {
         const currentPlayer = this.getCurrentPlayer();
+        this.isAIThinking = true;
         this.addLogMessage(
             `🤔 ${this._getPlayerName(currentPlayer)} is contemplating their next move...`,
             'info'
@@ -167,6 +171,7 @@ class GameState {
     handleAIAction(aiAction: AIAction): void {
         // 1) no action → end AI turn immediately
         if (!aiAction || !aiAction.action) {
+            this.isAIThinking = false;
             EventBus.publish('aiThinkingEnd');
             if (this._timeSystem) this._timeSystem.endTurn();
             return;
@@ -178,6 +183,7 @@ class GameState {
                 `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
                 'info'
             );
+            this.isAIThinking = false;
             EventBus.publish('aiThinkingEnd');
             if (this._timeSystem) this._timeSystem.endTurn();
             return;
@@ -237,6 +243,7 @@ class GameState {
                 `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
                 'info'
             );
+            // We stay in isAIThinking = true state
             setTimeout(() => this.processAITurn(), 1000);
         } else {
             // AI turn ends (either success but no time left, or action failed)
@@ -246,6 +253,7 @@ class GameState {
                     'warning'
                 );
             }
+            this.isAIThinking = false;
             EventBus.publish('aiThinkingEnd');
             if (this._timeSystem) this._timeSystem.endTurn();
         }
