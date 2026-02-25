@@ -19,6 +19,7 @@ class GameState {
     log: LogMessage[];
     pendingTurnSummary: TurnSummary | null = null;
     activeScreenId: string;
+    activeLocationDashboard: string | null;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -47,11 +48,20 @@ class GameState {
         this.aiController = isPlayer2AI ? new AIController() : null;
         this.log = [];
         this.activeScreenId = 'city';
+        this.activeLocationDashboard = null;
 
         // Subscribe to screen switches to keep persistence in sync
         EventBus.subscribe('screenSwitched', (data: { screenId: string }) => {
             if (this.activeScreenId !== data.screenId) {
                 this.activeScreenId = data.screenId;
+                EventBus.publish('stateChanged', this);
+            }
+        });
+
+        // Subscribe to dashboard switches to keep persistence in sync
+        EventBus.subscribe('dashboardSwitched', (data: { location: string | null }) => {
+            if (this.activeLocationDashboard !== data.location) {
+                this.activeLocationDashboard = data.location;
                 EventBus.publish('stateChanged', this);
             }
         });
@@ -67,7 +77,8 @@ class GameState {
             log: [...this.log],
             isPlayer2AI: !!this.aiController,
             pendingTurnSummary: this.pendingTurnSummary,
-            activeScreenId: this.activeScreenId
+            activeScreenId: this.activeScreenId,
+            activeLocationDashboard: this.activeLocationDashboard
         };
     }
 
@@ -83,6 +94,7 @@ class GameState {
         gameState.log = [...data.log];
         gameState.pendingTurnSummary = data.pendingTurnSummary || null;
         gameState.activeScreenId = data.activeScreenId || 'city';
+        gameState.activeLocationDashboard = data.activeLocationDashboard || null;
         return gameState;
     }
 

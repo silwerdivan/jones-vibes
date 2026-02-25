@@ -90,4 +90,17 @@ describe('GameState Serialization', () => {
         const newGameState = GameState.fromJSON(json);
         expect(newGameState.pendingTurnSummary).toEqual(summary);
     });
+
+    it('should persist activeScreenId and activeLocationDashboard', () => {
+        gameState.activeScreenId = 'inventory';
+        gameState.activeLocationDashboard = 'Bank';
+        
+        const json = gameState.toJSON();
+        expect(json.activeScreenId).toBe('inventory');
+        expect(json.activeLocationDashboard).toBe('Bank');
+        
+        const restored = GameState.fromJSON(json);
+        expect(restored.activeScreenId).toBe('inventory');
+        expect(restored.activeLocationDashboard).toBe('Bank');
+    });
 });

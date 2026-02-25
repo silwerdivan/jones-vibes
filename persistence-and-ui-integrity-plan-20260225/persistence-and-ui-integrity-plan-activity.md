@@ -11,3 +11,4 @@
 - Replaced `PlaceholderScreen` for "Menu" with a functional `SystemScreen` and implemented a "Restart Simulation" feature with confirmation modal, allowing users to clear persistence and start fresh.
 - **Transitioned to `persistence-and-ui-integrity-plan.md` to focus on UI state synchronization and robust bootstrapping.**
 - Implemented **Task 1.1: Persist Active Screen**. Added `activeScreenId` to `GameStateState`, updated `GameState` to serialize and listen for `screenSwitched` events, and modified `main.ts` to restore the active screen on startup via `UIManager.switchScreen`.
+- Implemented **Task 1.2: Persist Location Dashboard**. Added `activeLocationDashboard` to `GameStateState`, updated `GameState` to serialize and listen for `dashboardSwitched` events, and modified `UIManager` to publish these events when showing or hiding location dashboards. Updated `main.ts` to restore the active dashboard on startup.

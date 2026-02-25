@@ -123,6 +123,12 @@ class UIManager {
         EventBus.subscribe('aiThinkingStart', () => this.showLoading());
         EventBus.subscribe('aiThinkingEnd', () => this.hideLoading());
 
+        EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
+            if (data.modalId === 'choice-modal-overlay') {
+                EventBus.publish('dashboardSwitched', { location: null });
+            }
+        });
+
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
             this.gameState = gameState;
             // Components now auto-update via granular event subscriptions
@@ -200,6 +206,9 @@ class UIManager {
 
     showLocationDashboard(location: string) {
         if (!this.gameState) return;
+
+        // Publish event for persistence
+        EventBus.publish('dashboardSwitched', { location });
 
         const player = this.gameState.getCurrentPlayer();
         const clerk = (CLERKS as ClerkRegistry)[location];

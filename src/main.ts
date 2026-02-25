@@ -47,6 +47,13 @@ function main() {
     uiManager.switchScreen(gameState.activeScreenId);
   }
 
+  // 4.2 Restore active location dashboard if available
+  if (gameState.activeLocationDashboard) {
+    setTimeout(() => {
+        uiManager.showLocationDashboard(gameState.activeLocationDashboard!);
+    }, 100);
+  }
+
   // 5. Instantiate GameController, passing it the gameState, uiManager and system instances.
   const gameController = new GameController(gameState, uiManager, economySystem, timeSystem);
 

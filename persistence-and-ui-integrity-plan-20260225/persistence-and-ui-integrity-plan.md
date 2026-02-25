@@ -11,7 +11,7 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
     - Update `ScreenManager` to publish an event when a screen is switched.
     - Update `GameState` to store and serialize the `activeScreenId`.
     - Update `main.ts` to tell `ScreenManager` which screen to show on startup.
-- [ ] **Task 1.2: Persist Location Dashboard**
+- [x] **Task 1.2: Persist Location Dashboard**
     - Add `activeLocationDashboard` (string | null) to `GameStateState`.
     - Update `UIManager` to set this value when `showLocationDashboard(location)` is called.
     - Update `UIManager` bootstrapping to re-open the dashboard if a value exists in the state.
