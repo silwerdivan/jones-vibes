@@ -6,7 +6,7 @@ Currently, game persistence is "data-complete" but "UI-volatile." While the unde
 ## Stage 1: UI State Synchronization (The "Quick Wins")
 **Goal:** Ensure the player returns to the same screen and location dashboard after a refresh.
 
-- [ ] **Task 1.1: Persist Active Screen**
+- [x] **Task 1.1: Persist Active Screen**
     - Add `activeScreenId` to `GameStateState`.
     - Update `ScreenManager` to publish an event when a screen is switched.
     - Update `GameState` to store and serialize the `activeScreenId`.

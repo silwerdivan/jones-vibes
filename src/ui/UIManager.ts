@@ -453,6 +453,10 @@ class UIManager {
     showBankModal() {
         this.showLocationDashboard('Bank');
     }
+
+    switchScreen(screenId: string): void {
+        this.screenManager.switchScreen(screenId);
+    }
 }
 
 export default UIManager;

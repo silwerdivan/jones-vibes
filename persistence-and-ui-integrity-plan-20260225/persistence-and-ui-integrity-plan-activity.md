@@ -10,3 +10,4 @@
 - Updated `main.ts` to automatically load existing save data on startup if available, ensuring game continuity.
 - Replaced `PlaceholderScreen` for "Menu" with a functional `SystemScreen` and implemented a "Restart Simulation" feature with confirmation modal, allowing users to clear persistence and start fresh.
 - **Transitioned to `persistence-and-ui-integrity-plan.md` to focus on UI state synchronization and robust bootstrapping.**
+- Implemented **Task 1.1: Persist Active Screen**. Added `activeScreenId` to `GameStateState`, updated `GameState` to serialize and listen for `screenSwitched` events, and modified `main.ts` to restore the active screen on startup via `UIManager.switchScreen`.

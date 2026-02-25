@@ -65,6 +65,7 @@ export interface GameStateState {
     log: LogMessage[];
     isPlayer2AI: boolean;
     pendingTurnSummary?: TurnSummary | null;
+    activeScreenId: string;
 }
 
 export interface TurnEvent {

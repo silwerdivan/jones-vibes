@@ -42,6 +42,11 @@ function main() {
   // 4. Instantiate UIManager.
   const uiManager = new UIManager(); // UIManager constructor runs here, subscribes to stateChanged
 
+  // 4.1 Switch to the persisted active screen if available
+  if (gameState.activeScreenId) {
+    uiManager.switchScreen(gameState.activeScreenId);
+  }
+
   // 5. Instantiate GameController, passing it the gameState, uiManager and system instances.
   const gameController = new GameController(gameState, uiManager, economySystem, timeSystem);
 

@@ -3,7 +3,7 @@ import { JOBS } from '../data/jobs';
 import { COURSES } from '../data/courses';
 import EventBus, { STATE_EVENTS } from '../EventBus';
 import AIController from './AIController';
-import { Course, Job, AIAction, LogMessage, GameStateState } from '../models/types';
+import { Course, Job, AIAction, LogMessage, GameStateState, TurnSummary } from '../models/types';
 import { LocationName } from '../data/locations';
 import type EconomySystem from '../systems/EconomySystem';
 import type TimeSystem from '../systems/TimeSystem';
@@ -18,6 +18,7 @@ class GameState {
     aiController: AIController | null;
     log: LogMessage[];
     pendingTurnSummary: TurnSummary | null = null;
+    activeScreenId: string;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -45,6 +46,15 @@ class GameState {
 
         this.aiController = isPlayer2AI ? new AIController() : null;
         this.log = [];
+        this.activeScreenId = 'city';
+
+        // Subscribe to screen switches to keep persistence in sync
+        EventBus.subscribe('screenSwitched', (data: { screenId: string }) => {
+            if (this.activeScreenId !== data.screenId) {
+                this.activeScreenId = data.screenId;
+                EventBus.publish('stateChanged', this);
+            }
+        });
     }
 
     toJSON(): GameStateState {
@@ -56,7 +66,8 @@ class GameState {
             winnerId: this.winner ? this.winner.id : null,
             log: [...this.log],
             isPlayer2AI: !!this.aiController,
-            pendingTurnSummary: this.pendingTurnSummary
+            pendingTurnSummary: this.pendingTurnSummary,
+            activeScreenId: this.activeScreenId
         };
     }
 
@@ -71,6 +82,7 @@ class GameState {
         }
         gameState.log = [...data.log];
         gameState.pendingTurnSummary = data.pendingTurnSummary || null;
+        gameState.activeScreenId = data.activeScreenId || 'city';
         return gameState;
     }
 
