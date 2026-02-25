@@ -56,6 +56,16 @@ export interface PlayerState {
     name: string;
 }
 
+export interface GameStateState {
+    players: PlayerState[];
+    currentPlayerIndex: number;
+    turn: number;
+    gameOver: boolean;
+    winnerId: number | null;
+    log: LogMessage[];
+    isPlayer2AI: boolean;
+}
+
 export interface TurnEvent {
     type: string;
     label: string;

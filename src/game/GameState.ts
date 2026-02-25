@@ -3,7 +3,7 @@ import { JOBS } from '../data/jobs';
 import { COURSES } from '../data/courses';
 import EventBus, { STATE_EVENTS } from '../EventBus';
 import AIController from './AIController';
-import { Course, Job, AIAction, LogMessage } from '../models/types';
+import { Course, Job, AIAction, LogMessage, GameStateState } from '../models/types';
 import { LocationName } from '../data/locations';
 import type EconomySystem from '../systems/EconomySystem';
 import type TimeSystem from '../systems/TimeSystem';
@@ -44,6 +44,31 @@ class GameState {
 
         this.aiController = isPlayer2AI ? new AIController() : null;
         this.log = [];
+    }
+
+    toJSON(): GameStateState {
+        return {
+            players: this.players.map(p => p.toJSON()),
+            currentPlayerIndex: this.currentPlayerIndex,
+            turn: this.turn,
+            gameOver: this.gameOver,
+            winnerId: this.winner ? this.winner.id : null,
+            log: [...this.log],
+            isPlayer2AI: !!this.aiController
+        };
+    }
+
+    static fromJSON(data: GameStateState): GameState {
+        const gameState = new GameState(data.players.length, data.isPlayer2AI);
+        gameState.players = data.players.map(pData => Player.fromJSON(pData));
+        gameState.currentPlayerIndex = data.currentPlayerIndex;
+        gameState.turn = data.turn;
+        gameState.gameOver = data.gameOver;
+        if (data.winnerId !== null) {
+            gameState.winner = gameState.players.find(p => p.id === data.winnerId) || null;
+        }
+        gameState.log = [...data.log];
+        return gameState;
     }
 
     _formatMoney(amount: number): string {

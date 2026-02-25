@@ -4,3 +4,4 @@
 - Created persistence plan and documentation structure.
 - Updated `prompt.md` to point to the new persistence task track.
 - Implemented `toJSON` and `fromJSON` in `Player.ts` and updated `PlayerState` interface.
+- Implemented `toJSON` and `fromJSON` in `GameState.ts`, added `GameStateState` interface in `types.ts`, and added comprehensive unit tests in `tests/GameState.test.ts`.
