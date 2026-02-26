@@ -15,7 +15,7 @@ class AIController {
         const workShiftHours = currentJob ? currentJob.shiftHours : 8; // Default to 8 if no job
 
         // Priority 1: Pay Loan
-        if (player.loan > 2000 && player.time >= 2) { // Assume banking takes 2 hours
+        if (player.loan > 2000 && player.time >= 2 && player.cash > 0) { // Assume banking takes 2 hours
             if (player.location !== 'Bank') {
                 return { action: 'travel', params: { destination: 'Bank' } };
             } else {
@@ -26,8 +26,8 @@ class AIController {
             }
         }
 
-        // Priority 2: Hunger Management
-        if (player.hunger > 50 && player.time >= 2) {
+        // Priority 2: Hunger Management (Proactive threshold at 40 to avoid penalty > 50)
+        if (player.hunger > 40 && player.time >= 2) {
             const affordableFood = SHOPPING_ITEMS.filter(item => 
                 item.location === 'Fast Food' && player.cash >= item.cost
             );
@@ -61,8 +61,10 @@ class AIController {
                         );
                         return { action: 'applyForJob', params: { jobLevel: highestLevelJob.level } };
                     }
+                } else {
+                    // Only work if already hired
+                    return { action: 'workShift' };
                 }
-                return { action: 'workShift' };
             }
         }
 

@@ -17,8 +17,8 @@ describe('AIController Hunger awareness', () => {
         player.time = 24;
     });
 
-    it('should prioritize traveling to Fast Food when hunger is high (>50)', () => {
-        player.hunger = 60;
+    it('should prioritize traveling to Fast Food when hunger is high (>40)', () => {
+        player.hunger = 45;
         player.location = 'Home';
         
         const nextAction = aiController.takeTurn(gameState, player);
@@ -27,8 +27,8 @@ describe('AIController Hunger awareness', () => {
         expect(nextAction.params.destination).toBe('Fast Food');
     });
 
-    it('should buy food when at Fast Food and hungry', () => {
-        player.hunger = 60;
+    it('should buy food when at Fast Food and hungry (>40)', () => {
+        player.hunger = 45;
         player.location = 'Fast Food';
         
         const nextAction = aiController.takeTurn(gameState, player);
@@ -39,7 +39,7 @@ describe('AIController Hunger awareness', () => {
     });
 
     it('should not prioritize food if it cannot afford it', () => {
-        player.hunger = 60;
+        player.hunger = 45;
         player.cash = 5; // Too poor for Monolith Burger ($10)
         player.location = 'Home';
         
@@ -48,5 +48,23 @@ describe('AIController Hunger awareness', () => {
         // Should fallback to Gain Wealth (traveling to Employment Agency) or other priorities
         // but definitely NOT travel to Fast Food to stare at burgers
         expect(nextAction.params?.destination).not.toBe('Fast Food');
+    });
+
+    it('should prioritize food mid-turn if hunger becomes high (>40)', () => {
+        // Start turn with no hunger, but then hunger increases
+        player.hunger = 0;
+        player.cash = 100;
+        player.location = 'Home';
+        
+        // First action should be something else (e.g., travel to Employment Agency)
+        let nextAction = aiController.takeTurn(gameState, player);
+        expect(nextAction.params?.destination).toBe('Employment Agency');
+        
+        // Simulate hunger increasing mid-turn
+        player.hunger = 45;
+        
+        // Next action should now be traveling to Fast Food
+        nextAction = aiController.takeTurn(gameState, player);
+        expect(nextAction.params?.destination).toBe('Fast Food');
     });
 });
