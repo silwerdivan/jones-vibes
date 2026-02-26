@@ -144,6 +144,8 @@ class TimeSystem {
 
         // 8. Reset location to Home
         currentPlayer.setLocation("Home");
+        this.gameState.activeLocationDashboard = null;
+        this.gameState.activeChoiceContext = null;
         this.gameState.addLogMessage(
             `${this._getPlayerName(currentPlayer)} returned home.`,
             'info'

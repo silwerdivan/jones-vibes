@@ -165,6 +165,12 @@ class UIManager {
                 this.rehydrate(gameState);
             }
 
+            // Handle modal visibility based on state for live updates
+            // If both are null, it means no dashboard or choice modal should be open
+            if (!gameState.activeLocationDashboard && !gameState.activeChoiceContext) {
+                this.hideModal();
+            }
+
             // Components now auto-update via granular event subscriptions
             // Only handle auto-arrival and pending summary logic here
             this.handleAutoArrival();
