@@ -71,8 +71,10 @@ class GameState {
 
         // Subscribe to choice modal switches to keep persistence in sync
         EventBus.subscribe('choiceModalSwitched', (data: any | null) => {
-            this.activeChoiceContext = data;
-            EventBus.publish('stateChanged', this);
+            if (this.activeChoiceContext !== data) {
+                this.activeChoiceContext = data;
+                EventBus.publish('stateChanged', this);
+            }
         });
     }
 

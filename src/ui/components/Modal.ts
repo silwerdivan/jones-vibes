@@ -23,7 +23,13 @@ export abstract class Modal {
     }
   }
 
+  public isVisible(): boolean {
+    return !this.overlay?.classList.contains('hidden');
+  }
+
   public show(config: ModalConfig = {}): void {
+    if (this.isVisible()) return;
+
     if (config.title && this.titleElement) {
       this.titleElement.textContent = config.title;
       this.titleElement.classList.remove('hidden');
@@ -34,6 +40,8 @@ export abstract class Modal {
   }
 
   public hide(): void {
+    if (!this.isVisible()) return;
+
     this.overlay?.classList.add('hidden');
     document.body.style.overflow = '';
     EventBus.publish('modalHidden', { modalId: this.overlay?.id });
