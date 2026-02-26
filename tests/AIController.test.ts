@@ -17,8 +17,8 @@ describe('AIController Hunger awareness', () => {
         player.time = 24;
     });
 
-    it('should prioritize traveling to Fast Food when hunger is high (>40)', () => {
-        player.hunger = 45;
+    it('should prioritize traveling to Fast Food when hunger is high (>30)', () => {
+        player.hunger = 35;
         player.location = 'Home';
         
         const nextAction = aiController.takeTurn(gameState, player);
@@ -27,8 +27,8 @@ describe('AIController Hunger awareness', () => {
         expect(nextAction.params.destination).toBe('Fast Food');
     });
 
-    it('should buy food when at Fast Food and hungry (>40)', () => {
-        player.hunger = 45;
+    it('should buy food when at Fast Food and hungry (>30)', () => {
+        player.hunger = 35;
         player.location = 'Fast Food';
         
         const nextAction = aiController.takeTurn(gameState, player);
@@ -38,8 +38,18 @@ describe('AIController Hunger awareness', () => {
         expect(['Monolith Burger', 'Synth-Salad']).toContain(nextAction.params.itemName);
     });
 
+    it('should buy food when at Fast Food and hungry (>30), even with zero time', () => {
+        player.hunger = 35;
+        player.location = 'Fast Food';
+        player.time = 0; // ZERO time
+        
+        const nextAction = aiController.takeTurn(gameState, player);
+        
+        expect(nextAction.action).toBe('buyItem');
+    });
+
     it('should not prioritize food if it cannot afford it', () => {
-        player.hunger = 45;
+        player.hunger = 35;
         player.cash = 5; // Too poor for Monolith Burger ($10)
         player.location = 'Home';
         
@@ -50,7 +60,7 @@ describe('AIController Hunger awareness', () => {
         expect(nextAction.params?.destination).not.toBe('Fast Food');
     });
 
-    it('should prioritize food mid-turn if hunger becomes high (>40)', () => {
+    it('should prioritize food mid-turn if hunger becomes high (>30)', () => {
         // Start turn with no hunger, but then hunger increases
         player.hunger = 0;
         player.cash = 100;
@@ -61,7 +71,7 @@ describe('AIController Hunger awareness', () => {
         expect(nextAction.params?.destination).toBe('Employment Agency');
         
         // Simulate hunger increasing mid-turn
-        player.hunger = 45;
+        player.hunger = 35;
         
         // Next action should now be traveling to Fast Food
         nextAction = aiController.takeTurn(gameState, player);

@@ -237,9 +237,13 @@ class GameState {
         }
 
         const playerHasTime = this.getCurrentPlayer().time > 0;
+        
+        // Allow AI one more decision if they just traveled, even if time is 0,
+        // to permit "instant" actions (buying food/items, banking) at the destination.
+        const isExtraTurnAllowed = success && aiAction.action === 'travel' && !playerHasTime;
 
-        if (success && playerHasTime) {
-            // AI still has time → decide next move
+        if (success && (playerHasTime || isExtraTurnAllowed)) {
+            // AI still has time or just arrived at a destination → decide next move
             this.checkWinCondition(this.getCurrentPlayer());
             this.addLogMessage(
                 `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,

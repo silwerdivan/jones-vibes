@@ -242,6 +242,7 @@ class EconomySystem {
     buyCar(): boolean {
         const currentPlayer = this.gameState.getCurrentPlayer();
         const CAR_COST = 3000;
+        const TIME_COST = 4;
 
         if (currentPlayer.location !== 'Used Car Lot') {
             this.gameState.addLogMessage(
@@ -267,7 +268,16 @@ class EconomySystem {
             return false;
         }
 
+        if (currentPlayer.time < TIME_COST) {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} needs ${TIME_COST} hours to buy a car.`,
+                'error'
+            );
+            return false;
+        }
+
         currentPlayer.spendCash(CAR_COST);
+        currentPlayer.deductTime(TIME_COST);
         currentPlayer.giveCar();
         this.gameState.addLogMessage(
             `${this._getPlayerName(currentPlayer)} bought a car!`,
@@ -275,6 +285,7 @@ class EconomySystem {
         );
         this.gameState.checkWinCondition(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
