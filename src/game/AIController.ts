@@ -26,7 +26,26 @@ class AIController {
             }
         }
 
-        // Priority 2: Gain Wealth
+        // Priority 2: Hunger Management
+        if (player.hunger > 50 && player.time >= 2) {
+            const affordableFood = SHOPPING_ITEMS.filter(item => 
+                item.location === 'Fast Food' && player.cash >= item.cost
+            );
+
+            if (affordableFood.length > 0) {
+                if (player.location !== 'Fast Food') {
+                    return { action: 'travel', params: { destination: 'Fast Food' } };
+                } else {
+                    // Pick the best hunger reduction item
+                    const bestFood = affordableFood.reduce((prev, current) => 
+                        ((prev.hungerReduction || 0) > (current.hungerReduction || 0)) ? prev : current
+                    );
+                    return { action: 'buyItem', params: { itemName: bestFood.name } };
+                }
+            }
+        }
+
+        // Priority 3: Gain Wealth
         if (player.cash < 1000 && player.time >= workShiftHours) {
             if (player.location !== 'Employment Agency') {
                 return { action: 'travel', params: { destination: 'Employment Agency' } };
@@ -47,7 +66,7 @@ class AIController {
             }
         }
 
-        // Priority 3: Advance Education
+        // Priority 4: Advance Education
         if (player.educationLevel < COURSES.length) {
             const nextEducationLevel = player.educationLevel + 1;
             const nextCourse = COURSES.find(course => course.educationMilestone === nextEducationLevel);
@@ -61,7 +80,7 @@ class AIController {
             }
         }
 
-        // Priority 4: Boost Happiness
+        // Priority 5: Boost Happiness
         if (player.happiness < 50 && player.time >= 2) { // Assume shopping takes 2 hours
             if (player.location !== 'Shopping Mall') {
                 return { action: 'travel', params: { destination: 'Shopping Mall' } };
@@ -74,7 +93,7 @@ class AIController {
             }
         }
 
-        // Priority 5: Increase Efficiency (Buy Car)
+        // Priority 6: Increase Efficiency (Buy Car)
         if (player.cash > 3500 && !player.hasCar && player.time >= 4) { // Assume buying a car takes 4 hours
             if (player.location !== 'Used Car Lot') {
                 return { action: 'travel', params: { destination: 'Used Car Lot' } };
