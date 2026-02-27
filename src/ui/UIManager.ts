@@ -255,10 +255,22 @@ class UIManager {
     showLocationDashboard(location: string) {
         if (!this.gameState) return;
 
+        // Skip showing the dashboard if a summary is already visible or about to be
+        if (this.isSummaryShown || this.gameState.pendingTurnSummary) {
+            return;
+        }
+
+        const player = this.gameState.getCurrentPlayer();
+        
+        // For locations other than 'Home', skip showing the dashboard if the player has no time remaining.
+        // This prevents "flashing" the clerk view right before the auto-end turn logic kicks in.
+        if (location !== 'Home' && player.time <= 0) {
+            return;
+        }
+
         // Publish event for persistence
         EventBus.publish('dashboardSwitched', { location });
 
-        const player = this.gameState.getCurrentPlayer();
         const clerk = (CLERKS as ClerkRegistry)[location];
 
         this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
@@ -428,7 +440,7 @@ class UIManager {
         const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
-        if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.location !== 'Home') {
+        if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.location !== 'Home' && currentPlayer.time > 0) {
             setTimeout(() => {
                 this.showLocationDashboard(currentPlayer.location);
             }, 300);
