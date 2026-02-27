@@ -164,18 +164,18 @@ Based on the design document `education-system-upgrade.md`, this plan outlines t
 
 ## Phase 3: UI Implementation
 
-- [ ] **Create `src/ui/components/CollegeDashboard.ts`**:
+- [x] **Create `src/ui/components/CollegeDashboard.ts`**:
     - Implement a new component using `BaseComponent`.
     - **Header**: Show current degree name and target career.
     - **Progress Bar**: Horizontal bar with glow and CSS transitions.
     - **Action Zone**: "Attend Lecture" button with badges for ⏱️ 8H, 🧠 -5 HAPPY, 🎓 +Credits.
     - **Buff Indicator**: Visual feedback when the Computer buff is active.
     - **Phantom Fill**: Show preview of progress on hover/interaction.
-- [ ] **Update `src/ui/UIManager.ts`**:
+- [x] **Update `src/ui/UIManager.ts`**:
     - In `showLocationDashboard('Community College')`, render `CollegeDashboard` instead of `ActionCards`.
 - [ ] **Update `src/ui/components/Modal.ts`**:
     - Add a celebratory "Graduation" modal/state.
-- [ ] **Update `style.css`**:
+- [x] **Update `style.css`**:
     - Add glassmorphism styles for the college dashboard.
     - Add progress bar animations and glow effects.
     - Add badge styles (cyan/magenta/neon green).

@@ -7,6 +7,7 @@ import Icons from './Icons.js';
 import GameState from '../game/GameState.js';
 import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal } from './components/Modal.js';
 import HUD from './components/HUD.js';
+import CollegeDashboard from './components/CollegeDashboard.js';
 import ScreenManager from './components/screens/ScreenManager.js';
 import CityScreen from './components/screens/CityScreen.js';
 import LifeScreen from './components/screens/LifeScreen.js';
@@ -22,6 +23,7 @@ type ClerkRegistry = Record<string, Clerk>;
 class UIManager {
     // Components
     private hud: HUD;
+    private collegeDashboard: CollegeDashboard;
     private screenManager: ScreenManager;
     private cityScreen: CityScreen;
     private lifeScreen: LifeScreen;
@@ -45,6 +47,7 @@ class UIManager {
     constructor() {
         // Initialize components
         this.hud = new HUD();
+        this.collegeDashboard = new CollegeDashboard();
         this.screenManager = new ScreenManager();
         this.cityScreen = new CityScreen();
         this.lifeScreen = new LifeScreen();
@@ -233,11 +236,11 @@ class UIManager {
         if (location === 'Shopping Mall' || location === 'Fast Food') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
-        } else if (location === 'Community College') {
-            this.renderActionCards('college', COURSES);
-        } else {
-            choices.forEach(choice => {
-                this.choiceModal.addPrimaryButton(choice.text, (amount) => {
+                } else if (location === 'Community College') {
+                    this.collegeDashboard.render(this.gameState!);
+                    this.choiceModal.setContent(this.collegeDashboard.getElement());
+                } else {
+                    choices.forEach(choice => {                this.choiceModal.addPrimaryButton(choice.text, (amount) => {
                     this.choiceModal.hide();
                     if (choice.actionId) {
                         const payload = (choice.value !== undefined && choice.value !== null) ? choice.value : amount;
@@ -280,7 +283,8 @@ class UIManager {
         if (location === 'Employment Agency') {
             this.renderActionCards('jobs', JOBS);
         } else if (location === 'Community College') {
-            this.renderActionCards('college', COURSES);
+            this.collegeDashboard.render(this.gameState!);
+            this.choiceModal.setContent(this.collegeDashboard.getElement());
         } else if (location === 'Shopping Mall' || location === 'Fast Food') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
