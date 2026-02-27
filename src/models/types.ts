@@ -18,6 +18,7 @@ export interface Course {
     cost: number;
     time: number;
     educationMilestone: number;
+    requiredCredits: number;
 }
 
 export interface Item {
@@ -43,6 +44,8 @@ export interface PlayerState {
     savings: number;
     happiness: number;
     educationLevel: number;
+    educationCredits: number;
+    educationCreditsGoal: number;
     careerLevel: number;
     time: number;
     location: string;

@@ -7,6 +7,8 @@ export default class Player {
     savings: number;
     happiness: number;
     educationLevel: number;
+    educationCredits: number;
+    educationCreditsGoal: number;
     careerLevel: number;
     time: number;
     location: LocationName;
@@ -27,6 +29,8 @@ export default class Player {
         this.savings = 0;
         this.happiness = 50;
         this.educationLevel = 0;
+        this.educationCredits = 0;
+        this.educationCreditsGoal = 50; // Initial goal for Level 1
         this.careerLevel = 0;
         this.time = 24;
         this.location = "Home";
@@ -49,6 +53,8 @@ export default class Player {
             savings: this.savings,
             happiness: this.happiness,
             educationLevel: this.educationLevel,
+            educationCredits: this.educationCredits,
+            educationCreditsGoal: this.educationCreditsGoal,
             careerLevel: this.careerLevel,
             time: this.time,
             location: this.location,
@@ -71,6 +77,8 @@ export default class Player {
         player.savings = data.savings;
         player.happiness = data.happiness;
         player.educationLevel = data.educationLevel;
+        player.educationCredits = data.educationCredits || 0;
+        player.educationCreditsGoal = data.educationCreditsGoal || 50;
         player.careerLevel = data.careerLevel;
         player.time = data.time;
         player.location = data.location as LocationName;
@@ -120,6 +128,14 @@ export default class Player {
 
     advanceEducation(): void {
         this.educationLevel++;
+    }
+
+    addEducationCredits(amount: number): void {
+        this.educationCredits += amount;
+    }
+
+    setEducationGoal(goal: number): void {
+        this.educationCreditsGoal = goal;
     }
 
     advanceCareer(): void {

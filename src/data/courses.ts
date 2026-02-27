@@ -1,9 +1,9 @@
 import { Course } from '../models/types';
 
 export const COURSES: Course[] = [
-    { id: 1, name: 'Intro to Business', cost: 500, time: 10, educationMilestone: 1 },
-    { id: 2, name: 'Marketing Fundamentals', cost: 750, time: 15, educationMilestone: 2 },
-    { id: 3, name: 'Financial Accounting', cost: 1000, time: 20, educationMilestone: 3 },
-    { id: 4, name: 'Business Law', cost: 1250, time: 25, educationMilestone: 4 },
-    { id: 5, name: 'Advanced Management', cost: 1500, time: 30, educationMilestone: 5 },
+    { id: 1, name: "Associate's in Business (Level 1)", cost: 500, time: 8, educationMilestone: 1, requiredCredits: 50 },
+    { id: 2, name: "Bachelor's Degree (Level 2)", cost: 1000, time: 8, educationMilestone: 2, requiredCredits: 120 },
+    { id: 3, name: "Master's Degree (Level 3)", cost: 2000, time: 8, educationMilestone: 3, requiredCredits: 250 },
+    { id: 4, name: "Professional Certification (Level 4)", cost: 3000, time: 8, educationMilestone: 4, requiredCredits: 400 },
+    { id: 5, name: "Expert Specialization (Level 5)", cost: 5000, time: 8, educationMilestone: 5, requiredCredits: 600 },
 ];
