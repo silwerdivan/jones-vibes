@@ -1,0 +1,28 @@
+here is a breakdown of what is functionally "alive" in the simulation versus what is currently a placeholder or out of scope. 
+
+
+  What You CAN Do (Current Features)
+   * Manage the Clock: Every turn provides 24 hours. You must strategically allocate time between travel, work, and education. If you run out of time while away from home, you start the next week with     a "time deficit."
+   * The Career Ladder: You can apply for and work 5 distinct job tiers (from Dishwasher to Junior Accountant). Higher-tier jobs offer better wages but require specific Education Milestones.
+   * Education Progression: You can enroll in courses at the Community College to unlock higher career paths.
+   * Complex Economy:
+       * Banking: Deposit cash to protect it or earn interest; take out loans (up to $2,500) with a 10% weekly interest penalty.
+       * Big Purchases: Save up $3,000 to buy a Hover Car, which permanently cuts travel time between locations by 50%.
+   * Biological Needs: The Hunger System is active. If you don't visit the "Fast Food" joint to eat, your hunger increases weekly, eventually triggering a Happiness penalty.
+   * Win the Race: The game tracks a "Grand Victory" condition based on hitting four simultaneous peaks: $10k Wealth, 80+ Happiness, Level 3 Education, and Level 4 Career.
+   * Seamless Persistence: You can close the tab at any moment—even during a modal choice or while the AI is "thinking"—and resume exactly where you left off.
+
+
+  What You CAN'T Do (Current Limitations)
+   * Item "Buffs" (Pending Logic): While you can buy assets like a Fridge (benefit: "Food Waste -50%") or a Computer (benefit: "Study Speed +15%"), these benefits are currently flavor text only. The  
+     math for these multipliers isn't wired into the systems yet.
+   * Random Events: There are currently no "Life Happens" moments (e.g., car breakdowns, health issues, or tax rebates) to disrupt a perfect strategy.
+   * Dynamic Markets: Wages and item prices are static. There is no inflation or "sales" at the Shopping Mall.
+   * Social Simulation: There are no NPC relationships or dating mechanics. Your only "social" interaction is with the automated clerks at each location.
+   * Real Estate: You are locked into a single "Home." There is currently no mechanic for moving to a luxury apartment or upgrading your living space to boost baseline happiness.
+   * Multiplayer Connectivity: The game is strictly local. You can play with a friend, but only via "Hotseat" (sharing the same screen/keyboard).
+
+
+  Current Project Standing
+  The "Engine" (Time, Economy, Persistence) and the "View" (Glassmorphism UI, Screen Management) are 100% solid. The project has moved past the prototype stage and is now in the "Content & Tuning"    
+  phase, where the designer can start defining new items, random events, and balancing the "math of life."
