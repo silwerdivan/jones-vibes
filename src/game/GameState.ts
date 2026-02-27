@@ -212,6 +212,9 @@ class GameState {
             case 'takeCourse':
                 success = this.takeCourse(aiAction.params.courseId);
                 break;
+            case 'study':
+                success = this.study();
+                break;
             case 'buyItem':
                 success = this._economySystem ? this._economySystem.buyItem(aiAction.params.itemName) : false;
                 break;
@@ -389,7 +392,7 @@ class GameState {
 
         if (currentPlayer.location !== 'Community College') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Community College to take a course.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Community College to enroll.`,
                 'error'
             );
             return false;
@@ -400,37 +403,145 @@ class GameState {
             return false;
         }
 
-        if (currentPlayer.cash < course.cost) {
-            this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(course.cost)} to take ${course.name}.`,
+        // Only allow enrolling in the next level
+        if (currentPlayer.educationLevel + 1 !== course.educationMilestone) {
+             this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must complete lower level degrees first.`,
                 'error'
             );
             return false;
         }
 
-        if (currentPlayer.time < course.time) {
+        if (currentPlayer.cash < course.cost) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${course.time} hours to take ${course.name}.`,
+                `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(course.cost)} to enroll in ${course.name}.`,
                 'error'
             );
             return false;
         }
 
         currentPlayer.spendCash(course.cost);
-        currentPlayer.deductTime(course.time);
-        currentPlayer.advanceEducation(); // This will set educationLevel to course.educationMilestone
+        // Enrollment doesn't take much time, let's say 1 hour
+        const enrollmentTime = 1;
+        if (currentPlayer.time < enrollmentTime) {
+             this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} needs ${enrollmentTime} hour to enroll.`,
+                'error'
+            );
+            return false;
+        }
+        currentPlayer.deductTime(enrollmentTime);
+        
+        currentPlayer.setEducationGoal(course.requiredCredits);
 
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} completed ${course.name}! Education level is now ${currentPlayer.educationLevel}.`,
+            `${this._getPlayerName(currentPlayer)} enrolled in ${course.name}! Cost: ${this._formatMoney(course.cost)}.`,
             'success'
         );
-        this.checkWinCondition(currentPlayer);
+        
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -course.cost, gameState: this });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
+        EventBus.publish('stateChanged', this);
+        this._checkAutoEndTurn();
+        return true;
+    }
+
+    study(): boolean {
+        const currentPlayer = this.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Community College') {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must be at the Community College to study.`,
+                'error'
+            );
+            return false;
+        }
+
+        // Check if player is working toward a degree
+        const nextCourse = COURSES.find(c => c.educationMilestone === currentPlayer.educationLevel + 1);
+        if (!nextCourse) {
+             this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} has completed all available education!`,
+                'info'
+            );
+            return false;
+        }
+
+        // Ensure player is enrolled (goal must match the next course's requirements)
+        if (currentPlayer.educationCreditsGoal < nextCourse.requiredCredits) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must enroll in ${nextCourse.name} before studying.`,
+                'error'
+            );
+            return false;
+        }
+
+        const studyTime = 8;
+        const happinessCost = 5;
+
+        if (currentPlayer.time < studyTime) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} needs ${studyTime} hours to study.`,
+                'error'
+            );
+            return false;
+        }
+
+        if (currentPlayer.happiness < happinessCost) {
+             this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} is too unhappy to study. Need at least ${happinessCost} happiness.`,
+                'error'
+            );
+            return false;
+        }
+
+        // Calculate credits
+        const hasComputer = currentPlayer.inventory.some(item => item.name === 'Computer');
+        const creditsGained = hasComputer ? 10 : 8;
+
+        currentPlayer.deductTime(studyTime);
+        currentPlayer.updateHappiness(-happinessCost);
+        currentPlayer.addEducationCredits(creditsGained);
+
+        this.addLogMessage(
+            `${this._getPlayerName(currentPlayer)} attended a lecture and gained ${creditsGained} credits.`,
+            'success'
+        );
+
+        // Check for graduation
+        this._checkGraduation(currentPlayer);
+
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish(STATE_EVENTS.EDUCATION_CHANGED, { player: currentPlayer, level: currentPlayer.educationLevel, gameState: this });
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();
         return true;
+    }
+
+    private _checkGraduation(player: Player): void {
+        const nextCourse = COURSES.find(c => c.educationMilestone === player.educationLevel + 1);
+        if (!nextCourse) return;
+
+        if (player.educationCredits >= nextCourse.requiredCredits) {
+            player.advanceEducation();
+            player.educationCredits = 0; // Reset for next degree
+            
+            // Set next goal if available
+            const futureCourse = COURSES.find(c => c.educationMilestone === player.educationLevel + 1);
+            if (futureCourse) {
+                player.setEducationGoal(futureCourse.requiredCredits);
+            } else {
+                player.setEducationGoal(0);
+            }
+
+            this.addLogMessage(
+                `🎓 Graduation! ${this._getPlayerName(player)} earned their ${nextCourse.name}!`,
+                'success'
+            );
+            
+            EventBus.publish('graduation', { player, course: nextCourse });
+            this.checkWinCondition(player);
+        }
     }
 
     travel(destination: LocationName): boolean {

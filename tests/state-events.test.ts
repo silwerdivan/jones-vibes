@@ -85,25 +85,32 @@ describe('STATE_EVENTS', () => {
             expect(call.location).toBe('Shopping Mall');
         });
 
-        it('should publish EDUCATION_CHANGED when completing a course', () => {
+        it('should publish EDUCATION_CHANGED when graduating from a course', () => {
             const handler = vi.fn();
             EventBus.subscribe(STATE_EVENTS.EDUCATION_CHANGED, handler);
             
             const player = gameState.getCurrentPlayer();
             player.location = 'Community College';
             player.cash = 1000;
-            player.time = 20; // Course 1 requires 10 hours
+            player.time = 100; 
+            player.happiness = 100;
             
-            const result = gameState.takeCourse(1); // Intro to Business
+            // 1. Enroll (sets goal)
+            gameState.takeCourse(1); 
             
-            // Only check if the course was successfully taken
-            if (result) {
-                expect(handler).toHaveBeenCalled();
-                const call = handler.mock.calls[0][0];
-                expect(call).toHaveProperty('player');
-                expect(call).toHaveProperty('level');
-                expect(call).toHaveProperty('gameState');
+            // 2. Study until graduation (Level 1 needs 50 credits, 8 per session = 7 sessions)
+            for (let i = 0; i < 7; i++) {
+                gameState.study();
             }
+            
+            expect(handler).toHaveBeenCalled();
+            // Should be called during each study session and finally on graduation
+            const graduationCall = handler.mock.calls.find(call => call[0].level === 1);
+            expect(graduationCall).toBeDefined();
+            expect(graduationCall[0]).toHaveProperty('player');
+            expect(graduationCall[0]).toHaveProperty('level');
+            expect(graduationCall[0].level).toBe(1);
+            expect(graduationCall[0]).toHaveProperty('gameState');
         });
 
         it('should publish CAREER_CHANGED when applying for a job', () => {

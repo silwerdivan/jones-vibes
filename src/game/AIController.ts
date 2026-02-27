@@ -68,18 +68,38 @@ class AIController {
             }
         }
 
-        // Priority 4: Advance Education (Course takes time)
+        // Priority 4: Advance Education (Progress Bar System)
         if (player.educationLevel < COURSES.length) {
             const nextEducationLevel = player.educationLevel + 1;
             const nextCourse = COURSES.find(course => course.educationMilestone === nextEducationLevel);
 
-            if (nextCourse && player.cash >= nextCourse.cost && player.time >= nextCourse.time) {
-                if (player.location !== 'Community College') {
-                    if (player.time >= travelTime + nextCourse.time) {
-                        return { action: 'travel', params: { destination: 'Community College' } };
+            if (nextCourse) {
+                // Enrollment (tuition)
+                if (player.educationCreditsGoal < nextCourse.requiredCredits && player.cash >= nextCourse.cost) {
+                    const enrollmentTime = 1;
+                    if (player.location !== 'Community College') {
+                        if (player.time >= travelTime + enrollmentTime) {
+                            return { action: 'travel', params: { destination: 'Community College' } };
+                        }
+                    } else if (player.time >= enrollmentTime) {
+                        return { action: 'takeCourse', params: { courseId: nextCourse.id } };
                     }
-                } else {
-                    return { action: 'takeCourse', params: { courseId: nextCourse.id } };
+                }
+
+                // Study sessions
+                const studyTime = 8;
+                const happinessCost = 5;
+                if (player.educationCreditsGoal >= nextCourse.requiredCredits && 
+                    player.time >= studyTime && 
+                    player.happiness >= happinessCost) {
+                    
+                    if (player.location !== 'Community College') {
+                        if (player.time >= travelTime + studyTime) {
+                            return { action: 'travel', params: { destination: 'Community College' } };
+                        }
+                    } else {
+                        return { action: 'study' };
+                    }
                 }
             }
         }

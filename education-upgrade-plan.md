@@ -147,7 +147,7 @@ Based on the design document `education-system-upgrade.md`, this plan outlines t
 
 ## Phase 2: Game Logic Updates
 
-- [ ] **Update `src/game/GameState.ts`**:
+- [x] **Update `src/game/GameState.ts`**:
     - Implement `study()` method:
         - Flat cost: 8 hours.
         - Happiness cost: -5 points.
@@ -158,7 +158,7 @@ Based on the design document `education-system-upgrade.md`, this plan outlines t
         - Increment `educationLevel`.
         - Reset `educationCredits` or handle overflow.
         - Trigger milestone rewards (Midterms @ 25%, Internship @ 50%).
-- [ ] **Update Event System**:
+- [x] **Update Event System**:
     - Ensure `EDUCATION_CHANGED` is published when credits or level change.
     - Add `STUDY_SESSION_COMPLETED` event if needed for UI feedback.
 

@@ -30,7 +30,7 @@ export default class Player {
         this.happiness = 50;
         this.educationLevel = 0;
         this.educationCredits = 0;
-        this.educationCreditsGoal = 50; // Initial goal for Level 1
+        this.educationCreditsGoal = 0; // Set to 0 to require enrollment
         this.careerLevel = 0;
         this.time = 24;
         this.location = "Home";
