@@ -5,7 +5,7 @@ import { CLERKS } from '../data/clerks.js';
 import { SHOPPING_ITEMS } from '../data/items.js';
 import Icons from './Icons.js';
 import GameState from '../game/GameState.js';
-import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal } from './components/Modal.js';
+import { ChoiceModal, PlayerStatsModal, IntelTerminalModal, TurnSummaryModal, GraduationModal } from './components/Modal.js';
 import HUD from './components/HUD.js';
 import CollegeDashboard from './components/CollegeDashboard.js';
 import ScreenManager from './components/screens/ScreenManager.js';
@@ -36,6 +36,7 @@ class UIManager {
     private playerStatsModal: PlayerStatsModal;
     private intelTerminalModal: IntelTerminalModal;
     private turnSummaryModal: TurnSummaryModal;
+    private graduationModal: GraduationModal;
 
     // State
     private gameState: GameState | null = null;
@@ -110,6 +111,7 @@ class UIManager {
         this.playerStatsModal = new PlayerStatsModal();
         this.intelTerminalModal = new IntelTerminalModal();
         this.turnSummaryModal = new TurnSummaryModal();
+        this.graduationModal = new GraduationModal();
 
         this.loadingOverlay = document.getElementById('loading-overlay');
 
@@ -185,6 +187,10 @@ class UIManager {
 
         EventBus.subscribe('turnEnded', (summary: TurnSummary) => {
             this.showTurnSummary(summary);
+        });
+
+        EventBus.subscribe('graduation', (data: { player: any, course: any }) => {
+            this.graduationModal.showGraduation(data.player, data.course);
         });
 
         EventBus.subscribe('showPlayerStats', (playerIndex: number) => this.showPlayerStatsModal(playerIndex));

@@ -2032,3 +2032,85 @@ body {
 }
 
 
+
+/* --- GRADUATION MODAL --- */
+.graduation-container {
+    width: 90%;
+    max-width: 400px;
+    padding: var(--space-xl);
+    text-align: center;
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    animation: modal-pop 0.5s var(--ease-out-expo);
+    border: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+}
+
+@keyframes modal-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.graduation-glow {
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+    animation: rotate-glow 10s linear infinite;
+    z-index: -1;
+}
+
+@keyframes rotate-glow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.graduation-header {
+    margin-bottom: var(--space-lg);
+}
+
+.animate-pulse {
+    animation: pulse-cyan 2s infinite;
+}
+
+@keyframes pulse-cyan {
+    0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    50% { text-shadow: 0 0 25px rgba(0, 255, 255, 0.8); }
+}
+
+.graduation-subtitle {
+    font-size: 0.9rem;
+    color: var(--neon-blue);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+}
+
+.degree-display {
+    margin: var(--space-lg) 0;
+    padding: var(--space-md);
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--neon-cyan);
+}
+
+.degree-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+.reward-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    margin-bottom: var(--space-xl);
+}
+
+.btn-glow {
+    box-shadow: 0 0 15px var(--neon-pink);
+    width: 100%;
+    padding: var(--space-md) !important;
+}
+

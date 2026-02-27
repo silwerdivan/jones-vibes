@@ -384,3 +384,37 @@ export class TurnSummaryModal extends Modal {
     window.requestAnimationFrame(step);
   }
 }
+
+export class GraduationModal extends Modal {
+  private subtitle: HTMLElement | null;
+  private degreeName: HTMLElement | null;
+  private rewardText: HTMLElement | null;
+  private dismissButton: HTMLElement | null;
+
+  constructor() {
+    super('graduation-modal', undefined, false);
+    this.subtitle = document.getElementById('graduation-subtitle');
+    this.degreeName = document.getElementById('graduated-degree-name');
+    this.rewardText = document.getElementById('graduation-reward-text');
+    this.dismissButton = document.getElementById('btn-graduation-dismiss');
+
+    if (this.dismissButton) {
+      this.dismissButton.addEventListener('click', () => this.hide());
+    }
+  }
+
+  public showGraduation(player: PlayerState, course: Course): void {
+    if (this.subtitle) this.subtitle.textContent = `${player.name.toUpperCase()} HAS GRADUATED!`;
+    if (this.degreeName) this.degreeName.textContent = course.name;
+    
+    if (this.rewardText) {
+        if (player.educationLevel < 5) {
+            this.rewardText.textContent = `Level ${player.educationLevel + 1} Careers are now unlocked at the Employment Agency. Keep studying for even higher wages!`;
+        } else {
+            this.rewardText.textContent = `You have reached the pinnacle of education! All top-tier career paths are now fully accessible to you.`;
+        }
+    }
+
+    super.show();
+  }
+}

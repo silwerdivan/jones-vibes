@@ -68,6 +68,11 @@ describe('Education System Upgrade', () => {
         expect(player.educationCreditsGoal).toBe(120); // Next goal (Bachelor's)
         expect(graduationHandler).toHaveBeenCalled();
         expect(gameState.log[0].text).toContain('Graduation');
+
+        // Verify Level 2 jobs are now available
+        const availableJobs = (gameState as any)._getAvailableJobs(player);
+        const hasLevel2Job = availableJobs.some((j: any) => j.level === 2);
+        expect(hasLevel2Job).toBe(true);
     });
 
     it('should prevent studying if happiness is too low', () => {

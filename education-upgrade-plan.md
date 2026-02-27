@@ -173,7 +173,7 @@ Based on the design document `education-system-upgrade.md`, this plan outlines t
     - **Phantom Fill**: Show preview of progress on hover/interaction.
 - [x] **Update `src/ui/UIManager.ts`**:
     - In `showLocationDashboard('Community College')`, render `CollegeDashboard` instead of `ActionCards`.
-- [ ] **Update `src/ui/components/Modal.ts`**:
+- [x] **Update `src/ui/components/Modal.ts`**:
     - Add a celebratory "Graduation" modal/state.
 - [x] **Update `style.css`**:
     - Add glassmorphism styles for the college dashboard.
@@ -182,13 +182,13 @@ Based on the design document `education-system-upgrade.md`, this plan outlines t
 
 ## Phase 4: Integration & Testing
 
-- [ ] **Verify Computer Buff**:
+- [x] **Verify Computer Buff**:
     - Purchase computer from Shopping Mall.
     - Verify study session gives 10 credits instead of 8.
-- [ ] **Verify Career Unlocking**:
+- [x] **Verify Career Unlocking**:
     - Reach 100% on Level 1 degree.
     - Verify Level 2 jobs become available at Employment Agency.
-- [ ] **Update Tests**:
+- [x] **Update Tests**:
     - Update `tests/GameState.test.ts` or create `tests/EducationSystem.test.ts`.
     - Verify credit accumulation and graduation.
 
