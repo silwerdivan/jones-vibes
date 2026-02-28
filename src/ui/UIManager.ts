@@ -450,7 +450,7 @@ class UIManager {
         const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
-        if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.location !== 'Home' && currentPlayer.time > 0) {
+        if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.time > 0) {
             setTimeout(() => {
                 this.showLocationDashboard(currentPlayer.location);
             }, 300);

@@ -142,5 +142,22 @@ describe('UIManager', () => {
             expect(showSpy).toHaveBeenCalledWith('Bank');
             vi.useRealTimers();
         });
+
+        it('SHOULD trigger dashboard when arriving at Home mid-turn', () => {
+            vi.useFakeTimers();
+            const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
+            
+            mockPlayer.time = 5;
+            mockPlayer.location = 'Home';
+            (uiManager as any).gameState = mockGameState;
+            (uiManager as any).lastLocation = 'Bank';
+            (uiManager as any).lastPlayerId = 1;
+            
+            (uiManager as any).handleAutoArrival();
+            
+            vi.advanceTimersByTime(300);
+            expect(showSpy).toHaveBeenCalledWith('Home');
+            vi.useRealTimers();
+        });
     });
 });
