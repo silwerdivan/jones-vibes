@@ -20,12 +20,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
 
     private buildDOM(): void {
         this.element.innerHTML = `
-            <div class="college-header">
-                <h2 class="college-title">Community College</h2>
-                <p class="college-subtitle">Invest in your future</p>
-            </div>
-
-            <div id="enrollment-section" class="enrollment-section hidden">
+            <div id="enrollment-section" class="enrollment-section">
                 <div class="degree-card glass-card">
                     <div class="degree-info">
                         <h3 data-next-degree-name>Associate's Degree</h3>

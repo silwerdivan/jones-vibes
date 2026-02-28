@@ -490,12 +490,6 @@ class UIManager {
                 });
                 break;
             case 'Community College':
-                actions.push({
-                    label: 'Browse Courses',
-                    icon: 'school',
-                    primary: true,
-                    onClick: () => this.showLocationDashboard('Community College')
-                });
                 break;
             case 'Shopping Mall':
                 actions.push({
