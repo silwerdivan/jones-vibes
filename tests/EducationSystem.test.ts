@@ -73,6 +73,23 @@ describe('Education System Upgrade', () => {
         const availableJobs = (gameState as any)._getAvailableJobs(player);
         const hasLevel2Job = availableJobs.some((j: any) => j.level === 2);
         expect(hasLevel2Job).toBe(true);
+
+        // Verify that after graduation, player must enroll again for Level 2
+        player.time = 24;
+        const result = gameState.study();
+        expect(result).toBe(false);
+        expect(gameState.log[0].text).toContain('must enroll in Bachelor\'s Degree');
+
+        // Enroll in Level 2
+        player.cash = 1000;
+        gameState.takeCourse(2);
+        expect(player.educationCreditsGoal).toBe(120);
+        expect(player.cash).toBe(0);
+
+        // Now can study
+        player.time = 24;
+        const studyResult = gameState.study();
+        expect(studyResult).toBe(true);
     });
 
     it('should prevent studying if happiness is too low', () => {
@@ -119,5 +136,16 @@ describe('Education System Upgrade', () => {
         // Third action: Study
         action = aiController.takeTurn(gameState, aiPlayer);
         expect(action.action).toBe('study');
+
+        // Simulate graduating from Level 1
+        aiPlayer.educationLevel = 1;
+        aiPlayer.educationCredits = 0;
+        aiPlayer.educationCreditsGoal = 0;
+        aiPlayer.cash = 1500; // Enough for Bachelor's ($1000)
+
+        // AI should try to enroll in Level 2
+        action = aiController.takeTurn(gameState, aiPlayer);
+        expect(action.action).toBe('takeCourse');
+        expect(action.params.courseId).toBe(2);
     });
 });

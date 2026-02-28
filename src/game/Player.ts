@@ -78,7 +78,7 @@ export default class Player {
         player.happiness = data.happiness;
         player.educationLevel = data.educationLevel;
         player.educationCredits = data.educationCredits || 0;
-        player.educationCreditsGoal = data.educationCreditsGoal || 50;
+        player.educationCreditsGoal = data.educationCreditsGoal !== undefined ? data.educationCreditsGoal : 0;
         player.careerLevel = data.careerLevel;
         player.time = data.time;
         player.location = data.location as LocationName;
