@@ -393,7 +393,15 @@ class UIManager {
                 } else if (type === 'shopping') {
                     const shoppingItem = item as Item;
                     EventBus.publish(UI_EVENTS.BUY_ITEM, shoppingItem.name);
-                    this.choiceModal.hide();
+                    
+                    if (shoppingItem.location === 'Fast Food') {
+                        // Keep modal open for Fast Food purchases
+                        setTimeout(() => {
+                            this.showLocationDashboard('Fast Food');
+                        }, 100);
+                    } else {
+                        this.choiceModal.hide();
+                    }
                 }
             }
         });
@@ -490,22 +498,6 @@ class UIManager {
                 });
                 break;
             case 'Community College':
-                break;
-            case 'Shopping Mall':
-                actions.push({
-                    label: 'Browse Items',
-                    icon: 'shopping_bag',
-                    primary: true,
-                    onClick: () => this.showLocationDashboard('Shopping Mall')
-                });
-                break;
-            case 'Fast Food':
-                actions.push({
-                    label: 'Browse Menu',
-                    icon: 'lunch_dining',
-                    primary: true,
-                    onClick: () => this.showLocationDashboard('Fast Food')
-                });
                 break;
             case 'Used Car Lot':
                 actions.push({

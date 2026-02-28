@@ -160,4 +160,41 @@ describe('UIManager', () => {
             vi.useRealTimers();
         });
     });
+
+    describe('getLocationActions', () => {
+        it('should return "Rest / End Turn" for Home', () => {
+            const actions = uiManager.getLocationActions('Home');
+            expect(actions).toHaveLength(1);
+            expect(actions[0].label).toBe('Rest / End Turn');
+        });
+
+        it('should return "Work Shift" for Employment Agency', () => {
+            const actions = uiManager.getLocationActions('Employment Agency');
+            expect(actions).toHaveLength(1);
+            expect(actions[0].label).toBe('Work Shift');
+        });
+
+        it('should return empty array for Community College', () => {
+            const actions = uiManager.getLocationActions('Community College');
+            expect(actions).toHaveLength(0);
+        });
+
+        it('should NOT return "Browse Items" for Shopping Mall (redundant)', () => {
+            const actions = uiManager.getLocationActions('Shopping Mall');
+            const browseAction = actions.find(a => a.label === 'Browse Items');
+            expect(browseAction).toBeUndefined();
+        });
+
+        it('should NOT return "Browse Menu" for Fast Food (redundant)', () => {
+            const actions = uiManager.getLocationActions('Fast Food');
+            const browseAction = actions.find(a => a.label === 'Browse Menu');
+            expect(browseAction).toBeUndefined();
+        });
+
+        it('should return "View Inventory" for Used Car Lot', () => {
+            const actions = uiManager.getLocationActions('Used Car Lot');
+            expect(actions).toHaveLength(1);
+            expect(actions[0].label).toBe('View Inventory');
+        });
+    });
 });
