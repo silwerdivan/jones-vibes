@@ -745,7 +745,7 @@ body {
 /* --- EVENT NOTIFICATION SYSTEM --- */
 .event-notification-strip {
     position: fixed;
-    bottom: 160px;
+    top: calc(85px + env(safe-area-inset-top) + 10px);
     left: 50%;
     transform: translateX(-50%);
     background: var(--glass-surface);
@@ -756,6 +756,12 @@ body {
     z-index: 4200;
     max-width: 90%;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    pointer-events: none; /* Allow clicking buttons behind it */
+}
+
+.event-notification-text {
+    pointer-events: auto; /* Re-enable clicks for the text itself to open terminal */
+    cursor: pointer;
 }
 
 .event-notification-strip.hidden { display: none; }

@@ -1,9 +1,8 @@
 # UI Notification Fix Activity Log
 
-- **Status:** Researched layout.
-- **Findings:**
-    - `.event-notification-strip` is at `bottom: 160px`.
-    - `location-dashboard` (ChoiceModal) buttons are at the bottom of the screen.
-    - `game-controls` ID mentioned in `EventNotificationManager.ts` is not found in the codebase, suggesting it's a legacy reference.
-    - Moving the strip to the top (below HUD) or significantly higher from the bottom is recommended.
-- **Next Task:** Update `style.css` to move `.event-notification-strip` to a non-blocking position.
+- **Status:** Implemented CSS and Logic changes.
+- **Changes:**
+    - Updated `style.css` to move `.event-notification-strip` to the top (below HUD).
+    - Added `pointer-events: none` to the strip and `pointer-events: auto` to its text.
+    - Simplified `EventNotificationManager.ts` to always append to `.app-shell` and removed legacy `game-controls` logic.
+- **Next Task:** Final verification of clickable buttons while notification is active.

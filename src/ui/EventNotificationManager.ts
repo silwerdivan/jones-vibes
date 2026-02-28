@@ -53,13 +53,10 @@ class EventNotificationManager {
       }
     }, { passive: true });
     
-    // Insert above the action buttons panel
-    const actionsPanel = document.getElementById('game-controls');
-    if (actionsPanel && actionsPanel.parentNode) {
-      actionsPanel.parentNode.insertBefore(this.eventStrip, actionsPanel);
-    } else {
-      const appShell = document.querySelector('.app-shell');
-      if (appShell) appShell.appendChild(this.eventStrip);
+    // Always append to app-shell as it's fixed position anyway
+    const appShell = document.querySelector('.app-shell');
+    if (appShell) {
+      appShell.appendChild(this.eventStrip);
     }
   }
   
