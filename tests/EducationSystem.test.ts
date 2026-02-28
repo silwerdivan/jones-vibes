@@ -65,7 +65,7 @@ describe('Education System Upgrade', () => {
         
         expect(player.educationLevel).toBe(1);
         expect(player.educationCredits).toBe(0);
-        expect(player.educationCreditsGoal).toBe(120); // Next goal (Bachelor's)
+        expect(player.educationCreditsGoal).toBe(0); // Next goal (Bachelor's)
         expect(graduationHandler).toHaveBeenCalled();
         expect(gameState.log[0].text).toContain('Graduation');
 

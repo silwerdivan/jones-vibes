@@ -526,13 +526,7 @@ class GameState {
             player.advanceEducation();
             player.educationCredits = 0; // Reset for next degree
             
-            // Set next goal if available
-            const futureCourse = COURSES.find(c => c.educationMilestone === player.educationLevel + 1);
-            if (futureCourse) {
-                player.setEducationGoal(futureCourse.requiredCredits);
-            } else {
-                player.setEducationGoal(0);
-            }
+            player.setEducationGoal(0);
 
             this.addLogMessage(
                 `🎓 Graduation! ${this._getPlayerName(player)} earned their ${nextCourse.name}!`,
