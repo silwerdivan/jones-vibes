@@ -190,7 +190,9 @@ class UIManager {
         });
 
         EventBus.subscribe('graduation', (data: { player: any, course: any }) => {
-            this.graduationModal.showGraduation(data.player, data.course);
+            if (!data.player.isAI) {
+                this.graduationModal.showGraduation(data.player, data.course);
+            }
         });
 
         EventBus.subscribe('showPlayerStats', (playerIndex: number) => this.showPlayerStatsModal(playerIndex));

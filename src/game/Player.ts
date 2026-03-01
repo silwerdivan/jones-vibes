@@ -20,6 +20,7 @@ export default class Player {
     weeklyIncome: number;
     weeklyExpenses: number;
     weeklyHappinessChange: number;
+    weeklyGraduations: string[] = [];
     isAI: boolean = false;
     name: string = '';
 
@@ -44,6 +45,7 @@ export default class Player {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklyHappinessChange = 0;
+        this.weeklyGraduations = [];
     }
 
     toJSON(): PlayerState {
@@ -124,10 +126,14 @@ export default class Player {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklyHappinessChange = 0;
+        this.weeklyGraduations = [];
     }
 
-    advanceEducation(): void {
+    advanceEducation(courseName?: string): void {
         this.educationLevel++;
+        if (courseName) {
+            this.weeklyGraduations.push(courseName);
+        }
     }
 
     addEducationCredits(amount: number): void {

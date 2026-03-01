@@ -523,7 +523,7 @@ class GameState {
         if (!nextCourse) return;
 
         if (player.educationCredits >= nextCourse.requiredCredits) {
-            player.advanceEducation();
+            player.advanceEducation(nextCourse.name);
             player.educationCredits = 0; // Reset for next degree
             
             player.setEducationGoal(0);

@@ -123,7 +123,20 @@ class TimeSystem {
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: 20, gameState: this.gameState });
 
-        // 6. Calculate totals from tracked stats
+        // 6. Add graduation events
+        if (currentPlayer.weeklyGraduations && currentPlayer.weeklyGraduations.length > 0) {
+            currentPlayer.weeklyGraduations.forEach(courseName => {
+                summary.events.push({
+                    type: 'success',
+                    label: `Graduated: ${courseName}`,
+                    value: 0,
+                    unit: 'NONE',
+                    icon: 'school'
+                });
+            });
+        }
+
+        // 7. Calculate totals from tracked stats
         summary.totals.cashChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
         summary.totals.happinessChange = currentPlayer.weeklyHappinessChange;
 

@@ -329,7 +329,7 @@ export class TurnSummaryModal extends Modal {
           const card = document.createElement('div');
           card.className = `event-card ${event.type}`;
           
-          const valueText = (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
+          const valueText = event.unit === 'NONE' ? '' : (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
           
           card.innerHTML = `
             <div class="event-icon-circle">
@@ -337,7 +337,7 @@ export class TurnSummaryModal extends Modal {
             </div>
             <div class="event-info">
               <span class="event-name">${event.label}</span>
-              <span class="event-amount">${valueText}</span>
+              ${valueText ? `<span class="event-amount">${valueText}</span>` : ''}
             </div>
           `;
           
