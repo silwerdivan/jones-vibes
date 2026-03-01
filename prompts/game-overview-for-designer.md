@@ -1,0 +1,1 @@
+i need to tell a game designer a bit about this project: What is the genre, the core 'hook' (what makes it unique). prepare this for me. this is what you came up with previously: project-standing-260227.txt. create a new stanging doc, taking into account all the new commits from 8e3ebfe3c81ba3e51af13f06e11d464952e86091 onwards.

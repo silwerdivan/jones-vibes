@@ -1,0 +1,55 @@
+# Project Standing - March 1, 2026
+
+## Overview
+**Genre:** Cyberpunk Life Simulation / Strategy (1-2 Players, Hotseat or AI)
+**Core Hook:** "The Math of Life." A high-stakes balancing act of time, money, and biological needs where every hour is a currency and every purchase is an investment in your future.
+
+---
+
+## What is Functionally "Alive" (Current Features)
+
+### 🎓 **Active Education System (NEW)**
+The education system has been overhauled from a passive purchase to an active pursuit.
+*   **Enrollment:** Pay tuition at the Community College to set a graduation goal.
+*   **Study Sessions:** Spend 8 hours and 5 Happiness to gain credits. 
+*   **Graduation:** Accumulate enough credits to earn degrees (Level 1-3), unlocking higher career tiers.
+
+### 💻 **Tangible Item Buffs (FIRST LIVE BUFF)**
+Items are moving beyond flavor text.
+*   **Computer Buff:** Owning a Computer now provides a **+25% Study Speed** bonus (10 credits per session instead of 8). This is the first item to have its mathematical "benefit" wired into the core game loop.
+
+### ⏰ **The Clock & Persistence**
+*   **Time Management:** 24 hours per turn. Strategic travel is key (Car cuts travel time by 50%).
+*   **Time Deficit:** Returning Home with 0 hours remaining carries over a "debt" to the next week.
+*   **Seamless Persistence:** The game state (including AI "thinking" and open modals) is saved to SessionStorage. You can close the tab at any moment and resume exactly where you left off.
+
+### 💰 **The Economy & Career**
+*   **Career Ladder:** 5 tiers (Dishwasher -> Junior Accountant). Progress is locked behind Education Milestones.
+*   **Banking:** Deposit for interest, or take out high-interest loans (up to $2,500) if you're desperate.
+*   **Grand Victory:** Win by hitting $10k Wealth, 80+ Happiness, Level 3 Education, and Level 4 Career simultaneously.
+
+### 🍔 **Biological Needs**
+*   **Hunger System:** Hunger increases weekly. If it exceeds 50%, you suffer a Happiness penalty. Frequent the Fast Food joint to stay satiated.
+
+---
+
+## UI & UX Enhancements
+
+*   **Auto-Arrival Dashboards:** Arriving at a location now automatically triggers its interaction menu (including Home mid-turn), significantly reducing "navigation clicks."
+*   **Non-Blocking Notifications:** The event strip has been moved to the top and made non-blocking, ensuring log messages don't interrupt your planning.
+*   **Graduation Modals:** Celebratory UI for major career and education milestones.
+*   **Fast Food Convenience:** Modals stay open after use for multiple interactions (e.g., buying multiple burgers).
+
+---
+
+## Current Limitations (Next for the Designer)
+
+*   **Remaining Item Buffs (Pending):** Fridge (Food Waste -50%), Television (Relaxation +10%), etc., are still flavor text and require math integration into the Hunger and Happiness systems.
+*   **Random Events:** No "Life Happens" moments yet (e.g., medical bills, lottery wins, or muggings).
+*   **Dynamic Markets:** Prices and wages are currently static; no inflation or sales.
+*   **Social Simulation:** No NPC relationships or dating mechanics yet.
+
+---
+
+## Designer's Note
+The "Engine" is now mature enough to handle complex logic modifiers (like the Computer's study buff). The project has transitioned from "Building the Foundation" to **"Content & Tuning."** We are now ready to wire up the remaining items and design the "Random Event" deck.
