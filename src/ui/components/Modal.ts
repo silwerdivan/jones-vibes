@@ -1,5 +1,7 @@
 import EventBus from '../../EventBus.js';
 import { Clerk, IconRegistry, PlayerState, Course, Job, LogMessage, TurnSummary } from '../../models/types.js';
+import MascotUI from './MascotUI.js';
+import GameState from '../../game/GameState.js';
 
 export interface ModalConfig {
   title?: string;
@@ -118,6 +120,7 @@ export class ChoiceModal extends Modal {
   private clerkAvatar: HTMLElement | null;
   private clerkName: HTMLElement | null;
   private clerkMessage: HTMLElement | null;
+  private mascot: MascotUI | null = null;
 
   constructor() {
     super('choice-modal-overlay', 'choice-modal-title');
@@ -142,10 +145,19 @@ export class ChoiceModal extends Modal {
     if (modalElement) this.addSwipeToClose(modalElement);
   }
 
-  public setupClerk(clerk: Clerk | null, Icons: IconRegistry): void {
+  public setupClerk(clerk: Clerk | null, Icons: IconRegistry, gameState?: GameState, playerIndex?: number): void {
     if (clerk && this.clerkContainer) {
       this.clerkContainer.classList.remove('hidden');
-      if (this.clerkAvatar) this.clerkAvatar.innerHTML = Icons[clerk.icon](40, '#00FFFF');
+      
+      // Replace clerk icon with MascotUI in modal mode
+      if (this.clerkAvatar) {
+          this.clerkAvatar.innerHTML = '';
+          const pIndex = playerIndex !== undefined ? playerIndex : (gameState ? gameState.currentPlayerIndex : 0);
+          this.mascot = new MascotUI(pIndex, true);
+          this.mascot.mount(this.clerkAvatar);
+          if (gameState) this.mascot.render(gameState);
+      }
+
       if (this.clerkName) this.clerkName.textContent = clerk.name;
       if (this.clerkMessage) this.clerkMessage.textContent = clerk.message;
       this.titleElement?.classList.add('hidden');

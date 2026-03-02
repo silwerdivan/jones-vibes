@@ -179,8 +179,8 @@ describe('UIManager', () => {
             expect(actions).toHaveLength(0);
         });
 
-        it('should NOT return "Browse Items" for Shopping Mall (redundant)', () => {
-            const actions = uiManager.getLocationActions('Shopping Mall');
+        it('should NOT return "Browse Items" for Consumpt-Zone (redundant)', () => {
+            const actions = uiManager.getLocationActions('Consumpt-Zone');
             const browseAction = actions.find(a => a.label === 'Browse Items');
             expect(browseAction).toBeUndefined();
         });
@@ -191,8 +191,8 @@ describe('UIManager', () => {
             expect(browseAction).toBeUndefined();
         });
 
-        it('should return "View Inventory" for Used Car Lot', () => {
-            const actions = uiManager.getLocationActions('Used Car Lot');
+        it('should return "View Inventory" for Mobility-Asset', () => {
+            const actions = uiManager.getLocationActions('Mobility-Asset');
             expect(actions).toHaveLength(1);
             expect(actions[0].label).toBe('View Inventory');
         });

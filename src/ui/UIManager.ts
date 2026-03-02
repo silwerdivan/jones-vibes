@@ -199,7 +199,7 @@ class UIManager {
         EventBus.subscribe('showIntelTerminal', () => this.showIntelTerminal());
 
         EventBus.subscribe(UI_EVENTS.RESTART_GAME, () => {
-            this.choiceModal.setupClerk(null, Icons as unknown as IconRegistry);
+            this.choiceModal.setupClerk(null, Icons as unknown as IconRegistry, this.gameState!);
             this.choiceModal.clearContent();
             this.choiceModal.showInput(false);
             
@@ -237,7 +237,7 @@ class UIManager {
         // Publish event for persistence
         EventBus.publish('choiceModalSwitched', { title, choices, showInput });
 
-        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
+        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry, this.gameState!);
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
 
@@ -284,7 +284,7 @@ class UIManager {
 
         const clerk = (CLERKS as ClerkRegistry)[location];
 
-        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry);
+        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry, this.gameState!);
         this.choiceModal.clearContent();
         this.choiceModal.showInput(false);
 

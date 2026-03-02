@@ -352,27 +352,67 @@ body {
     z-index: 1;
 }
 
+/* --- MASCOT --- */
+.mascot-container {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    animation: mascot-float 3s ease-in-out infinite;
+}
+
+.mascot-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    margin-top: -4px; /* Allow head to break boundary */
+    transition: filter 0.3s ease;
+}
+
+@keyframes mascot-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.mascot-profit {
+    filter: drop-shadow(0 0 10px var(--neon-green));
+}
+
+.mascot-deficit {
+    filter: drop-shadow(0 0 10px var(--neon-red));
+    animation: mascot-glitch 0.2s infinite;
+}
+
+@keyframes mascot-glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(-1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(1px, -1px); }
+    100% { transform: translate(0); }
+}
+
+.mascot-helpful {
+    filter: drop-shadow(0 0 10px var(--neon-cyan));
+}
+
 .orb-avatar {
     position: absolute;
-    inset: 4px; /* Space for the ring */
-    background: var(--glass-surface);
+    inset: 0; /* Changed from 4px to 0 to allow mascot to fill or break boundary */
+    background: transparent; /* Remove background, mascot will handle it */
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
-    font-size: 12px;
     z-index: 2;
-    color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none; /* Remove border */
 }
 
-.orb-avatar[data-avatar="p1"] {
-    background: linear-gradient(135deg, var(--neon-pink), #D500F9);
-}
-
-.orb-avatar[data-avatar="p2"] {
-    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+.orb-avatar[data-avatar="p1"], .orb-avatar[data-avatar="p2"] {
+    background: transparent; /* Override previous gradients */
 }
 
 .hud-stats {

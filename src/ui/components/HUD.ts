@@ -3,6 +3,7 @@ import GameState from '../../game/GameState.js';
 import ClockVisualization from '../ClockVisualization.js';
 import EventBus, { STATE_EVENTS } from '../../EventBus.js';
 import { LogMessage } from '../../models/types.js';
+import MascotUI from './MascotUI.js';
 
 export default class HUD extends BaseComponent<GameState> {
     private hudCash!: HTMLElement;
@@ -16,6 +17,8 @@ export default class HUD extends BaseComponent<GameState> {
     private terminalTrigger!: HTMLElement;
     private hudClockVisualizationP1: ClockVisualization | null = null;
     private hudClockVisualizationP2: ClockVisualization | null = null;
+    private mascotP1: MascotUI | null = null;
+    private mascotP2: MascotUI | null = null;
     private lastPlayerIndex: number = -1;
     private unreadEvents: number = 0;
     private newsTickerContent: HTMLElement | null = null;
@@ -24,6 +27,7 @@ export default class HUD extends BaseComponent<GameState> {
         super('header', 'hud glass');
         this.buildDOM();
         this.initializeReferences();
+        this.initializeMascots();
         this.initializeClockVisualizations();
         this.setupEventListeners();
         this.setupGranularSubscriptions();
@@ -35,11 +39,11 @@ export default class HUD extends BaseComponent<GameState> {
                 <div class="hud-status-orbs">
                     <div class="status-orb active" id="orb-p1" data-orb="p1">
                         <div class="time-ring-container" data-time-ring="p1"></div>
-                        <div class="orb-avatar" id="hud-avatar-p1" data-avatar="p1">P1</div>
+                        <div class="orb-avatar" id="hud-avatar-p1" data-avatar="p1"></div>
                     </div>
                     <div class="status-orb inactive" id="orb-p2" data-orb="p2">
                         <div class="time-ring-container" data-time-ring="p2"></div>
-                        <div class="orb-avatar" id="hud-avatar-p2" data-avatar="p2">AI</div>
+                        <div class="orb-avatar" id="hud-avatar-p2" data-avatar="p2"></div>
                     </div>
                 </div>
                 <div class="hud-stats">
@@ -76,6 +80,17 @@ export default class HUD extends BaseComponent<GameState> {
         this.hudLocation = this.element.querySelector('[data-location]')!;
         this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
         this.terminalTrigger = this.element.querySelector('[data-terminal-trigger]')!;
+    }
+
+    private initializeMascots(): void {
+        const avatarP1 = this.element.querySelector('#hud-avatar-p1') as HTMLElement;
+        const avatarP2 = this.element.querySelector('#hud-avatar-p2') as HTMLElement;
+
+        this.mascotP1 = new MascotUI(0);
+        this.mascotP2 = new MascotUI(1);
+
+        this.mascotP1.mount(avatarP1);
+        this.mascotP2.mount(avatarP2);
     }
 
     private initializeClockVisualizations(): void {
@@ -122,16 +137,23 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateTerminalBadge();
             EventBus.publish('showIntelTerminal');
         });
+
+        EventBus.subscribe('mascotStateExpired', () => {
+            // Trigger a re-render or update of the HUD to refresh mascot states
+            EventBus.publish('stateChanged', (window as any).gameController?.gameState);
+        });
     }
 
     private setupGranularSubscriptions(): void {
         // Subscribe to specific state changes for targeted updates
         this.subscribe(STATE_EVENTS.CASH_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateCash(gameState);
+            this.updateMascots(gameState);
         });
 
         this.subscribe(STATE_EVENTS.TIME_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateClocks(gameState);
+            this.updateMascots(gameState);
         });
 
         this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
@@ -139,6 +161,7 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateCash(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
+            this.updateMascots(gameState);
         });
 
         this.subscribe(STATE_EVENTS.LOCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
@@ -151,11 +174,12 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateCash(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
+            this.updateMascots(gameState);
         });
 
         // Listen for stateChanged as a fallback for initial load and legacy updates
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
-            this.render(gameState);
+            if (gameState) this.render(gameState);
         });
     }
 
@@ -183,6 +207,11 @@ export default class HUD extends BaseComponent<GameState> {
         if (this.hudClockVisualizationP2 && player2) {
             this.hudClockVisualizationP2.updateTime(player2.time);
         }
+    }
+
+    private updateMascots(gameState: GameState): void {
+        if (this.mascotP1) this.mascotP1.render(gameState);
+        if (this.mascotP2) this.mascotP2.render(gameState);
     }
 
     private updateOrbs(gameState: GameState): void {
@@ -240,6 +269,9 @@ export default class HUD extends BaseComponent<GameState> {
         if (this.hudClockVisualizationP2 && player2) {
             this.hudClockVisualizationP2.updateTime(player2.time);
         }
+
+        // Update Mascots
+        this.updateMascots(gameState);
 
         // Update Stats
         this.hudCash.textContent = `[OC]${currentPlayer.cash}`;
