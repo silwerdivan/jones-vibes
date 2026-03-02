@@ -107,15 +107,15 @@ class AIController {
         // Priority 5: Boost Happiness (Shopping is instant once at the location)
         if (player.happiness < 50) {
             const affordableItems = SHOPPING_ITEMS.filter(item => 
-                item.location === 'Shopping Mall' && player.cash >= item.cost
+                item.location === 'Consumpt-Zone' && player.cash >= item.cost
             );
             
             if (affordableItems.length > 0) {
-                if (player.location === 'Shopping Mall') {
+                if (player.location === 'Consumpt-Zone') {
                     const mostExpensive = affordableItems.reduce((prev, current) => (prev.cost > current.cost) ? prev : current);
                     return { action: 'buyItem', params: { itemName: mostExpensive.name } };
                 } else if (player.time >= travelTime) {
-                    return { action: 'travel', params: { destination: 'Shopping Mall' } };
+                    return { action: 'travel', params: { destination: 'Consumpt-Zone' } };
                 }
             }
         }
@@ -123,12 +123,12 @@ class AIController {
         // Priority 6: Increase Efficiency (Buying car takes time, but AI checks if it can afford it first)
         if (player.cash > 3500 && !player.hasCar) {
             const carCostTime = 4;
-            if (player.location === 'Used Car Lot') {
+            if (player.location === 'Mobility-Asset') {
                 if (player.time >= carCostTime) {
                     return { action: 'buyCar' };
                 }
             } else if (player.time >= travelTime + carCostTime) {
-                return { action: 'travel', params: { destination: 'Used Car Lot' } };
+                return { action: 'travel', params: { destination: 'Mobility-Asset' } };
             }
         }
 

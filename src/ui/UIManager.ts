@@ -241,7 +241,7 @@ class UIManager {
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
 
-        if (location === 'Shopping Mall' || location === 'Sustenance Hub') {
+        if (location === 'Consumpt-Zone' || location === 'Sustenance Hub') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
                 } else if (location === 'Cognitive Re-Ed') {
@@ -293,7 +293,7 @@ class UIManager {
         } else if (location === 'Cognitive Re-Ed') {
             this.collegeDashboard.render(this.gameState!);
             this.choiceModal.setContent(this.collegeDashboard.getElement());
-        } else if (location === 'Shopping Mall' || location === 'Sustenance Hub') {
+        } else if (location === 'Consumpt-Zone' || location === 'Sustenance Hub') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
         }
@@ -502,7 +502,7 @@ class UIManager {
                 break;
             case 'Cognitive Re-Ed':
                 break;
-            case 'Used Car Lot':
+            case 'Mobility-Asset':
                 actions.push({
                     label: 'View Inventory',
                     icon: 'directions_car',

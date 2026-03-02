@@ -27,9 +27,9 @@ class EconomySystem {
         const currentPlayer = this.gameState.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
-        if (currentPlayer.location !== 'Shopping Mall' && currentPlayer.location !== 'Sustenance Hub') {
+        if (currentPlayer.location !== 'Consumpt-Zone' && currentPlayer.location !== 'Sustenance Hub') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall or Sustenance Hub to shop.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Consumpt-Zone or Sustenance Hub to shop.`,
                 'error'
             );
             return false;
@@ -244,9 +244,9 @@ class EconomySystem {
         const CAR_COST = 3000;
         const TIME_COST = 4;
 
-        if (currentPlayer.location !== 'Used Car Lot') {
+        if (currentPlayer.location !== 'Mobility-Asset') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Used Car Lot to buy a car.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Mobility-Asset to buy a car.`,
                 'error'
             );
             return false;
