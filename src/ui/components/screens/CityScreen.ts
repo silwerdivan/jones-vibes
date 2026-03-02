@@ -106,9 +106,9 @@ export default class CityScreen extends BaseComponent<GameState> {
             case 'Hab-Pod 404': return Icons.apartment(32, '#FF00FF');
             case 'Labor Sector': return Icons.agency(32, '#00FFFF');
             case 'Cognitive Re-Ed': return Icons.cyberChip(32, '#2979FF');
-            case 'Shopping Mall': return Icons.smartBag(32, '#FFD600');
+            case 'Consumpt-Zone': return Icons.smartBag(32, '#FFD600');
             case 'Sustenance Hub': return Icons.restaurant(32, '#FF9100');
-            case 'Used Car Lot': return Icons.hoverCar(32, '#00E676');
+            case 'Mobility-Asset': return Icons.hoverCar(32, '#00E676');
             case 'Cred-Debt Ctr': return Icons.cryptoVault(32, '#FF5252');
             default: return '';
         }
@@ -116,13 +116,13 @@ export default class CityScreen extends BaseComponent<GameState> {
 
     private getLocationSummary(location: LocationName): string {
         switch (location) {
-            case 'Hab-Pod 404': return 'Rest and end turn';
-            case 'Labor Sector': return 'Find work';
-            case 'Cognitive Re-Ed': return 'Study courses';
-            case 'Shopping Mall': return 'Buy items';
-            case 'Sustenance Hub': return 'Eat food';
-            case 'Used Car Lot': return 'Buy a car';
-            case 'Cred-Debt Ctr': return 'Savings & Loans';
+            case 'Hab-Pod 404': return 'Cycle Rest and turn end';
+            case 'Labor Sector': return 'Productivity shifts';
+            case 'Cognitive Re-Ed': return 'Compliance training';
+            case 'Consumpt-Zone': return 'Asset acquisition';
+            case 'Sustenance Hub': return 'Nutrient intake';
+            case 'Mobility-Asset': return 'Transit assets';
+            case 'Cred-Debt Ctr': return 'Yield-Optimize (Banking)';
             default: return '';
         }
     }
@@ -139,14 +139,14 @@ export default class CityScreen extends BaseComponent<GameState> {
         let hintText = '';
         
         switch (location) {
-            case 'Hab-Pod 404': hintText = 'Rest and end your turn here'; break;
-            case 'Labor Sector': hintText = 'Find work and earn money'; break;
-            case 'Cognitive Re-Ed': hintText = 'Improve your education for better jobs'; break;
-            case 'Shopping Mall': hintText = 'Buy items to boost your happiness'; break;
-            case 'Sustenance Hub': hintText = 'Grab a quick bite to eat'; break;
-            case 'Used Car Lot': hintText = 'Purchase a car for faster travel'; break;
-            case 'Cred-Debt Ctr': hintText = 'Manage your finances: deposit, withdraw, or take a loan'; break;
-            default: hintText = 'Travel to other locations';
+            case 'Hab-Pod 404': hintText = 'Cycle Rest and finalize turn protocol here'; break;
+            case 'Labor Sector': hintText = 'Execute productivity shifts to accumulate Omni-Creds'; break;
+            case 'Cognitive Re-Ed': hintText = 'Increase compliance level for higher productivity tiers'; break;
+            case 'Consumpt-Zone': hintText = 'Acquire assets and essentials for morale maintenance'; break;
+            case 'Sustenance Hub': hintText = 'Minimize bio-deficit through nutrient intake'; break;
+            case 'Mobility-Asset': hintText = 'Procure transit assets for enhanced travel efficiency'; break;
+            case 'Cred-Debt Ctr': hintText = 'Manage liquidity and optimize yield through credit-debt protocols'; break;
+            default: hintText = 'Initiate travel to alternative sectors';
         }
         
         this.locationHint.textContent = hintText;

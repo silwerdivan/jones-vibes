@@ -46,7 +46,7 @@ function getCourseState(course: Course, player: Player | null): ActionCardState 
         isLocked: isLocked || alreadyTaken,
         isCompleted: alreadyTaken,
         buttonText: alreadyTaken ? 'Completed' : 'Study',
-        feedbackText: `-$${course.cost}`,
+        feedbackText: `-[OC]${course.cost}`,
         feedbackType: 'error'
     };
 }
@@ -58,7 +58,7 @@ function getShoppingState(item: Item, player: Player | null): ActionCardState {
         isLocked,
         isCompleted: false,
         buttonText: 'Buy',
-        feedbackText: `-$${item.cost}`,
+        feedbackText: `-[OC]${item.cost}`,
         feedbackType: 'error'
     };
 }
@@ -69,21 +69,21 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
         const multiplier = player ? player.wageMultiplier : 1.0;
         const adjustedWage = Math.round(job.wage * multiplier);
         const wageHtml = multiplier < 1.0 
-            ? `<span class="wage-original">$${job.wage}</span> <span class="wage-reduced">$${adjustedWage}</span>/hr`
-            : `$${job.wage}/hr`;
+            ? `<span class="wage-original">[OC]${job.wage}</span> <span class="wage-reduced">[OC]${adjustedWage}</span>/CH`
+            : `[OC]${job.wage}/CH`;
 
         return `
             <span class="action-card-tag price"><i class="material-icons">payments</i>${wageHtml}</span>
-            <span class="action-card-tag"><i class="material-icons">schedule</i>${job.shiftHours}h</span>
+            <span class="action-card-tag"><i class="material-icons">schedule</i>${job.shiftHours}CH</span>
             <span class="action-card-tag requirement ${state.isLocked ? 'locked' : ''}">
-                <i class="material-icons">${state.isLocked ? 'lock' : 'school'}</i>Edu Lvl ${job.educationRequired}
+                <i class="material-icons">${state.isLocked ? 'lock' : 'school'}</i>Compliance Level ${job.educationRequired}
             </span>
         `;
     } else if (type === 'college') {
         const course = data as Course;
         return `
-            <span class="action-card-tag price ${state.isLocked && !state.isCompleted ? 'locked' : ''}"><i class="material-icons">payments</i>$${course.cost}</span>
-            <span class="action-card-tag"><i class="material-icons">history</i>${course.time}h total</span>
+            <span class="action-card-tag price ${state.isLocked && !state.isCompleted ? 'locked' : ''}"><i class="material-icons">payments</i>[OC]${course.cost}</span>
+            <span class="action-card-tag"><i class="material-icons">history</i>${course.time}CH total</span>
         `;
     } else {
         const item = data as Item;
@@ -92,7 +92,7 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
             boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Bio-Deficit</span>`;
         }
         return `
-            <span class="action-card-tag price ${state.isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>
+            <span class="action-card-tag price ${state.isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>[OC]${item.cost}</span>
             ${boostHtml}
         `;
     }

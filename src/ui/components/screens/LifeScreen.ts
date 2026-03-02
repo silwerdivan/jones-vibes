@@ -49,8 +49,8 @@ export default class LifeScreen extends BaseComponent<GameState> {
         const gaugeConfigs: LifeScreenGauge[] = [
             { id: 'wealth', label: 'Omni-Creds', value: 0, max: 100, color: '#00E676' },
             { id: 'happiness', label: 'Morale Quota', value: 0, max: 100, color: '#FFD600' },
-            { id: 'education', label: 'Education', value: 0, max: 100, color: '#2979FF' },
-            { id: 'career', label: 'Career', value: 0, max: 100, color: '#FF00FF' }
+            { id: 'education', label: 'Compliance Level', value: 0, max: 100, color: '#2979FF' },
+            { id: 'career', label: 'Productivity Tier', value: 0, max: 100, color: '#FF00FF' }
         ];
 
         gaugeConfigs.forEach(config => {
@@ -146,7 +146,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
         const chips: Array<{ text: string; className: string }> = [];
 
         if (player.time > 12) {
-            chips.push({ text: 'Well-Rested', className: 'chip-success' });
+            chips.push({ text: 'Optimal Buffer', className: 'chip-success' });
         }
 
         if (player.hunger > 50) {
@@ -155,11 +155,11 @@ export default class LifeScreen extends BaseComponent<GameState> {
                 className: player.hunger > 80 ? 'chip-danger' : 'chip-warning'
             });
         } else {
-            chips.push({ text: 'Optimal', className: 'chip-success' });
+            chips.push({ text: 'Nominal', className: 'chip-success' });
         }
 
         if (player.loan > 0) {
-            chips.push({ text: 'In Debt', className: 'chip-danger' });
+            chips.push({ text: 'Negative Liquidity', className: 'chip-danger' });
         }
 
         chips.forEach(chipData => {
@@ -207,8 +207,8 @@ export default class LifeScreen extends BaseComponent<GameState> {
         const configs: Record<string, { color: string; label: string }> = {
             wealth: { color: '#00E676', label: 'Omni-Creds' },
             happiness: { color: '#FFD600', label: 'Morale Quota' },
-            education: { color: '#2979FF', label: 'Education' },
-            career: { color: '#FF00FF', label: 'Career' }
+            education: { color: '#2979FF', label: 'Compliance Level' },
+            career: { color: '#FF00FF', label: 'Productivity Tier' }
         };
 
         const config = configs[id];

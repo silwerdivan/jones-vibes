@@ -27,11 +27,11 @@ class TimeSystem {
     }
 
     private _formatMoney(amount: number): string {
-        return `$${amount.toLocaleString()}`;
+        return `[OC]${amount.toLocaleString()}`;
     }
 
     private _getPlayerName(player: Player): string {
-        return player.name || `Player ${player.id}`;
+        return player.name || `Unit ${player.id}`;
     }
 
     endTurn(): TurnSummary {
@@ -51,9 +51,9 @@ class TimeSystem {
         if (currentPlayer.weeklyIncome > 0) {
             summary.events.push({
                 type: 'income',
-                label: 'Weekly Earnings',
+                label: 'Yield: Cycles',
                 value: currentPlayer.weeklyIncome,
-                unit: '$',
+                unit: '[OC]',
                 icon: 'payments'
             });
         }
@@ -62,9 +62,9 @@ class TimeSystem {
         if (currentPlayer.weeklyExpenses > 0) {
             summary.events.push({
                 type: 'expense',
-                label: 'Shopping & Travel',
+                label: 'Outflow: Logistics',
                 value: -currentPlayer.weeklyExpenses,
-                unit: '$',
+                unit: '[OC]',
                 icon: 'shopping_cart'
             });
         }
@@ -73,14 +73,14 @@ class TimeSystem {
         currentPlayer.spendCash(this.gameState.DAILY_EXPENSE);
         summary.events.push({
             type: 'expense',
-            label: 'Hab-Pod Maintenance',
+            label: 'Hab-Unit Tax',
             value: -this.gameState.DAILY_EXPENSE,
-            unit: '$',
+            unit: '[OC]',
             icon: 'home'
         });
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for Hab-Pod maintenance.`,
+            `${this._getPlayerName(currentPlayer)} deducted ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for Hab-Unit maintenance.`,
             'expense'
         );
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
@@ -94,14 +94,14 @@ class TimeSystem {
             
             summary.events.push({
                 type: 'warning',
-                label: 'Cred-Debt Interest',
+                label: 'Debt-Cost Accumulation',
                 value: -interest,
-                unit: '$',
+                unit: '[OC]',
                 icon: 'account_balance'
             });
             
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in Cred-Debt interest.`,
+                `${this._getPlayerName(currentPlayer)} charged ${this._formatMoney(interest)} in credit-debt accumulation.`,
                 'warning'
             );
             EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: interest, gameState: this.gameState });
@@ -115,12 +115,12 @@ class TimeSystem {
             currentPlayer.updateHappiness(-5);
             summary.events.push({
                 type: 'warning',
-                label: 'Bio-Deficit Penalty',
+                label: 'Bio-Deficit Deduction',
                 value: -5,
                 unit: 'Morale',
                 icon: 'restaurant'
             });
-            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} is approaching Bio-Deficit...`, 'warning');
+            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} bio-integrity at risk...`, 'warning');
             EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
@@ -131,13 +131,13 @@ class TimeSystem {
         currentPlayer.updateHappiness(moraleGain);
         summary.events.push({
             type: 'success',
-            label: 'Cycle Rest',
+            label: 'Cycle Recovery',
             value: moraleGain,
             unit: 'Morale',
             icon: 'bedtime'
         });
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} gained ${moraleGain} Morale Quota during Cycle Rest.`,
+            `${this._getPlayerName(currentPlayer)} recovered ${moraleGain} Morale Quota during cycle recovery.`,
             'success'
         );
         EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: moraleGain, gameState: this.gameState });
@@ -147,7 +147,7 @@ class TimeSystem {
             currentPlayer.weeklyGraduations.forEach(courseName => {
                 summary.events.push({
                     type: 'success',
-                    label: `Graduated: ${courseName}`,
+                    label: `Certified: ${courseName}`,
                     value: 0,
                     unit: 'NONE',
                     icon: 'school'
@@ -168,7 +168,7 @@ class TimeSystem {
         
         if (timeDeficit > 0) {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} started with ${timeDeficit} hour${timeDeficit > 1 ? 's' : ''} less due to incomplete travel.`,
+                `${this._getPlayerName(currentPlayer)} started with ${timeDeficit}CH deficit due to relocation protocol.`,
                 'warning'
             );
             currentPlayer.timeDeficit = 0;

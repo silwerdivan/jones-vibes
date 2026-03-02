@@ -241,19 +241,19 @@ export class PlayerStatsModal extends Modal {
     const modalElement = document.getElementById('player-stats-modal');
     if (modalElement) modalElement.className = playerIndex === 1 ? 'player-1' : 'player-2';
     
-    if (this.cash) this.cash.textContent = `$${player.cash}`;
-    if (this.savings) this.savings.textContent = `$${player.savings}`;
-    if (this.loan) this.loan.textContent = `$${player.loan}`;
+    if (this.cash) this.cash.textContent = `[OC]${player.cash}`;
+    if (this.savings) this.savings.textContent = `[OC]${player.savings}`;
+    if (this.loan) this.loan.textContent = `[OC]${player.loan}`;
     if (this.happiness) this.happiness.textContent = player.happiness.toString();
     
     const course = COURSES.find((c: Course) => c.educationMilestone === player.educationLevel);
     if (this.education) this.education.textContent = course ? course.name : 'None';
     
     const job = JOBS.find((j: Job) => j.level === player.careerLevel);
-    if (this.career) this.career.textContent = job ? job.title : 'Unemployed';
+    if (this.career) this.career.textContent = job ? job.title : 'No Active Tier';
     
     if (this.car) this.car.textContent = player.hasCar ? 'Yes' : 'No';
-    if (this.time) this.time.textContent = `${player.time} hours`;
+    if (this.time) this.time.textContent = `${player.time}CH`;
   }
 }
 
@@ -310,10 +310,10 @@ export class TurnSummaryModal extends Modal {
   }
 
   public update(summary: TurnSummary, onNextWeek: () => void): void {
-    if (this.subtitle) this.subtitle.textContent = `${summary.playerName.toUpperCase()} - WEEK ${summary.week} REPORT`;
+    if (this.subtitle) this.subtitle.textContent = `${summary.playerName.toUpperCase()} - CYCLE ${summary.week} REPORT`;
     
     if (this.cashTotal) {
-        this.cashTotal.textContent = (summary.totals.cashChange >= 0 ? '+$' : '-$') + Math.abs(summary.totals.cashChange).toLocaleString();
+        this.cashTotal.textContent = (summary.totals.cashChange >= 0 ? '+[OC]' : '-[OC]') + Math.abs(summary.totals.cashChange).toLocaleString();
         this.cashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
     }
     
@@ -329,7 +329,7 @@ export class TurnSummaryModal extends Modal {
           const card = document.createElement('div');
           card.className = `event-card ${event.type}`;
           
-          const valueText = event.unit === 'NONE' ? '' : (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '$' ? '$' : ' ' + event.unit);
+          const valueText = event.unit === 'NONE' ? '' : (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '[OC]' ? '[OC]' : ' ' + event.unit);
           
           card.innerHTML = `
             <div class="event-icon-circle">
@@ -354,7 +354,7 @@ export class TurnSummaryModal extends Modal {
     }
 
     setTimeout(() => {
-      if (this.cashTotal) this.animateValue(this.cashTotal, 0, summary.totals.cashChange, 1000, '$');
+      if (this.cashTotal) this.animateValue(this.cashTotal, 0, summary.totals.cashChange, 1000, '[OC]');
       if (this.happinessTotal) this.animateValue(this.happinessTotal, 0, summary.totals.happinessChange, 1000);
     }, 500);
   }
@@ -371,8 +371,8 @@ export class TurnSummaryModal extends Modal {
       const sign = isPositive ? '+' : '-';
       const absValue = Math.abs(current).toLocaleString();
       
-      if (prefix === '$') {
-        obj.textContent = `${sign}$${absValue}`;
+      if (prefix === '[OC]') {
+        obj.textContent = `${sign}[OC]${absValue}`;
       } else {
         obj.textContent = `${sign}${absValue}`;
       }
@@ -404,14 +404,14 @@ export class GraduationModal extends Modal {
   }
 
   public showGraduation(player: PlayerState, course: Course): void {
-    if (this.subtitle) this.subtitle.textContent = `${player.name.toUpperCase()} HAS GRADUATED!`;
+    if (this.subtitle) this.subtitle.textContent = `${player.name.toUpperCase()} - CERTIFICATION ACHIEVED!`;
     if (this.degreeName) this.degreeName.textContent = course.name;
     
     if (this.rewardText) {
         if (player.educationLevel < 5) {
-            this.rewardText.textContent = `Level ${player.educationLevel + 1} Careers are now unlocked at the Labor Sector. Keep studying for even higher wages!`;
+            this.rewardText.textContent = `Productivity Tier ${player.educationLevel + 1} protocols are now authorized at the Labor Sector. Maintain compliance for further tier advancement.`;
         } else {
-            this.rewardText.textContent = `You have reached the pinnacle of education! All top-tier career paths are now fully accessible to you.`;
+            this.rewardText.textContent = `You have reached the pinnacle of compliance! All top-tier productivity protocols are now fully accessible to you.`;
         }
     }
 

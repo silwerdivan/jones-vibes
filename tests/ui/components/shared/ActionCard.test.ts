@@ -114,15 +114,15 @@ describe('ActionCard', () => {
             const card = createActionCard('college', mockCourse, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('$100');
-            expect(metaText).toContain('40h');
+            expect(metaText).toContain('[OC]100');
+            expect(metaText).toContain('40CH total');
         });
 
         it('should call onClick with correct feedback for courses', () => {
             const card = createActionCard('college', mockCourse, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-$100', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-[OC]100', 'error');
         });
     });
 
@@ -132,7 +132,7 @@ describe('ActionCard', () => {
             cost: 50,
             happinessBoost: 10,
             type: 'essential',
-            location: 'Shopping Mall'
+            location: 'Consumpt-Zone'
         };
 
         it('should create a shopping card with correct structure', () => {
@@ -174,7 +174,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-$50', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-[OC]50', 'error');
         });
     });
 

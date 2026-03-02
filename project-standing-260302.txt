@@ -1,0 +1,66 @@
+# Project Standing - March 2, 2026
+
+## Overview
+**Genre:** Cyberpunk Life Simulation / Strategy (1-2 Players, Hotseat or AI)
+**Core Hook:** "The Math of Life" meets "Dystopian OS." A high-stakes balancing act of time, money, and biological needs, now fully rebranded as the **OmniLife OS** experience.
+
+---
+
+## What is Functionally "Alive" (Current Features)
+
+### 🛸 **The OmniLife Lexicon Overhaul (NEW)**
+The game has shed its generic "Life Sim" skin for a clinical, dystopian corporate aesthetic.
+*   **Locations Rebranded:** 
+    *   `Home` -> `Hab-Pod 404`
+    *   `Fast Food` -> `Sustenance Hub`
+    *   `Community College` -> `Cognitive Re-Ed`
+    *   `Bank` -> `Cred-Debt Ctr`
+    *   `Employment Agency` -> `Labor Sector`
+*   **UI & Stats Rebranded:** 
+    *   `Wealth` -> `Omni-Creds`
+    *   `Happiness` -> `Morale Quota`
+    *   `Hunger` -> `Bio-Deficit`
+    *   `Week` -> `Cycle`
+    *   `Zone` -> `Sector`
+
+### ❄️ **Functional Item Logic (EXPANDED)**
+Items are no longer just flavor text; they are active mathematical modifiers.
+*   **Omni-Chill (Fridge):** Reduces the base Bio-Deficit increase rate by 50% (+10 per cycle instead of +20).
+*   **Hypno-Screen (Television):** Grants a +10% bonus to the new base "Cycle Rest" morale gain.
+*   **Computer (Omni-Terminal):** Provides a +25% Study Speed bonus (10 credits per session instead of 8).
+
+### 🧘 **Base Cycle Systems**
+*   **Cycle Rest:** All players now receive a base +10 Morale gain at the end of each turn, representing mandatory downtime.
+*   **Bio-Deficit Penalty:** Failing to maintain your biological needs now results in a "Bio-Deficit Penalty" to your Morale Quota.
+
+### ⏰ **The Clock & Persistence**
+*   **Time Management:** 24 hours per cycle. Strategic travel is key (Car cuts travel time by 50%).
+*   **Seamless Persistence:** The game state (including AI "thinking" and open modals) is saved to SessionStorage.
+
+---
+
+## UI & UX Enhancements
+*   **Clinical UI:** HUD and gauges have been updated with new labels and status chips (`Optimal`, `Deficit Warning`, `CRITICAL DEFICIT`).
+*   **Auto-Arrival Dashboards:** Arriving at a location automatically triggers its interaction menu.
+*   **Non-Blocking Notifications:** Dystopian log messages (e.g., "Hab-Pod maintenance deducted") appear in the top-mounted event strip.
+
+---
+
+## Current Limitations & "Gaps" (Feedback Received)
+While the core lexicon is updated, several "immersion breakers" remain:
+*   **Generic Jobs/Courses:** Job titles like "Dishwasher" and degrees like "Associate's" still need clinical rebranding (e.g., "Sanitation Technician 3rd Class").
+*   **Remaining Items:** `Coffee`, `Movie Ticket`, and `New Clothes` are still generic and require functional buffs.
+*   **Currency Symbol:** Still using `$`; needs transition to `OC` or a custom icon.
+*   **Mascot (C.A.S.H.):** The mascot state machine logic (Happy/Angry/Greedy) is not yet implemented.
+
+---
+
+## Technical Health
+*   **Tests:** 258/258 passing.
+*   **Build:** Successful.
+*   **Architecture:** The `TimeSystem` and `EconomySystem` have been successfully decoupled and wired to handle dynamic item modifiers.
+
+---
+
+## Designer's Note
+The "Engine" is fully mature. The focus has shifted from "Content & Tuning" to **"Immersion & Polish."** The next steps involve flushing out the remaining generic terms in the Labor and Education sectors and implementing the Mascot AI to act as the face of the OmniLife OS.

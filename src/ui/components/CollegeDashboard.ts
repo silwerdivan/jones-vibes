@@ -23,11 +23,11 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
             <div id="enrollment-section" class="enrollment-section">
                 <div class="degree-card glass-card">
                     <div class="degree-info">
-                        <h3 data-next-degree-name>Associate's Degree</h3>
-                        <p class="degree-benefit">Unlocks better career opportunities</p>
+                        <h3 data-next-degree-name>Found. Compl.</h3>
+                        <p class="degree-benefit">Unlocks higher productivity tiers</p>
                     </div>
                     <div class="degree-cost">
-                        <span class="cost-badge"><i class="material-icons">payments</i> <span data-next-degree-cost>$500</span></span>
+                        <span class="cost-badge"><i class="material-icons">payments</i> <span data-next-degree-cost>[OC]500</span></span>
                     </div>
                     <button class="btn btn-primary enroll-btn" data-enroll-btn>ENROLL NOW</button>
                 </div>
@@ -36,7 +36,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
             <div id="study-section" class="study-section hidden">
                 <div class="degree-progress-card glass-card">
                     <div class="progress-header">
-                        <h3 data-current-degree-name>Associate's Degree</h3>
+                        <h3 data-current-degree-name>Found. Compl.</h3>
                         <span class="progress-percentage" data-progress-text>0 / 50 Credits</span>
                     </div>
                     <div class="progress-track">
@@ -49,7 +49,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
 
                 <div class="study-actions">
                     <div class="action-badges">
-                        <span class="badge badge-time"><i class="material-icons">schedule</i> 8H</span>
+                        <span class="badge badge-time"><i class="material-icons">schedule</i> 8CH</span>
                         <span class="badge badge-happiness"><i class="material-icons">sentiment_very_dissatisfied</i> -5</span>
                         <span class="badge badge-credits" data-credits-gain><i class="material-icons">school</i> +8 Credits</span>
                     </div>
@@ -60,8 +60,8 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
             <div id="completed-section" class="completed-section hidden">
                 <div class="glass-card text-center">
                     <i class="material-icons graduation-icon">school</i>
-                    <h3>All Degrees Completed!</h3>
-                    <p>You have reached the pinnacle of education.</p>
+                    <h3>All Compliance Modules Completed!</h3>
+                    <p>You have reached the pinnacle of compliance.</p>
                 </div>
             </div>
         `;
@@ -137,13 +137,13 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
         const enrollBtn = this.element.querySelector('[data-enroll-btn]') as HTMLButtonElement;
 
         nameEl.textContent = nextCourse.name;
-        costEl.textContent = `$${nextCourse.cost}`;
+        costEl.textContent = `[OC]${nextCourse.cost}`;
         
         const canAfford = player.cash >= nextCourse.cost;
         enrollBtn.disabled = !canAfford;
         
         if (!canAfford) {
-            enrollBtn.title = "Not enough cash";
+            enrollBtn.title = "Insufficient Omni-Creds";
         } else {
             enrollBtn.title = "";
         }
@@ -177,9 +177,9 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
         studyBtn.disabled = !canStudy;
 
         if (player.time < 8) {
-            studyBtn.title = "Not enough time (8H required)";
+            studyBtn.title = "Insufficient time (8CH required)";
         } else if (player.happiness < 5) {
-            studyBtn.title = "Too unhappy to study";
+            studyBtn.title = "Morale Quota insufficient for study";
         } else {
             studyBtn.title = "";
         }

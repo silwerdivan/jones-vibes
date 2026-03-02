@@ -35,7 +35,7 @@ describe('AIController Hunger awareness', () => {
         
         expect(nextAction.action).toBe('buyItem');
         // AI should pick an effective food item
-        expect(['Monolith Burger', 'Synth-Salad']).toContain(nextAction.params.itemName);
+        expect(['Bio-Block-01', 'Synth-Salad']).toContain(nextAction.params.itemName);
     });
 
     it('should buy food when at Sustenance Hub and hungry (>30), even with zero time', () => {

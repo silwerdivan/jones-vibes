@@ -45,7 +45,7 @@ export default class HUD extends BaseComponent<GameState> {
                 <div class="hud-stats">
                     <div class="hud-stat-item">
                         <span class="hud-label">OMNI-CREDS</span>
-                        <span class="hud-value currency" data-cash>$0</span>
+                        <span class="hud-value currency" data-cash>[OC]0</span>
                     </div>
                 </div>
             </div>
@@ -161,7 +161,7 @@ export default class HUD extends BaseComponent<GameState> {
 
     private updateCash(gameState: GameState): void {
         const currentPlayer = gameState.getCurrentPlayer();
-        this.hudCash.textContent = `$${currentPlayer.cash}`;
+        this.hudCash.textContent = `[OC]${currentPlayer.cash}`;
     }
 
     private updateWeek(gameState: GameState): void {
@@ -242,7 +242,7 @@ export default class HUD extends BaseComponent<GameState> {
         }
 
         // Update Stats
-        this.hudCash.textContent = `$${currentPlayer.cash}`;
+        this.hudCash.textContent = `[OC]${currentPlayer.cash}`;
         this.hudWeek.textContent = gameState.turn.toString();
         this.hudLocation.textContent = currentPlayer.location;
 

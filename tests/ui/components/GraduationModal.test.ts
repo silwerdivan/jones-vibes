@@ -47,15 +47,15 @@ describe('GraduationModal', () => {
             educationLevel: 1
         };
         const mockCourse = {
-            name: "Associate's Degree"
+            name: "Found. Compl."
         };
 
         modal.showGraduation(mockPlayer as any, mockCourse as any);
 
         expect(modal.isVisible()).toBe(true);
-        expect(document.getElementById('graduation-subtitle')?.textContent).toBe('TEST PLAYER HAS GRADUATED!');
-        expect(document.getElementById('graduated-degree-name')?.textContent).toBe("Associate's Degree");
-        expect(document.getElementById('graduation-reward-text')?.textContent).toContain('Level 2 Careers are now unlocked');
+        expect(document.getElementById('graduation-subtitle')?.textContent).toBe('TEST PLAYER - CERTIFICATION ACHIEVED!');
+        expect(document.getElementById('graduated-degree-name')?.textContent).toBe("Found. Compl.");
+        expect(document.getElementById('graduation-reward-text')?.textContent).toContain('Productivity Tier 2 protocols are now authorized');
     });
 
     it('should show special text for max level graduation', () => {
@@ -64,12 +64,12 @@ describe('GraduationModal', () => {
             educationLevel: 5
         };
         const mockCourse = {
-            name: "Expert Specialization"
+            name: "Peak Efficiency"
         };
 
         modal.showGraduation(mockPlayer as any, mockCourse as any);
 
-        expect(document.getElementById('graduation-reward-text')?.textContent).toContain('pinnacle of education');
+        expect(document.getElementById('graduation-reward-text')?.textContent).toContain('pinnacle of compliance');
     });
 
     it('should hide when dismiss button is clicked', () => {

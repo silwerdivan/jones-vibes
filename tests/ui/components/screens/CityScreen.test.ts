@@ -77,7 +77,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toContain('Manage your finances');
+            expect(cityScreen.getLocationHint().textContent).toContain('Manage liquidity and optimize yield');
         });
 
         it('should render location icons', () => {
@@ -149,7 +149,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Rest and end your turn here');
+            expect(cityScreen.getLocationHint().textContent).toBe('Cycle Rest and finalize turn protocol here');
         });
 
         it('should show correct hint for Labor Sector', () => {
@@ -157,7 +157,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Find work and earn money');
+            expect(cityScreen.getLocationHint().textContent).toBe('Execute productivity shifts to accumulate Omni-Creds');
         });
 
         it('should show correct hint for Cognitive Re-Ed', () => {
@@ -165,15 +165,15 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Improve your education for better jobs');
+            expect(cityScreen.getLocationHint().textContent).toBe('Increase compliance level for higher productivity tiers');
         });
 
-        it('should show correct hint for Shopping Mall', () => {
-            gameState.getCurrentPlayer().location = 'Shopping Mall';
+        it('should show correct hint for Consumpt-Zone', () => {
+            gameState.getCurrentPlayer().location = 'Consumpt-Zone';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Buy items to boost your happiness');
+            expect(cityScreen.getLocationHint().textContent).toBe('Acquire assets and essentials for morale maintenance');
         });
 
         it('should show correct hint for Sustenance Hub', () => {
@@ -181,15 +181,15 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Grab a quick bite to eat');
+            expect(cityScreen.getLocationHint().textContent).toBe('Minimize bio-deficit through nutrient intake');
         });
 
-        it('should show correct hint for Used Car Lot', () => {
-            gameState.getCurrentPlayer().location = 'Used Car Lot';
+        it('should show correct hint for Mobility-Asset', () => {
+            gameState.getCurrentPlayer().location = 'Mobility-Asset';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Purchase a car for faster travel');
+            expect(cityScreen.getLocationHint().textContent).toBe('Procure transit assets for enhanced travel efficiency');
         });
 
         it('should show correct hint for Cred-Debt Ctr', () => {
@@ -197,7 +197,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Manage your finances: deposit, withdraw, or take a loan');
+            expect(cityScreen.getLocationHint().textContent).toBe('Manage liquidity and optimize yield through credit-debt protocols');
         });
     });
 

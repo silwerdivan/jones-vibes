@@ -128,11 +128,11 @@ class GameState {
     }
 
     _formatMoney(amount: number): string {
-        return `$${amount.toLocaleString()}`;
+        return `[OC]${amount.toLocaleString()}`;
     }
 
     _getPlayerName(player: Player): string {
-        return player.name || `Player ${player.id}`;
+        return player.name || `Unit ${player.id}`;
     }
 
     publishCurrentState(): void {
@@ -161,7 +161,7 @@ class GameState {
         const currentPlayer = this.getCurrentPlayer();
         this.isAIThinking = true;
         this.addLogMessage(
-            `🤔 ${this._getPlayerName(currentPlayer)} is contemplating their next move...`,
+            `🤔 ${this._getPlayerName(currentPlayer)} is calculating optimal protocols...`,
             'info'
         );
         if (this.aiController) {
@@ -182,7 +182,7 @@ class GameState {
         // 2) explicit 'pass' → end AI turn
         if (aiAction.action === 'pass') {
             this.addLogMessage(
-                `${this._getPlayerName(this.getCurrentPlayer())} passes their turn.`,
+                `${this._getPlayerName(this.getCurrentPlayer())} bypasses cycle action.`,
                 'info'
             );
             this.isAIThinking = false;
@@ -193,9 +193,9 @@ class GameState {
 
         // 3) otherwise, carry out the action
         let success = false;
-        let actionDescription = `AI decides to: ${aiAction.action}`;
+        let actionDescription = `AI Protocol: ${aiAction.action}`;
         if (aiAction.params) {
-            actionDescription += ` with params: ${JSON.stringify(aiAction.params)}`;
+            actionDescription += ` | Params: ${JSON.stringify(aiAction.params)}`;
         }
         this.addLogMessage(actionDescription, 'info');
 
@@ -249,7 +249,7 @@ class GameState {
             // AI still has time or just arrived at a destination → decide next move
             this.checkGameEndConditions(this.getCurrentPlayer());
             this.addLogMessage(
-                `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
+                `${this._getPlayerName(this.getCurrentPlayer())} optimizing next sequence...`,
                 'info'
             );
             // We stay in isAIThinking = true state
@@ -258,7 +258,7 @@ class GameState {
             // AI turn ends (either success but no time left, or action failed)
             if (!success) {
                 this.addLogMessage(
-                    `${this._getPlayerName(this.getCurrentPlayer())}'s action failed.`,
+                    `${this._getPlayerName(this.getCurrentPlayer())} sequence failure.`,
                     'warning'
                 );
             }
@@ -281,7 +281,7 @@ class GameState {
             this.gameOver = true;
             this.winner = player;
             this.addLogMessage(
-                `🎉 ${this._getPlayerName(player)} has won the game!`,
+                `🏆 ${this._getPlayerName(player)} has achieved Peak Compliance. Ascension authorized.`,
                 'success'
             );
             EventBus.publish('gameOver', this);
@@ -300,7 +300,7 @@ class GameState {
             this.gameOver = true;
             this.winner = null;
             this.addLogMessage(
-                `💀 ${this._getPlayerName(player)}'s Morale has bottomed out. OmniCorp has terminated your session.`,
+                `💀 ${this._getPlayerName(player)}'s Morale Quota has bottomed out. OmniCorp has terminated your session.`,
                 'error'
             );
             EventBus.publish('gameOver', this);
@@ -335,7 +335,7 @@ class GameState {
         if (player.time <= 0 && !player.isAI && !this.gameOver) {
             setTimeout(() => {
                 if (player.time <= 0) { // Double check if time is still 0
-                    this.addLogMessage(`Time is up! Turn ending automatically.`, 'warning');
+                    this.addLogMessage(`Cycle time exhausted. Turn finalization initiated.`, 'warning');
                     if (this._timeSystem) this._timeSystem.endTurn();
                 }
             }, 1000);
@@ -356,7 +356,7 @@ class GameState {
 
         if (currentPlayer.location !== 'Labor Sector') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Labor Sector to work.`,
+                `${this._getPlayerName(currentPlayer)} must be at Labor Sector for shift execution.`,
                 'error'
             );
             return false;
@@ -365,7 +365,7 @@ class GameState {
         // Check if player has an active job (careerLevel > 0)
         if (currentPlayer.careerLevel === 0) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must apply for a job first.`,
+                `${this._getPlayerName(currentPlayer)} must secure a position first.`,
                 'error'
             );
             return false;
@@ -374,7 +374,7 @@ class GameState {
         const availableJobs = this._getAvailableJobs(currentPlayer);
         if (availableJobs.length === 0) {
             this.addLogMessage(
-                `No jobs available for ${this._getPlayerName(currentPlayer)}'s education level.`,
+                `No positions available for ${this._getPlayerName(currentPlayer)}'s compliance level.`,
                 'warning'
             );
             return false;
@@ -385,7 +385,7 @@ class GameState {
 
         if (currentPlayer.time < jobToWork.shiftHours) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough time to work as ${jobToWork.title}.`,
+                `${this._getPlayerName(currentPlayer)} insufficient cycle time for ${jobToWork.title} shift.`,
                 'error'
             );
             return false;
@@ -404,7 +404,7 @@ class GameState {
         }
 
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} worked as ${jobToWork.title} and earned ${this._formatMoney(earnings)}.`,
+            `Shift Completed: ${jobToWork.title}. Yield: ${this._formatMoney(earnings)}.`,
             'success'
         );
         this.checkGameEndConditions(currentPlayer);
@@ -424,21 +424,21 @@ class GameState {
 
         if (currentPlayer.location !== 'Cognitive Re-Ed') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Cognitive Re-Ed to enroll.`,
+                `${this._getPlayerName(currentPlayer)} must be at Cognitive Re-Ed for enrollment.`,
                 'error'
             );
             return false;
         }
 
         if (!course) {
-            this.addLogMessage('Course not found.', 'error');
+            this.addLogMessage('Protocol not found.', 'error');
             return false;
         }
 
         // Only allow enrolling in the next level
         if (currentPlayer.educationLevel + 1 !== course.educationMilestone) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must complete lower level degrees first.`,
+                `${this._getPlayerName(currentPlayer)} must complete prior compliance tiers.`,
                 'error'
             );
             return false;
@@ -446,7 +446,7 @@ class GameState {
 
         if (currentPlayer.cash < course.cost) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(course.cost)} to enroll in ${course.name}.`,
+                `${this._getPlayerName(currentPlayer)} requires ${this._formatMoney(course.cost)} for ${course.name} enrollment.`,
                 'error'
             );
             return false;
@@ -457,7 +457,7 @@ class GameState {
         const enrollmentTime = 1;
         if (currentPlayer.time < enrollmentTime) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${enrollmentTime} hour to enroll.`,
+                `${this._getPlayerName(currentPlayer)} requires 1CH for enrollment protocol.`,
                 'error'
             );
             return false;
@@ -467,7 +467,7 @@ class GameState {
         currentPlayer.setEducationGoal(course.requiredCredits);
 
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} enrolled in ${course.name}! Cost: ${this._formatMoney(course.cost)}.`,
+            `Protocol Enrollment: ${course.name}. Deduction: ${this._formatMoney(course.cost)}.`,
             'success'
         );
         
@@ -483,7 +483,7 @@ class GameState {
 
         if (currentPlayer.location !== 'Cognitive Re-Ed') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Cognitive Re-Ed to study.`,
+                `${this._getPlayerName(currentPlayer)} must be at Cognitive Re-Ed to study.`,
                 'error'
             );
             return false;
@@ -493,7 +493,7 @@ class GameState {
         const nextCourse = COURSES.find(c => c.educationMilestone === currentPlayer.educationLevel + 1);
         if (!nextCourse) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} has completed all available education!`,
+                `${this._getPlayerName(currentPlayer)} has reached maximum compliance level!`,
                 'info'
             );
             return false;
@@ -502,7 +502,7 @@ class GameState {
         // Ensure player is enrolled (goal must match the next course's requirements)
         if (currentPlayer.educationCreditsGoal < nextCourse.requiredCredits) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must enroll in ${nextCourse.name} before studying.`,
+                `${this._getPlayerName(currentPlayer)} must enroll in ${nextCourse.name} protocol before studying.`,
                 'error'
             );
             return false;
@@ -513,7 +513,7 @@ class GameState {
 
         if (currentPlayer.time < studyTime) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} needs ${studyTime} hours to study.`,
+                `${this._getPlayerName(currentPlayer)} requires ${studyTime}CH for study sequence.`,
                 'error'
             );
             return false;
@@ -521,7 +521,7 @@ class GameState {
 
         if (currentPlayer.happiness < happinessCost) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)}'s Morale Quota is too low to study. Need at least ${happinessCost} Morale.`,
+                `${this._getPlayerName(currentPlayer)}'s Morale Quota is insufficient for study. Required: ${happinessCost}.`,
                 'error'
             );
             return false;
@@ -536,7 +536,7 @@ class GameState {
         currentPlayer.addEducationCredits(creditsGained);
 
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} attended a lecture and gained ${creditsGained} credits.`,
+            `Lecture attended. Credits accumulated: ${creditsGained}.`,
             'success'
         );
 
@@ -561,7 +561,7 @@ class GameState {
             player.setEducationGoal(0);
 
             this.addLogMessage(
-                `🎓 Graduation! ${this._getPlayerName(player)} earned their ${nextCourse.name}!`,
+                `🎓 Certification Achieved: ${nextCourse.name}. Tier update authorized.`,
                 'success'
             );
             
@@ -575,7 +575,7 @@ class GameState {
 
         if (currentPlayer.location === destination) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} is already at this location.`,
+                `${this._getPlayerName(currentPlayer)} is already at current sector.`,
                 'warning'
             );
             return false;
@@ -590,7 +590,7 @@ class GameState {
                 currentPlayer.timeDeficit = deficit;
                 currentPlayer.setLocation(destination);
                 this.addLogMessage(
-                    `${this._getPlayerName(currentPlayer)} traveled to ${destination} despite being ${deficit} hour${deficit > 1 ? 's' : ''} short. Starting next turn with ${deficit} hour${deficit > 1 ? 's' : ''} less time.`,
+                    `${this._getPlayerName(currentPlayer)} relocated to ${destination} with ${deficit}CH deficit. Carryover applied.`,
                     'warning'
                 );
                 this.checkGameEndConditions(currentPlayer);
@@ -599,7 +599,7 @@ class GameState {
                 return true;
             }
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough time to travel.`,
+                `${this._getPlayerName(currentPlayer)} insufficient time for sector relocation.`,
                 'error'
             );
             return false;
@@ -608,7 +608,7 @@ class GameState {
         currentPlayer.deductTime(travelTime);
         currentPlayer.setLocation(destination);
         this.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} traveled to ${destination}.`,
+            `${this._getPlayerName(currentPlayer)} relocated to ${destination}.`,
             'info'
         );
         this.checkGameEndConditions(currentPlayer);
@@ -627,7 +627,7 @@ class GameState {
         
         if (!job) {
             this.addLogMessage(
-                `Job level ${jobLevel} not found.`,
+                `Position level ${jobLevel} not found in database.`,
                 'error'
             );
             EventBus.publish('jobApplicationError', { player: currentPlayer, reason: 'Job not found' });
@@ -637,7 +637,7 @@ class GameState {
         // Check if player already has this job or a better one
         if (currentPlayer.careerLevel >= jobLevel) {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} already has a job at this level or higher.`,
+                `${this._getPlayerName(currentPlayer)} already holds equivalent or superior tier.`,
                 'info'
             );
             return false;
@@ -646,7 +646,7 @@ class GameState {
         // Check if player meets education requirements
         if (currentPlayer.educationLevel < job.educationRequired) {
             this.addLogMessage(
-                `Insufficient education for ${job.title}. Required: Level ${job.educationRequired}, Current: Level ${currentPlayer.educationLevel}.`,
+                `Insufficient compliance for ${job.title}. Required: Tier ${job.educationRequired}.`,
                 'error'
             );
             EventBus.publish('jobApplicationError', {
@@ -661,7 +661,7 @@ class GameState {
         currentPlayer.careerLevel = jobLevel;
         
         this.addLogMessage(
-            `🎉 Congratulations! ${this._getPlayerName(currentPlayer)} was hired as a ${job.title}!`,
+            `✅ Position Secured: ${job.title}. Productivity tier updated.`,
             'success'
         );
         EventBus.publish('jobApplicationSuccess', { player: currentPlayer, job: job });

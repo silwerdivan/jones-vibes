@@ -45,7 +45,7 @@ describe('InventoryScreen', () => {
             expect(section.classList.contains('inventory-section')).toBe(true);
 
             const title = section.querySelector('.section-title');
-            expect(title?.textContent).toBe('Hab-Pod Assets');
+            expect(title?.textContent).toBe('Hab-Unit Infrastructure');
         });
 
         it('should create assets grid', () => {
@@ -67,7 +67,7 @@ describe('InventoryScreen', () => {
 
         it('should mark owned essential items', () => {
             const player = gameState.getCurrentPlayer();
-            player.inventory = [{ name: 'New Clothes', cost: 50, happinessBoost: 20, type: 'essential', icon: 'clothes', benefit: 'Social Standing +5%', location: 'Shopping Mall' }] as Item[];
+            player.inventory = [{ name: 'Uniform-Patch', cost: 50, happinessBoost: 20, type: 'essential', icon: 'clothes', benefit: 'Social Standing +5%', location: 'Consumpt-Zone' }] as Item[];
             inventoryScreen.render(gameState);
 
             const grid = inventoryScreen.getEssentialsGrid();
@@ -114,7 +114,7 @@ describe('InventoryScreen', () => {
 
         it('should mark owned asset items', () => {
             const player = gameState.getCurrentPlayer();
-            player.inventory = [{ name: 'Hypno-Screen', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Morale Bonus +10%', location: 'Shopping Mall' }] as Item[];
+            player.inventory = [{ name: 'Hypno-Screen', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Morale Bonus +10%', location: 'Consumpt-Zone' }] as Item[];
             inventoryScreen.render(gameState);
 
             const grid = inventoryScreen.getAssetsGrid();
@@ -197,7 +197,7 @@ describe('InventoryScreen', () => {
             inventoryScreen.render(gameState);
 
             const player = gameState.getCurrentPlayer();
-            player.inventory = [{ name: 'Groceries', cost: 50, happinessBoost: 5, type: 'essential', location: 'Shopping Mall' }] as Item[];
+            player.inventory = [{ name: 'Groceries', cost: 50, happinessBoost: 5, type: 'essential', location: 'Consumpt-Zone' }] as Item[];
             inventoryScreen.render(gameState);
 
             const essentialsGrid = inventoryScreen.getEssentialsGrid();
@@ -209,7 +209,7 @@ describe('InventoryScreen', () => {
             inventoryScreen.render(gameState);
 
             const player = gameState.getCurrentPlayer();
-            player.inventory = [{ name: 'TV', cost: 500, happinessBoost: 10, type: 'asset', location: 'Shopping Mall', benefit: 'Happiness +10' }] as Item[];
+            player.inventory = [{ name: 'TV', cost: 500, happinessBoost: 10, type: 'asset', location: 'Consumpt-Zone', benefit: 'Happiness +10' }] as Item[];
             inventoryScreen.render(gameState);
 
             const assetsGrid = inventoryScreen.getAssetsGrid();

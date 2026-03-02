@@ -74,7 +74,7 @@ describe('HUD', () => {
         it('should update cash display', () => {
             hud.render(mockGameState);
             const cashElement = hud.getElement().querySelector('[data-cash]');
-            expect(cashElement?.textContent).toBe('$100');
+            expect(cashElement?.textContent).toBe('[OC]100');
         });
 
         it('should update week display', () => {
@@ -116,7 +116,7 @@ describe('HUD', () => {
             hud.render(mockGameState);
             
             const cashElement = hud.getElement().querySelector('[data-cash]');
-            expect(cashElement?.textContent).toBe('$200');
+            expect(cashElement?.textContent).toBe('[OC]200');
         });
     });
 

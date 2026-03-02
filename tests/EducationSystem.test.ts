@@ -28,7 +28,7 @@ describe('Education System Upgrade', () => {
     });
 
     it('should allow enrollment in the first course', () => {
-        const result = gameState.takeCourse(1); // Associate's
+        const result = gameState.takeCourse(1); // Found. Compl.
         expect(result).toBe(true);
         expect(player.educationCreditsGoal).toBe(50);
         expect(player.cash).toBe(4500); // 5000 - 500
@@ -45,7 +45,7 @@ describe('Education System Upgrade', () => {
     });
 
     it('should give 10 credits instead of 8 if player has a Computer', () => {
-        player.inventory.push({ name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset', location: 'Shopping Mall' });
+        player.inventory.push({ name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset', location: 'Consumpt-Zone' });
         gameState.takeCourse(1);
         gameState.study();
         expect(player.educationCredits).toBe(10);
@@ -65,9 +65,9 @@ describe('Education System Upgrade', () => {
         
         expect(player.educationLevel).toBe(1);
         expect(player.educationCredits).toBe(0);
-        expect(player.educationCreditsGoal).toBe(0); // Next goal (Bachelor's)
+        expect(player.educationCreditsGoal).toBe(0); // Next goal (Intermed. Prod)
         expect(graduationHandler).toHaveBeenCalled();
-        expect(gameState.log[0].text).toContain(' Graduation');
+        expect(gameState.log[0].text).toContain('Certification Achieved');
 
         // Verify Level 2 jobs are now available
         const availableJobs = (gameState as any)._getAvailableJobs(player);
@@ -78,7 +78,7 @@ describe('Education System Upgrade', () => {
         player.time = 24;
         const result = gameState.study();
         expect(result).toBe(false);
-        expect(gameState.log[0].text).toContain('must enroll in Bachelor\'s Degree');
+        expect(gameState.log[0].text).toContain('must enroll in Intermed. Prod (Level 2)');
 
         // Enroll in Level 2
         player.cash = 1000;
@@ -97,13 +97,13 @@ describe('Education System Upgrade', () => {
         gameState.takeCourse(1);
         const result = gameState.study();
         expect(result).toBe(false);
-        expect(gameState.log[0].text).toContain('Morale Quota is too low');
+        expect(gameState.log[0].text).toContain('Morale Quota is insufficient');
     });
 
     it('should prevent enrolling in higher levels without completing lower ones', () => {
-        const result = gameState.takeCourse(2); // Bachelor's
+        const result = gameState.takeCourse(2); // Intermed. Prod
         expect(result).toBe(false);
-        expect(gameState.log[0].text).toContain('complete lower level degrees first');
+        expect(gameState.log[0].text).toContain('complete prior compliance tiers');
     });
 
     it('should update AI behavior to enroll and study', () => {
@@ -141,7 +141,7 @@ describe('Education System Upgrade', () => {
         aiPlayer.educationLevel = 1;
         aiPlayer.educationCredits = 0;
         aiPlayer.educationCreditsGoal = 0;
-        aiPlayer.cash = 1500; // Enough for Bachelor's ($1000)
+        aiPlayer.cash = 1500; // Enough for Intermed. Prod ($1000)
 
         // AI should try to enroll in Level 2
         action = aiController.takeTurn(gameState, aiPlayer);

@@ -71,14 +71,14 @@ describe('LifeScreen', () => {
             expect(avatar.dataset.player).toBe('2');
         });
 
-        it('should render Well-Rested chip when time > 12', () => {
+        it('should render Optimal Buffer chip when time > 12', () => {
             const player = gameState.getCurrentPlayer();
             (player as any).time = 13;
             lifeScreen.render(gameState);
 
             const chips = lifeScreen.getStatusChips();
             const chip = chips.querySelector('.chip-success');
-            expect(chip?.textContent).toBe('Well-Rested');
+            expect(chip?.textContent).toBe('Optimal Buffer');
         });
 
         it('should render Hungry chip when hunger > 50', () => {
@@ -101,7 +101,7 @@ describe('LifeScreen', () => {
             expect(chip?.textContent).toBe('CRITICAL DEFICIT');
         });
 
-        it('should render Satiated chip when hunger <= 50', () => {
+        it('should render Nominal chip when hunger <= 50', () => {
             const player = gameState.getCurrentPlayer();
             (player as any).time = 12; // Not well-rested
             (player as any).hunger = 30;
@@ -109,17 +109,17 @@ describe('LifeScreen', () => {
 
             const chips = lifeScreen.getStatusChips();
             const chip = chips.querySelector('.chip-success');
-            expect(chip?.textContent).toBe('Optimal');
+            expect(chip?.textContent).toBe('Nominal');
         });
 
-        it('should render In Debt chip when loan > 0', () => {
+        it('should render Negative Liquidity chip when loan > 0', () => {
             const player = gameState.getCurrentPlayer();
             (player as any).loan = 1000;
             lifeScreen.render(gameState);
 
             const chips = lifeScreen.getStatusChips();
             const debtChip = Array.from(chips.querySelectorAll('.chip-danger')).find(
-                chip => chip.textContent === 'In Debt'
+                chip => chip.textContent === 'Negative Liquidity'
             );
             expect(debtChip).toBeDefined();
         });
