@@ -15,10 +15,10 @@ export default class MascotUI extends BaseComponent<GameState> {
     private profitTimer: any = null;
 
     private static readonly ASSETS = {
-        [MascotState.DEFAULT]: 'src/assets/ui/illustrations/default-smug-watchdog.png',
-        [MascotState.PROFIT]: 'src/assets/ui/illustrations/profit-line-goes-up.png',
-        [MascotState.DEFICIT]: 'src/assets/ui/illustrations/deficit-glitching-manager.png',
-        [MascotState.HELPFUL]: 'src/assets/ui/illustrations/helpful-sarcastic-assistant.png'
+        [MascotState.DEFAULT]: 'https://raw.githubusercontent.com/silwerdivan/jones-vibes/main/src/assets/ui/illustrations/default-smug-watchdog.png',
+        [MascotState.PROFIT]: 'https://raw.githubusercontent.com/silwerdivan/jones-vibes/main/src/assets/ui/illustrations/profit-line-goes-up.png',
+        [MascotState.DEFICIT]: 'https://raw.githubusercontent.com/silwerdivan/jones-vibes/main/src/assets/ui/illustrations/deficit-glitching-manager.png',
+        [MascotState.HELPFUL]: 'https://raw.githubusercontent.com/silwerdivan/jones-vibes/main/src/assets/ui/illustrations/helpful-sarcastic-assistant.png'
     };
 
     constructor(playerIndex: number, isModalMode: boolean = false) {
