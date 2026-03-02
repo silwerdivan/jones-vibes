@@ -108,7 +108,9 @@ class TimeSystem {
         }
 
         // 5. Apply hunger
-        currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + 20);
+        const hasOmniChill = currentPlayer.inventory.some(i => i.name === 'Omni-Chill');
+        const hungerIncrease = hasOmniChill ? 10 : 20;
+        currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + hungerIncrease);
         if (currentPlayer.hunger > 50) {
             currentPlayer.updateHappiness(-5);
             summary.events.push({
@@ -121,7 +123,7 @@ class TimeSystem {
             this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} is approaching Bio-Deficit...`, 'warning');
             EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
         }
-        EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: 20, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
 
         // 6. Add graduation events
         if (currentPlayer.weeklyGraduations && currentPlayer.weeklyGraduations.length > 0) {

@@ -61,5 +61,20 @@
 - Verified all 254 tests passing.
 
 ### Next Steps
-- Task 2: Item Math Implementation (Omni-Chill and Hypno-Screen logic)
+- Task 2.2: Hypno-Screen (Television) Logic
+
+## 2026-03-02 - Task 2.1: Omni-Chill Logic Complete
+
+### Completed Tasks
+- Implemented Omni-Chill (Fridge) logic in `TimeSystem.endTurn()`.
+- Players with an `Omni-Chill` now experience a +10 Bio-Deficit (hunger) increase per cycle instead of the base +20.
+- Created `tests/OmniChill.test.ts` to verify the logic.
+- Verified all 256 tests passing.
+
+### Files Created/Modified
+- `src/systems/TimeSystem.ts` (Modified)
+- `tests/OmniChill.test.ts` (Created)
+
+### Next Steps
+- Task 2.2: Hypno-Screen (Television) Logic (Rest Morale Gain)
 

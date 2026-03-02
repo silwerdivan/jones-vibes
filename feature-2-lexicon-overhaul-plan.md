@@ -47,7 +47,7 @@ This plan outlines the steps to transition the game's generic terminology to the
 ## **2. Item Math Implementation**
 
 ### **2.1 Omni-Chill (Fridge) Logic**
-- [ ] **Modify `TimeSystem.endTurn()` in `src/systems/TimeSystem.ts`**
+- [x] **Modify `TimeSystem.endTurn()` in `src/systems/TimeSystem.ts`**
     - Identify the hunger increase logic (currently +20).
     - Check player inventory: `const hasOmniChill = player.inventory.some(i => i.name === 'Omni-Chill')`.
     - If `hasOmniChill`, multiply the weekly hunger increase by 0.5 (result: +10).
@@ -70,7 +70,7 @@ This plan outlines the steps to transition the game's generic terminology to the
 - [x] Update `tests/TimeSystem.test.ts` to match new location names.
 
 ### **3.2 New Feature Tests**
-- [ ] **Test Omni-Chill Buff:**
+- [x] **Test Omni-Chill Buff:**
     - Create a test case where a player with an Omni-Chill in inventory ends their turn and verifies hunger increases by 10 instead of 20.
 - [ ] **Test Hypno-Screen Buff:**
     - Create a test case where a player with a Hypno-Screen in inventory ends their turn and verifies morale increases by 11.
