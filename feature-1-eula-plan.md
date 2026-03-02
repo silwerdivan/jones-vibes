@@ -14,15 +14,15 @@ This plan outlines the steps to implement the mandatory "OmniLife OS" EULA scree
   - [x] **Clause D (Liquidity):** `Money +500`, `Bank Debt +500`
 
 ### Task 2: Build the EULA UI Component (`EulaModal.ts`)
-- [ ] Create a new UI component `src/ui/components/EulaModal.ts`.
-- [ ] Implement layout:
-  - [ ] A scrollable text container for the EULA legal text.
-  - [ ] A form section with 4 optional checkboxes for the clauses.
-  - [ ] A primary `[I ACCEPT]` button, initialized with the `disabled` attribute.
-- [ ] Implement interactivity:
-  - [ ] Add an `onScroll` listener to the EULA text container.
-  - [ ] Remove the `disabled` state from the accept button when the user scrolls to the bottom (e.g., `scrollTop + clientHeight >= scrollHeight - 5`).
-- [ ] (Optional) Implement a typewriter effect for the EULA text to enhance the dystopian vibe.
+- [x] Create a new UI component `src/ui/components/EulaModal.ts`.
+- [x] Implement layout:
+  - [x] A scrollable text container for the EULA legal text.
+  - [x] A form section with 4 optional checkboxes for the clauses.
+  - [x] A primary `[I ACCEPT]` button, initialized with the `disabled` attribute.
+- [x] Implement interactivity:
+  - [x] Add an `onScroll` listener to the EULA text container.
+  - [x] Remove the `disabled` state from the accept button when the user scrolls to the bottom (e.g., `scrollTop + clientHeight >= scrollHeight - 10`).
+- [x] (Optional) Implement a typewriter effect for the EULA text to enhance the dystopian vibe.
 
 ### Task 3: Intercept Game Initialization (`main.ts`)
 - [ ] Modify the startup flow in `src/main.ts`.

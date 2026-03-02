@@ -10,7 +10,19 @@
 - Verified `feature-1-eula-plan.md` structure.
 
 ### Next Steps
-- Task 2: Build the EULA UI Component (`EulaModal.ts`)
+- Task 3: Intercept Game Initialization (`main.ts`)
+
+## 2026-03-02 - Task 2: Build the EULA UI Component (`EulaModal.ts`)
+
+### Completed Tasks
+- Created `src/ui/components/EulaModal.ts` as a `BaseComponent`.
+- Implemented responsive dystopian layout with:
+    - Scroll-to-unlock mechanism for the `[I ACCEPT]` button.
+    - Typewriter effect for legal text.
+    - Neon styling for optional clauses.
+- Added comprehensive CSS in `style.css` for the EULA theme.
+- Verified build is warning-free and existing tests pass.
+
 
 ## 2026-03-02 - Task 1: Data Structure & Clause Definitions
 
