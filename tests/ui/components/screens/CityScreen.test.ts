@@ -61,19 +61,19 @@ describe('CityScreen', () => {
         });
 
         it('should mark current location as active', () => {
-            gameState.getCurrentPlayer().location = 'Home';
+            gameState.getCurrentPlayer().location = 'Hab-Pod 404';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             const cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
             const homeCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Home'
+                card.querySelector('.bento-card-title')?.textContent === 'Hab-Pod 404'
             );
             expect(homeCard?.classList.contains('active')).toBe(true);
         });
 
         it('should update location hint text', () => {
-            gameState.getCurrentPlayer().location = 'Bank';
+            gameState.getCurrentPlayer().location = 'Cred-Debt Ctr';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
@@ -110,58 +110,58 @@ describe('CityScreen', () => {
             const mockPublish = vi.fn();
             EventBus.publish = mockPublish;
 
-            gameState.getCurrentPlayer().location = 'Home';
+            gameState.getCurrentPlayer().location = 'Hab-Pod 404';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             const cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
             const bankCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Bank'
+                card.querySelector('.bento-card-title')?.textContent === 'Cred-Debt Ctr'
             );
 
             bankCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
-            expect(mockPublish).toHaveBeenCalledWith(UI_EVENTS.TRAVEL, 'Bank');
+            expect(mockPublish).toHaveBeenCalledWith(UI_EVENTS.TRAVEL, 'Cred-Debt Ctr');
         });
 
         it('should publish showLocationDashboard when clicking current location', () => {
             const mockPublish = vi.fn();
             EventBus.publish = mockPublish;
 
-            gameState.getCurrentPlayer().location = 'Bank';
+            gameState.getCurrentPlayer().location = 'Cred-Debt Ctr';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             const cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
             const bankCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Bank'
+                card.querySelector('.bento-card-title')?.textContent === 'Cred-Debt Ctr'
             );
 
             bankCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
-            expect(mockPublish).toHaveBeenCalledWith('showLocationDashboard', 'Bank');
+            expect(mockPublish).toHaveBeenCalledWith('showLocationDashboard', 'Cred-Debt Ctr');
         });
     });
 
     describe('location hints', () => {
-        it('should show correct hint for Home', () => {
-            gameState.getCurrentPlayer().location = 'Home';
+        it('should show correct hint for Hab-Pod 404', () => {
+            gameState.getCurrentPlayer().location = 'Hab-Pod 404';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             expect(cityScreen.getLocationHint().textContent).toBe('Rest and end your turn here');
         });
 
-        it('should show correct hint for Employment Agency', () => {
-            gameState.getCurrentPlayer().location = 'Employment Agency';
+        it('should show correct hint for Labor Sector', () => {
+            gameState.getCurrentPlayer().location = 'Labor Sector';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             expect(cityScreen.getLocationHint().textContent).toBe('Find work and earn money');
         });
 
-        it('should show correct hint for Community College', () => {
-            gameState.getCurrentPlayer().location = 'Community College';
+        it('should show correct hint for Cognitive Re-Ed', () => {
+            gameState.getCurrentPlayer().location = 'Cognitive Re-Ed';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
@@ -176,8 +176,8 @@ describe('CityScreen', () => {
             expect(cityScreen.getLocationHint().textContent).toBe('Buy items to boost your happiness');
         });
 
-        it('should show correct hint for Fast Food', () => {
-            gameState.getCurrentPlayer().location = 'Fast Food';
+        it('should show correct hint for Sustenance Hub', () => {
+            gameState.getCurrentPlayer().location = 'Sustenance Hub';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
@@ -192,8 +192,8 @@ describe('CityScreen', () => {
             expect(cityScreen.getLocationHint().textContent).toBe('Purchase a car for faster travel');
         });
 
-        it('should show correct hint for Bank', () => {
-            gameState.getCurrentPlayer().location = 'Bank';
+        it('should show correct hint for Cred-Debt Ctr', () => {
+            gameState.getCurrentPlayer().location = 'Cred-Debt Ctr';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
@@ -220,25 +220,25 @@ describe('CityScreen', () => {
 
     describe('re-rendering', () => {
         it('should update active state when location changes', () => {
-            gameState.getCurrentPlayer().location = 'Home';
+            gameState.getCurrentPlayer().location = 'Hab-Pod 404';
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
             let cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
             let homeCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Home'
+                card.querySelector('.bento-card-title')?.textContent === 'Hab-Pod 404'
             );
             expect(homeCard?.classList.contains('active')).toBe(true);
 
-            gameState.getCurrentPlayer().location = 'Bank';
+            gameState.getCurrentPlayer().location = 'Cred-Debt Ctr';
             cityScreen.render(gameState);
 
             cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
             homeCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Home'
+                card.querySelector('.bento-card-title')?.textContent === 'Hab-Pod 404'
             );
             const bankCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Bank'
+                card.querySelector('.bento-card-title')?.textContent === 'Cred-Debt Ctr'
             );
 
             expect(homeCard?.classList.contains('active')).toBe(false);

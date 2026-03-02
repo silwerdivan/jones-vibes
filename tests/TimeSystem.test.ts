@@ -34,7 +34,7 @@ describe('TimeSystem', () => {
         
         timeSystem.endTurn();
         
-        expect(player.location).toBe('Home');
+        expect(player.location).toBe('Hab-Pod 404');
     });
 
     it('should handle daily expenses when turn ends', () => {

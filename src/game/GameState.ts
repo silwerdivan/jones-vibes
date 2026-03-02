@@ -354,9 +354,9 @@ class GameState {
     workShift(): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
-        if (currentPlayer.location !== 'Employment Agency') {
+        if (currentPlayer.location !== 'Labor Sector') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Employment Agency to work.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Labor Sector to work.`,
                 'error'
             );
             return false;
@@ -422,9 +422,9 @@ class GameState {
         const currentPlayer = this.getCurrentPlayer();
         const course = COURSES.find(c => c.id === courseId);
 
-        if (currentPlayer.location !== 'Community College') {
+        if (currentPlayer.location !== 'Cognitive Re-Ed') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Community College to enroll.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cognitive Re-Ed to enroll.`,
                 'error'
             );
             return false;
@@ -481,9 +481,9 @@ class GameState {
     study(): boolean {
         const currentPlayer = this.getCurrentPlayer();
 
-        if (currentPlayer.location !== 'Community College') {
+        if (currentPlayer.location !== 'Cognitive Re-Ed') {
             this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Community College to study.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cognitive Re-Ed to study.`,
                 'error'
             );
             return false;
@@ -584,7 +584,7 @@ class GameState {
         const travelTime = currentPlayer.hasCar ? 1 : 2;
 
         if (currentPlayer.time < travelTime) {
-            if (destination === 'Home') {
+            if (destination === 'Hab-Pod 404') {
                 const deficit = travelTime - currentPlayer.time;
                 currentPlayer.time = 0;
                 currentPlayer.timeDeficit = deficit;

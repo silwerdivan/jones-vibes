@@ -27,9 +27,9 @@ class EconomySystem {
         const currentPlayer = this.gameState.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
-        if (currentPlayer.location !== 'Shopping Mall' && currentPlayer.location !== 'Fast Food') {
+        if (currentPlayer.location !== 'Shopping Mall' && currentPlayer.location !== 'Sustenance Hub') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall or Fast Food to shop.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Shopping Mall or Sustenance Hub to shop.`,
                 'error'
             );
             return false;
@@ -85,9 +85,9 @@ class EconomySystem {
     deposit(amount: number): boolean {
         const currentPlayer = this.gameState.getCurrentPlayer();
 
-        if (currentPlayer.location !== 'Bank') {
+        if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to deposit cash.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to deposit cash.`,
                 'error'
             );
             return false;
@@ -121,9 +121,9 @@ class EconomySystem {
     withdraw(amount: number): boolean {
         const currentPlayer = this.gameState.getCurrentPlayer();
 
-        if (currentPlayer.location !== 'Bank') {
+        if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to withdraw cash.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to withdraw cash.`,
                 'error'
             );
             return false;
@@ -158,9 +158,9 @@ class EconomySystem {
         const currentPlayer = this.gameState.getCurrentPlayer();
         const MAX_LOAN = 2500;
 
-        if (currentPlayer.location !== 'Bank') {
+        if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to take a loan.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to take a loan.`,
                 'error'
             );
             return false;
@@ -196,9 +196,9 @@ class EconomySystem {
     repayLoan(amount: number): boolean {
         const currentPlayer = this.gameState.getCurrentPlayer();
 
-        if (currentPlayer.location !== 'Bank') {
+        if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Bank to repay a loan.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to repay a loan.`,
                 'error'
             );
             return false;

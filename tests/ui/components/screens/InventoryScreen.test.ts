@@ -45,7 +45,7 @@ describe('InventoryScreen', () => {
             expect(section.classList.contains('inventory-section')).toBe(true);
 
             const title = section.querySelector('.section-title');
-            expect(title?.textContent).toBe('Home Assets');
+            expect(title?.textContent).toBe('Hab-Pod Assets');
         });
 
         it('should create assets grid', () => {

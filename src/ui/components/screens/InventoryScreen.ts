@@ -18,7 +18,7 @@ export default class InventoryScreen extends BaseComponent<GameState> {
         this.essentialsGrid = this.createGrid('essentials-grid');
         this.essentialsSection.appendChild(this.essentialsGrid);
 
-        this.assetsSection = this.createSection('Home Assets');
+        this.assetsSection = this.createSection('Hab-Pod Assets');
         this.assetsGrid = this.createGrid('assets-grid');
         this.assetsSection.appendChild(this.assetsGrid);
 

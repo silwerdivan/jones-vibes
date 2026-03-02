@@ -409,7 +409,7 @@ export class GraduationModal extends Modal {
     
     if (this.rewardText) {
         if (player.educationLevel < 5) {
-            this.rewardText.textContent = `Level ${player.educationLevel + 1} Careers are now unlocked at the Employment Agency. Keep studying for even higher wages!`;
+            this.rewardText.textContent = `Level ${player.educationLevel + 1} Careers are now unlocked at the Labor Sector. Keep studying for even higher wages!`;
         } else {
             this.rewardText.textContent = `You have reached the pinnacle of education! All top-tier career paths are now fully accessible to you.`;
         }

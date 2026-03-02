@@ -23,7 +23,7 @@ describe('UIManager', () => {
         // Mock GameState and Player
         mockPlayer = {
             id: 1,
-            location: 'Home',
+            location: 'Hab-Pod 404',
             time: 24,
             isAI: false
         };
@@ -55,7 +55,7 @@ describe('UIManager', () => {
             (uiManager as any).isSummaryShown = true;
             (uiManager as any).gameState = mockGameState;
             
-            uiManager.showLocationDashboard('Bank');
+            uiManager.showLocationDashboard('Cred-Debt Ctr');
             
             // dashboardSwitched should NOT be published
             expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
@@ -67,33 +67,33 @@ describe('UIManager', () => {
             mockGameState.pendingTurnSummary = { totalIncome: 100 } as any;
             (uiManager as any).gameState = mockGameState;
             
-            uiManager.showLocationDashboard('Bank');
+            uiManager.showLocationDashboard('Cred-Debt Ctr');
             
             expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
         });
 
-        it('should NOT show dashboard for non-Home location if player has no time', () => {
+        it('should NOT show dashboard for non-Hab-Pod 404 location if player has no time', () => {
             const spy = vi.spyOn(EventBus, 'publish');
             
             mockPlayer.time = 0;
-            mockPlayer.location = 'Bank';
+            mockPlayer.location = 'Cred-Debt Ctr';
             (uiManager as any).gameState = mockGameState;
             
-            uiManager.showLocationDashboard('Bank');
+            uiManager.showLocationDashboard('Cred-Debt Ctr');
             
             expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
         });
 
-        it('SHOULD show dashboard for Home even if player has no time', () => {
+        it('SHOULD show dashboard for Hab-Pod 404 even if player has no time', () => {
             const spy = vi.spyOn(EventBus, 'publish');
             
             mockPlayer.time = 0;
-            mockPlayer.location = 'Home';
+            mockPlayer.location = 'Hab-Pod 404';
             (uiManager as any).gameState = mockGameState;
             
-            uiManager.showLocationDashboard('Home');
+            uiManager.showLocationDashboard('Hab-Pod 404');
             
-            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Home' });
+            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Hab-Pod 404' });
         });
 
         it('SHOULD show dashboard if time > 0 and no summary', () => {
@@ -102,9 +102,9 @@ describe('UIManager', () => {
             mockPlayer.time = 10;
             (uiManager as any).gameState = mockGameState;
             
-            uiManager.showLocationDashboard('Bank');
+            uiManager.showLocationDashboard('Cred-Debt Ctr');
             
-            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Bank' });
+            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Cred-Debt Ctr' });
         });
     });
 
@@ -114,9 +114,9 @@ describe('UIManager', () => {
             const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
             
             mockPlayer.time = 0;
-            mockPlayer.location = 'Bank';
+            mockPlayer.location = 'Cred-Debt Ctr';
             (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Home';
+            (uiManager as any).lastLocation = 'Hab-Pod 404';
             (uiManager as any).lastPlayerId = 1;
             
             (uiManager as any).handleAutoArrival();
@@ -131,51 +131,51 @@ describe('UIManager', () => {
             const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
             
             mockPlayer.time = 5;
-            mockPlayer.location = 'Bank';
+            mockPlayer.location = 'Cred-Debt Ctr';
             (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Home';
+            (uiManager as any).lastLocation = 'Hab-Pod 404';
             (uiManager as any).lastPlayerId = 1;
             
             (uiManager as any).handleAutoArrival();
             
             vi.advanceTimersByTime(300);
-            expect(showSpy).toHaveBeenCalledWith('Bank');
+            expect(showSpy).toHaveBeenCalledWith('Cred-Debt Ctr');
             vi.useRealTimers();
         });
 
-        it('SHOULD trigger dashboard when arriving at Home mid-turn', () => {
+        it('SHOULD trigger dashboard when arriving at Hab-Pod 404 mid-turn', () => {
             vi.useFakeTimers();
             const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
             
             mockPlayer.time = 5;
-            mockPlayer.location = 'Home';
+            mockPlayer.location = 'Hab-Pod 404';
             (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Bank';
+            (uiManager as any).lastLocation = 'Cred-Debt Ctr';
             (uiManager as any).lastPlayerId = 1;
             
             (uiManager as any).handleAutoArrival();
             
             vi.advanceTimersByTime(300);
-            expect(showSpy).toHaveBeenCalledWith('Home');
+            expect(showSpy).toHaveBeenCalledWith('Hab-Pod 404');
             vi.useRealTimers();
         });
     });
 
     describe('getLocationActions', () => {
-        it('should return "Rest / End Turn" for Home', () => {
-            const actions = uiManager.getLocationActions('Home');
+        it('should return "Rest / End Turn" for Hab-Pod 404', () => {
+            const actions = uiManager.getLocationActions('Hab-Pod 404');
             expect(actions).toHaveLength(1);
             expect(actions[0].label).toBe('Rest / End Turn');
         });
 
-        it('should return "Work Shift" for Employment Agency', () => {
-            const actions = uiManager.getLocationActions('Employment Agency');
+        it('should return "Work Shift" for Labor Sector', () => {
+            const actions = uiManager.getLocationActions('Labor Sector');
             expect(actions).toHaveLength(1);
             expect(actions[0].label).toBe('Work Shift');
         });
 
-        it('should return empty array for Community College', () => {
-            const actions = uiManager.getLocationActions('Community College');
+        it('should return empty array for Cognitive Re-Ed', () => {
+            const actions = uiManager.getLocationActions('Cognitive Re-Ed');
             expect(actions).toHaveLength(0);
         });
 
@@ -185,8 +185,8 @@ describe('UIManager', () => {
             expect(browseAction).toBeUndefined();
         });
 
-        it('should NOT return "Browse Menu" for Fast Food (redundant)', () => {
-            const actions = uiManager.getLocationActions('Fast Food');
+        it('should NOT return "Browse Menu" for Sustenance Hub (redundant)', () => {
+            const actions = uiManager.getLocationActions('Sustenance Hub');
             const browseAction = actions.find(a => a.label === 'Browse Menu');
             expect(browseAction).toBeUndefined();
         });

@@ -35,7 +35,7 @@ export default class Player {
         this.educationCreditsGoal = 0; // Set to 0 to require enrollment
         this.careerLevel = 0;
         this.time = 24;
-        this.location = "Home";
+        this.location = "Hab-Pod 404";
         this.hasCar = false;
         this.loan = 0;
         this.inventory = [];

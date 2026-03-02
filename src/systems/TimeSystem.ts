@@ -156,7 +156,7 @@ class TimeSystem {
         }
 
         // 8. Reset location to Home
-        currentPlayer.setLocation("Home");
+        currentPlayer.setLocation("Hab-Pod 404");
         this.gameState.activeLocationDashboard = null;
         this.gameState.activeChoiceContext = null;
         this.gameState.addLogMessage(
@@ -181,7 +181,7 @@ class TimeSystem {
             gameState: this.gameState 
         });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
-        EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: 'Home', gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: 'Hab-Pod 404', gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         return summary;
     }

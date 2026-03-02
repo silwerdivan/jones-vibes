@@ -17,9 +17,9 @@ class AIController {
 
         // Priority 1: Pay Loan (Banking is instant once at the location)
         if (player.loan > 2000 && player.cash > 0) {
-            if (player.location !== 'Bank') {
+            if (player.location !== 'Cred-Debt Ctr') {
                 if (player.time >= travelTime) {
-                    return { action: 'travel', params: { destination: 'Bank' } };
+                    return { action: 'travel', params: { destination: 'Cred-Debt Ctr' } };
                 }
             } else {
                 const amountToRepay = Math.min(player.loan, player.cash);
@@ -32,26 +32,26 @@ class AIController {
         // Priority 2: Hunger Management (Threshold 30 to prevent turn-end penalty)
         if (player.hunger > 30) {
             const affordableFood = SHOPPING_ITEMS.filter(item => 
-                item.location === 'Fast Food' && player.cash >= item.cost
+                item.location === 'Sustenance Hub' && player.cash >= item.cost
             );
 
             if (affordableFood.length > 0) {
-                if (player.location === 'Fast Food') {
+                if (player.location === 'Sustenance Hub') {
                     const bestFood = affordableFood.reduce((prev, current) => 
                         ((prev.hungerReduction || 0) > (current.hungerReduction || 0)) ? prev : current
                     );
                     return { action: 'buyItem', params: { itemName: bestFood.name } };
                 } else if (player.time >= travelTime) {
-                    return { action: 'travel', params: { destination: 'Fast Food' } };
+                    return { action: 'travel', params: { destination: 'Sustenance Hub' } };
                 }
             }
         }
 
         // Priority 3: Gain Wealth (Work takes time)
         if (player.cash < 1000 && player.time >= workShiftHours) {
-            if (player.location !== 'Employment Agency') {
+            if (player.location !== 'Labor Sector') {
                 if (player.time >= travelTime) {
-                    return { action: 'travel', params: { destination: 'Employment Agency' } };
+                    return { action: 'travel', params: { destination: 'Labor Sector' } };
                 }
             } else {
                 if (player.careerLevel === 0) {
@@ -77,9 +77,9 @@ class AIController {
                 // Enrollment (tuition)
                 if (player.educationCreditsGoal < nextCourse.requiredCredits && player.cash >= nextCourse.cost) {
                     const enrollmentTime = 1;
-                    if (player.location !== 'Community College') {
+                    if (player.location !== 'Cognitive Re-Ed') {
                         if (player.time >= travelTime + enrollmentTime) {
-                            return { action: 'travel', params: { destination: 'Community College' } };
+                            return { action: 'travel', params: { destination: 'Cognitive Re-Ed' } };
                         }
                     } else if (player.time >= enrollmentTime) {
                         return { action: 'takeCourse', params: { courseId: nextCourse.id } };
@@ -93,9 +93,9 @@ class AIController {
                     player.time >= studyTime && 
                     player.happiness >= happinessCost) {
                     
-                    if (player.location !== 'Community College') {
+                    if (player.location !== 'Cognitive Re-Ed') {
                         if (player.time >= travelTime + studyTime) {
-                            return { action: 'travel', params: { destination: 'Community College' } };
+                            return { action: 'travel', params: { destination: 'Cognitive Re-Ed' } };
                         }
                     } else {
                         return { action: 'study' };
@@ -132,7 +132,7 @@ class AIController {
             }
         }
 
-        if (player.location === 'Employment Agency' && player.time >= workShiftHours && player.careerLevel > 0) {
+        if (player.location === 'Labor Sector' && player.time >= workShiftHours && player.careerLevel > 0) {
             return { action: 'workShift' };
         }
         

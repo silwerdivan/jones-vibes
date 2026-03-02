@@ -241,10 +241,10 @@ class UIManager {
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
 
-        if (location === 'Shopping Mall' || location === 'Fast Food') {
+        if (location === 'Shopping Mall' || location === 'Sustenance Hub') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
-                } else if (location === 'Community College') {
+                } else if (location === 'Cognitive Re-Ed') {
                     this.collegeDashboard.render(this.gameState!);
                     this.choiceModal.setContent(this.collegeDashboard.getElement());
                 } else {
@@ -275,7 +275,7 @@ class UIManager {
         
         // For locations other than 'Home', skip showing the dashboard if the player has no time remaining.
         // This prevents "flashing" the clerk view right before the auto-end turn logic kicks in.
-        if (location !== 'Home' && player.time <= 0) {
+        if (location !== 'Hab-Pod 404' && player.time <= 0) {
             return;
         }
 
@@ -288,12 +288,12 @@ class UIManager {
         this.choiceModal.clearContent();
         this.choiceModal.showInput(false);
 
-        if (location === 'Employment Agency') {
+        if (location === 'Labor Sector') {
             this.renderActionCards('jobs', JOBS);
-        } else if (location === 'Community College') {
+        } else if (location === 'Cognitive Re-Ed') {
             this.collegeDashboard.render(this.gameState!);
             this.choiceModal.setContent(this.collegeDashboard.getElement());
-        } else if (location === 'Shopping Mall' || location === 'Fast Food') {
+        } else if (location === 'Shopping Mall' || location === 'Sustenance Hub') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
         }
@@ -322,7 +322,7 @@ class UIManager {
             }, action.className);
         });
 
-        if (location === 'Bank') {
+        if (location === 'Cred-Debt Ctr') {
             this.choiceModal.showInput(true);
 
             const bankActions = [
@@ -344,7 +344,7 @@ class UIManager {
 
                     choice.action(amount);
                     setTimeout(() => {
-                        this.showLocationDashboard('Bank');
+                        this.showLocationDashboard('Cred-Debt Ctr');
                     }, 100);
                 });
             });
@@ -369,7 +369,7 @@ class UIManager {
     }
 
     showJobApplicationModal() {
-        this.showLocationDashboard('Employment Agency');
+        this.showLocationDashboard('Labor Sector');
     }
 
     renderActionCards(type: 'jobs' | 'college' | 'shopping', data: any[]) {
@@ -387,7 +387,7 @@ class UIManager {
                     const job = item as Job;
                     EventBus.publish(UI_EVENTS.APPLY_JOB, job.level);
                     setTimeout(() => {
-                        this.showLocationDashboard('Employment Agency');
+                        this.showLocationDashboard('Labor Sector');
                     }, 100);
                 } else if (type === 'college') {
                     const course = item as Course;
@@ -397,10 +397,10 @@ class UIManager {
                     const shoppingItem = item as Item;
                     EventBus.publish(UI_EVENTS.BUY_ITEM, shoppingItem.name);
                     
-                    if (shoppingItem.location === 'Fast Food') {
+                    if (shoppingItem.location === 'Sustenance Hub') {
                         // Keep modal open for Fast Food purchases
                         setTimeout(() => {
-                            this.showLocationDashboard('Fast Food');
+                            this.showLocationDashboard('Sustenance Hub');
                         }, 100);
                     } else {
                         this.choiceModal.hide();
@@ -457,7 +457,7 @@ class UIManager {
         const currentPlayer = this.gameState.getCurrentPlayer();
 
         // Auto-arrival logic - show dashboard when arriving at a new location
-        // We skip "Home" to prevent accidental end-turn clicks at the start of a turn
+        // We skip "Hab-Pod 404" to prevent accidental end-turn clicks at the start of a turn
         const isNewTurn = this.lastPlayerId !== null && this.lastPlayerId !== currentPlayer.id;
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
@@ -483,7 +483,7 @@ class UIManager {
         const actions: LocationAction[] = [];
 
         switch (location) {
-            case 'Home':
+            case 'Hab-Pod 404':
                 actions.push({
                     label: 'Rest / End Turn',
                     icon: 'bedtime',
@@ -492,7 +492,7 @@ class UIManager {
                     onClick: () => EventBus.publish(UI_EVENTS.REST_END_TURN)
                 });
                 break;
-            case 'Employment Agency':
+            case 'Labor Sector':
                 actions.push({
                     label: 'Work Shift',
                     icon: 'work',
@@ -500,7 +500,7 @@ class UIManager {
                     onClick: () => EventBus.publish(UI_EVENTS.WORK_SHIFT)
                 });
                 break;
-            case 'Community College':
+            case 'Cognitive Re-Ed':
                 break;
             case 'Used Car Lot':
                 actions.push({
@@ -510,7 +510,7 @@ class UIManager {
                     onClick: () => EventBus.publish(UI_EVENTS.BUY_CAR)
                 });
                 break;
-            case 'Bank':
+            case 'Cred-Debt Ctr':
                 // Financial services actions (Deposit, Withdraw, etc.) are added 
                 // separately in showLocationDashboard to handle the contextual input.
                 break;
@@ -520,7 +520,7 @@ class UIManager {
     }
 
     showBankModal() {
-        this.showLocationDashboard('Bank');
+        this.showLocationDashboard('Cred-Debt Ctr');
     }
 
     switchScreen(screenId: string): void {

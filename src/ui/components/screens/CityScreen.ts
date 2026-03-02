@@ -103,26 +103,26 @@ export default class CityScreen extends BaseComponent<GameState> {
 
     private getLocationIcon(location: LocationName): string {
         switch (location) {
-            case 'Home': return Icons.apartment(32, '#FF00FF');
-            case 'Employment Agency': return Icons.agency(32, '#00FFFF');
-            case 'Community College': return Icons.cyberChip(32, '#2979FF');
+            case 'Hab-Pod 404': return Icons.apartment(32, '#FF00FF');
+            case 'Labor Sector': return Icons.agency(32, '#00FFFF');
+            case 'Cognitive Re-Ed': return Icons.cyberChip(32, '#2979FF');
             case 'Shopping Mall': return Icons.smartBag(32, '#FFD600');
-            case 'Fast Food': return Icons.restaurant(32, '#FF9100');
+            case 'Sustenance Hub': return Icons.restaurant(32, '#FF9100');
             case 'Used Car Lot': return Icons.hoverCar(32, '#00E676');
-            case 'Bank': return Icons.cryptoVault(32, '#FF5252');
+            case 'Cred-Debt Ctr': return Icons.cryptoVault(32, '#FF5252');
             default: return '';
         }
     }
 
     private getLocationSummary(location: LocationName): string {
         switch (location) {
-            case 'Home': return 'Rest and end turn';
-            case 'Employment Agency': return 'Find work';
-            case 'Community College': return 'Study courses';
+            case 'Hab-Pod 404': return 'Rest and end turn';
+            case 'Labor Sector': return 'Find work';
+            case 'Cognitive Re-Ed': return 'Study courses';
             case 'Shopping Mall': return 'Buy items';
-            case 'Fast Food': return 'Eat food';
+            case 'Sustenance Hub': return 'Eat food';
             case 'Used Car Lot': return 'Buy a car';
-            case 'Bank': return 'Savings & Loans';
+            case 'Cred-Debt Ctr': return 'Savings & Loans';
             default: return '';
         }
     }
@@ -139,13 +139,13 @@ export default class CityScreen extends BaseComponent<GameState> {
         let hintText = '';
         
         switch (location) {
-            case 'Home': hintText = 'Rest and end your turn here'; break;
-            case 'Employment Agency': hintText = 'Find work and earn money'; break;
-            case 'Community College': hintText = 'Improve your education for better jobs'; break;
+            case 'Hab-Pod 404': hintText = 'Rest and end your turn here'; break;
+            case 'Labor Sector': hintText = 'Find work and earn money'; break;
+            case 'Cognitive Re-Ed': hintText = 'Improve your education for better jobs'; break;
             case 'Shopping Mall': hintText = 'Buy items to boost your happiness'; break;
-            case 'Fast Food': hintText = 'Grab a quick bite to eat'; break;
+            case 'Sustenance Hub': hintText = 'Grab a quick bite to eat'; break;
             case 'Used Car Lot': hintText = 'Purchase a car for faster travel'; break;
-            case 'Bank': hintText = 'Manage your finances: deposit, withdraw, or take a loan'; break;
+            case 'Cred-Debt Ctr': hintText = 'Manage your finances: deposit, withdraw, or take a loan'; break;
             default: hintText = 'Travel to other locations';
         }
         

@@ -44,7 +44,7 @@ export default class HUD extends BaseComponent<GameState> {
                 </div>
                 <div class="hud-stats">
                     <div class="hud-stat-item">
-                        <span class="hud-label">CREDITS</span>
+                        <span class="hud-label">OMNI-CREDS</span>
                         <span class="hud-value currency" data-cash>$0</span>
                     </div>
                 </div>
@@ -55,12 +55,12 @@ export default class HUD extends BaseComponent<GameState> {
                     <span class="terminal-badge hidden" data-terminal-badge>0</span>
                 </div>
                 <div class="hud-stat-item text-right">
-                    <span class="hud-label">WEEK</span>
+                    <span class="hud-label">CYCLE</span>
                     <span class="hud-value" data-week>1</span>
                 </div>
                 <div class="hud-stat-item text-right">
-                    <span class="hud-label">ZONE</span>
-                    <span class="hud-value" data-location>Home</span>
+                    <span class="hud-label">SECTOR</span>
+                    <span class="hud-value" data-location>Hab-Pod 404</span>
                 </div>
             </div>
         `;
