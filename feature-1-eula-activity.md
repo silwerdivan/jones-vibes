@@ -44,15 +44,23 @@
     - Listens for `eulaAccepted` event before proceeding to simulation.
 - Verified build and existing tests pass.
 
-## 2026-03-02 - Task 2: Build the EULA UI Component (`EulaModal.ts`)
+## 2026-03-02 - Task 2: Build the EULA UI Component (Mobile-First Refinement)
 
 ### Completed Tasks
 - Created `src/ui/components/EulaModal.ts` as a `BaseComponent`.
+- Refined UI for mobile responsiveness (Lead UI/UX Designer role):
+    - Implemented fluid typography for the header using `clamp()` to prevent overflow on small screens.
+    - Increased status text size and added glow effect for legibility.
+    - Replaced fixed height (`250px`) on EULA text wrapper with flexible `flex: 1.5` and `min-height: 180px` to adapt to different viewports.
+    - Optimized layout to prevent double scrollbars.
+    - Added `eula-slide-in` animation for a "juicier" entrance.
+    - Enhanced clause cards with better hover states.
 - Implemented responsive dystopian layout with:
     - Scroll-to-unlock mechanism for the `[I ACCEPT]` button.
     - Typewriter effect for legal text.
     - Neon styling for optional clauses.
 - Added comprehensive CSS in `style.css` for the EULA theme.
+- Created `docs-2026/fix-eula-ui-spec.md` as the official design record.
 - Verified build is warning-free and existing tests pass.
 
 
