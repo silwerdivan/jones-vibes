@@ -125,7 +125,24 @@ class TimeSystem {
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
 
-        // 6. Add graduation events
+        // 6. Apply morale gain (Cycle Rest)
+        const hasHypnoScreen = currentPlayer.inventory.some(i => i.name === 'Hypno-Screen');
+        const moraleGain = hasHypnoScreen ? 11 : 10;
+        currentPlayer.updateHappiness(moraleGain);
+        summary.events.push({
+            type: 'success',
+            label: 'Cycle Rest',
+            value: moraleGain,
+            unit: 'Morale',
+            icon: 'bedtime'
+        });
+        this.gameState.addLogMessage(
+            `${this._getPlayerName(currentPlayer)} gained ${moraleGain} Morale Quota during Cycle Rest.`,
+            'success'
+        );
+        EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: moraleGain, gameState: this.gameState });
+
+        // 7. Add graduation events
         if (currentPlayer.weeklyGraduations && currentPlayer.weeklyGraduations.length > 0) {
             currentPlayer.weeklyGraduations.forEach(courseName => {
                 summary.events.push({

@@ -76,5 +76,23 @@
 - `tests/OmniChill.test.ts` (Created)
 
 ### Next Steps
-- Task 2.2: Hypno-Screen (Television) Logic (Rest Morale Gain)
+- LEXICON_OVERHAUL_COMPLETE
+
+## 2026-03-02 - Task 2.2: Hypno-Screen Logic Complete
+
+### Completed Tasks
+- Implemented Hypno-Screen (Television) logic in `TimeSystem.endTurn()`.
+- All players now receive a base +10 Morale gain (Cycle Rest) when ending their turn.
+- Players with a `Hypno-Screen` receive a +11 Morale gain (10% bonus).
+- Created `tests/HypnoScreen.test.ts` to verify both the base rest gain and the Hypno-Screen buff.
+- Updated `tests/TimeSystem.test.ts` to account for the new morale gain in existing tests.
+- Verified all 258 tests passing and successful build.
+
+### Files Created/Modified
+- `src/systems/TimeSystem.ts` (Modified)
+- `tests/HypnoScreen.test.ts` (Created)
+- `tests/TimeSystem.test.ts` (Modified)
+
+### Next Steps
+- LEXICON_OVERHAUL_COMPLETE
 

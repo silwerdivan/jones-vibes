@@ -53,7 +53,7 @@ This plan outlines the steps to transition the game's generic terminology to the
     - If `hasOmniChill`, multiply the weekly hunger increase by 0.5 (result: +10).
 
 ### **2.2 Hypno-Screen (Television) Logic**
-- [ ] **Implement "Rest" Morale Gain**
+- [x] **Implement "Rest" Morale Gain**
     - The current `endTurn()` does not grant happiness. According to the PRD, "Resting" should now provide a morale gain.
     - Add a base `moraleGain = 10` to the `endTurn()` logic.
     - Check player inventory: `const hasHypnoScreen = player.inventory.some(i => i.name === 'Hypno-Screen')`.
@@ -72,9 +72,9 @@ This plan outlines the steps to transition the game's generic terminology to the
 ### **3.2 New Feature Tests**
 - [x] **Test Omni-Chill Buff:**
     - Create a test case where a player with an Omni-Chill in inventory ends their turn and verifies hunger increases by 10 instead of 20.
-- [ ] **Test Hypno-Screen Buff:**
+- [x] **Test Hypno-Screen Buff:**
     - Create a test case where a player with a Hypno-Screen in inventory ends their turn and verifies morale increases by 11.
-- [ ] **Test Baseline Rest:**
+- [x] **Test Baseline Rest:**
     - Verify that resting without a Hypno-Screen still grants the base +10 morale gain.
 
 ---

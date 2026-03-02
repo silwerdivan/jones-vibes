@@ -56,7 +56,8 @@ describe('TimeSystem', () => {
         
         // Hunger increases by 20, penalty is applied if hunger > 50
         expect(player.hunger).toBe(80);
-        expect(player.happiness).toBe(45); // -5 penalty
+        // Base rest: +10, Hunger penalty: -5. Total change: +5.
+        expect(player.happiness).toBe(55);
     });
 
     it('should apply loan interest if player has a loan', () => {
