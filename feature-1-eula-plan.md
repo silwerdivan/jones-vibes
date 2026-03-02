@@ -25,10 +25,10 @@ This plan outlines the steps to implement the mandatory "OmniLife OS" EULA scree
 - [x] (Optional) Implement a typewriter effect for the EULA text to enhance the dystopian vibe.
 
 ### Task 3: Intercept Game Initialization (`main.ts`)
-- [ ] Modify the startup flow in `src/main.ts`.
-- [ ] Pause the activation of the game loop when initializing a **new game** (no save data found).
-- [ ] Render the `EulaModal` over the app shell.
-- [ ] Wait for the `onAccept` event from the modal before proceeding to Phase 6 (Activating Simulation).
+- [x] Modify the startup flow in `src/main.ts`.
+- [x] Pause the activation of the game loop when initializing a **new game** (no save data found).
+- [x] Render the `EulaModal` over the app shell.
+- [x] Wait for the `onAccept` event from the modal before proceeding to Phase 6 (Activating Simulation).
 
 ### Task 4: Apply State Mutators & Edge Case Handling
 - [ ] Upon EULA acceptance, evaluate the checked clauses and apply the net changes to the newly created `GameState` for Player 1.

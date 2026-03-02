@@ -12,6 +12,17 @@
 ### Next Steps
 - Task 3: Intercept Game Initialization (`main.ts`)
 
+## 2026-03-02 - Task 3: Intercept Game Initialization (`main.ts`)
+
+### Completed Tasks
+- Modified `src/main.ts` to detect new games (no saved state).
+- Refactored `main` to support asynchronous initialization.
+- Integrated `EulaModal` into the startup flow:
+    - Game loop activation (Phase 6) is deferred until EULA acceptance.
+    - Modal is mounted to the DOM and shown only for new games.
+    - Listens for `eulaAccepted` event before proceeding to simulation.
+- Verified build and existing tests pass.
+
 ## 2026-03-02 - Task 2: Build the EULA UI Component (`EulaModal.ts`)
 
 ### Completed Tasks

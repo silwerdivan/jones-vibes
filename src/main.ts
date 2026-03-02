@@ -7,6 +7,7 @@ import EconomySystem from './systems/EconomySystem.js';
 import TimeSystem from './systems/TimeSystem.js';
 import EventBus, { UI_EVENTS } from './EventBus.js';
 import { PersistenceService } from './services/PersistenceService.js';
+import EulaModal from './ui/components/EulaModal.js';
 
 /**
  * Unified Initialization Flow
@@ -17,6 +18,7 @@ function main() {
   // PHASE 1: Data Preparation
   const savedData = PersistenceService.loadGame();
   let gameState: GameState;
+  const isNewGame = !savedData;
 
   if (savedData) {
     console.log('PHASE 1: Loading saved game state...');
@@ -59,32 +61,55 @@ function main() {
     PersistenceService.saveGame(state.toJSON());
   });
 
-  // PHASE 6: Activation
-  console.log('PHASE 6: Activating Simulation...');
-  // This triggers UIManager.rehydrate() via the stateChanged subscription
-  gameState.publishCurrentState();
+  const activateSimulation = () => {
+    // PHASE 6: Activation
+    console.log('PHASE 6: Activating Simulation...');
+    // This triggers UIManager.rehydrate() via the stateChanged subscription
+    gameState.publishCurrentState();
 
-  // Resume AI turn if it was thinking when saved
-  if (gameState.isAIThinking && !gameState.gameOver) {
-      console.log('Resuming AI thinking...');
-      // UIManager.rehydrate already called showLoading() via stateChanged publish
+    // Resume AI turn if it was thinking when saved
+    if (gameState.isAIThinking && !gameState.gameOver) {
+        console.log('Resuming AI thinking...');
+        // UIManager.rehydrate already called showLoading() via stateChanged publish
+        setTimeout(() => {
+            gameState.processAITurn();
+        }, 1000);
+    } else {
+        // Fallback: Resume AI turn if it's an AI's turn and no summary is pending
+        const currentPlayer = gameState.getCurrentPlayer();
+        if (currentPlayer.isAI && !gameState.pendingTurnSummary && !gameState.gameOver) {
+            console.log('Resuming AI turn...');
+            EventBus.publish('aiThinkingStart');
+            setTimeout(() => {
+                gameState.processAITurn();
+            }, 1000);
+        }
+    }
+    console.groupEnd();
+    console.log('Simulation ready.');
+  };
+
+  if (isNewGame) {
+    console.log('PHASE 5.5: Intercepting for EULA...');
+    const eulaModal = new EulaModal();
+    document.body.appendChild(eulaModal.getElement());
+    eulaModal.show();
+
+    EventBus.subscribe('eulaAccepted', (data: { selectedClauseIds: string[] }) => {
+      console.log('EULA accepted with clauses:', data.selectedClauseIds);
+      
+      // Task 4: Apply State Mutators (Placeholder for now, but following the flow)
+      // applyEulaClauses(gameState, data.selectedClauseIds);
+      
+      eulaModal.hide();
       setTimeout(() => {
-          gameState.processAITurn();
-      }, 1000);
+        eulaModal.getElement().remove();
+        activateSimulation();
+      }, 500); // Small delay for hide animation
+    });
   } else {
-      // Fallback: Resume AI turn if it's an AI's turn and no summary is pending
-      const currentPlayer = gameState.getCurrentPlayer();
-      if (currentPlayer.isAI && !gameState.pendingTurnSummary && !gameState.gameOver) {
-          console.log('Resuming AI turn...');
-          EventBus.publish('aiThinkingStart');
-          setTimeout(() => {
-              gameState.processAITurn();
-          }, 1000);
-      }
+    activateSimulation();
   }
-
-  console.groupEnd();
-  console.log('Simulation ready.');
 }
 
 // Start the game when the DOM is ready.
