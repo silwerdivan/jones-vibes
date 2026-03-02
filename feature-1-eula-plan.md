@@ -38,9 +38,9 @@ This plan outlines the steps to implement the mandatory "OmniLife OS" EULA scree
   - [x] The player must be allowed to take at least one action before these penalties force a game over.
 
 ### Task 5: UI/Economy Updates for Clauses
-- [ ] **Clause C (Wage Multiplier):** Update `EconomySystem` or Job logic to multiply earned wages by `0.9` if this clause is active.
-- [ ] Update the UI (e.g., the Job Board or Life Screen) to visually indicate the reduced wage (e.g., striking through the original wage and showing the new one in red).
-- [ ] **Clause B (Turn 1 Hours):** Ensure the `+6` hours only applies to the very first turn and resets normally afterwards.
+- [x] **Clause C (Wage Multiplier):** Update `EconomySystem` or Job logic to multiply earned wages by `0.9` if this clause is active.
+- [x] Update the UI (e.g., the Job Board or Life Screen) to visually indicate the reduced wage (e.g., striking through the original wage and showing the new one in red).
+- [x] **Clause B (Turn 1 Hours):** Ensure the `+6` hours only applies to the very first turn and resets normally afterwards.
 
 ## 3. Validation Strategy
 - [ ] Start a new game and verify the EULA screen appears.

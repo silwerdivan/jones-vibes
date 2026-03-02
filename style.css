@@ -1247,6 +1247,16 @@ body {
     color: var(--neon-green);
 }
 
+.wage-original {
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-right: 2px;
+}
+
+.wage-reduced {
+    color: var(--neon-red);
+}
+
 .action-card-tag.requirement {
     color: var(--neon-blue);
 }

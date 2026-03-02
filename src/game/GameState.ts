@@ -394,7 +394,7 @@ class GameState {
         currentPlayer.deductTime(jobToWork.shiftHours);
 
         // Calculate earnings and add to cash.
-        const earnings = jobToWork.wage * jobToWork.shiftHours;
+        const earnings = Math.round(jobToWork.wage * jobToWork.shiftHours * currentPlayer.wageMultiplier);
         currentPlayer.addCash(earnings);
 
         // Update the player's careerLevel to jobToWork.level if it's an advancement.

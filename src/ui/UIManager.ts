@@ -304,7 +304,8 @@ class UIManager {
                 if (action.label === 'Work Shift') {
                     const job = JOBS.find(j => j.level === player.careerLevel);
                     if (job) {
-                        this.spawnFeedback(e.currentTarget as HTMLElement, `+$${job.wage * 8}`, 'success');
+                        const earnings = Math.round(job.wage * job.shiftHours * player.wageMultiplier);
+                        this.spawnFeedback(e.currentTarget as HTMLElement, `+$${earnings}`, 'success');
                     }
                 }
 

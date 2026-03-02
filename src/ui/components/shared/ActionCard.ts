@@ -63,11 +63,17 @@ function getShoppingState(item: Item, player: Player | null): ActionCardState {
     };
 }
 
-function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: ActionCardState): string {
+function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: ActionCardState, player: Player | null): string {
     if (type === 'jobs') {
         const job = data as Job;
+        const multiplier = player ? player.wageMultiplier : 1.0;
+        const adjustedWage = Math.round(job.wage * multiplier);
+        const wageHtml = multiplier < 1.0 
+            ? `<span class="wage-original">$${job.wage}</span> <span class="wage-reduced">$${adjustedWage}</span>/hr`
+            : `$${job.wage}/hr`;
+
         return `
-            <span class="action-card-tag price"><i class="material-icons">payments</i>$${job.wage}/hr</span>
+            <span class="action-card-tag price"><i class="material-icons">payments</i>${wageHtml}</span>
             <span class="action-card-tag"><i class="material-icons">schedule</i>${job.shiftHours}h</span>
             <span class="action-card-tag requirement ${state.isLocked ? 'locked' : ''}">
                 <i class="material-icons">${state.isLocked ? 'lock' : 'school'}</i>Edu Lvl ${job.educationRequired}
@@ -120,7 +126,7 @@ export function createActionCard(
     if (state.isLocked) card.classList.add('locked');
     if (state.isCompleted) card.classList.add('hired');
     
-    const metaHtml = createMetaTags(type, data, state);
+    const metaHtml = createMetaTags(type, data, state, config.player);
     
     card.innerHTML = `
         <div class="action-card-content">

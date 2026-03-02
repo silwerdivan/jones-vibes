@@ -1,16 +1,17 @@
 # Activity Log - Feature 1: EULA Initialization Screen
 
-## 2026-03-02 - Phase 0: Initialization
+## 2026-03-02 - Task 5: UI/Economy Updates for Clauses
 
 ### Completed Tasks
+- Implemented **Wage Multiplier (Clause C)**:
+    - Updated `src/game/GameState.ts` to apply `wageMultiplier` in `workShift` earnings calculation.
+    - Updated `src/ui/UIManager.ts` to apply `wageMultiplier` and use correct `shiftHours` for feedback particles.
+    - Updated `src/ui/components/shared/ActionCard.ts` to display adjusted wages.
+    - Added styles in `style.css` to cross out original wages and show reduced wages in red.
+- Verified **Clause B (Turn 1 Hours)**:
+    - Confirmed it only applies to Turn 1 as it's part of the one-time EULA initialization, and standard turn resets in `TimeSystem.ts` restore the 24-hour cycle.
+- Verified all 247 tests pass and build is successful.
 
-#### Task 0.1: Project Setup
-- Created `feature-1-eula-prompt.md` based on RALPH template.
-- Initialized `feature-1-eula-activity.md`.
-- Verified `feature-1-eula-plan.md` structure.
-
-### Next Steps
-- Task 3: Intercept Game Initialization (`main.ts`)
 
 ## 2026-03-02 - Task 4: Apply State Mutators & Edge Case Handling
 
