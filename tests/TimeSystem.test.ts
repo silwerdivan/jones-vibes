@@ -17,7 +17,7 @@ describe('TimeSystem', () => {
 
     it('should clear UI state when turn ends', () => {
         // Setup some UI state
-        gameState.activeLocationDashboard = 'Employment Agency';
+        gameState.activeLocationDashboard = 'Labor Sector';
         gameState.activeChoiceContext = { title: 'Test' };
         
         // End the turn

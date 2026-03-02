@@ -33,3 +33,33 @@
 ### Next Steps
 - Task 1.2: UI Layer Updates (Gauges and Chips in `LifeScreen.ts`)
 
+## 2026-03-02 - Task 1 Complete: Lexicon Reskin
+
+### Completed Tasks
+
+#### Task 1.1: Data Layer Updates (Items & EULA)
+- Renamed `Fridge` to `Omni-Chill` and `Television` to `Hypno-Screen` in `src/data/items.ts`.
+- Updated item benefit descriptions to match new math (e.g., "Bio-Deficit Rate -50%").
+- Renamed EULA penalties in `src/data/eula.ts` (removed generic terms like "Hunger" and "Happiness").
+- Updated `Starting Capital` to `Omni-Creds` and `Bank Debt` to `Cred-Debt` in EULA.
+
+#### Task 1.2: UI Layer Updates (Gauges, Chips, Cards)
+- Updated `LifeScreen.ts` gauges (`Wealth` -> `Omni-Creds`, `Happiness` -> `Morale Quota`).
+- Updated `LifeScreen.ts` status chips (`Hungry` -> `Deficit Warning`, `Starving` -> `CRITICAL DEFICIT`, `Satiated` -> `Optimal`).
+- Updated `ActionCard.ts` tags (`Happy` -> `Morale`, `Hunger` -> `Bio-Deficit`).
+- Verified that HUD, Inventory Screen, and City Screen were already partially updated by previous agent.
+
+#### Task 1.3: Game Logic Strings (Log Messages)
+- Updated `EconomySystem.ts`, `GameState.ts`, and `TimeSystem.ts` log messages to use new lexicon.
+- Changed "returned home" to "returned to Hab-Pod 404".
+- Changed "weekend expenses" to "Hab-Pod maintenance".
+- Changed "Hunger Penalty" to "Bio-Deficit Penalty".
+
+#### Task 3.1: Regression Testing & Fixes
+- Fixed 18 failing tests caused by location and item name changes.
+- Updated `tests/AIController.test.ts`, `tests/EducationSystem.test.ts`, `tests/GameStateAI.test.ts`, `tests/state-events.test.ts`, `tests/TimeSystem.test.ts`, `tests/ui/components/HUD.test.ts`, `tests/ui/components/screens/InventoryScreen.test.ts`, `tests/ui/components/screens/LifeScreen.test.ts`, and `tests/ui/components/shared/ActionCard.test.ts`.
+- Verified all 254 tests passing.
+
+### Next Steps
+- Task 2: Item Math Implementation (Omni-Chill and Hypno-Screen logic)
+

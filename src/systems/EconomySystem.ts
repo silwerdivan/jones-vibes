@@ -67,7 +67,7 @@ class EconomySystem {
         }
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Happiness increased by ${item.happinessBoost}.`,
+            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Morale increased by ${item.happinessBoost}.`,
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);

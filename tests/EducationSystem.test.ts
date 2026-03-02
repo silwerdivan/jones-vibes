@@ -16,7 +16,7 @@ describe('Education System Upgrade', () => {
         player.cash = 5000;
         player.time = 24;
         player.happiness = 100;
-        player.location = 'Community College';
+        player.location = 'Cognitive Re-Ed';
         // Reset EventBus
         (EventBus as any).events = {};
     });
@@ -45,7 +45,7 @@ describe('Education System Upgrade', () => {
     });
 
     it('should give 10 credits instead of 8 if player has a Computer', () => {
-        player.inventory.push({ name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset' });
+        player.inventory.push({ name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset', location: 'Shopping Mall' });
         gameState.takeCourse(1);
         gameState.study();
         expect(player.educationCredits).toBe(10);
@@ -67,7 +67,7 @@ describe('Education System Upgrade', () => {
         expect(player.educationCredits).toBe(0);
         expect(player.educationCreditsGoal).toBe(0); // Next goal (Bachelor's)
         expect(graduationHandler).toHaveBeenCalled();
-        expect(gameState.log[0].text).toContain('Graduation');
+        expect(gameState.log[0].text).toContain(' Graduation');
 
         // Verify Level 2 jobs are now available
         const availableJobs = (gameState as any)._getAvailableJobs(player);
@@ -97,7 +97,7 @@ describe('Education System Upgrade', () => {
         gameState.takeCourse(1);
         const result = gameState.study();
         expect(result).toBe(false);
-        expect(gameState.log[0].text).toContain('too unhappy');
+        expect(gameState.log[0].text).toContain('Morale Quota is too low');
     });
 
     it('should prevent enrolling in higher levels without completing lower ones', () => {
@@ -114,16 +114,16 @@ describe('Education System Upgrade', () => {
         aiPlayer.cash = 2000;
         aiPlayer.time = 24;
         aiPlayer.happiness = 100;
-        aiPlayer.location = 'Home';
+        aiPlayer.location = 'Hab-Pod 404';
         aiPlayer.educationLevel = 0;
         aiPlayer.educationCreditsGoal = 0;
 
         // First action: Travel to College
         let action = aiController.takeTurn(gameState, aiPlayer);
         expect(action.action).toBe('travel');
-        expect(action.params.destination).toBe('Community College');
+        expect(action.params.destination).toBe('Cognitive Re-Ed');
 
-        aiPlayer.location = 'Community College';
+        aiPlayer.location = 'Cognitive Re-Ed';
         
         // Second action: Enroll
         action = aiController.takeTurn(gameState, aiPlayer);

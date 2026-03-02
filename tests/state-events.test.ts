@@ -34,9 +34,9 @@ describe('STATE_EVENTS', () => {
             const handler = vi.fn();
             EventBus.subscribe(STATE_EVENTS.CASH_CHANGED, handler);
             
-            // Setup player at Employment Agency with a job
+            // Setup player at Labor Sector with a job
             const player = gameState.getCurrentPlayer();
-            player.location = 'Employment Agency';
+            player.location = 'Labor Sector';
             player.careerLevel = 1;
             player.time = 8;
             
@@ -55,7 +55,7 @@ describe('STATE_EVENTS', () => {
             EventBus.subscribe(STATE_EVENTS.TIME_CHANGED, handler);
             
             const player = gameState.getCurrentPlayer();
-            player.location = 'Employment Agency';
+            player.location = 'Labor Sector';
             player.careerLevel = 1;
             player.time = 8;
             
@@ -73,7 +73,7 @@ describe('STATE_EVENTS', () => {
             
             const player = gameState.getCurrentPlayer();
             player.time = 10;
-            player.location = 'Home';
+            player.location = 'Hab-Pod 404';
             
             gameState.travel('Shopping Mall');
             
@@ -90,7 +90,7 @@ describe('STATE_EVENTS', () => {
             EventBus.subscribe(STATE_EVENTS.EDUCATION_CHANGED, handler);
             
             const player = gameState.getCurrentPlayer();
-            player.location = 'Community College';
+            player.location = 'Cognitive Re-Ed';
             player.cash = 1000;
             player.time = 100; 
             player.happiness = 100;
@@ -118,7 +118,7 @@ describe('STATE_EVENTS', () => {
             EventBus.subscribe(STATE_EVENTS.CAREER_CHANGED, handler);
             
             const player = gameState.getCurrentPlayer();
-            player.location = 'Employment Agency';
+            player.location = 'Labor Sector';
             player.educationLevel = 1; // High School required
             
             gameState.applyForJob(1);

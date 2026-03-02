@@ -47,8 +47,8 @@ export default class LifeScreen extends BaseComponent<GameState> {
         this.gaugeGrid.className = 'gauge-grid';
 
         const gaugeConfigs: LifeScreenGauge[] = [
-            { id: 'wealth', label: 'Wealth', value: 0, max: 100, color: '#00E676' },
-            { id: 'happiness', label: 'Happiness', value: 0, max: 100, color: '#FFD600' },
+            { id: 'wealth', label: 'Omni-Creds', value: 0, max: 100, color: '#00E676' },
+            { id: 'happiness', label: 'Morale Quota', value: 0, max: 100, color: '#FFD600' },
             { id: 'education', label: 'Education', value: 0, max: 100, color: '#2979FF' },
             { id: 'career', label: 'Career', value: 0, max: 100, color: '#FF00FF' }
         ];
@@ -151,11 +151,11 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         if (player.hunger > 50) {
             chips.push({
-                text: player.hunger > 80 ? 'Starving' : 'Hungry',
+                text: player.hunger > 80 ? 'CRITICAL DEFICIT' : 'Deficit Warning',
                 className: player.hunger > 80 ? 'chip-danger' : 'chip-warning'
             });
         } else {
-            chips.push({ text: 'Satiated', className: 'chip-success' });
+            chips.push({ text: 'Optimal', className: 'chip-success' });
         }
 
         if (player.loan > 0) {
@@ -205,8 +205,8 @@ export default class LifeScreen extends BaseComponent<GameState> {
         label: string;
     } {
         const configs: Record<string, { color: string; label: string }> = {
-            wealth: { color: '#00E676', label: 'Wealth' },
-            happiness: { color: '#FFD600', label: 'Happiness' },
+            wealth: { color: '#00E676', label: 'Omni-Creds' },
+            happiness: { color: '#FFD600', label: 'Morale Quota' },
             education: { color: '#2979FF', label: 'Education' },
             career: { color: '#FF00FF', label: 'Career' }
         };

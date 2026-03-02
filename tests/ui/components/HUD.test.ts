@@ -18,8 +18,8 @@ describe('HUD', () => {
         // Create mock GameState
         mockGameState = {
             players: [
-                { id: 1, cash: 100, time: 24, location: 'Home', isAI: false },
-                { id: 2, cash: 200, time: 20, location: 'Employment Agency', isAI: true }
+                { id: 1, cash: 100, time: 24, location: 'Hab-Pod 404', isAI: false },
+                { id: 2, cash: 200, time: 20, location: 'Labor Sector', isAI: true }
             ],
             currentPlayerIndex: 0,
             turn: 1,
@@ -86,7 +86,7 @@ describe('HUD', () => {
         it('should update location display', () => {
             hud.render(mockGameState);
             const locationElement = hud.getElement().querySelector('[data-location]');
-            expect(locationElement?.textContent).toBe('Home');
+            expect(locationElement?.textContent).toBe('Hab-Pod 404');
         });
 
         it('should set active class on current player orb', () => {

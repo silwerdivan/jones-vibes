@@ -88,7 +88,7 @@ describe('LifeScreen', () => {
 
             const chips = lifeScreen.getStatusChips();
             const chip = chips.querySelector('.chip-warning');
-            expect(chip?.textContent).toBe('Hungry');
+            expect(chip?.textContent).toBe('Deficit Warning');
         });
 
         it('should render Starving chip when hunger > 80', () => {
@@ -98,7 +98,7 @@ describe('LifeScreen', () => {
 
             const chips = lifeScreen.getStatusChips();
             const chip = chips.querySelector('.chip-danger');
-            expect(chip?.textContent).toBe('Starving');
+            expect(chip?.textContent).toBe('CRITICAL DEFICIT');
         });
 
         it('should render Satiated chip when hunger <= 50', () => {
@@ -109,7 +109,7 @@ describe('LifeScreen', () => {
 
             const chips = lifeScreen.getStatusChips();
             const chip = chips.querySelector('.chip-success');
-            expect(chip?.textContent).toBe('Satiated');
+            expect(chip?.textContent).toBe('Optimal');
         });
 
         it('should render In Debt chip when loan > 0', () => {

@@ -35,8 +35,8 @@ export const EULA_CLAUSES: EulaClause[] = [
         id: 'A',
         title: 'Micro-Stimulus Protocol',
         description: 'Receive an upfront metabolic stimulus to jumpstart your contribution.',
-        benefit: '+$200 Starting Capital',
-        penalty: '+40 Bio-Deficit (Hunger)',
+        benefit: '+200 Omni-Creds',
+        penalty: '+40 Bio-Deficit',
         apply: (player: Player) => {
             player.addCash(200);
             player.hunger += 40;
@@ -47,7 +47,7 @@ export const EULA_CLAUSES: EulaClause[] = [
         title: 'Hyper-Grindset Agreement',
         description: 'Waive your right to a standard 24-hour cycle for the initial orientation.',
         benefit: 'Orientation Overtime',
-        penalty: '+6 Hours (Turn 1 only), -20 Morale (Happiness)',
+        penalty: '+6 Cycle Hours, -20 Morale',
         apply: (player: Player) => {
             player.time += 6;
             player.updateHappiness(-20);
@@ -75,8 +75,8 @@ export const EULA_CLAUSES: EulaClause[] = [
         id: 'D',
         title: 'Liquidity Injection',
         description: 'Instant credit line for assets who value momentum over solvency.',
-        benefit: '+$500 Starting Capital',
-        penalty: '+$500 Bank Debt',
+        benefit: '+500 Omni-Creds',
+        penalty: '+500 Cred-Debt',
         apply: (player: Player) => {
             player.addCash(500);
             player.takeLoan(500);

@@ -17,19 +17,19 @@ describe('AIController Hunger awareness', () => {
         player.time = 24;
     });
 
-    it('should prioritize traveling to Fast Food when hunger is high (>30)', () => {
+    it('should prioritize traveling to Sustenance Hub when hunger is high (>30)', () => {
         player.hunger = 35;
-        player.location = 'Home';
+        player.location = 'Hab-Pod 404';
         
         const nextAction = aiController.takeTurn(gameState, player);
         
         expect(nextAction.action).toBe('travel');
-        expect(nextAction.params.destination).toBe('Fast Food');
+        expect(nextAction.params.destination).toBe('Sustenance Hub');
     });
 
-    it('should buy food when at Fast Food and hungry (>30)', () => {
+    it('should buy food when at Sustenance Hub and hungry (>30)', () => {
         player.hunger = 35;
-        player.location = 'Fast Food';
+        player.location = 'Sustenance Hub';
         
         const nextAction = aiController.takeTurn(gameState, player);
         
@@ -38,9 +38,9 @@ describe('AIController Hunger awareness', () => {
         expect(['Monolith Burger', 'Synth-Salad']).toContain(nextAction.params.itemName);
     });
 
-    it('should buy food when at Fast Food and hungry (>30), even with zero time', () => {
+    it('should buy food when at Sustenance Hub and hungry (>30), even with zero time', () => {
         player.hunger = 35;
-        player.location = 'Fast Food';
+        player.location = 'Sustenance Hub';
         player.time = 0; // ZERO time
         
         const nextAction = aiController.takeTurn(gameState, player);
@@ -51,30 +51,30 @@ describe('AIController Hunger awareness', () => {
     it('should not prioritize food if it cannot afford it', () => {
         player.hunger = 35;
         player.cash = 5; // Too poor for Monolith Burger ($10)
-        player.location = 'Home';
+        player.location = 'Hab-Pod 404';
         
         const nextAction = aiController.takeTurn(gameState, player);
         
-        // Should fallback to Gain Wealth (traveling to Employment Agency) or other priorities
-        // but definitely NOT travel to Fast Food to stare at burgers
-        expect(nextAction.params?.destination).not.toBe('Fast Food');
+        // Should fallback to Gain Wealth (traveling to Labor Sector) or other priorities
+        // but definitely NOT travel to Sustenance Hub to stare at burgers
+        expect(nextAction.params?.destination).not.toBe('Sustenance Hub');
     });
 
     it('should prioritize food mid-turn if hunger becomes high (>30)', () => {
         // Start turn with no hunger, but then hunger increases
         player.hunger = 0;
         player.cash = 100;
-        player.location = 'Home';
+        player.location = 'Hab-Pod 404';
         
-        // First action should be something else (e.g., travel to Employment Agency)
+        // First action should be something else (e.g., travel to Labor Sector)
         let nextAction = aiController.takeTurn(gameState, player);
-        expect(nextAction.params?.destination).toBe('Employment Agency');
+        expect(nextAction.params?.destination).toBe('Labor Sector');
         
         // Simulate hunger increasing mid-turn
         player.hunger = 35;
         
-        // Next action should now be traveling to Fast Food
+        // Next action should now be traveling to Sustenance Hub
         nextAction = aiController.takeTurn(gameState, player);
-        expect(nextAction.params?.destination).toBe('Fast Food');
+        expect(nextAction.params?.destination).toBe('Sustenance Hub');
     });
 });

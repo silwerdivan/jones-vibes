@@ -87,9 +87,9 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
         `;
     } else {
         const item = data as Item;
-        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Happy</span>`;
+        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Morale</span>`;
         if (item.hungerReduction) {
-            boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Hunger</span>`;
+            boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Bio-Deficit</span>`;
         }
         return `
             <span class="action-card-tag price ${state.isLocked ? 'locked' : ''}"><i class="material-icons">payments</i>$${item.cost}</span>

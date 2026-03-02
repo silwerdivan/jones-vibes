@@ -73,14 +73,14 @@ class TimeSystem {
         currentPlayer.spendCash(this.gameState.DAILY_EXPENSE);
         summary.events.push({
             type: 'expense',
-            label: 'Weekend Expenses',
+            label: 'Hab-Pod Maintenance',
             value: -this.gameState.DAILY_EXPENSE,
             unit: '$',
             icon: 'home'
         });
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for weekend expenses.`,
+            `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for Hab-Pod maintenance.`,
             'expense'
         );
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
@@ -94,14 +94,14 @@ class TimeSystem {
             
             summary.events.push({
                 type: 'warning',
-                label: 'Loan Interest',
+                label: 'Cred-Debt Interest',
                 value: -interest,
                 unit: '$',
                 icon: 'account_balance'
             });
             
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in loan interest.`,
+                `${this._getPlayerName(currentPlayer)} was charged ${this._formatMoney(interest)} in Cred-Debt interest.`,
                 'warning'
             );
             EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: interest, gameState: this.gameState });
@@ -113,12 +113,12 @@ class TimeSystem {
             currentPlayer.updateHappiness(-5);
             summary.events.push({
                 type: 'warning',
-                label: 'Hunger Penalty',
+                label: 'Bio-Deficit Penalty',
                 value: -5,
-                unit: 'Happiness',
+                unit: 'Morale',
                 icon: 'restaurant'
             });
-            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} is feeling hungry...`, 'warning');
+            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} is approaching Bio-Deficit...`, 'warning');
             EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: 20, gameState: this.gameState });
@@ -160,7 +160,7 @@ class TimeSystem {
         this.gameState.activeLocationDashboard = null;
         this.gameState.activeChoiceContext = null;
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} returned home.`,
+            `${this._getPlayerName(currentPlayer)} returned to Hab-Pod 404.`,
             'info'
         );
 

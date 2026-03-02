@@ -114,7 +114,7 @@ describe('InventoryScreen', () => {
 
         it('should mark owned asset items', () => {
             const player = gameState.getCurrentPlayer();
-            player.inventory = [{ name: 'Television', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Relaxation +10%', location: 'Shopping Mall' }] as Item[];
+            player.inventory = [{ name: 'Hypno-Screen', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Morale Bonus +10%', location: 'Shopping Mall' }] as Item[];
             inventoryScreen.render(gameState);
 
             const grid = inventoryScreen.getAssetsGrid();

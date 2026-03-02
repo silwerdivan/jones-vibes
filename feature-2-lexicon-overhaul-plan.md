@@ -11,35 +11,35 @@ This plan outlines the steps to transition the game's generic terminology to the
     - `Community College` -> `Cognitive Re-Ed`
     - `Bank` -> `Cred-Debt Ctr`
     - `Employment Agency` -> `Labor Sector`
-- [ ] **Rename Items:** Update `src/data/items.ts`
+- [x] **Rename Items:** Update `src/data/items.ts`
     - `Fridge` -> `Omni-Chill`
     - `Television` -> `Hypno-Screen`
     - Update `benefit` descriptions to match new math (e.g., "Reduces weekly Bio-Deficit increase by 50%").
-- [ ] **Rename EULA Penalties:** Update `src/data/eula.ts` labels (e.g., "Hunger" -> "Bio-Deficit").
+- [x] **Rename EULA Penalties:** Update `src/data/eula.ts` labels (e.g., "Hunger" -> "Bio-Deficit").
 
 ### **1.2 UI Layer Updates**
-- [ ] **HUD:** Update `src/ui/components/HUD.ts`
+- [x] **HUD:** Update `src/ui/components/HUD.ts`
     - `CREDITS` -> `OMNI-CREDS`
     - `WEEK` -> `CYCLE`
     - `ZONE` -> `SECTOR`
-- [ ] **Life Screen Gauges:** Update `src/ui/components/screens/LifeScreen.ts`
+- [x] **Life Screen Gauges:** Update `src/ui/components/screens/LifeScreen.ts`
     - `Wealth` -> `Omni-Creds`
     - `Happiness` -> `Morale Quota`
-- [ ] **Life Screen Chips:** Update `src/ui/components/screens/LifeScreen.ts`
+- [x] **Life Screen Chips:** Update `src/ui/components/screens/LifeScreen.ts`
     - `Hungry` -> `Deficit Warning`
     - `Starving` -> `CRITICAL DEFICIT`
     - `Satiated` -> `Optimal`
-- [ ] **Inventory Screen:** Update `src/ui/components/screens/InventoryScreen.ts`
+- [x] **Inventory Screen:** Update `src/ui/components/screens/InventoryScreen.ts`
     - `Home Assets` -> `Hab-Pod Assets`
-- [ ] **City Screen:** Update `src/ui/components/screens/CityScreen.ts`
+- [x] **City Screen:** Update `src/ui/components/screens/CityScreen.ts`
     - Update bento card titles, summaries, and hint text to use new terminology.
-- [ ] **Gauges:** Update `src/ui/components/shared/Gauge.ts` (if it contains hardcoded labels).
-- [ ] **Action Cards:** Update `src/ui/components/shared/ActionCard.ts`
+- [x] **Gauges:** Update `src/ui/components/shared/Gauge.ts` (if it contains hardcoded labels).
+- [x] **Action Cards:** Update `src/ui/components/shared/ActionCard.ts`
     - Change "Hunger" tag to "Bio-Deficit".
     - Change "Happy" tag to "Morale".
 
 ### **1.3 Game Logic Strings**
-- [ ] **Log Messages:** Update `src/game/GameState.ts` and `src/systems/TimeSystem.ts`
+- [x] **Log Messages:** Update `src/game/GameState.ts` and `src/systems/TimeSystem.ts`
     - Replace all instances of "Hunger", "Happiness", and location names in `addLogMessage` calls.
 
 ---
@@ -65,9 +65,9 @@ This plan outlines the steps to transition the game's generic terminology to the
 ## **3. Testing & Validation**
 
 ### **3.1 Regression Testing**
-- [ ] Run `npm test` to identify broken tests due to string changes.
-- [ ] Update `tests/ui/components/HUD.test.ts` and other UI tests with new labels.
-- [ ] Update `tests/TimeSystem.test.ts` to match new location names.
+- [x] Run `npm test` to identify broken tests due to string changes.
+- [x] Update `tests/ui/components/HUD.test.ts` and other UI tests with new labels.
+- [x] Update `tests/TimeSystem.test.ts` to match new location names.
 
 ### **3.2 New Feature Tests**
 - [ ] **Test Omni-Chill Buff:**

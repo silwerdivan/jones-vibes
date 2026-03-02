@@ -18,14 +18,14 @@ describe('GameState AI Logic', () => {
     it('should allow AI one more decision after traveling if time is 0', () => {
         const aiPlayer = gameState.players[1];
         aiPlayer.time = 2; // Exactly enough for one travel (no car)
-        aiPlayer.location = 'Home';
+        aiPlayer.location = 'Hab-Pod 404';
         aiPlayer.hunger = 35;
         aiPlayer.cash = 100;
 
         // Mock AI controller to return travel then buyItem
         const takeTurnSpy = vi.spyOn(gameState.aiController!, 'takeTurn');
         
-        // First call: travel to Fast Food
+        // First call: travel to Sustenance Hub
         // Second call: buyItem
         // Third call: pass (or whatever AI does when done)
 
@@ -40,7 +40,7 @@ describe('GameState AI Logic', () => {
 
         // After travel, time should be 0, but it should have called takeTurn AGAIN
         expect(aiPlayer.time).toBe(0);
-        expect(aiPlayer.location).toBe('Fast Food');
+        expect(aiPlayer.location).toBe('Sustenance Hub');
         expect(takeTurnSpy).toHaveBeenCalledTimes(2);
         
         // Check if second call was buyItem
@@ -57,7 +57,7 @@ describe('GameState AI Logic', () => {
     it('should NOT allow AI another decision if action was NOT travel and time is 0', () => {
         const aiPlayer = gameState.players[1];
         aiPlayer.time = 6; // Matching Dishwasher shiftHours
-        aiPlayer.location = 'Employment Agency';
+        aiPlayer.location = 'Labor Sector';
         aiPlayer.careerLevel = 1; // Has a job
         
         // Mock AI to work shift

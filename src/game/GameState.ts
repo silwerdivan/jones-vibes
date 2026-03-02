@@ -521,7 +521,7 @@ class GameState {
 
         if (currentPlayer.happiness < happinessCost) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} is too unhappy to study. Need at least ${happinessCost} happiness.`,
+                `${this._getPlayerName(currentPlayer)}'s Morale Quota is too low to study. Need at least ${happinessCost} Morale.`,
                 'error'
             );
             return false;

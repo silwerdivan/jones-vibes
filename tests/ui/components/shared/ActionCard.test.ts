@@ -155,7 +155,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('+10 Happy');
+            expect(metaText).toContain('+10 Morale');
         });
 
         it('should display hunger reduction if item reduces hunger', () => {
@@ -166,7 +166,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', foodItem, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('-20 Hunger');
+            expect(metaText).toContain('-20 Bio-Deficit');
         });
 
         it('should call onClick with correct feedback for shopping', () => {
