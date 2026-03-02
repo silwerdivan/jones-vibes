@@ -13,7 +13,6 @@ export default class EulaModal extends BaseComponent<void> {
     private acceptButton!: HTMLButtonElement;
     private clauseCheckboxes: Map<string, HTMLInputElement> = new Map();
     private typewriterInterval: number | null = null;
-    private currentStep: number = 1;
 
     constructor() {
         super('div', 'modal-overlay eula-modal-overlay');
@@ -127,7 +126,6 @@ export default class EulaModal extends BaseComponent<void> {
     }
 
     private transitionToStep2(): void {
-        this.currentStep = 2;
         
         // Add a simple fade-out/fade-in animation
         this.step1.classList.add('fade-out');
@@ -182,7 +180,6 @@ export default class EulaModal extends BaseComponent<void> {
         this.element.classList.remove('hidden');
         
         // Reset to Step 1
-        this.currentStep = 1;
         this.step1.classList.remove('hidden', 'fade-out', 'fade-in');
         this.step2.classList.add('hidden');
         this.step2.classList.remove('fade-in');
