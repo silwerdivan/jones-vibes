@@ -101,13 +101,22 @@ function main() {
       
       // Task 4: Apply State Mutators
       const player1 = gameState.players[0];
+      const activatedClauses: string[] = [];
+      
       data.selectedClauseIds.forEach(id => {
         const clause = EULA_CLAUSES.find(c => c.id === id);
         if (clause) {
           clause.apply(player1);
-          gameState.addLogMessage(`Clause ${id} activated: ${clause.title}`, 'success');
+          activatedClauses.push(clause.id);
         }
       });
+
+      if (activatedClauses.length > 1) {
+        gameState.addLogMessage(`Protocol initialization complete. Clauses [${activatedClauses.join(', ')}] active.`, 'success');
+      } else if (activatedClauses.length === 1) {
+        const clause = EULA_CLAUSES.find(c => c.id === activatedClauses[0]);
+        gameState.addLogMessage(`Clause ${clause?.id} activated: ${clause?.title}`, 'success');
+      }
       
       eulaModal.hide();
       setTimeout(() => {

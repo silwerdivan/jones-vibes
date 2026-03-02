@@ -38,6 +38,21 @@ describe('Lose Condition Logic', () => {
         expect(gameState.winner).toBeNull();
     });
 
+    it('should NOT trigger game over on Turn 1 if player has Clause B (30 hours) and still has >= 24 hours', () => {
+        player.time = 30; // Clause B active
+        player.happiness = 0;
+        gameState.checkLoseCondition(player);
+        expect(gameState.gameOver).toBe(false);
+
+        player.time = 25; // Took an action, but still in grace period
+        gameState.checkLoseCondition(player);
+        expect(gameState.gameOver).toBe(false);
+
+        player.time = 23; // Dropped below threshold
+        gameState.checkLoseCondition(player);
+        expect(gameState.gameOver).toBe(true);
+    });
+
     it('should trigger game over if turn is > 1 even if time is 24', () => {
         gameState.turn = 2;
         player.happiness = 0;

@@ -291,9 +291,10 @@ class GameState {
     checkLoseCondition(player: Player): void {
         if (this.gameOver) return;
 
-        // Turn 1 grace period: No game over until after the first action of Turn 1.
-        // We check if the player has less than 24 hours or it's past Turn 1.
-        if (this.turn === 1 && player.time === 24) return;
+        // Turn 1 grace period: No game over until after the player's time drops below 24.
+        // This handles cases where Clause B adds extra hours (e.g., 30 hours) 
+        // or a 0-hour action is taken.
+        if (this.turn === 1 && player.time >= 24) return;
 
         if (player.happiness <= 0) {
             this.gameOver = true;

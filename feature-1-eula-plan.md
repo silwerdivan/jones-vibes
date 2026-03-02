@@ -36,23 +36,26 @@ This plan outlines the steps to implement the mandatory "OmniLife OS" EULA scree
 - [x] Ensure the modal transition is smooth (Cyberpunk ease-out animation).
 - [x] Wait for the final `onAccept` event from the modal before proceeding to Phase 6 (Activating Simulation).
 
-### Task 4: Apply State Mutators & Edge Case Handling
+- [x] Apply State Mutators & Edge Case Handling
 - [x] Upon EULA acceptance, evaluate the checked clauses and apply the net changes to the newly created `GameState` for Player 1.
 - [x] Ensure the `wageMultiplier` from Clause C is stored persistently so it survives reloads.
-- [ ] Implement **Edge Case Mitigation ("Turn 1 Death"):**
+- [x] **Edge Case Mitigation ("Turn 1 Death"):**
   - [x] Ensure that Game Over condition checks (e.g., Morale dropping below 0, Bio-Deficit hitting 100) do NOT trigger immediately upon initialization.
-  - [ ] The player must be allowed to take at least one action before these penalties force a game over (verify current implementation).
+  - [x] The player must be allowed to take at least one action before these penalties force a game over (implemented via Turn 1 grace period checking `time >= 24`).
 
 ### Task 5: UI/Economy Updates for Clauses
 - [x] **Clause C (Wage Multiplier):** Update `EconomySystem` or Job logic to multiply earned wages by `0.9` if this clause is active.
 - [x] Update the UI (e.g., the Job Board or Life Screen) to visually indicate the reduced wage (e.g., striking through the original wage and showing the new one in red).
 - [x] **Clause B (Turn 1 Hours):** Ensure the `+6` hours only applies to the very first turn and resets normally afterwards.
 
+### Task 6: Bug Fixes & Refinement
+- [x] **Clause Selection Feedback:** Fix logic where selecting multiple enhancements (e.g., all 4) incorrectly triggers a "Clause D activated" popup. Improved to a grouped summary message when multiple clauses are selected.
+
 ## 3. Validation Strategy
-- [ ] Start a new game and verify the EULA Step 1 appears first.
-- [ ] Verify the `[CONTINUE TO CLAUSES]` button remains disabled until the end of the text is reached.
-- [ ] Verify the transition to Step 2 (Clause Selection) is smooth and visually consistent with "Cyberpunk" theme.
-- [ ] Select different combinations of clauses and verify the starting stats match the expected math.
-- [ ] Verify touch targets on mobile view (Chrome DevTools) are large enough (≥44px).
-- [ ] Reload the page immediately after accepting the EULA and verify the chosen stats persist via `SessionStorage`.
-- [ ] Select Clauses A and B to verify the "Turn 1 Death" edge case is handled gracefully.
+- [x] Start a new game and verify the EULA Step 1 appears first.
+- [x] Verify the `[CONTINUE TO CLAUSES]` button remains disabled until the end of the text is reached.
+- [x] Verify the transition to Step 2 (Clause Selection) is smooth and visually consistent with "Cyberpunk" theme.
+- [x] Select different combinations of clauses and verify the starting stats match the expected math.
+- [x] Verify touch targets on mobile view (Chrome DevTools) are large enough (≥44px).
+- [x] Reload the page immediately after accepting the EULA and verify the chosen stats persist via `SessionStorage`.
+- [x] Select Clauses A and B to verify the "Turn 1 Death" edge case is handled gracefully. (Verified via `LoseCondition.test.ts`)
