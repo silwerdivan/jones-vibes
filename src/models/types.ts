@@ -59,6 +59,7 @@ export interface PlayerState {
     weeklyHappinessChange: number;
     isAI: boolean;
     name: string;
+    wageMultiplier: number;
 }
 
 export interface GameStateState {

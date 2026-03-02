@@ -23,6 +23,7 @@ export default class Player {
     weeklyGraduations: string[] = [];
     isAI: boolean = false;
     name: string = '';
+    wageMultiplier: number = 1.0;
 
     constructor(id: number) {
         this.id = id;
@@ -69,7 +70,8 @@ export default class Player {
             weeklyExpenses: this.weeklyExpenses,
             weeklyHappinessChange: this.weeklyHappinessChange,
             isAI: this.isAI,
-            name: this.name
+            name: this.name,
+            wageMultiplier: this.wageMultiplier
         };
     }
 
@@ -94,6 +96,7 @@ export default class Player {
         player.weeklyHappinessChange = data.weeklyHappinessChange;
         player.isAI = data.isAI;
         player.name = data.name;
+        player.wageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
         return player;
     }
 
