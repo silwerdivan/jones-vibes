@@ -2048,6 +2048,15 @@ body {
 }
 
 /* --- EULA MODAL --- */
+@keyframes fadeOutOverlay {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-out-overlay {
+    animation: fadeOutOverlay 0.5s ease-in forwards;
+}
+
 .eula-modal-overlay {
     background: var(--bg-deep) !important;
     padding-top: 0 !important;
@@ -2112,8 +2121,29 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
     scrollbar-width: none;
+}
+
+.eula-step-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    height: 100%;
+    overflow: hidden;
+}
+
+.eula-step-container.fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+.eula-step-container.fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
 }
 
 .eula-content::-webkit-scrollbar {
@@ -2160,12 +2190,18 @@ body {
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s var(--ease-out-expo);
 }
 
 .clause-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 255, 255, 0.05);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.clause-card:active {
+    transform: translateY(0) scale(0.98);
 }
 
 .clause-checkbox-wrapper {

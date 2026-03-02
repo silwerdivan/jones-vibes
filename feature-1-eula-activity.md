@@ -3,11 +3,27 @@
 ## 2026-03-02 - Task 5: UI/Economy Updates for Clauses
 
 ### Completed Tasks
-- Implemented **Wage Multiplier (Clause C)**:
-    - Updated `src/game/GameState.ts` to apply `wageMultiplier` in `workShift` earnings calculation.
-    - Updated `src/ui/UIManager.ts` to apply `wageMultiplier` and use correct `shiftHours` for feedback particles.
-    - Updated `src/ui/components/shared/ActionCard.ts` to display adjusted wages.
-    - Added styles in `style.css` to cross out original wages and show reduced wages in red.
+- Implemented **2-Step EULA UI Component** (`EulaModal.ts`):
+    - Divided modal into two logical steps: Legal Agreement and Optional Enhancements.
+    - Implemented Step 1 scroll-to-bottom requirement to enable the "Continue" button.
+    - Implemented smooth transition (fade-out/fade-in) between steps.
+    - Added "juice" to clause cards (hover/active animations, neon glows).
+    - Ensured touch targets are ≥44px for mobile accessibility.
+    - Added a smooth fade-out transition when dismissing the modal to enter the simulation.
+- Updated `style.css`:
+    - Added `.eula-step-container` and step transition animations (`fadeOut`).
+    - Added `.fade-out-overlay` for the entire modal exit.
+    - Enhanced `.clause-card` with interactive "juice".
+- Created **EulaModal Unit Tests** (`tests/ui/components/EulaModal.test.ts`):
+    - Verified step initialization.
+    - Verified scroll-to-bottom logic (mocked JSDOM properties).
+    - Verified step transition timing and state changes.
+    - Verified clause selection and event publishing.
+    - Verified typewriter effect execution.
+- Verified **Game Initialization Flow** in `src/main.ts`:
+    - Confirmed correct intercept for new games.
+    - Confirmed correct application of selected clause mutators to Player 1.
+    - Confirmed smooth transition to Phase 6 (Simulation Activation).
 - Verified **Clause B (Turn 1 Hours)**:
     - Confirmed it only applies to Turn 1 as it's part of the one-time EULA initialization, and standard turn resets in `TimeSystem.ts` restore the 24-hour cycle.
 - Verified all 247 tests pass and build is successful.
