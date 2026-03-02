@@ -15,7 +15,7 @@ import InventoryScreen from './components/screens/InventoryScreen.js';
 import PlaceholderScreen from './components/screens/PlaceholderScreen.js';
 import SystemScreen from './components/screens/SystemScreen.js';
 import { createActionCardList } from './components/shared/ActionCard.js';
-import { TurnSummary, Choice, LocationAction, Item, Course, Job, IconRegistry, Clerk } from '../models/types.js';
+import { TurnSummary, Choice, LocationAction, Item, Course, Job, Clerk } from '../models/types.js';
 import { PersistenceService } from '../services/PersistenceService.js';
 
 type ClerkRegistry = Record<string, Clerk>;
@@ -199,7 +199,7 @@ class UIManager {
         EventBus.subscribe('showIntelTerminal', () => this.showIntelTerminal());
 
         EventBus.subscribe(UI_EVENTS.RESTART_GAME, () => {
-            this.choiceModal.setupClerk(null, Icons as unknown as IconRegistry, this.gameState!);
+            this.choiceModal.setupClerk(null, this.gameState!);
             this.choiceModal.clearContent();
             this.choiceModal.showInput(false);
             
@@ -237,7 +237,7 @@ class UIManager {
         // Publish event for persistence
         EventBus.publish('choiceModalSwitched', { title, choices, showInput });
 
-        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry, this.gameState!);
+        this.choiceModal.setupClerk(clerk, this.gameState!);
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
 
@@ -284,7 +284,7 @@ class UIManager {
 
         const clerk = (CLERKS as ClerkRegistry)[location];
 
-        this.choiceModal.setupClerk(clerk, Icons as unknown as IconRegistry, this.gameState!);
+        this.choiceModal.setupClerk(clerk, this.gameState!);
         this.choiceModal.clearContent();
         this.choiceModal.showInput(false);
 

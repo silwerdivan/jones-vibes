@@ -1,5 +1,5 @@
 import EventBus from '../../EventBus.js';
-import { Clerk, IconRegistry, PlayerState, Course, Job, LogMessage, TurnSummary } from '../../models/types.js';
+import { Clerk, PlayerState, Course, Job, LogMessage, TurnSummary } from '../../models/types.js';
 import MascotUI from './MascotUI.js';
 import GameState from '../../game/GameState.js';
 
@@ -145,7 +145,7 @@ export class ChoiceModal extends Modal {
     if (modalElement) this.addSwipeToClose(modalElement);
   }
 
-  public setupClerk(clerk: Clerk | null, Icons: IconRegistry, gameState?: GameState, playerIndex?: number): void {
+  public setupClerk(clerk: Clerk | null, gameState?: GameState, playerIndex?: number): void {
     if (clerk && this.clerkContainer) {
       this.clerkContainer.classList.remove('hidden');
       
