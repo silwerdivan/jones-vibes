@@ -12,6 +12,26 @@
 ### Next Steps
 - Task 3: Intercept Game Initialization (`main.ts`)
 
+## 2026-03-02 - Task 4: Apply State Mutators & Edge Case Handling
+
+### Completed Tasks
+- Implemented `applyEulaClauses` logic in `src/main.ts`:
+    - Iterates over selected clause IDs from `eulaAccepted` event.
+    - Applies each clause's mutator function to Player 1.
+    - Logs activation messages to the game log.
+- Implemented Lose Conditions in `src/game/GameState.ts`:
+    - Added `checkLoseCondition(player)` for Happiness <= 0 and Hunger >= 100.
+    - Integrated checks into `checkGameEndConditions` (combined win/lose checks).
+    - Replaced all `checkWinCondition` calls with `checkGameEndConditions` across `GameState` and `EconomySystem`.
+- Implemented **Turn 1 Grace Period**:
+    - `checkLoseCondition` returns early if `turn === 1` and `player.time === 24` (no actions taken yet).
+- Verified `wageMultiplier` persistence is functional (pre-existing in `Player.ts`).
+- Added `tests/LoseCondition.test.ts` to verify:
+    - No game over on initialization.
+    - Game over triggers correctly after first action on Turn 1.
+    - Game over triggers correctly on later turns.
+- Verified all 247 tests pass and build is successful.
+
 ## 2026-03-02 - Task 3: Intercept Game Initialization (`main.ts`)
 
 ### Completed Tasks

@@ -8,6 +8,7 @@ import TimeSystem from './systems/TimeSystem.js';
 import EventBus, { UI_EVENTS } from './EventBus.js';
 import { PersistenceService } from './services/PersistenceService.js';
 import EulaModal from './ui/components/EulaModal.js';
+import { EULA_CLAUSES } from './data/eula.js';
 
 /**
  * Unified Initialization Flow
@@ -98,8 +99,15 @@ function main() {
     EventBus.subscribe('eulaAccepted', (data: { selectedClauseIds: string[] }) => {
       console.log('EULA accepted with clauses:', data.selectedClauseIds);
       
-      // Task 4: Apply State Mutators (Placeholder for now, but following the flow)
-      // applyEulaClauses(gameState, data.selectedClauseIds);
+      // Task 4: Apply State Mutators
+      const player1 = gameState.players[0];
+      data.selectedClauseIds.forEach(id => {
+        const clause = EULA_CLAUSES.find(c => c.id === id);
+        if (clause) {
+          clause.apply(player1);
+          gameState.addLogMessage(`Clause ${id} activated: ${clause.title}`, 'success');
+        }
+      });
       
       eulaModal.hide();
       setTimeout(() => {

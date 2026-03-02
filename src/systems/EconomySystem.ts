@@ -70,7 +70,7 @@ class EconomySystem {
             `${this._getPlayerName(currentPlayer)} bought ${item.name}! Happiness increased by ${item.happinessBoost}.`,
             'success'
         );
-        this.gameState.checkWinCondition(currentPlayer);
+        this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -item.cost, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: item.happinessBoost, gameState: this.gameState });
         if (item.hungerReduction) {
@@ -103,7 +103,7 @@ class EconomySystem {
                 `${this._getPlayerName(currentPlayer)} deposited ${this._formatMoney(amount)}.`,
                 'success'
             );
-            this.gameState.checkWinCondition(currentPlayer);
+            this.gameState.checkGameEndConditions(currentPlayer);
             EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
             EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
@@ -139,7 +139,7 @@ class EconomySystem {
                 `${this._getPlayerName(currentPlayer)} withdrew ${this._formatMoney(amount)}.`,
                 'success'
             );
-            this.gameState.checkWinCondition(currentPlayer);
+            this.gameState.checkGameEndConditions(currentPlayer);
             EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
             EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
@@ -185,7 +185,7 @@ class EconomySystem {
             `${this._getPlayerName(currentPlayer)} took a loan of ${this._formatMoney(amount)}. Total loan: ${this._formatMoney(currentPlayer.loan)}.`,
             'warning'
         );
-        this.gameState.checkWinCondition(currentPlayer);
+        this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
@@ -231,7 +231,7 @@ class EconomySystem {
             `${this._getPlayerName(currentPlayer)} repaid ${this._formatMoney(amount)}. Remaining loan: ${this._formatMoney(currentPlayer.loan)}.`,
             'success'
         );
-        this.gameState.checkWinCondition(currentPlayer);
+        this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
@@ -283,7 +283,7 @@ class EconomySystem {
             `${this._getPlayerName(currentPlayer)} bought a car!`,
             'success'
         );
-        this.gameState.checkWinCondition(currentPlayer);
+        this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });

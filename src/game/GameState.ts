@@ -247,7 +247,7 @@ class GameState {
 
         if (success && (playerHasTime || isExtraTurnAllowed)) {
             // AI still has time or just arrived at a destination → decide next move
-            this.checkWinCondition(this.getCurrentPlayer());
+            this.checkGameEndConditions(this.getCurrentPlayer());
             this.addLogMessage(
                 `${this._getPlayerName(this.getCurrentPlayer())} is deciding next move...`,
                 'info'
@@ -286,6 +286,37 @@ class GameState {
             );
             EventBus.publish('gameOver', this);
         }
+    }
+
+    checkLoseCondition(player: Player): void {
+        if (this.gameOver) return;
+
+        // Turn 1 grace period: No game over until after the first action of Turn 1.
+        // We check if the player has less than 24 hours or it's past Turn 1.
+        if (this.turn === 1 && player.time === 24) return;
+
+        if (player.happiness <= 0) {
+            this.gameOver = true;
+            this.winner = null;
+            this.addLogMessage(
+                `💀 ${this._getPlayerName(player)}'s Morale has bottomed out. OmniCorp has terminated your session.`,
+                'error'
+            );
+            EventBus.publish('gameOver', this);
+        } else if (player.hunger >= 100) {
+            this.gameOver = true;
+            this.winner = null;
+            this.addLogMessage(
+                `💀 ${this._getPlayerName(player)} has succumbed to Bio-Deficit. Critical metabolic failure.`,
+                'error'
+            );
+            EventBus.publish('gameOver', this);
+        }
+    }
+
+    checkGameEndConditions(player: Player): void {
+        this.checkWinCondition(player);
+        this.checkLoseCondition(player);
     }
 
     private _economySystem: EconomySystem | null = null;
@@ -375,7 +406,7 @@ class GameState {
             `${this._getPlayerName(currentPlayer)} worked as ${jobToWork.title} and earned ${this._formatMoney(earnings)}.`,
             'success'
         );
-        this.checkWinCondition(currentPlayer);
+        this.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: earnings, gameState: this });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         if (jobToWork.level > currentPlayer.careerLevel) {
@@ -534,7 +565,7 @@ class GameState {
             );
             
             EventBus.publish('graduation', { player, course: nextCourse });
-            this.checkWinCondition(player);
+            this.checkGameEndConditions(player);
         }
     }
 
@@ -561,7 +592,7 @@ class GameState {
                     `${this._getPlayerName(currentPlayer)} traveled to ${destination} despite being ${deficit} hour${deficit > 1 ? 's' : ''} short. Starting next turn with ${deficit} hour${deficit > 1 ? 's' : ''} less time.`,
                     'warning'
                 );
-                this.checkWinCondition(currentPlayer);
+                this.checkGameEndConditions(currentPlayer);
                 EventBus.publish('stateChanged', this);
                 this._checkAutoEndTurn();
                 return true;
@@ -579,7 +610,7 @@ class GameState {
             `${this._getPlayerName(currentPlayer)} traveled to ${destination}.`,
             'info'
         );
-        this.checkWinCondition(currentPlayer);
+        this.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: destination, gameState: this });
         EventBus.publish('stateChanged', this);
@@ -635,7 +666,7 @@ class GameState {
         EventBus.publish('jobApplicationSuccess', { player: currentPlayer, job: job });
         
         // Check win condition since career level might have changed
-        this.checkWinCondition(currentPlayer);
+        this.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobLevel, gameState: this });
         EventBus.publish('stateChanged', this);
         this._checkAutoEndTurn();

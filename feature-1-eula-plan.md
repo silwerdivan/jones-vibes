@@ -31,11 +31,11 @@ This plan outlines the steps to implement the mandatory "OmniLife OS" EULA scree
 - [x] Wait for the `onAccept` event from the modal before proceeding to Phase 6 (Activating Simulation).
 
 ### Task 4: Apply State Mutators & Edge Case Handling
-- [ ] Upon EULA acceptance, evaluate the checked clauses and apply the net changes to the newly created `GameState` for Player 1.
-- [ ] Ensure the `wageMultiplier` from Clause C is stored persistently so it survives reloads.
-- [ ] Implement **Edge Case Mitigation ("Turn 1 Death"):**
-  - [ ] Ensure that Game Over condition checks (e.g., Morale dropping below 0, Bio-Deficit hitting 100) do NOT trigger immediately upon initialization.
-  - [ ] The player must be allowed to take at least one action before these penalties force a game over.
+- [x] Upon EULA acceptance, evaluate the checked clauses and apply the net changes to the newly created `GameState` for Player 1.
+- [x] Ensure the `wageMultiplier` from Clause C is stored persistently so it survives reloads.
+- [x] Implement **Edge Case Mitigation ("Turn 1 Death"):**
+  - [x] Ensure that Game Over condition checks (e.g., Morale dropping below 0, Bio-Deficit hitting 100) do NOT trigger immediately upon initialization.
+  - [x] The player must be allowed to take at least one action before these penalties force a game over.
 
 ### Task 5: UI/Economy Updates for Clauses
 - [ ] **Clause C (Wage Multiplier):** Update `EconomySystem` or Job logic to multiply earned wages by `0.9` if this clause is active.
