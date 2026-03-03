@@ -18,8 +18,8 @@ describe('HUD', () => {
         // Create mock GameState
         mockGameState = {
             players: [
-                { id: 1, cash: 100, time: 24, location: 'Hab-Pod 404', isAI: false },
-                { id: 2, cash: 200, time: 20, location: 'Labor Sector', isAI: true }
+                { id: 1, cash: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [] },
+                { id: 2, cash: 200, time: 20, location: 'Labor Sector', isAI: true, activeConditions: [] }
             ],
             currentPlayerIndex: 0,
             turn: 1,

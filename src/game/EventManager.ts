@@ -1,7 +1,7 @@
 import Player from './Player';
 import GameState from './GameState';
 import { RandomEvent, GameCondition, RandomEventChoiceData, RandomEventEffect } from '../models/types';
-import EventBus from '../EventBus';
+import EventBus, { UI_EVENTS } from '../EventBus.js';
 import { CONDITIONS } from '../data/conditions';
 import { RANDOM_EVENTS } from '../data/randomEvents';
 
@@ -180,7 +180,7 @@ export class EventManager {
         
         if (player.activeConditions.length < initialCount) {
             // Some conditions expired
-            EventBus.publish('stateChanged');
+            EventBus.publish(UI_EVENTS.REQUEST_STATE_REFRESH);
         }
     }
 }

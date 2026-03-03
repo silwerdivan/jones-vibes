@@ -141,7 +141,7 @@ export default class HUD extends BaseComponent<GameState> {
 
         EventBus.subscribe('mascotStateExpired', () => {
             // Trigger a re-render or update of the HUD to refresh mascot states
-            EventBus.publish('stateChanged', (window as any).gameController?.gameState);
+            EventBus.publish(UI_EVENTS.REQUEST_STATE_REFRESH);
         });
     }
 
