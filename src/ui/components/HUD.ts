@@ -1,7 +1,7 @@
 import BaseComponent from '../BaseComponent.js';
 import GameState from '../../game/GameState.js';
 import ClockVisualization from '../ClockVisualization.js';
-import EventBus, { STATE_EVENTS } from '../../EventBus.js';
+import EventBus, { STATE_EVENTS, UI_EVENTS } from '../../EventBus.js';
 import { LogMessage } from '../../models/types.js';
 import MascotUI from './MascotUI.js';
 
