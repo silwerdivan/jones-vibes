@@ -167,6 +167,8 @@ class UIManager {
         });
 
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
+            if (!gameState) return;
+
             this.gameState = gameState;
 
             // Perform one-time rehydration if we haven't yet

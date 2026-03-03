@@ -117,7 +117,9 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         // Fallback for stateChanged events
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
-            this.render(gameState);
+            if (gameState) {
+                this.render(gameState);
+            }
         });
     }
 

@@ -164,9 +164,9 @@ export class EventManager {
         }
     }
 
-    tickConditions(player: Player, hours: number): void {
+    tickConditions(player: Player, hours: number, gameState: GameState): void {
         const initialCount = player.activeConditions.length;
-        
+
         // Apply TICK effects (like happiness drain)
         player.activeConditions.forEach(condition => {
             condition.effects.forEach(effect => {
@@ -177,10 +177,10 @@ export class EventManager {
         });
 
         player.tickConditions(hours);
-        
+
         if (player.activeConditions.length < initialCount) {
             // Some conditions expired
-            EventBus.publish('stateChanged');
+            EventBus.publish('stateChanged', gameState);
         }
     }
 }
