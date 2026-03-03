@@ -61,7 +61,6 @@ export default class Player {
 
     getModifiedStat(type: ConditionEffectType, baseValue: number): number {
         let multiplier = 1.0;
-        let addition = 0;
         
         this.activeConditions.forEach(condition => {
             condition.effects.forEach(effect => {

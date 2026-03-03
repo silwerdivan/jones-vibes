@@ -1,6 +1,6 @@
 import Player from './Player';
 import GameState from './GameState';
-import { RandomEvent, GameCondition, RandomEventChoiceData, RandomEventEffect } from '../models/types';
+import { RandomEvent, RandomEventEffect } from '../models/types';
 import EventBus, { UI_EVENTS } from '../EventBus.js';
 import { CONDITIONS } from '../data/conditions';
 import { RANDOM_EVENTS } from '../data/randomEvents';
@@ -47,7 +47,7 @@ export class EventManager {
         }
     }
 
-    private evaluatePrerequisites(event: RandomEvent, player: Player, gameState: GameState, context: any): boolean {
+    private evaluatePrerequisites(event: RandomEvent, player: Player, _gameState: GameState, _context: any): boolean {
         if (!event.prerequisites) return true;
 
         const { location, minHappiness, maxHappiness, minWealth, maxWealth, careerLevel, itemRequired } = event.prerequisites;
@@ -133,7 +133,7 @@ export class EventManager {
         gameState.publishCurrentState();
     }
 
-    private applyEffect(effect: RandomEventEffect, player: Player, gameState: GameState): void {
+    private applyEffect(effect: RandomEventEffect, player: Player, _gameState: GameState): void {
         switch (effect.type) {
             case 'CASH':
                 if (effect.value < 0) player.spendCash(-effect.value);
