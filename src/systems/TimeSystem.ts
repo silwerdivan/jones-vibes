@@ -167,7 +167,7 @@ class TimeSystem {
         currentPlayer.setTime(24 - timeDeficit);
         
         // Tick conditions for the 24 hours that pass between turns (rest/sleep)
-        this.gameState.eventManager.tickConditions(currentPlayer, 24, this.gameState);
+        this.gameState.eventManager.tickConditions(currentPlayer, 24);
 
         if (timeDeficit > 0) {
             this.gameState.addLogMessage(

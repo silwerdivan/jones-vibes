@@ -367,7 +367,7 @@ class GameState {
 
     private _deductTime(player: Player, hours: number): void {
         player.deductTime(hours);
-        this.eventManager.tickConditions(player, hours, this);
+        this.eventManager.tickConditions(player, hours);
     }
 
     getNextAvailableCourse(): Course | null {

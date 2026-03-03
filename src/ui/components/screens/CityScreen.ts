@@ -50,9 +50,7 @@ export default class CityScreen extends BaseComponent<GameState> {
 
         // Fallback for stateChanged events
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
-            if (gameState) {
-                this.render(gameState);
-            }
+            this.render(gameState);
         });
     }
 
