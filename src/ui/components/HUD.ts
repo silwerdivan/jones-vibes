@@ -46,6 +46,7 @@ export default class HUD extends BaseComponent<GameState> {
                         <div class="orb-avatar" id="hud-avatar-p2" data-avatar="p2"></div>
                     </div>
                 </div>
+                <div class="hud-conditions" id="hud-conditions" style="display: flex; gap: 8px; margin-left: 15px;"></div>
                 <div class="hud-stats">
                     <div class="hud-stat-item">
                         <span class="hud-label">OMNI-CREDS</span>
@@ -214,6 +215,23 @@ export default class HUD extends BaseComponent<GameState> {
         if (this.mascotP2) this.mascotP2.render(gameState);
     }
 
+    private updateConditions(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        const conditionsContainer = this.element.querySelector('#hud-conditions') as HTMLElement;
+        if (!conditionsContainer) return;
+
+        conditionsContainer.innerHTML = '';
+        currentPlayer.activeConditions.forEach(condition => {
+            const conditionEl = document.createElement('div');
+            conditionEl.className = 'condition-icon';
+            conditionEl.style.fontSize = '20px';
+            conditionEl.style.cursor = 'help';
+            conditionEl.title = `${condition.name}: ${condition.description} (${Math.ceil(condition.remainingDuration)}h remaining)`;
+            conditionEl.textContent = condition.icon || '⚠️';
+            conditionsContainer.appendChild(conditionEl);
+        });
+    }
+
     private updateOrbs(gameState: GameState): void {
         const currentPlayerIndex = gameState.currentPlayerIndex;
 
@@ -272,6 +290,9 @@ export default class HUD extends BaseComponent<GameState> {
 
         // Update Mascots
         this.updateMascots(gameState);
+
+        // Update Conditions
+        this.updateConditions(gameState);
 
         // Update Stats
         this.hudCash.textContent = `[OC]${currentPlayer.cash}`;

@@ -60,6 +60,12 @@ export interface PlayerState {
     isAI: boolean;
     name: string;
     wageMultiplier: number;
+    activeConditions: GameCondition[];
+}
+
+export interface GraduationData {
+    player: PlayerState;
+    course: Course;
 }
 
 export interface GameStateState {
@@ -74,7 +80,65 @@ export interface GameStateState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: ActiveChoiceContext | null;
+    activeGraduation: GraduationData | null;
     isAIThinking?: boolean;
+    eventHistory: string[];
+}
+
+export type ConditionEffectType = 
+    | 'WAGE_MULTIPLIER' 
+    | 'TRAVEL_TIME_MODIFIER' 
+    | 'STUDY_EFFICIENCY' 
+    | 'HAPPINESS_TICK'
+    | 'WORK_EFFICIENCY';
+
+export interface ConditionEffect {
+    type: ConditionEffectType;
+    value: number;
+}
+
+export interface GameCondition {
+    id: string;
+    name: string;
+    description: string;
+    remainingDuration: number; // in hours or turns? Let's use hours for granularity
+    effects: ConditionEffect[];
+    icon?: string;
+}
+
+export type RandomEventType = 'Global' | 'Local' | 'Consequence';
+
+export interface RandomEventEffect {
+    type: 'CASH' | 'HAPPINESS' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
+    value: number;
+    conditionId?: string;
+}
+
+export interface RandomEventChoiceData {
+    text: string;
+    effects: RandomEventEffect[];
+    requirement?: {
+        type: 'ITEM' | 'CAREER' | 'EDUCATION' | 'STAT';
+        id?: string;
+        value?: number;
+    };
+}
+
+export interface RandomEvent {
+    id: string;
+    type: RandomEventType;
+    title: string;
+    flavorText: string;
+    choices: RandomEventChoiceData[];
+    prerequisites?: {
+        location?: string;
+        minHappiness?: number;
+        maxHappiness?: number;
+        minWealth?: number;
+        maxWealth?: number;
+        careerLevel?: number;
+        itemRequired?: string;
+    };
 }
 
 export interface TurnEvent {

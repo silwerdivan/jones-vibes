@@ -1,4 +1,4 @@
-import { Item, PlayerState } from '../models/types';
+import { Item, PlayerState, GameCondition, ConditionEffectType } from '../models/types';
 import { LocationName } from '../data/locations';
 
 export default class Player {
@@ -23,7 +23,8 @@ export default class Player {
     weeklyGraduations: string[] = [];
     isAI: boolean = false;
     name: string = '';
-    wageMultiplier: number = 1.0;
+    baseWageMultiplier: number = 1.0;
+    activeConditions: GameCondition[] = [];
 
     constructor(id: number) {
         this.id = id;
@@ -47,6 +48,52 @@ export default class Player {
         this.weeklyExpenses = 0;
         this.weeklyHappinessChange = 0;
         this.weeklyGraduations = [];
+        this.activeConditions = [];
+    }
+
+    get wageMultiplier(): number {
+        return this.getModifiedStat('WAGE_MULTIPLIER', this.baseWageMultiplier);
+    }
+
+    set wageMultiplier(value: number) {
+        this.baseWageMultiplier = value;
+    }
+
+    getModifiedStat(type: ConditionEffectType, baseValue: number): number {
+        let multiplier = 1.0;
+        let addition = 0;
+        
+        this.activeConditions.forEach(condition => {
+            condition.effects.forEach(effect => {
+                if (effect.type === type) {
+                    // For now, let's treat all as multipliers
+                    multiplier *= effect.value;
+                }
+            });
+        });
+        
+        return baseValue * multiplier;
+    }
+
+    addCondition(condition: GameCondition): void {
+        // Remove existing condition with same ID if it exists
+        this.activeConditions = this.activeConditions.filter(c => c.id !== condition.id);
+        this.activeConditions.push(condition);
+    }
+
+    removeCondition(conditionId: string): void {
+        this.activeConditions = this.activeConditions.filter(c => c.id !== conditionId);
+    }
+
+    hasCondition(conditionId: string): boolean {
+        return this.activeConditions.some(c => c.id === conditionId);
+    }
+
+    tickConditions(hours: number): void {
+        this.activeConditions.forEach(condition => {
+            condition.remainingDuration -= hours;
+        });
+        this.activeConditions = this.activeConditions.filter(c => c.remainingDuration > 0);
     }
 
     toJSON(): PlayerState {
@@ -71,7 +118,8 @@ export default class Player {
             weeklyHappinessChange: this.weeklyHappinessChange,
             isAI: this.isAI,
             name: this.name,
-            wageMultiplier: this.wageMultiplier
+            wageMultiplier: this.baseWageMultiplier, // Save the base
+            activeConditions: [...this.activeConditions]
         };
     }
 
@@ -96,7 +144,8 @@ export default class Player {
         player.weeklyHappinessChange = data.weeklyHappinessChange;
         player.isAI = data.isAI;
         player.name = data.name;
-        player.wageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
+        player.baseWageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
+        player.activeConditions = data.activeConditions || [];
         return player;
     }
 

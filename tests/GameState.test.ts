@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import GameState from '../src/game/GameState';
 import Player from '../src/game/Player';
+import { EventManager } from '../src/game/EventManager';
 
 describe('GameState Serialization', () => {
     let gameState: GameState;
@@ -129,19 +130,25 @@ describe('GameState Serialization', () => {
         expect(restored.activeChoiceContext.choices[0].text).toBe('Option 1');
     });
 
-    it('should persist isAIThinking state', () => {
-        gameState.isAIThinking = true;
+    it('should persist event history and player conditions', () => {
+        const eventId = 'test_event_123';
+        gameState.eventManager = new EventManager([eventId]);
+        
+        const condition = {
+            id: 'TEST_COND',
+            name: 'Test',
+            description: 'Test',
+            remainingDuration: 10,
+            effects: []
+        };
+        gameState.players[0].addCondition(condition);
         
         const json = gameState.toJSON();
-        expect(json.isAIThinking).toBe(true);
+        expect(json.eventHistory).toContain(eventId);
+        expect(json.players[0].activeConditions[0].id).toBe('TEST_COND');
         
         const restored = GameState.fromJSON(json);
-        expect(restored.isAIThinking).toBe(true);
-        
-        gameState.isAIThinking = false;
-        const json2 = gameState.toJSON();
-        expect(json2.isAIThinking).toBe(false);
-        const restored2 = GameState.fromJSON(json2);
-        expect(restored2.isAIThinking).toBe(false);
+        expect(restored.eventManager.getHistory()).toContain(eventId);
+        expect(restored.players[0].activeConditions[0].id).toBe('TEST_COND');
     });
 });

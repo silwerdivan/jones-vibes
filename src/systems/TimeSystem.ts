@@ -166,6 +166,9 @@ class TimeSystem {
         const timeDeficit = currentPlayer.timeDeficit;
         currentPlayer.setTime(24 - timeDeficit);
         
+        // Tick conditions for the 24 hours that pass between turns (rest/sleep)
+        this.gameState.eventManager.tickConditions(currentPlayer, 24);
+
         if (timeDeficit > 0) {
             this.gameState.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} started with ${timeDeficit}CH deficit due to relocation protocol.`,
@@ -214,6 +217,8 @@ class TimeSystem {
 
         if (this.gameState.currentPlayerIndex === 0) {
             this.gameState.turn++;
+            // Trigger global events at the start of a new week
+            this.gameState.checkGlobalEvents();
         }
         
         const nextPlayer = this.gameState.getCurrentPlayer();

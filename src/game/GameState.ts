@@ -7,6 +7,7 @@ import { Course, Job, AIAction, LogMessage, GameStateState, TurnSummary } from '
 import { LocationName } from '../data/locations';
 import type EconomySystem from '../systems/EconomySystem';
 import type TimeSystem from '../systems/TimeSystem';
+import { EventManager } from './EventManager';
 
 class GameState {
     players: Player[];
@@ -21,7 +22,9 @@ class GameState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: any | null;
+    activeGraduation: any | null;
     isAIThinking: boolean = false;
+    eventManager: EventManager;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -52,6 +55,8 @@ class GameState {
         this.activeScreenId = 'city';
         this.activeLocationDashboard = null;
         this.activeChoiceContext = null;
+        this.activeGraduation = null;
+        this.eventManager = new EventManager();
 
         // Subscribe to screen switches to keep persistence in sync
         EventBus.subscribe('screenSwitched', (data: { screenId: string }) => {
@@ -73,6 +78,20 @@ class GameState {
         EventBus.subscribe('choiceModalSwitched', (data: any | null) => {
             if (this.activeChoiceContext !== data) {
                 this.activeChoiceContext = data;
+                EventBus.publish('stateChanged', this);
+            }
+        });
+
+        // Subscribe to graduation to keep persistence in sync
+        EventBus.subscribe('graduation', (data: any) => {
+            this.activeGraduation = data;
+            EventBus.publish('stateChanged', this);
+        });
+
+        // Subscribe to modal hidden to clear graduation state
+        EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
+            if (data.modalId === 'graduation-modal') {
+                this.activeGraduation = null;
                 EventBus.publish('stateChanged', this);
             }
         });
@@ -105,7 +124,9 @@ class GameState {
             activeScreenId: this.activeScreenId,
             activeLocationDashboard: this.activeLocationDashboard,
             activeChoiceContext: serializableChoiceContext,
-            isAIThinking: this.isAIThinking
+            activeGraduation: this.activeGraduation,
+            isAIThinking: this.isAIThinking,
+            eventHistory: this.eventManager.getHistory()
         };
     }
 
@@ -123,7 +144,9 @@ class GameState {
         gameState.activeScreenId = data.activeScreenId || 'city';
         gameState.activeLocationDashboard = data.activeLocationDashboard || null;
         gameState.activeChoiceContext = data.activeChoiceContext || null;
+        gameState.activeGraduation = data.activeGraduation || null;
         gameState.isAIThinking = data.isAIThinking || false;
+        gameState.eventManager = new EventManager(data.eventHistory || []);
         return gameState;
     }
 
@@ -342,6 +365,11 @@ class GameState {
         }
     }
 
+    private _deductTime(player: Player, hours: number): void {
+        player.deductTime(hours);
+        this.eventManager.tickConditions(player, hours);
+    }
+
     getNextAvailableCourse(): Course | null {
         const currentPlayer = this.getCurrentPlayer();
         return COURSES.find(course => course.educationMilestone === currentPlayer.educationLevel + 1) || null;
@@ -349,6 +377,14 @@ class GameState {
 
     _getAvailableJobs(player: Player): Job[] {
         return JOBS.filter(job => player.educationLevel >= job.educationRequired);
+    }
+
+    checkConsequenceEvents(): void {
+        this.eventManager.checkTriggers('Consequence', this);
+    }
+
+    checkGlobalEvents(): void {
+        this.eventManager.checkTriggers('Global', this);
     }
 
     workShift(): boolean {
@@ -392,7 +428,7 @@ class GameState {
         }
 
         // Deduct the shiftHours from the player's time.
-        currentPlayer.deductTime(jobToWork.shiftHours);
+        this._deductTime(currentPlayer, jobToWork.shiftHours);
 
         // Calculate earnings and add to cash.
         const earnings = Math.round(jobToWork.wage * jobToWork.shiftHours * currentPlayer.wageMultiplier);
@@ -414,6 +450,7 @@ class GameState {
             EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobToWork.level, gameState: this });
         }
         EventBus.publish('stateChanged', this);
+        this.checkConsequenceEvents();
         this._checkAutoEndTurn();
         return true;
     }
@@ -462,7 +499,7 @@ class GameState {
             );
             return false;
         }
-        currentPlayer.deductTime(enrollmentTime);
+        this._deductTime(currentPlayer, enrollmentTime);
         
         currentPlayer.setEducationGoal(course.requiredCredits);
 
@@ -474,6 +511,7 @@ class GameState {
         EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -course.cost, gameState: this });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish('stateChanged', this);
+        this.checkConsequenceEvents();
         this._checkAutoEndTurn();
         return true;
     }
@@ -529,9 +567,10 @@ class GameState {
 
         // Calculate credits
         const hasComputer = currentPlayer.inventory.some(item => item.name === 'Computer');
-        const creditsGained = hasComputer ? 10 : 8;
+        const baseCreditsGained = hasComputer ? 10 : 8;
+        const creditsGained = Math.round(currentPlayer.getModifiedStat('STUDY_EFFICIENCY', baseCreditsGained));
 
-        currentPlayer.deductTime(studyTime);
+        this._deductTime(currentPlayer, studyTime);
         currentPlayer.updateHappiness(-happinessCost);
         currentPlayer.addEducationCredits(creditsGained);
 
@@ -546,6 +585,7 @@ class GameState {
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish(STATE_EVENTS.EDUCATION_CHANGED, { player: currentPlayer, level: currentPlayer.educationLevel, gameState: this });
         EventBus.publish('stateChanged', this);
+        this.checkConsequenceEvents();
         this._checkAutoEndTurn();
         return true;
     }
@@ -581,12 +621,13 @@ class GameState {
             return false;
         }
 
-        const travelTime = currentPlayer.hasCar ? 1 : 2;
+        const baseTravelTime = currentPlayer.hasCar ? 1 : 2;
+        const travelTime = Math.ceil(currentPlayer.getModifiedStat('TRAVEL_TIME_MODIFIER', baseTravelTime));
 
         if (currentPlayer.time < travelTime) {
             if (destination === 'Hab-Pod 404') {
                 const deficit = travelTime - currentPlayer.time;
-                currentPlayer.time = 0;
+                this._deductTime(currentPlayer, currentPlayer.time); // Tick for whatever time we had
                 currentPlayer.timeDeficit = deficit;
                 currentPlayer.setLocation(destination);
                 this.addLogMessage(
@@ -605,7 +646,7 @@ class GameState {
             return false;
         }
 
-        currentPlayer.deductTime(travelTime);
+        this._deductTime(currentPlayer, travelTime);
         currentPlayer.setLocation(destination);
         this.addLogMessage(
             `${this._getPlayerName(currentPlayer)} relocated to ${destination}.`,
@@ -615,6 +656,11 @@ class GameState {
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: destination, gameState: this });
         EventBus.publish('stateChanged', this);
+        
+        // Trigger local event check
+        this.eventManager.checkTriggers('Local', this, { location: destination });
+        this.checkConsequenceEvents();
+        
         this._checkAutoEndTurn();
         return true;
     }

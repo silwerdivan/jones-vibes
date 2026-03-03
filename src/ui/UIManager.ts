@@ -144,7 +144,12 @@ class UIManager {
             this.showChoiceModal(gameState.activeChoiceContext);
         }
 
-        // 4. Restore AI thinking state
+        // 4. Restore active graduation modal
+        if (gameState.activeGraduation) {
+            this.graduationModal.showGraduation(gameState.activeGraduation.player, gameState.activeGraduation.course);
+        }
+
+        // 5. Restore AI thinking state
         if (gameState.isAIThinking) {
             this.showLoading();
         }
@@ -197,6 +202,10 @@ class UIManager {
 
         EventBus.subscribe('showPlayerStats', (playerIndex: number) => this.showPlayerStatsModal(playerIndex));
         EventBus.subscribe('showIntelTerminal', () => this.showIntelTerminal());
+
+        EventBus.subscribe('randomEventTriggered', (data: { event: any, callback: (choiceIndex: number) => void }) => {
+            this.showRandomEventModal(data.event, data.callback);
+        });
 
         EventBus.subscribe(UI_EVENTS.RESTART_GAME, () => {
             this.choiceModal.setupClerk(null, this.gameState!);
@@ -521,6 +530,38 @@ class UIManager {
 
     showBankModal() {
         this.showLocationDashboard('Cred-Debt Ctr');
+    }
+
+    showRandomEventModal(event: any, callback: (choiceIndex: number) => void) {
+        if (!this.gameState) return;
+        
+        // Publish event for persistence
+        EventBus.publish('choiceModalSwitched', { 
+            title: event.title, 
+            choices: event.choices.map((c: any) => ({ text: c.text })) 
+        });
+
+        this.choiceModal.setupClerk(null, this.gameState);
+        this.choiceModal.clearContent();
+        this.choiceModal.showInput(false);
+        
+        const content = document.createElement('div');
+        content.className = 'random-event-content';
+        content.innerHTML = `
+            <div class="event-flavor" style="margin-bottom: 20px; line-height: 1.5; color: rgba(255, 255, 255, 0.9);">
+                ${event.flavorText}
+            </div>
+        `;
+        this.choiceModal.setContent(content);
+
+        event.choices.forEach((choice: any, index: number) => {
+            this.choiceModal.addPrimaryButton(choice.text, () => {
+                this.choiceModal.hide();
+                callback(index);
+            });
+        });
+
+        this.choiceModal.show({ title: event.title });
     }
 
     switchScreen(screenId: string): void {
