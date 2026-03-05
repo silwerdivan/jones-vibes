@@ -14,7 +14,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 ]
             },
             {
-                text: `Bribe: "Pay a private aerocab." ($150)`,
+                text: `Bribe: "Pay a private aerocab." (₡150)`,
                 effects: [
                     { type: 'CASH', value: -150 }
                 ]
@@ -72,7 +72,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 ]
             },
             {
-                text: `Safe: "Buy a sealed protein bar." ($20)`,
+                text: `Safe: "Buy a sealed protein bar." (₡20)`,
                 effects: [
                     { type: 'CASH', value: -20 },
                     { type: 'HUNGER', value: -25 }
@@ -96,7 +96,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
         prerequisites: { location: 'Cognitive Re-Ed' },
         choices: [
             {
-                text: `Buy: "Knowledge is power, but time is money." ($250)`,
+                text: `Buy: "Knowledge is power, but time is money." (₡250)`,
                 effects: [
                     { type: 'CASH', value: -250 },
                     { type: 'EDUCATION_CREDITS', value: 30 }

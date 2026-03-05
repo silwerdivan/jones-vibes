@@ -97,7 +97,7 @@ describe('Education System Upgrade', () => {
         gameState.takeCourse(1);
         const result = gameState.study();
         expect(result).toBe(false);
-        expect(gameState.log[0].text).toContain('Morale Quota is insufficient');
+        expect(gameState.log[0].text).toContain('Sanity is insufficient');
     });
 
     it('should prevent enrolling in higher levels without completing lower ones', () => {

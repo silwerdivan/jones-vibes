@@ -151,7 +151,7 @@ class GameState {
     }
 
     _formatMoney(amount: number): string {
-        return `[OC]${amount.toLocaleString()}`;
+        return `₡${amount.toLocaleString()}`;
     }
 
     _getPlayerName(player: Player): string {
@@ -323,7 +323,7 @@ class GameState {
             this.gameOver = true;
             this.winner = null;
             this.addLogMessage(
-                `💀 ${this._getPlayerName(player)}'s Morale Quota has bottomed out. OmniCorp has terminated your session.`,
+                `💀 ${this._getPlayerName(player)}'s Sanity has bottomed out. OmniCorp has terminated your session.`,
                 'error'
             );
             EventBus.publish('gameOver', this);
@@ -331,7 +331,7 @@ class GameState {
             this.gameOver = true;
             this.winner = null;
             this.addLogMessage(
-                `💀 ${this._getPlayerName(player)} has succumbed to Bio-Deficit. Critical metabolic failure.`,
+                `💀 ${this._getPlayerName(player)} has succumbed to Energy Drain. Critical metabolic failure.`,
                 'error'
             );
             EventBus.publish('gameOver', this);
@@ -559,7 +559,7 @@ class GameState {
 
         if (currentPlayer.happiness < happinessCost) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)}'s Morale Quota is insufficient for study. Required: ${happinessCost}.`,
+                `${this._getPlayerName(currentPlayer)}'s Sanity is insufficient for study. Required: ${happinessCost}.`,
                 'error'
             );
             return false;

@@ -110,6 +110,7 @@ export default class CityScreen extends BaseComponent<GameState> {
             case 'Sustenance Hub': return Icons.restaurant(32, '#FF9100');
             case 'Mobility-Asset': return Icons.hoverCar(32, '#00E676');
             case 'Cred-Debt Ctr': return Icons.cryptoVault(32, '#FF5252');
+            case 'Ripperdoc Clinic': return Icons.bioMetrics(32, '#E91E63');
             default: return '';
         }
     }
@@ -123,6 +124,7 @@ export default class CityScreen extends BaseComponent<GameState> {
             case 'Sustenance Hub': return 'Nutrient intake';
             case 'Mobility-Asset': return 'Transit assets';
             case 'Cred-Debt Ctr': return 'Yield-Optimize (Banking)';
+            case 'Ripperdoc Clinic': return 'Cybernetic implants';
             default: return '';
         }
     }
@@ -146,6 +148,7 @@ export default class CityScreen extends BaseComponent<GameState> {
             case 'Sustenance Hub': hintText = 'Minimize bio-deficit through nutrient intake'; break;
             case 'Mobility-Asset': hintText = 'Procure transit assets for enhanced travel efficiency'; break;
             case 'Cred-Debt Ctr': hintText = 'Manage liquidity and optimize yield through credit-debt protocols'; break;
+            case 'Ripperdoc Clinic': hintText = 'Enhance physiological efficiency through cybernetic integration'; break;
             default: hintText = 'Initiate travel to alternative sectors';
         }
         

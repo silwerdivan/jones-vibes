@@ -91,7 +91,7 @@ export default class MascotUI extends BaseComponent<GameState> {
         const glowClass = `mascot-${newState}`;
 
         this.element.innerHTML = `
-            <img src="${assetPath}" alt="C.A.S.H. Mascot" class="mascot-image ${glowClass}">
+            <img src="${assetPath}" alt="S.A.N.I.T.Y. Mascot" class="mascot-image ${glowClass}">
         `;
     }
 }

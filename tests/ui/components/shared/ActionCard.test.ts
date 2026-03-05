@@ -114,7 +114,7 @@ describe('ActionCard', () => {
             const card = createActionCard('college', mockCourse, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('[OC]100');
+            expect(metaText).toContain('₡100');
             expect(metaText).toContain('40CH total');
         });
 
@@ -122,7 +122,7 @@ describe('ActionCard', () => {
             const card = createActionCard('college', mockCourse, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-[OC]100', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-₡100', 'error');
         });
     });
 
@@ -155,7 +155,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('+10 Morale');
+            expect(metaText).toContain('+10 Sanity (🧠)');
         });
 
         it('should display hunger reduction if item reduces hunger', () => {
@@ -166,7 +166,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', foodItem, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             
-            expect(metaText).toContain('-20 Bio-Deficit');
+            expect(metaText).toContain('-20 Energy Drain (⚡)');
         });
 
         it('should call onClick with correct feedback for shopping', () => {
@@ -174,7 +174,7 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-[OC]50', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-₡50', 'error');
         });
     });
 

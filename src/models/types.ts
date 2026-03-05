@@ -30,6 +30,7 @@ export interface Item {
     icon?: string;
     benefit?: string;
     hungerReduction?: number;
+    cyberwareEffect?: ConditionEffect[];
 }
 
 export interface Clerk {

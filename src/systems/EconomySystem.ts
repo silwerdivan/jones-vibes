@@ -2,6 +2,7 @@ import Player from '../game/Player';
 import GameState from '../game/GameState';
 import { SHOPPING_ITEMS } from '../data/items';
 import EventBus, { STATE_EVENTS } from '../EventBus';
+import { GameCondition } from '../models/types';
 
 class EconomySystem {
     private gameState: GameState;
@@ -11,7 +12,7 @@ class EconomySystem {
     }
 
     private _formatMoney(amount: number): string {
-        return `$${amount.toLocaleString()}`;
+        return `₡${amount.toLocaleString()}`;
     }
 
     private _getPlayerName(player: Player): string {
@@ -27,16 +28,25 @@ class EconomySystem {
         const currentPlayer = this.gameState.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
-        if (currentPlayer.location !== 'Consumpt-Zone' && currentPlayer.location !== 'Sustenance Hub') {
+        if (!item) {
+            this.gameState.addLogMessage('Item not found.', 'error');
+            return false;
+        }
+
+        if (currentPlayer.location !== item.location) {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Consumpt-Zone or Sustenance Hub to shop.`,
+                `${this._getPlayerName(currentPlayer)} must be at ${item.location} to buy ${item.name}.`,
                 'error'
             );
             return false;
         }
 
-        if (!item) {
-            this.gameState.addLogMessage('Item not found.', 'error');
+        // Prevent duplicate asset purchases (like Cyberware or Appliances)
+        if (item.type === 'asset' && currentPlayer.inventory.some(i => i.name === item.name)) {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} already owns ${item.name}.`,
+                'warning'
+            );
             return false;
         }
 
@@ -59,6 +69,20 @@ class EconomySystem {
             currentPlayer.hunger = Math.max(0, currentPlayer.hunger - 30);
         }
 
+        // Apply cyberware effects if present
+        if (item.cyberwareEffect && item.cyberwareEffect.length > 0) {
+            const condition: GameCondition = {
+                id: `cyberware_${item.name.toLowerCase().replace(/\s+/g, '_')}`,
+                name: item.name,
+                description: item.benefit || `Cyberware implant: ${item.name}`,
+                remainingDuration: Infinity,
+                effects: item.cyberwareEffect,
+                icon: item.icon
+            };
+            currentPlayer.addCondition(condition);
+            this.gameState.addLogMessage(`${item.name} installed successfully!`, 'success');
+        }
+
         // Add to inventory if it's an asset or certain essentials
         if (item.type === 'asset' || item.name === 'New Clothes') {
             if (!currentPlayer.inventory.some(i => i.name === item.name)) {
@@ -67,7 +91,7 @@ class EconomySystem {
         }
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Morale increased by ${item.happinessBoost}.`,
+            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Sanity increased by ${item.happinessBoost}.`,
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
