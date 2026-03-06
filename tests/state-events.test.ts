@@ -20,7 +20,7 @@ describe('STATE_EVENTS', () => {
             expect(STATE_EVENTS.TIME_CHANGED).toBe('STATE_TIME_CHANGED');
             expect(STATE_EVENTS.LOCATION_CHANGED).toBe('STATE_LOCATION_CHANGED');
             expect(STATE_EVENTS.INVENTORY_CHANGED).toBe('STATE_INVENTORY_CHANGED');
-            expect(STATE_EVENTS.HAPPINESS_CHANGED).toBe('STATE_HAPPINESS_CHANGED');
+            expect(STATE_EVENTS.SANITY_CHANGED).toBe('STATE_SANITY_CHANGED');
             expect(STATE_EVENTS.HUNGER_CHANGED).toBe('STATE_HUNGER_CHANGED');
             expect(STATE_EVENTS.CAREER_CHANGED).toBe('STATE_CAREER_CHANGED');
             expect(STATE_EVENTS.EDUCATION_CHANGED).toBe('STATE_EDUCATION_CHANGED');
@@ -93,7 +93,7 @@ describe('STATE_EVENTS', () => {
             player.location = 'Cognitive Re-Ed';
             player.credits = 1000;
             player.time = 100; 
-            player.happiness = 100;
+            player.sanity = 100;
             
             // 1. Enroll (sets goal)
             gameState.takeCourse(1); 
@@ -208,7 +208,7 @@ describe('STATE_EVENTS', () => {
                 STATE_EVENTS.TIME_CHANGED,
                 STATE_EVENTS.LOCATION_CHANGED,
                 STATE_EVENTS.INVENTORY_CHANGED,
-                STATE_EVENTS.HAPPINESS_CHANGED,
+                STATE_EVENTS.SANITY_CHANGED,
                 STATE_EVENTS.HUNGER_CHANGED,
                 STATE_EVENTS.CAREER_CHANGED,
                 STATE_EVENTS.EDUCATION_CHANGED,

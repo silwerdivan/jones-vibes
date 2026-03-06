@@ -17,20 +17,20 @@ describe('Hypno-Screen Buff', () => {
         }
     });
 
-    it('should increase morale by 10 without Hypno-Screen', () => {
+    it('should increase sanity by 10 without Hypno-Screen', () => {
         const player = gameState.getCurrentPlayer();
-        player.happiness = 50;
+        player.sanity = 50;
         player.inventory = [];
 
         timeSystem.endTurn();
 
-        // Baseline: Morale should increase by 10 (Rest)
-        expect(player.happiness).toBe(60);
+        // Baseline: Sanity should increase by 10 (Rest)
+        expect(player.sanity).toBe(60);
     });
 
-    it('should increase morale by 11 with Hypno-Screen', () => {
+    it('should increase sanity by 11 with Hypno-Screen', () => {
         const player = gameState.getCurrentPlayer();
-        player.happiness = 50;
+        player.sanity = 50;
         
         const hypnoScreen = SHOPPING_ITEMS.find(i => i.name === 'Hypno-Screen');
         expect(hypnoScreen).toBeDefined();
@@ -39,6 +39,6 @@ describe('Hypno-Screen Buff', () => {
         timeSystem.endTurn();
 
         // Hypno-Screen gives 10% bonus (11 total)
-        expect(player.happiness).toBe(61);
+        expect(player.sanity).toBe(61);
     });
 });

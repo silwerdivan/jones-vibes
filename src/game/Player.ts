@@ -1,11 +1,12 @@
 import { Item, PlayerState, GameCondition, ConditionEffectType } from '../models/types';
 import { LocationName } from '../data/locations';
+import EventBus, { STATE_EVENTS } from '../EventBus';
 
 export default class Player {
     id: number;
     credits: number;
     savings: number;
-    happiness: number;
+    sanity: number;
     educationLevel: number;
     educationCredits: number;
     educationCreditsGoal: number;
@@ -19,18 +20,19 @@ export default class Player {
     timeDeficit: number;
     weeklyIncome: number;
     weeklyExpenses: number;
-    weeklyHappinessChange: number;
+    weeklySanityChange: number;
     weeklyGraduations: string[] = [];
     isAI: boolean = false;
     name: string = '';
     baseWageMultiplier: number = 1.0;
     activeConditions: GameCondition[] = [];
+    burnRate: number = 150; // Base 150 ₡ for Coffin Tube + basic subscriptions
 
     constructor(id: number) {
         this.id = id;
         this.credits = 0;
         this.savings = 0;
-        this.happiness = 50;
+        this.sanity = 50;
         this.educationLevel = 0;
         this.educationCredits = 0;
         this.educationCreditsGoal = 0; // Set to 0 to require enrollment
@@ -46,9 +48,15 @@ export default class Player {
         // Weekly tracking for summary
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
-        this.weeklyHappinessChange = 0;
+        this.weeklySanityChange = 0;
         this.weeklyGraduations = [];
         this.activeConditions = [];
+        this.burnRate = 150;
+    }
+
+    calculateBurnRate(): number {
+        const itemMaintenance = this.inventory.reduce((sum, item) => sum + (item.maintenanceCost || 0), 0);
+        return this.burnRate + itemMaintenance;
     }
 
     get wageMultiplier(): number {
@@ -100,7 +108,7 @@ export default class Player {
             id: this.id,
             credits: this.credits,
             savings: this.savings,
-            happiness: this.happiness,
+            sanity: this.sanity,
             educationLevel: this.educationLevel,
             educationCredits: this.educationCredits,
             educationCreditsGoal: this.educationCreditsGoal,
@@ -114,11 +122,12 @@ export default class Player {
             timeDeficit: this.timeDeficit,
             weeklyIncome: this.weeklyIncome,
             weeklyExpenses: this.weeklyExpenses,
-            weeklyHappinessChange: this.weeklyHappinessChange,
+            weeklySanityChange: this.weeklySanityChange,
             isAI: this.isAI,
             name: this.name,
             wageMultiplier: this.baseWageMultiplier, // Save the base
-            activeConditions: [...this.activeConditions]
+            activeConditions: [...this.activeConditions],
+            burnRate: this.burnRate
         };
     }
 
@@ -126,7 +135,7 @@ export default class Player {
         const player = new Player(data.id);
         player.credits = data.credits;
         player.savings = data.savings;
-        player.happiness = data.happiness;
+        player.sanity = data.sanity;
         player.educationLevel = data.educationLevel;
         player.educationCredits = data.educationCredits || 0;
         player.educationCreditsGoal = data.educationCreditsGoal !== undefined ? data.educationCreditsGoal : 0;
@@ -140,11 +149,12 @@ export default class Player {
         player.timeDeficit = data.timeDeficit;
         player.weeklyIncome = data.weeklyIncome;
         player.weeklyExpenses = data.weeklyExpenses;
-        player.weeklyHappinessChange = data.weeklyHappinessChange;
+        player.weeklySanityChange = data.weeklySanityChange;
         player.isAI = data.isAI;
         player.name = data.name;
         player.baseWageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
         player.activeConditions = data.activeConditions || [];
+        player.burnRate = data.burnRate || 150;
         return player;
     }
 
@@ -162,21 +172,25 @@ export default class Player {
         return false;
     }
 
-    updateHappiness(points: number): void {
-        const oldHappiness = this.happiness;
-        this.happiness += points;
-        if (this.happiness > 100) {
-            this.happiness = 100;
-        } else if (this.happiness < 0) {
-            this.happiness = 0;
+    updateSanity(points: number): void {
+        const oldSanity = this.sanity;
+        this.sanity += points;
+        if (this.sanity > 100) {
+            this.sanity = 100;
+        } else if (this.sanity < 0) {
+            this.sanity = 0;
         }
-        this.weeklyHappinessChange += (this.happiness - oldHappiness);
+        this.weeklySanityChange += (this.sanity - oldSanity);
+
+        if (this.sanity <= 0) {
+            EventBus.publish(STATE_EVENTS.BURNOUT_TRIGGERED, { player: this });
+        }
     }
 
     resetWeeklyStats(): void {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
-        this.weeklyHappinessChange = 0;
+        this.weeklySanityChange = 0;
         this.weeklyGraduations = [];
     }
 

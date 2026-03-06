@@ -173,7 +173,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Acquire assets and essentials for morale maintenance');
+            expect(cityScreen.getLocationHint().textContent).toBe('Acquire assets and essentials for sanity maintenance');
         });
 
         it('should show correct hint for Sustenance Hub', () => {

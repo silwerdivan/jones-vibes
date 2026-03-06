@@ -18,8 +18,8 @@ describe('HUD', () => {
         // Create mock GameState
         mockGameState = {
             players: [
-                { id: 1, credits: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [] },
-                { id: 2, credits: 200, time: 20, location: 'Labor Sector', isAI: true, activeConditions: [] }
+                { id: 1, credits: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [], calculateBurnRate: () => 150 },
+                { id: 2, credits: 200, time: 20, location: 'Labor Sector', isAI: true, activeConditions: [], calculateBurnRate: () => 150 }
             ],
             currentPlayerIndex: 0,
             turn: 1,

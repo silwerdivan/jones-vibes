@@ -14,10 +14,10 @@ export const CONDITIONS: Record<string, GameCondition> = {
     'AD_FATIGUE': {
         id: 'AD_FATIGUE',
         name: 'Ad Fatigue',
-        description: 'Retinal ads are everywhere. Constant drain on happiness.',
+        description: 'Retinal ads are everywhere. Constant drain on sanity.',
         remainingDuration: 72, // 3 days
         effects: [
-            { type: 'HAPPINESS_TICK', value: -0.2 } // -0.2 per hour = -4.8 per day
+            { type: 'SANITY_TICK', value: -0.2 } // -0.2 per hour = -4.8 per day
         ],
         icon: '👁️'
     },
@@ -48,7 +48,7 @@ export const CONDITIONS: Record<string, GameCondition> = {
         description: 'You feel like you are being watched.',
         remainingDuration: 120, // 5 days
         effects: [
-            { type: 'HAPPINESS_TICK', value: -0.2 }
+            { type: 'SANITY_TICK', value: -0.2 }
         ],
         icon: '😰'
     },
@@ -70,6 +70,16 @@ export const CONDITIONS: Record<string, GameCondition> = {
         remainingDuration: 24,
         effects: [
             { type: 'STUDY_EFFICIENCY', value: 1.5 }
+        ],
+        icon: '🧠'
+    },
+    'TRAUMA_REBOOT': {
+        id: 'TRAUMA_REBOOT',
+        name: 'Trauma Reboot',
+        description: 'Severe mental collapse. Max Energy reduced by 20% during recovery.',
+        remainingDuration: 336, // 14 days * 24 hours
+        effects: [
+            { type: 'MAX_ENERGY', value: 0.8 }
         ],
         icon: '🧠'
     }

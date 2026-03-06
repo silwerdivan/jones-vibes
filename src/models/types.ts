@@ -24,13 +24,14 @@ export interface Course {
 export interface Item {
     name: string;
     cost: number;
-    happinessBoost: number;
+    sanityBoost: number;
     type: 'essential' | 'asset';
     location: string;
     icon?: string;
     benefit?: string;
     hungerReduction?: number;
     cyberwareEffect?: ConditionEffect[];
+    maintenanceCost?: number;
 }
 
 export interface Clerk {
@@ -43,7 +44,7 @@ export interface PlayerState {
     id: number;
     credits: number;
     savings: number;
-    happiness: number;
+    sanity: number;
     educationLevel: number;
     educationCredits: number;
     educationCreditsGoal: number;
@@ -57,11 +58,12 @@ export interface PlayerState {
     timeDeficit: number;
     weeklyIncome: number;
     weeklyExpenses: number;
-    weeklyHappinessChange: number;
+    weeklySanityChange: number;
     isAI: boolean;
     name: string;
     wageMultiplier: number;
     activeConditions: GameCondition[];
+    burnRate: number;
 }
 
 export interface GraduationData {
@@ -90,8 +92,9 @@ export type ConditionEffectType =
     | 'WAGE_MULTIPLIER' 
     | 'TRAVEL_TIME_MODIFIER' 
     | 'STUDY_EFFICIENCY' 
-    | 'HAPPINESS_TICK'
-    | 'WORK_EFFICIENCY';
+    | 'SANITY_TICK'
+    | 'WORK_EFFICIENCY'
+    | 'MAX_ENERGY';
 
 export interface ConditionEffect {
     type: ConditionEffectType;
@@ -110,7 +113,7 @@ export interface GameCondition {
 export type RandomEventType = 'Global' | 'Local' | 'Consequence';
 
 export interface RandomEventEffect {
-    type: 'CREDITS' | 'HAPPINESS' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
+    type: 'CREDITS' | 'SANITY' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
     value: number;
     conditionId?: string;
 }
@@ -133,8 +136,8 @@ export interface RandomEvent {
     choices: RandomEventChoiceData[];
     prerequisites?: {
         location?: string;
-        minHappiness?: number;
-        maxHappiness?: number;
+        minSanity?: number;
+        maxSanity?: number;
         minWealth?: number;
         maxWealth?: number;
         careerLevel?: number;
@@ -157,7 +160,7 @@ export interface TurnSummary {
     events: TurnEvent[];
     totals: {
         creditsChange: number;
-        happinessChange: number;
+        sanityChange: number;
     };
 }
 

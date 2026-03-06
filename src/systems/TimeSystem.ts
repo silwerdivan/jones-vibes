@@ -15,7 +15,7 @@ interface TurnSummary {
     }>;
     totals: {
         creditsChange: number;
-        happinessChange: number;
+        sanityChange: number;
     };
 }
 
@@ -43,7 +43,7 @@ class TimeSystem {
             events: [],
             totals: {
                 creditsChange: 0,
-                happinessChange: 0
+                sanityChange: 0
             }
         };
 
@@ -69,21 +69,22 @@ class TimeSystem {
             });
         }
 
-        // 3. Apply daily expenses (weekend)
-        currentPlayer.spendCredits(this.gameState.DAILY_EXPENSE);
+        // 3. Apply weekly Burn Rate
+        const burnRate = currentPlayer.calculateBurnRate();
+        currentPlayer.spendCredits(burnRate);
         summary.events.push({
             type: 'expense',
-            label: 'Hab-Unit Tax',
-            value: -this.gameState.DAILY_EXPENSE,
+            label: 'Burn Rate',
+            value: -burnRate,
             unit: '₡',
             icon: 'home'
         });
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} deducted ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for Hab-Unit maintenance.`,
+            `${this._getPlayerName(currentPlayer)} paid weekly Burn Rate of ${this._formatMoney(burnRate)}.`,
             'expense'
         );
-        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -burnRate, gameState: this.gameState });
 
         // 4. Apply loan interest
         if (currentPlayer.loan > 0) {
@@ -112,35 +113,35 @@ class TimeSystem {
         const hungerIncrease = hasThermalRegulator ? 10 : 20;
         currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + hungerIncrease);
         if (currentPlayer.hunger > 50) {
-            currentPlayer.updateHappiness(-5);
+            currentPlayer.updateSanity(-5);
             summary.events.push({
                 type: 'warning',
                 label: 'Bio-Deficit Deduction',
                 value: -5,
-                unit: 'Morale',
+                unit: 'Sanity',
                 icon: 'restaurant'
             });
             this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} bio-integrity at risk...`, 'warning');
-            EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
 
-        // 6. Apply morale gain (Cycle Rest)
+        // 6. Apply sanity gain (Cycle Rest)
         const hasHypnoScreen = currentPlayer.inventory.some(i => i.name === 'Hypno-Screen');
-        const moraleGain = hasHypnoScreen ? 11 : 10;
-        currentPlayer.updateHappiness(moraleGain);
+        const sanityGain = hasHypnoScreen ? 11 : 10;
+        currentPlayer.updateSanity(sanityGain);
         summary.events.push({
             type: 'success',
             label: 'Cycle Recovery',
-            value: moraleGain,
-            unit: 'Morale',
+            value: sanityGain,
+            unit: 'Sanity',
             icon: 'bedtime'
         });
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} recovered ${moraleGain} Morale Quota during cycle recovery.`,
+            `${this._getPlayerName(currentPlayer)} recovered ${sanityGain} Sanity during cycle recovery.`,
             'success'
         );
-        EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: moraleGain, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: sanityGain, gameState: this.gameState });
 
         // 7. Add graduation events
         if (currentPlayer.weeklyGraduations && currentPlayer.weeklyGraduations.length > 0) {
@@ -157,7 +158,7 @@ class TimeSystem {
 
         // 7. Calculate totals from tracked stats
         summary.totals.creditsChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
-        summary.totals.happinessChange = currentPlayer.weeklyHappinessChange;
+        summary.totals.sanityChange = currentPlayer.weeklySanityChange;
 
         // Reset weekly stats for the next week
         currentPlayer.resetWeeklyStats();

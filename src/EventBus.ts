@@ -6,6 +6,7 @@ interface EventBusInterface {
   subscribe(eventName: string, callback: Callback): void;
   unsubscribe(eventName: string, callback: Callback): void;
   publish(eventName: string, data?: any): void;
+  clearAll(): void;
 }
 
 /**
@@ -39,13 +40,15 @@ export const STATE_EVENTS = {
   TIME_CHANGED: 'STATE_TIME_CHANGED',
   LOCATION_CHANGED: 'STATE_LOCATION_CHANGED',
   INVENTORY_CHANGED: 'STATE_INVENTORY_CHANGED',
-  HAPPINESS_CHANGED: 'STATE_HAPPINESS_CHANGED',
+  SANITY_CHANGED: 'STATE_SANITY_CHANGED',
   HUNGER_CHANGED: 'STATE_HUNGER_CHANGED',
   ENERGY_CHANGED: 'STATE_ENERGY_CHANGED',
   CAREER_CHANGED: 'STATE_CAREER_CHANGED',
   EDUCATION_CHANGED: 'STATE_EDUCATION_CHANGED',
   PLAYER_CHANGED: 'STATE_PLAYER_CHANGED',
-  TURN_CHANGED: 'STATE_TURN_CHANGED'
+  TURN_CHANGED: 'STATE_TURN_CHANGED',
+  BURN_RATE_CHANGED: 'STATE_BURN_RATE_CHANGED',
+  BURNOUT_TRIGGERED: 'STATE_BURNOUT_TRIGGERED'
 } as const;
 
 const EventBus: EventBusInterface = {
@@ -86,6 +89,14 @@ const EventBus: EventBusInterface = {
         callback(data);
       });
     }
+  },
+
+  /**
+   * Clear all subscriptions.
+   * Useful for testing.
+   */
+  clearAll(): void {
+    this.events = {};
   }
 };
 

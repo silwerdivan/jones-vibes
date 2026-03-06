@@ -50,7 +50,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
                 <div class="study-actions">
                     <div class="action-badges">
                         <span class="badge badge-time"><i class="material-icons">schedule</i> 8CH</span>
-                        <span class="badge badge-happiness"><i class="material-icons">sentiment_very_dissatisfied</i> -5</span>
+                        <span class="badge badge-sanity"><i class="material-icons">sentiment_very_dissatisfied</i> -5</span>
                         <span class="badge badge-credits" data-credits-gain><i class="material-icons">school</i> +8 Credits</span>
                     </div>
                     <button class="btn btn-primary study-btn" data-study-btn>ATTEND LECTURE</button>
@@ -173,13 +173,13 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
             creditsGainEl.classList.remove('buffed');
         }
 
-        const canStudy = player.time >= 8 && player.happiness >= 5;
+        const canStudy = player.time >= 8 && player.sanity >= 5;
         studyBtn.disabled = !canStudy;
 
         if (player.time < 8) {
             studyBtn.title = "Insufficient time (8CH required)";
-        } else if (player.happiness < 5) {
-            studyBtn.title = "Morale Quota insufficient for study";
+        } else if (player.sanity < 5) {
+            studyBtn.title = "Sanity insufficient for study";
         } else {
             studyBtn.title = "";
         }

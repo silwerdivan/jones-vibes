@@ -75,9 +75,9 @@ export default class MascotUI extends BaseComponent<GameState> {
 
         let newState = MascotState.DEFAULT;
 
-        // Step 2 Logic Priority: Deficit (Bio-Deficit >= 50, Morale <= 20, Time <= 0) > Profit (2s timer) > Helpful (if isModalMode) > Default
-        // Mapping: Bio-Deficit -> hunger, Morale -> happiness
-        const isDeficit = player.hunger >= 50 || player.happiness <= 20 || player.time <= 0;
+        // Step 2 Logic Priority: Deficit (Bio-Deficit >= 50, Sanity <= 20, Time <= 0) > Profit (2s timer) > Helpful (if isModalMode) > Default
+        // Mapping: Bio-Deficit -> hunger, Sanity -> sanity
+        const isDeficit = player.hunger >= 50 || player.sanity <= 20 || player.time <= 0;
         
         if (isDeficit) {
             newState = MascotState.DEFICIT;

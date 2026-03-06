@@ -22,7 +22,7 @@ The Biological Asset grants The Provider irrevocable, global, royalty-free acces
 Biological Assets may opt-in to specific productivity protocols to accelerate their contribution to The Provider's quarterly earnings. These protocols carry inherent biological and financial risks which the Biological Asset assumes in full.
 
 4. TERMINATION OF SERVICE
-The Provider reserves the right to terminate the Biological Asset's "Life Session" if productivity falls below acceptable margins, or if the Biological Asset's "Morale" (Happiness) drops to a level that threatens the stability of the simulation's socio-economic fabric.
+The Provider reserves the right to terminate the Biological Asset's "Life Session" if productivity falls below acceptable margins, or if the Biological Asset's Sanity drops to a level that threatens the stability of the simulation's socio-economic fabric.
 
 5. LIMITATION OF LIABILITY
 The Network is not responsible for any "Turn 1 Deaths", existential dread, or loss of digital or physical assets resulting from the use of CyberLife OS. 
@@ -47,10 +47,10 @@ export const EULA_CLAUSES: EulaClause[] = [
         title: 'Hyper-Grindset Agreement',
         description: 'Waive your right to a standard 24-hour cycle for the initial orientation.',
         benefit: 'Orientation Overtime',
-        penalty: '+6 Cycle Hours, -20 Morale',
+        penalty: '+6 Cycle Hours, -20 Sanity',
         apply: (player: Player) => {
             player.time += 6;
-            player.updateHappiness(-20);
+            player.updateSanity(-20);
         }
     },
     {
@@ -63,7 +63,7 @@ export const EULA_CLAUSES: EulaClause[] = [
             player.inventory.push({
                 name: 'Cyber-Terminal',
                 cost: 0,
-                happinessBoost: 0,
+                sanityBoost: 0,
                 type: 'essential',
                 location: 'Anywhere',
                 benefit: 'Direct access to CyberNet'

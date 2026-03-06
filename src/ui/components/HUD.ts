@@ -7,6 +7,7 @@ import MascotUI from './MascotUI.js';
 
 export default class HUD extends BaseComponent<GameState> {
     private hudCredits!: HTMLElement;
+    private hudBurnRate!: HTMLElement;
     private hudWeek!: HTMLElement;
     private hudLocation!: HTMLElement;
     private orbP1!: HTMLElement;
@@ -52,6 +53,10 @@ export default class HUD extends BaseComponent<GameState> {
                         <span class="hud-label">CREDITS</span>
                         <span class="hud-value currency" data-credits>₡0</span>
                     </div>
+                    <div class="hud-stat-item">
+                        <span class="hud-label">BURN RATE</span>
+                        <span class="hud-value" data-burn-rate>₡0</span>
+                    </div>
                 </div>
             </div>
             <div class="hud-right">
@@ -77,6 +82,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.timeRingP1 = this.element.querySelector('[data-time-ring="p1"]')!;
         this.timeRingP2 = this.element.querySelector('[data-time-ring="p2"]')!;
         this.hudCredits = this.element.querySelector('[data-credits]')!;
+        this.hudBurnRate = this.element.querySelector('[data-burn-rate]')!;
         this.hudWeek = this.element.querySelector('[data-week]')!;
         this.hudLocation = this.element.querySelector('[data-location]')!;
         this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
@@ -152,6 +158,10 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateMascots(gameState);
         });
 
+        this.subscribe(STATE_EVENTS.BURN_RATE_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateBurnRate(gameState);
+        });
+
         this.subscribe(STATE_EVENTS.TIME_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateClocks(gameState);
             this.updateMascots(gameState);
@@ -187,6 +197,11 @@ export default class HUD extends BaseComponent<GameState> {
     private updateCredits(gameState: GameState): void {
         const currentPlayer = gameState.getCurrentPlayer();
         this.hudCredits.textContent = `₡${currentPlayer.credits}`;
+    }
+
+    private updateBurnRate(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        this.hudBurnRate.textContent = `₡${currentPlayer.calculateBurnRate()}`;
     }
 
     private updateWeek(gameState: GameState): void {
@@ -296,6 +311,7 @@ export default class HUD extends BaseComponent<GameState> {
 
         // Update Stats
         this.hudCredits.textContent = `₡${currentPlayer.credits}`;
+        this.hudBurnRate.textContent = `₡${currentPlayer.calculateBurnRate()}`;
         this.hudWeek.textContent = gameState.turn.toString();
         this.hudLocation.textContent = currentPlayer.location;
 

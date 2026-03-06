@@ -23,7 +23,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 text: `Car: "Good thing I own a ride."`,
                 requirement: { type: 'ITEM', id: 'Car' },
                 effects: [
-                    { type: 'HAPPINESS', value: 10 }
+                    { type: 'SANITY', value: 10 }
                 ]
             }
         ]
@@ -45,7 +45,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Reject: "Keep your spyware."`,
                 effects: [
-                    { type: 'HAPPINESS', value: 10 }
+                    { type: 'SANITY', value: 10 }
                 ]
             },
             {
@@ -83,7 +83,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 requirement: { type: 'CAREER', value: 2 },
                 effects: [
                     { type: 'HUNGER', value: -100 },
-                    { type: 'HAPPINESS', value: 5 }
+                    { type: 'SANITY', value: 5 }
                 ]
             }
         ]
@@ -105,7 +105,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Report: "I do my own work."`,
                 effects: [
-                    { type: 'HAPPINESS', value: 15 },
+                    { type: 'SANITY', value: 15 },
                     { type: 'CREDITS', value: 50 }
                 ]
             },
@@ -134,24 +134,24 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Report: "The corpos always find out."`,
                 effects: [
-                    { type: 'HAPPINESS', value: 10 },
+                    { type: 'SANITY', value: 10 },
                     { type: 'CREDITS', value: 20 }
                 ]
             }
         ]
     },
     {
-        id: 'state_low_happiness_burnout',
+        id: 'state_low_sanity_burnout',
         type: 'Consequence',
         title: 'Crushing Burnout',
         flavorText: `Your alarm goes off, but your body refuses to move. The neon lights outside your window just give you a headache. You are completely burnt out.`,
-        prerequisites: { maxHappiness: 20 },
+        prerequisites: { maxSanity: 20 },
         choices: [
             {
                 text: `Rest: "I need to rest."`,
                 effects: [
                     { type: 'TIME', value: -12 },
-                    { type: 'HAPPINESS', value: 40 }
+                    { type: 'SANITY', value: 40 }
                 ]
             },
             {
@@ -163,11 +163,11 @@ export const RANDOM_EVENTS: RandomEvent[] = [
         ]
     },
     {
-        id: 'state_high_happiness_flow',
+        id: 'state_high_sanity_flow',
         type: 'Consequence',
         title: 'Late Night Inspiration',
         flavorText: `You're in the zone. The city is quiet, your mind is sharp, and you feel like you could solve any equation the world throws at you.`,
-        prerequisites: { minHappiness: 90 },
+        prerequisites: { minSanity: 90 },
         choices: [
             {
                 text: `Study: "Time to study."`,
@@ -184,7 +184,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Sleep: "Don't ruin a good day."`,
                 effects: [
-                    { type: 'HAPPINESS', value: 100 }
+                    { type: 'SANITY', value: 100 }
                 ]
             }
         ]

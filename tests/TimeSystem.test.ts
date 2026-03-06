@@ -37,27 +37,27 @@ describe('TimeSystem', () => {
         expect(player.location).toBe('Hab-Pod 404');
     });
 
-    it('should handle daily expenses when turn ends', () => {
+    it('should handle weekly Burn Rate when turn ends', () => {
         const player = gameState.getCurrentPlayer();
-        player.credits = 100;
-        gameState.DAILY_EXPENSE = 50;
+        player.credits = 300;
+        player.burnRate = 150;
         
         timeSystem.endTurn();
         
-        expect(player.credits).toBe(50);
+        expect(player.credits).toBe(150);
     });
 
     it('should apply hunger penalty if hunger is high', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 60;
-        player.happiness = 50;
+        player.sanity = 50;
         
         timeSystem.endTurn();
         
         // Hunger increases by 20, penalty is applied if hunger > 50
         expect(player.hunger).toBe(80);
         // Base rest: +10, Hunger penalty: -5. Total change: +5.
-        expect(player.happiness).toBe(55);
+        expect(player.sanity).toBe(55);
     });
 
     it('should apply loan interest if player has a loan', () => {

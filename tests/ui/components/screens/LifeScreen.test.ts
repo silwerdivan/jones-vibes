@@ -42,7 +42,7 @@ describe('LifeScreen', () => {
         });
 
         it('should create gauges with correct IDs', () => {
-            const expectedIds = ['wealth', 'happiness', 'education', 'career'];
+            const expectedIds = ['wealth', 'sanity', 'education', 'career'];
             expectedIds.forEach(id => {
                 const gauge = lifeScreen.getGauge(id);
                 expect(gauge).toBeDefined();
@@ -161,12 +161,12 @@ describe('LifeScreen', () => {
             expect(element.querySelector('.gauge-percentage')?.textContent).toBe('100%');
         });
 
-        it('should update happiness gauge', () => {
+        it('should update sanity gauge', () => {
             const player = gameState.getCurrentPlayer();
-            (player as any).happiness = 75;
+            (player as any).sanity = 75;
             lifeScreen.render(gameState);
 
-            const gauge = lifeScreen.getGauge('happiness');
+            const gauge = lifeScreen.getGauge('sanity');
             const element = gauge!.getElement();
             expect(element.querySelector('.gauge-percentage')?.textContent).toBe('75%');
         });
@@ -196,7 +196,7 @@ describe('LifeScreen', () => {
 
             const configs = [
                 { id: 'wealth', color: '#00E676' },
-                { id: 'happiness', color: '#FFD600' },
+                { id: 'sanity', color: '#FFD600' },
                 { id: 'education', color: '#2979FF' },
                 { id: 'career', color: '#FF00FF' }
             ];

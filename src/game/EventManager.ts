@@ -50,11 +50,11 @@ export class EventManager {
     private evaluatePrerequisites(event: RandomEvent, player: Player, _gameState: GameState, _context: any): boolean {
         if (!event.prerequisites) return true;
 
-        const { location, minHappiness, maxHappiness, minWealth, maxWealth, careerLevel, itemRequired } = event.prerequisites;
+        const { location, minSanity, maxSanity, minWealth, maxWealth, careerLevel, itemRequired } = event.prerequisites;
 
         if (location && player.location !== location) return false;
-        if (minHappiness !== undefined && player.happiness < minHappiness) return false;
-        if (maxHappiness !== undefined && player.happiness > maxHappiness) return false;
+        if (minSanity !== undefined && player.sanity < minSanity) return false;
+        if (maxSanity !== undefined && player.sanity > maxSanity) return false;
         
         const totalWealth = player.credits + player.savings;
         if (minWealth !== undefined && totalWealth < minWealth) return false;
@@ -82,7 +82,7 @@ export class EventManager {
                 case 'EDUCATION':
                     return player.educationLevel >= (req.value || 0);
                 case 'STAT':
-                    // Not implemented yet, could be happiness, etc.
+                    // Not implemented yet, could be sanity, etc.
                     return true;
                 default:
                     return true;
@@ -122,7 +122,7 @@ export class EventManager {
             }
         }
         
-        if (event.id === 'state_high_happiness_flow' && choiceIndex === 1) {
+        if (event.id === 'state_high_sanity_flow' && choiceIndex === 1) {
             // Market: multiply by credits
             const bonus = player.educationCredits * 3;
             player.addCredits(bonus);
@@ -139,8 +139,8 @@ export class EventManager {
                 if (effect.value < 0) player.spendCredits(-effect.value);
                 else player.addCredits(effect.value);
                 break;
-            case 'HAPPINESS':
-                player.updateHappiness(effect.value);
+            case 'SANITY':
+                player.updateSanity(effect.value);
                 break;
             case 'HUNGER':
                 player.hunger += effect.value;
@@ -167,11 +167,11 @@ export class EventManager {
     tickConditions(player: Player, hours: number): void {
         const initialCount = player.activeConditions.length;
         
-        // Apply TICK effects (like happiness drain)
+        // Apply TICK effects (like sanity drain)
         player.activeConditions.forEach(condition => {
             condition.effects.forEach(effect => {
-                if (effect.type === 'HAPPINESS_TICK') {
-                    player.updateHappiness(effect.value * hours);
+                if (effect.type === 'SANITY_TICK') {
+                    player.updateSanity(effect.value * hours);
                 }
             });
         });

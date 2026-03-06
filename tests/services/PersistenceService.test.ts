@@ -9,7 +9,7 @@ describe('PersistenceService', () => {
                 id: 1,
                 credits: 1000,
                 savings: 500,
-                happiness: 50,
+                sanity: 50,
                 educationLevel: 1,
                 careerLevel: 1,
                 time: 10,
@@ -21,7 +21,7 @@ describe('PersistenceService', () => {
                 timeDeficit: 0,
                 weeklyIncome: 0,
                 weeklyExpenses: 0,
-                weeklyHappinessChange: 0,
+                weeklySanityChange: 0,
                 isAI: false,
                 name: 'Player 1'
             }

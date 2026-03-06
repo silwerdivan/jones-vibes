@@ -8,7 +8,7 @@
     --neon-pink: #FF00FF;    /* Primary / UI / Buttons */
     --neon-cyan: #00FFFF;    /* Secondary / Info / HUD */
     --neon-green: #00E676;   /* Success / Career / Money */
-    --neon-yellow: #FFD600;  /* Energy / Time / Happiness */
+    --neon-yellow: #FFD600;  /* Energy / Time / Sanity */
     --neon-blue: #2979FF;    /* Education / Status */
     --neon-red: #FF5252;     /* Error / Expense / Alert */
     --neon-orange: #FF9100;  /* Fast Food / Survival */
@@ -1471,7 +1471,7 @@ body {
 }
 
 .badge-time { color: var(--neon-yellow); }
-.badge-happiness { color: var(--neon-red); }
+.badge-sanity { color: var(--neon-red); }
 .badge-credits { color: var(--neon-blue); }
 .badge-credits.buffed { color: var(--neon-green); }
 
@@ -1798,9 +1798,20 @@ body {
 }
 
 .gauge-card[data-gauge="wealth"] .gauge-ring-fill { color: var(--neon-green); }
-.gauge-card[data-gauge="happiness"] .gauge-ring-fill { color: var(--neon-yellow); }
+.gauge-card[data-gauge="sanity"] .gauge-ring-fill { color: var(--neon-yellow); }
 .gauge-card[data-gauge="education"] .gauge-ring-fill { color: var(--neon-blue); }
 .gauge-card[data-gauge="career"] .gauge-ring-fill { color: var(--neon-pink); }
+
+.gauge-card.sanity-low {
+    animation: sanity-pulse 1.5s infinite;
+    border-color: var(--neon-red) !important;
+}
+
+@keyframes sanity-pulse {
+    0% { box-shadow: 0 0 10px rgba(255, 82, 82, 0.2); }
+    50% { box-shadow: 0 0 30px rgba(255, 82, 82, 0.6); background: rgba(255, 82, 82, 0.05); }
+    100% { box-shadow: 0 0 10px rgba(255, 82, 82, 0.2); }
+}
 
 .gauge-card:hover .gauge-ring-fill {
     animation: pulse-ring 2s infinite;

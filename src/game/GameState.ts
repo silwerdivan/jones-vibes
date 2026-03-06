@@ -8,12 +8,12 @@ import { LocationName } from '../data/locations';
 import type EconomySystem from '../systems/EconomySystem';
 import type TimeSystem from '../systems/TimeSystem';
 import { EventManager } from './EventManager';
+import { CONDITIONS } from '../data/conditions';
 
 class GameState {
     players: Player[];
     currentPlayerIndex: number;
     turn: number;
-    DAILY_EXPENSE: number;
     gameOver: boolean;
     winner: Player | null;
     aiController: AIController | null;
@@ -46,7 +46,6 @@ class GameState {
 
         this.currentPlayerIndex = 0;
         this.turn = 1;
-        this.DAILY_EXPENSE = 50;
         this.gameOver = false;
         this.winner = null;
 
@@ -57,6 +56,11 @@ class GameState {
         this.activeChoiceContext = null;
         this.activeGraduation = null;
         this.eventManager = new EventManager();
+
+        // Subscribe to burnout events
+        EventBus.subscribe(STATE_EVENTS.BURNOUT_TRIGGERED, ({ player }: { player: Player }) => {
+            this.handleBurnout(player);
+        });
 
         // Subscribe to screen switches to keep persistence in sync
         EventBus.subscribe('screenSwitched', (data: { screenId: string }) => {
@@ -296,11 +300,11 @@ class GameState {
 
         const totalWealth = player.credits + player.savings;
         const creditsCondition = totalWealth >= 10000;
-        const happinessCondition = player.happiness >= 80;
+        const sanityCondition = player.sanity >= 80;
         const educationCondition = player.educationLevel >= 3; // Completed Community College
         const careerCondition = player.careerLevel >= 4; // Junior Manager
 
-        if (creditsCondition && happinessCondition && educationCondition && careerCondition) {
+        if (creditsCondition && sanityCondition && educationCondition && careerCondition) {
             this.gameOver = true;
             this.winner = player;
             this.addLogMessage(
@@ -319,15 +323,8 @@ class GameState {
         // or a 0-hour action is taken.
         if (this.turn === 1 && player.time >= 24) return;
 
-        if (player.happiness <= 0) {
-            this.gameOver = true;
-            this.winner = null;
-            this.addLogMessage(
-                `💀 ${this._getPlayerName(player)}'s Sanity has bottomed out. The Network has terminated your session.`,
-                'error'
-            );
-            EventBus.publish('gameOver', this);
-        } else if (player.hunger >= 100) {
+        const maxEnergy = player.getModifiedStat('MAX_ENERGY', 100);
+        if (player.hunger >= maxEnergy) {
             this.gameOver = true;
             this.winner = null;
             this.addLogMessage(
@@ -336,6 +333,37 @@ class GameState {
             );
             EventBus.publish('gameOver', this);
         }
+    }
+
+    handleBurnout(player: Player): void {
+        if (this.gameOver) return;
+
+        this.addLogMessage(
+            `⚠️ BURNOUT DETECTED: ${this._getPlayerName(player)}'s Sanity has collapsed. Emergency Trauma Team dispatched.`,
+            'error'
+        );
+
+        player.setTime(0);
+        
+        const medicalFee = 500;
+        // Forced deduction even if it goes slightly negative or just takes what's left?
+        // Let's use spendCredits which currently doesn't allow negative, 
+        // but we want to charge the fee.
+        const actualDeducted = Math.min(player.credits, medicalFee);
+        player.spendCredits(actualDeducted);
+        
+        player.addCondition(CONDITIONS['TRAUMA_REBOOT']);
+        
+        this.addLogMessage(
+            `🚑 Forced Reboot complete. Medical fee: ${this._formatMoney(actualDeducted)}. Remaining cycle time forfeited.`,
+            'warning'
+        );
+
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player, gameState: this });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player, amount: -actualDeducted, gameState: this });
+        EventBus.publish('stateChanged', this);
+        
+        this._checkAutoEndTurn();
     }
 
     checkGameEndConditions(player: Player): void {
@@ -547,7 +575,7 @@ class GameState {
         }
 
         const studyTime = 8;
-        const happinessCost = 5;
+        const sanityCost = 5;
 
         if (currentPlayer.time < studyTime) {
             this.addLogMessage(
@@ -557,9 +585,9 @@ class GameState {
             return false;
         }
 
-        if (currentPlayer.happiness < happinessCost) {
+        if (currentPlayer.sanity < sanityCost) {
              this.addLogMessage(
-                `${this._getPlayerName(currentPlayer)}'s Sanity is insufficient for study. Required: ${happinessCost}.`,
+                `${this._getPlayerName(currentPlayer)}'s Sanity is insufficient for study. Required: ${sanityCost}.`,
                 'error'
             );
             return false;
@@ -571,7 +599,7 @@ class GameState {
         const creditsGained = Math.round(currentPlayer.getModifiedStat('STUDY_EFFICIENCY', baseCreditsGained));
 
         this._deductTime(currentPlayer, studyTime);
-        currentPlayer.updateHappiness(-happinessCost);
+        currentPlayer.updateSanity(-sanityCost);
         currentPlayer.addEducationCredits(creditsGained);
 
         this.addLogMessage(

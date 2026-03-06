@@ -59,7 +59,7 @@ class EconomySystem {
         }
 
         currentPlayer.spendCredits(item.cost);
-        currentPlayer.updateHappiness(item.happinessBoost);
+        currentPlayer.updateSanity(item.sanityBoost);
 
         // Apply hunger reduction if the item has it
         if (item.hungerReduction) {
@@ -91,14 +91,17 @@ class EconomySystem {
         }
 
         this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Sanity increased by ${item.happinessBoost}.`,
+            `${this._getPlayerName(currentPlayer)} bought ${item.name}! Sanity increased by ${item.sanityBoost}.`,
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -item.cost, gameState: this.gameState });
-        EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: item.happinessBoost, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: item.sanityBoost, gameState: this.gameState });
         if (item.hungerReduction) {
             EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: -item.hungerReduction, gameState: this.gameState });
+        }
+        if (item.maintenanceCost) {
+            EventBus.publish(STATE_EVENTS.BURN_RATE_CHANGED, { player: currentPlayer, amount: item.maintenanceCost, gameState: this.gameState });
         }
         EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);

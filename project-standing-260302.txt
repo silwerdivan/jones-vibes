@@ -18,7 +18,7 @@ The game has shed its generic "Life Sim" skin for a clinical, dystopian corporat
     *   `Employment Agency` -> `Labor Sector`
 *   **UI & Stats Rebranded:** 
     *   `Wealth` -> `Omni-Creds`
-    *   `Happiness` -> `Morale Quota`
+    *   `Happiness` -> `Sanity`
     *   `Hunger` -> `Bio-Deficit`
     *   `Week` -> `Cycle`
     *   `Zone` -> `Sector`
@@ -26,12 +26,12 @@ The game has shed its generic "Life Sim" skin for a clinical, dystopian corporat
 ### ❄️ **Functional Item Logic (EXPANDED)**
 Items are no longer just flavor text; they are active mathematical modifiers.
 *   **Omni-Chill (Fridge):** Reduces the base Bio-Deficit increase rate by 50% (+10 per cycle instead of +20).
-*   **Hypno-Screen (Television):** Grants a +10% bonus to the new base "Cycle Rest" morale gain.
+*   **Hypno-Screen (Television):** Grants a +10% bonus to the new base "Cycle Rest" sanity gain.
 *   **Computer (Omni-Terminal):** Provides a +25% Study Speed bonus (10 credits per session instead of 8).
 
 ### 🧘 **Base Cycle Systems**
-*   **Cycle Rest:** All players now receive a base +10 Morale gain at the end of each turn, representing mandatory downtime.
-*   **Bio-Deficit Penalty:** Failing to maintain your biological needs now results in a "Bio-Deficit Penalty" to your Morale Quota.
+*   **Cycle Rest:** All players now receive a base +10 Sanity gain at the end of each turn, representing mandatory downtime.
+*   **Bio-Deficit Penalty:** Failing to maintain your biological needs now results in a "Bio-Deficit Penalty" to your Sanity.
 
 ### ⏰ **The Clock & Persistence**
 *   **Time Management:** 24 hours per cycle. Strategic travel is key (Car cuts travel time by 50%).

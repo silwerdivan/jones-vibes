@@ -27,14 +27,14 @@ describe('Persistence Stress Test', () => {
         const p1 = gameState.players[0];
         p1.credits = 1250;
         p1.savings = 5000;
-        p1.happiness = 65;
+        p1.sanity = 65;
         p1.educationLevel = 2;
         p1.careerLevel = 3;
         p1.time = 12;
         p1.setLocation('Employment Agency');
         p1.hasCar = true;
         p1.loan = 2000;
-        p1.inventory = [{ name: 'Computer', cost: 800, happinessBoost: 10, type: 'asset', location: 'Electronics Store' }];
+        p1.inventory = [{ name: 'Computer', cost: 800, sanityBoost: 10, type: 'asset', location: 'Electronics Store' }];
         
         gameState.addLogMessage('Player 1 is doing great!', 'success');
         gameState.activeScreenId = 'city';
@@ -111,12 +111,12 @@ describe('Persistence Stress Test', () => {
             playerName: 'Player 1',
             week: 4,
             events: [
-                { type: 'expense', label: 'Rent', value: 400, unit: '₡', icon: 'home' },
+                { type: 'expense', label: 'Burn Rate', value: 400, unit: '₡', icon: 'home' },
                 { type: 'income', label: 'Salary', value: 800, unit: '₡', icon: 'money' }
             ],
             totals: {
                 creditsChange: 400,
-                happinessChange: -5
+                sanityChange: -5
             }
         };
 

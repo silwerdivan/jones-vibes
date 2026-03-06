@@ -111,7 +111,7 @@ describe('EventManager', () => {
     });
 
     it('should apply choice effects (CONDITION)', () => {
-        const event = RANDOM_EVENTS.find(e => e.id === 'state_low_happiness_burnout');
+        const event = RANDOM_EVENTS.find(e => e.id === 'state_low_sanity_burnout');
         if (!event) throw new Error('Event not found');
         
         // Choice 1: Push (BRAIN_FOG)
@@ -147,13 +147,13 @@ describe('EventManager', () => {
             name: 'Test',
             description: 'Test',
             remainingDuration: 10,
-            effects: [{ type: 'HAPPINESS_TICK', value: -1 }]
+            effects: [{ type: 'SANITY_TICK', value: -1 }]
         });
         
-        const initialHappiness = player.happiness;
+        const initialSanity = player.sanity;
         eventManager.tickConditions(player, 2);
         
-        expect(player.happiness).toBe(initialHappiness - 2);
+        expect(player.sanity).toBe(initialSanity - 2);
         expect(player.activeConditions[0].remainingDuration).toBe(8);
     });
 });

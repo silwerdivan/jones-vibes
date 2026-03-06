@@ -87,7 +87,7 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
         `;
     } else {
         const item = data as Item;
-        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.happinessBoost} Sanity (🧠)</span>`;
+        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.sanityBoost} Sanity (🧠)</span>`;
         if (item.hungerReduction) {
             boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Energy Drain (⚡)</span>`;
         }

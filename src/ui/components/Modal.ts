@@ -225,7 +225,7 @@ export class PlayerStatsModal extends Modal {
   private credits: HTMLElement | null;
   private savings: HTMLElement | null;
   private loan: HTMLElement | null;
-  private happiness: HTMLElement | null;
+  private sanity: HTMLElement | null;
   private education: HTMLElement | null;
   private career: HTMLElement | null;
   private car: HTMLElement | null;
@@ -236,7 +236,7 @@ export class PlayerStatsModal extends Modal {
     this.credits = document.getElementById('modal-credits');
     this.savings = document.getElementById('modal-savings');
     this.loan = document.getElementById('modal-loan');
-    this.happiness = document.getElementById('modal-happiness');
+    this.sanity = document.getElementById('modal-sanity');
     this.education = document.getElementById('modal-education');
     this.career = document.getElementById('modal-career');
     this.car = document.getElementById('modal-car');
@@ -256,7 +256,7 @@ export class PlayerStatsModal extends Modal {
     if (this.credits) this.credits.textContent = `₡${player.credits}`;
     if (this.savings) this.savings.textContent = `₡${player.savings}`;
     if (this.loan) this.loan.textContent = `₡${player.loan}`;
-    if (this.happiness) this.happiness.textContent = player.happiness.toString();
+    if (this.sanity) this.sanity.textContent = player.sanity.toString();
     
     const course = COURSES.find((c: Course) => c.educationMilestone === player.educationLevel);
     if (this.education) this.education.textContent = course ? course.name : 'None';
@@ -309,7 +309,7 @@ export class TurnSummaryModal extends Modal {
   private eventList: HTMLElement | null;
   private subtitle: HTMLElement | null;
   private creditsTotal: HTMLElement | null;
-  private happinessTotal: HTMLElement | null;
+  private sanityTotal: HTMLElement | null;
   private nextWeekBtn: HTMLElement | null;
 
   constructor() {
@@ -317,7 +317,7 @@ export class TurnSummaryModal extends Modal {
     this.eventList = document.getElementById('event-list');
     this.subtitle = document.getElementById('summary-subtitle');
     this.creditsTotal = document.getElementById('summary-credits-total');
-    this.happinessTotal = document.getElementById('summary-happiness-total');
+    this.sanityTotal = document.getElementById('summary-sanity-total');
     this.nextWeekBtn = document.getElementById('btn-start-next-week');
   }
 
@@ -329,9 +329,9 @@ export class TurnSummaryModal extends Modal {
         this.creditsTotal.className = `total-value ${summary.totals.creditsChange >= 0 ? 'log-success' : 'log-error'}`;
     }
     
-    if (this.happinessTotal) {
-        this.happinessTotal.textContent = (summary.totals.happinessChange >= 0 ? '+' : '') + summary.totals.happinessChange;
-        this.happinessTotal.className = `total-value ${summary.totals.happinessChange >= 0 ? 'log-success' : 'log-error'}`;
+    if (this.sanityTotal) {
+        this.sanityTotal.textContent = (summary.totals.sanityChange >= 0 ? '+' : '') + summary.totals.sanityChange;
+        this.sanityTotal.className = `total-value ${summary.totals.sanityChange >= 0 ? 'log-success' : 'log-error'}`;
     }
 
     if (this.eventList) {
@@ -367,7 +367,7 @@ export class TurnSummaryModal extends Modal {
 
     setTimeout(() => {
       if (this.creditsTotal) this.animateValue(this.creditsTotal, 0, summary.totals.creditsChange, 1000, '₡');
-      if (this.happinessTotal) this.animateValue(this.happinessTotal, 0, summary.totals.happinessChange, 1000);
+      if (this.sanityTotal) this.animateValue(this.sanityTotal, 0, summary.totals.sanityChange, 1000);
     }, 500);
   }
 

@@ -15,7 +15,7 @@ describe('Education System Upgrade', () => {
         player = gameState.getCurrentPlayer();
         player.credits = 5000;
         player.time = 24;
-        player.happiness = 100;
+        player.sanity = 100;
         player.location = 'Cognitive Re-Ed';
         // Reset EventBus
         (EventBus as any).events = {};
@@ -41,11 +41,11 @@ describe('Education System Upgrade', () => {
         expect(result).toBe(true);
         expect(player.educationCredits).toBe(8);
         expect(player.time).toBe(15); // 23 - 8
-        expect(player.happiness).toBe(95); // 100 - 5
+        expect(player.sanity).toBe(95); // 100 - 5
     });
 
     it('should give 10 credits instead of 8 if player has a Computer', () => {
-        player.inventory.push({ name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset', location: 'Consumpt-Zone' });
+        player.inventory.push({ name: 'Computer', cost: 800, sanityBoost: 25, type: 'asset', location: 'Consumpt-Zone' });
         gameState.takeCourse(1);
         gameState.study();
         expect(player.educationCredits).toBe(10);
@@ -92,8 +92,8 @@ describe('Education System Upgrade', () => {
         expect(studyResult).toBe(true);
     });
 
-    it('should prevent studying if happiness is too low', () => {
-        player.happiness = 4;
+    it('should prevent studying if sanity is too low', () => {
+        player.sanity = 4;
         gameState.takeCourse(1);
         const result = gameState.study();
         expect(result).toBe(false);
@@ -113,7 +113,7 @@ describe('Education System Upgrade', () => {
         aiPlayer.isAI = true;
         aiPlayer.credits = 2000;
         aiPlayer.time = 24;
-        aiPlayer.happiness = 100;
+        aiPlayer.sanity = 100;
         aiPlayer.location = 'Hab-Pod 404';
         aiPlayer.educationLevel = 0;
         aiPlayer.educationCreditsGoal = 0;

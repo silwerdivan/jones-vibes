@@ -15,6 +15,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
     private lifeAvatar!: HTMLElement;
     private statusChips!: HTMLElement;
     private gaugeGrid!: HTMLElement;
+    private financialOverview!: HTMLElement;
     private gauges: Map<string, Gauge> = new Map();
 
     constructor() {
@@ -48,7 +49,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         const gaugeConfigs: LifeScreenGauge[] = [
             { id: 'wealth', label: 'Credits (₡)', value: 0, max: 100, color: '#00E676' },
-            { id: 'happiness', label: 'Sanity (🧠)', value: 0, max: 100, color: '#FFD600' },
+            { id: 'sanity', label: 'Sanity (🧠)', value: 0, max: 100, color: '#FFD600' },
             { id: 'education', label: 'Compliance Level', value: 0, max: 100, color: '#2979FF' },
             { id: 'career', label: 'Productivity Tier', value: 0, max: 100, color: '#FF00FF' }
         ];
@@ -75,8 +76,12 @@ export default class LifeScreen extends BaseComponent<GameState> {
             gaugeContainer.appendChild(gauge.getElement());
         });
 
+        this.financialOverview = document.createElement('div');
+        this.financialOverview.className = 'financial-overview card glass';
+
         this.element.appendChild(lifeHeader);
         this.element.appendChild(this.gaugeGrid);
+        this.element.appendChild(this.financialOverview);
 
         this.setupGranularSubscriptions();
     }
@@ -84,14 +89,22 @@ export default class LifeScreen extends BaseComponent<GameState> {
     private setupGranularSubscriptions(): void {
         // Subscribe to specific state changes for targeted updates
         this.subscribe(STATE_EVENTS.CREDITS_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.updateGauges(gameState.getCurrentPlayer());
+            const player = gameState.getCurrentPlayer();
+            this.updateGauges(player);
+            this.renderFinancialOverview(player);
         });
 
         this.subscribe(STATE_EVENTS.SAVINGS_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.updateGauges(gameState.getCurrentPlayer());
+            const player = gameState.getCurrentPlayer();
+            this.updateGauges(player);
+            this.renderFinancialOverview(player);
         });
 
-        this.subscribe(STATE_EVENTS.HAPPINESS_CHANGED, ({ gameState }: { gameState: GameState }) => {
+        this.subscribe(STATE_EVENTS.BURN_RATE_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.renderFinancialOverview(gameState.getCurrentPlayer());
+        });
+
+        this.subscribe(STATE_EVENTS.SANITY_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateGauges(gameState.getCurrentPlayer());
         });
 
@@ -128,12 +141,35 @@ export default class LifeScreen extends BaseComponent<GameState> {
         this.updateAvatar(index);
         this.renderStatusChips(player);
         this.updateGauges(player);
+        this.renderFinancialOverview(player);
     }
 
     private updateAvatar(playerIndex: number): void {
         const isPlayer1 = playerIndex === 0;
         this.lifeAvatar.textContent = isPlayer1 ? 'P1' : 'AI';
         this.lifeAvatar.dataset.player = isPlayer1 ? '1' : '2';
+    }
+
+    private renderFinancialOverview(player: any): void {
+        const burnRate = player.calculateBurnRate();
+        this.financialOverview.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="font-size: 10px; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px;">Financial Overview</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <div style="font-size: 8px; opacity: 0.7; text-transform: uppercase;">Weekly Burn Rate</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--neon-red);">₡${burnRate}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 8px; opacity: 0.7; text-transform: uppercase;">Available Credits</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--neon-green);">₡${player.credits}</div>
+                    </div>
+                </div>
+                <div style="font-size: 9px; opacity: 0.6; margin-top: 4px; line-height: 1.2;">
+                    Your Burn Rate includes base Burn Rate and active subscription fees for installed Cyberware/Assets.
+                </div>
+            </div>
+        `;
     }
 
     private renderStatusChips(player: {
@@ -173,18 +209,18 @@ export default class LifeScreen extends BaseComponent<GameState> {
     private updateGauges(player: {
         credits: number;
         savings: number;
-        happiness: number;
+        sanity: number;
         educationLevel: number;
         careerLevel: number;
     }): void {
         const wealth = Math.min(100, Math.round(((player.credits + player.savings) / 10000) * 100));
-        const happiness = player.happiness;
+        const sanity = player.sanity;
         const education = Math.min(100, Math.round((player.educationLevel / 5) * 100));
         const career = Math.min(100, Math.round((player.careerLevel / 5) * 100));
 
         const gaugeData: Array<{ id: string; value: number }> = [
             { id: 'wealth', value: wealth },
-            { id: 'happiness', value: happiness },
+            { id: 'sanity', value: sanity },
             { id: 'education', value: education },
             { id: 'career', value: career }
         ];
@@ -194,6 +230,16 @@ export default class LifeScreen extends BaseComponent<GameState> {
             if (gauge) {
                 const config = this.getGaugeConfig(id, value);
                 gauge.render(config);
+
+                // Add visual warning for low sanity
+                const gaugeCard = this.gaugeGrid.querySelector(`[data-gauge="${id}"]`);
+                if (gaugeCard) {
+                    if (id === 'sanity' && value <= 20) {
+                        gaugeCard.classList.add('sanity-low');
+                    } else {
+                        gaugeCard.classList.remove('sanity-low');
+                    }
+                }
             }
         });
     }
@@ -206,7 +252,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
     } {
         const configs: Record<string, { color: string; label: string }> = {
             wealth: { color: '#00E676', label: 'Credits (₡)' },
-            happiness: { color: '#FFD600', label: 'Sanity (🧠)' },
+            sanity: { color: '#FFD600', label: 'Sanity (🧠)' },
             education: { color: '#2979FF', label: 'Compliance Level' },
             career: { color: '#FF00FF', label: 'Productivity Tier' }
         };

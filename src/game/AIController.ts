@@ -88,10 +88,10 @@ class AIController {
 
                 // Study sessions
                 const studyTime = 8;
-                const happinessCost = 5;
+                const sanityCost = 5;
                 if (player.educationCreditsGoal >= nextCourse.requiredCredits && 
                     player.time >= studyTime && 
-                    player.happiness >= happinessCost) {
+                    player.sanity >= sanityCost) {
                     
                     if (player.location !== 'Cognitive Re-Ed') {
                         if (player.time >= travelTime + studyTime) {
@@ -104,8 +104,8 @@ class AIController {
             }
         }
 
-        // Priority 5: Boost Happiness (Shopping is instant once at the location)
-        if (player.happiness < 50) {
+        // Priority 5: Boost Sanity (Shopping is instant once at the location)
+        if (player.sanity < 50) {
             const affordableItems = SHOPPING_ITEMS.filter(item => 
                 item.location === 'Consumpt-Zone' && player.credits >= item.cost
             );

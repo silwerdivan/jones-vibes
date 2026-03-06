@@ -130,7 +130,7 @@ describe('ActionCard', () => {
         const mockItem: Item = {
             name: 'Test Item',
             cost: 50,
-            happinessBoost: 10,
+            sanityBoost: 10,
             type: 'essential',
             location: 'Consumpt-Zone'
         };
@@ -151,7 +151,7 @@ describe('ActionCard', () => {
             expect(card.querySelector('.action-card-btn')?.hasAttribute('disabled')).toBe(true);
         });
 
-        it('should display happiness boost in meta tags', () => {
+        it('should display sanity boost in meta tags', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             const metaText = card.querySelector('.action-card-meta')?.textContent || '';
             

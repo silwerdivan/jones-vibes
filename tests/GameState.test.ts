@@ -2,11 +2,13 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import GameState from '../src/game/GameState';
 import Player from '../src/game/Player';
 import { EventManager } from '../src/game/EventManager';
+import EventBus from '../src/EventBus';
 
 describe('GameState Serialization', () => {
     let gameState: GameState;
 
     beforeEach(() => {
+        EventBus.clearAll();
         gameState = new GameState(2, true); // 2 players, 2nd is AI
     });
 
@@ -79,7 +81,7 @@ describe('GameState Serialization', () => {
             }],
             totals: {
                 creditsChange: 100,
-                happinessChange: 0
+                sanityChange: 0
             }
         };
 
@@ -150,5 +152,63 @@ describe('GameState Serialization', () => {
         const restored = GameState.fromJSON(json);
         expect(restored.eventManager.getHistory()).toContain(eventId);
         expect(restored.players[0].activeConditions[0].id).toBe('TEST_COND');
+    });
+});
+
+describe('Burnout Logic', () => {
+    let gameState: GameState;
+    let player: Player;
+
+    beforeEach(() => {
+        EventBus.clearAll();
+        gameState = new GameState(1);
+        player = gameState.players[0];
+    });
+
+    it('should trigger handleBurnout when sanity reaches 0', () => {
+        player.credits = 1000;
+        player.time = 24;
+        
+        // Trigger burnout
+        player.updateSanity(-100);
+
+        expect(player.sanity).toBe(0);
+        expect(player.time).toBe(0);
+        expect(player.credits).toBe(500); // 1000 - 500 medical fee
+        expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
+        expect(gameState.log[0].text).toContain('Forced Reboot complete');
+        expect(gameState.log[1].text).toContain('BURNOUT DETECTED');
+    });
+
+    it('should charge partial medical fee if credits are insufficient', () => {
+        player.credits = 200;
+        player.updateSanity(-100);
+
+        expect(player.credits).toBe(0); // Took all 200
+        expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
+    });
+
+    it('should reduce max energy threshold when TRAUMA_REBOOT is active', () => {
+        player.updateSanity(-100);
+        
+        expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
+        
+        const maxEnergy = player.getModifiedStat('MAX_ENERGY', 100);
+        expect(maxEnergy).toBe(80); // 100 * 0.8
+        
+        // Check lose condition with reduced max energy
+        player.hunger = 80;
+        player.time = 23;
+        gameState.checkLoseCondition(player);
+        expect(gameState.gameOver).toBe(true);
+    });
+
+    it('should NOT trigger burnout if sanity is above 0', () => {
+        player.time = 24;
+        player.updateSanity(-10);
+        
+        expect(player.sanity).toBe(40);
+        expect(player.time).toBe(24);
+        expect(player.hasCondition('TRAUMA_REBOOT')).toBe(false);
     });
 });
