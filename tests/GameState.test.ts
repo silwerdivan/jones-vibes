@@ -13,8 +13,8 @@ describe('GameState Serialization', () => {
     it('should serialize to JSON correctly', () => {
         gameState.turn = 5;
         gameState.currentPlayerIndex = 1;
-        gameState.players[0].cash = 100;
-        gameState.players[1].cash = 200;
+        gameState.players[0].credits = 100;
+        gameState.players[1].credits = 200;
         gameState.addLogMessage('Test message', 'info');
 
         const json = gameState.toJSON();
@@ -22,8 +22,8 @@ describe('GameState Serialization', () => {
         expect(json.turn).toBe(5);
         expect(json.currentPlayerIndex).toBe(1);
         expect(json.players.length).toBe(2);
-        expect(json.players[0].cash).toBe(100);
-        expect(json.players[1].cash).toBe(200);
+        expect(json.players[0].credits).toBe(100);
+        expect(json.players[1].credits).toBe(200);
         expect(json.players[1].isAI).toBe(true);
         expect(json.log.length).toBe(1);
         expect(json.log[0].text).toBe('Test message');
@@ -33,8 +33,8 @@ describe('GameState Serialization', () => {
     it('should deserialize from JSON correctly', () => {
         gameState.turn = 10;
         gameState.currentPlayerIndex = 0;
-        gameState.players[0].cash = 500;
-        gameState.players[1].cash = 1000;
+        gameState.players[0].credits = 500;
+        gameState.players[1].credits = 1000;
         gameState.players[1].isAI = true;
         gameState.addLogMessage('Another test message', 'success');
         
@@ -44,8 +44,8 @@ describe('GameState Serialization', () => {
         expect(newGameState.turn).toBe(10);
         expect(newGameState.currentPlayerIndex).toBe(0);
         expect(newGameState.players.length).toBe(2);
-        expect(newGameState.players[0].cash).toBe(500);
-        expect(newGameState.players[1].cash).toBe(1000);
+        expect(newGameState.players[0].credits).toBe(500);
+        expect(newGameState.players[1].credits).toBe(1000);
         expect(newGameState.players[1].isAI).toBe(true);
         expect(newGameState.log.length).toBe(1);
         expect(newGameState.log[0].text).toBe('Another test message');
@@ -78,7 +78,7 @@ describe('GameState Serialization', () => {
                 icon: 'money'
             }],
             totals: {
-                cashChange: 100,
+                creditsChange: 100,
                 happinessChange: 0
             }
         };

@@ -142,7 +142,7 @@ export default class CityScreen extends BaseComponent<GameState> {
         
         switch (location) {
             case 'Hab-Pod 404': hintText = 'Cycle Rest and finalize turn protocol here'; break;
-            case 'Labor Sector': hintText = 'Execute productivity shifts to accumulate Omni-Creds'; break;
+            case 'Labor Sector': hintText = 'Execute productivity shifts to accumulate Credits'; break;
             case 'Cognitive Re-Ed': hintText = 'Increase compliance level for higher productivity tiers'; break;
             case 'Consumpt-Zone': hintText = 'Acquire assets and essentials for morale maintenance'; break;
             case 'Sustenance Hub': hintText = 'Minimize bio-deficit through nutrient intake'; break;

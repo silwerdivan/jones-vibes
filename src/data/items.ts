@@ -5,7 +5,7 @@ export const SHOPPING_ITEMS: Item[] = [
     { name: 'Prop-Reel Tkt', cost: 15, happinessBoost: 10, type: 'essential', location: 'Consumpt-Zone' },
     { name: 'Uniform-Patch', cost: 50, happinessBoost: 20, type: 'essential', icon: 'clothes', benefit: 'Social Standing +5%', location: 'Consumpt-Zone' },
     { name: 'Concert Ticket', cost: 100, happinessBoost: 30, type: 'essential', location: 'Consumpt-Zone' },
-    { name: 'Omni-Chill', cost: 400, happinessBoost: 10, type: 'asset', icon: 'fridge', benefit: 'Bio-Deficit Rate -50%', location: 'Consumpt-Zone' },
+    { name: 'Thermal-Regulator', cost: 400, happinessBoost: 10, type: 'asset', icon: 'fridge', benefit: 'Bio-Deficit Rate -50%', location: 'Consumpt-Zone' },
     { name: 'Hypno-Screen', cost: 600, happinessBoost: 40, type: 'asset', icon: 'television', benefit: 'Morale Bonus +10%', location: 'Consumpt-Zone' },
     { name: 'Computer', cost: 800, happinessBoost: 25, type: 'asset', icon: 'computer', benefit: 'Study Speed +15%', location: 'Consumpt-Zone' },
     { name: 'Vacation Package', cost: 500, happinessBoost: 50, type: 'essential', location: 'Consumpt-Zone' },
@@ -30,5 +30,15 @@ export const SHOPPING_ITEMS: Item[] = [
         icon: 'bioMetrics', 
         benefit: 'Metabolic Stability', 
         cyberwareEffect: [{ type: 'HAPPINESS_TICK', value: 0.1 }] 
+    },
+    { 
+        name: 'Adrenaline Pump', 
+        cost: 850, 
+        happinessBoost: 0, 
+        type: 'asset', 
+        location: 'Ripperdoc Clinic', 
+        icon: 'bolt', 
+        benefit: 'Work Yield +15%', 
+        cyberwareEffect: [{ type: 'WORK_EFFICIENCY', value: 1.15 }] 
     }
 ];

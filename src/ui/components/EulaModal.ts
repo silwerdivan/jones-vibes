@@ -26,7 +26,7 @@ export default class EulaModal extends BaseComponent<void> {
             <div class="eula-container glass">
                 <div class="scanlines"></div>
                 <header class="eula-header">
-                    <h1 class="neon-text-cyan">OMNILIFE_OS_LICENSE_v4.2</h1>
+                    <h1 class="neon-text-cyan">CYBERLIFE_OS_LICENSE_v4.2</h1>
                     <div class="eula-status" id="eula-status-text">STATUS: PENDING_ACKNOWLEDGMENT</div>
                 </header>
                 

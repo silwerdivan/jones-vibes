@@ -157,7 +157,7 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            expect(cityScreen.getLocationHint().textContent).toBe('Execute productivity shifts to accumulate Omni-Creds');
+            expect(cityScreen.getLocationHint().textContent).toBe('Execute productivity shifts to accumulate Credits');
         });
 
         it('should show correct hint for Cognitive Re-Ed', () => {

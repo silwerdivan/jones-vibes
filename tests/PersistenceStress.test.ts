@@ -25,7 +25,7 @@ describe('Persistence Stress Test', () => {
         gameState.currentPlayerIndex = 0;
         
         const p1 = gameState.players[0];
-        p1.cash = 1250;
+        p1.credits = 1250;
         p1.savings = 5000;
         p1.happiness = 65;
         p1.educationLevel = 2;
@@ -44,7 +44,7 @@ describe('Persistence Stress Test', () => {
 
         expect(restored.turn).toBe(15);
         expect(restored.currentPlayerIndex).toBe(0);
-        expect(restored.players[0].cash).toBe(1250);
+        expect(restored.players[0].credits).toBe(1250);
         expect(restored.players[0].savings).toBe(5000);
         expect(restored.players[0].inventory.length).toBe(1);
         expect(restored.players[0].location).toBe('Employment Agency');
@@ -115,7 +115,7 @@ describe('Persistence Stress Test', () => {
                 { type: 'income', label: 'Salary', value: 800, unit: '$', icon: 'money' }
             ],
             totals: {
-                cashChange: 400,
+                creditsChange: 400,
                 happinessChange: -5
             }
         };
@@ -128,7 +128,7 @@ describe('Persistence Stress Test', () => {
         expect(restored.pendingTurnSummary).not.toBeNull();
         expect(restored.pendingTurnSummary?.week).toBe(4);
         expect(restored.pendingTurnSummary?.events.length).toBe(2);
-        expect(restored.pendingTurnSummary?.totals.cashChange).toBe(400);
+        expect(restored.pendingTurnSummary?.totals.creditsChange).toBe(400);
     });
 
     it('Scenario 6: Game Over State', () => {
@@ -144,7 +144,7 @@ describe('Persistence Stress Test', () => {
 
     it('Scenario 7: Multiple Refreshes in Succession', () => {
         // Verify that state doesn't degrade over multiple serialization cycles
-        gameState.players[0].cash = 777;
+        gameState.players[0].credits = 777;
         gameState.activeLocationDashboard = 'Fast Food';
         
         let currentState = gameState;
@@ -152,7 +152,7 @@ describe('Persistence Stress Test', () => {
             currentState = simulateRefresh(currentState);
         }
 
-        expect(currentState.players[0].cash).toBe(777);
+        expect(currentState.players[0].credits).toBe(777);
         expect(currentState.activeLocationDashboard).toBe('Fast Food');
     });
 

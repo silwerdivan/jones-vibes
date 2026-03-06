@@ -6,7 +6,7 @@ import { LogMessage } from '../../models/types.js';
 import MascotUI from './MascotUI.js';
 
 export default class HUD extends BaseComponent<GameState> {
-    private hudCash!: HTMLElement;
+    private hudCredits!: HTMLElement;
     private hudWeek!: HTMLElement;
     private hudLocation!: HTMLElement;
     private orbP1!: HTMLElement;
@@ -50,7 +50,7 @@ export default class HUD extends BaseComponent<GameState> {
                 <div class="hud-stats">
                     <div class="hud-stat-item">
                         <span class="hud-label">CREDITS</span>
-                        <span class="hud-value currency" data-cash>₡0</span>
+                        <span class="hud-value currency" data-credits>₡0</span>
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.orbP2 = this.element.querySelector('[data-orb="p2"]')!;
         this.timeRingP1 = this.element.querySelector('[data-time-ring="p1"]')!;
         this.timeRingP2 = this.element.querySelector('[data-time-ring="p2"]')!;
-        this.hudCash = this.element.querySelector('[data-cash]')!;
+        this.hudCredits = this.element.querySelector('[data-credits]')!;
         this.hudWeek = this.element.querySelector('[data-week]')!;
         this.hudLocation = this.element.querySelector('[data-location]')!;
         this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
@@ -147,8 +147,8 @@ export default class HUD extends BaseComponent<GameState> {
 
     private setupGranularSubscriptions(): void {
         // Subscribe to specific state changes for targeted updates
-        this.subscribe(STATE_EVENTS.CASH_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.updateCash(gameState);
+        this.subscribe(STATE_EVENTS.CREDITS_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateCredits(gameState);
             this.updateMascots(gameState);
         });
 
@@ -159,7 +159,7 @@ export default class HUD extends BaseComponent<GameState> {
 
         this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateOrbs(gameState);
-            this.updateCash(gameState);
+            this.updateCredits(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
             this.updateMascots(gameState);
@@ -172,7 +172,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateWeek(gameState);
             this.updateOrbs(gameState);
-            this.updateCash(gameState);
+            this.updateCredits(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
             this.updateMascots(gameState);
@@ -184,9 +184,9 @@ export default class HUD extends BaseComponent<GameState> {
         });
     }
 
-    private updateCash(gameState: GameState): void {
+    private updateCredits(gameState: GameState): void {
         const currentPlayer = gameState.getCurrentPlayer();
-        this.hudCash.textContent = `₡${currentPlayer.cash}`;
+        this.hudCredits.textContent = `₡${currentPlayer.credits}`;
     }
 
     private updateWeek(gameState: GameState): void {
@@ -295,7 +295,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.updateConditions(gameState);
 
         // Update Stats
-        this.hudCash.textContent = `₡${currentPlayer.cash}`;
+        this.hudCredits.textContent = `₡${currentPlayer.credits}`;
         this.hudWeek.textContent = gameState.turn.toString();
         this.hudLocation.textContent = currentPlayer.location;
 

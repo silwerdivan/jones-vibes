@@ -7,7 +7,7 @@ describe('PersistenceService', () => {
         players: [
             {
                 id: 1,
-                cash: 1000,
+                credits: 1000,
                 savings: 500,
                 happiness: 50,
                 educationLevel: 1,

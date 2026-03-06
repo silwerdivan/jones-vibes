@@ -16,13 +16,13 @@ class AIController {
         const travelTime = player.hasCar ? 1 : 2;
 
         // Priority 1: Pay Loan (Banking is instant once at the location)
-        if (player.loan > 2000 && player.cash > 0) {
+        if (player.loan > 2000 && player.credits > 0) {
             if (player.location !== 'Cred-Debt Ctr') {
                 if (player.time >= travelTime) {
                     return { action: 'travel', params: { destination: 'Cred-Debt Ctr' } };
                 }
             } else {
-                const amountToRepay = Math.min(player.loan, player.cash);
+                const amountToRepay = Math.min(player.loan, player.credits);
                 if (amountToRepay > 0) {
                     return { action: 'repayLoan', params: { amount: amountToRepay } };
                 }
@@ -32,7 +32,7 @@ class AIController {
         // Priority 2: Hunger Management (Threshold 30 to prevent turn-end penalty)
         if (player.hunger > 30) {
             const affordableFood = SHOPPING_ITEMS.filter(item => 
-                item.location === 'Sustenance Hub' && player.cash >= item.cost
+                item.location === 'Sustenance Hub' && player.credits >= item.cost
             );
 
             if (affordableFood.length > 0) {
@@ -48,7 +48,7 @@ class AIController {
         }
 
         // Priority 3: Gain Wealth (Work takes time)
-        if (player.cash < 1000 && player.time >= workShiftHours) {
+        if (player.credits < 1000 && player.time >= workShiftHours) {
             if (player.location !== 'Labor Sector') {
                 if (player.time >= travelTime) {
                     return { action: 'travel', params: { destination: 'Labor Sector' } };
@@ -75,7 +75,7 @@ class AIController {
 
             if (nextCourse) {
                 // Enrollment (tuition)
-                if (player.educationCreditsGoal < nextCourse.requiredCredits && player.cash >= nextCourse.cost) {
+                if (player.educationCreditsGoal < nextCourse.requiredCredits && player.credits >= nextCourse.cost) {
                     const enrollmentTime = 1;
                     if (player.location !== 'Cognitive Re-Ed') {
                         if (player.time >= travelTime + enrollmentTime) {
@@ -107,7 +107,7 @@ class AIController {
         // Priority 5: Boost Happiness (Shopping is instant once at the location)
         if (player.happiness < 50) {
             const affordableItems = SHOPPING_ITEMS.filter(item => 
-                item.location === 'Consumpt-Zone' && player.cash >= item.cost
+                item.location === 'Consumpt-Zone' && player.credits >= item.cost
             );
             
             if (affordableItems.length > 0) {
@@ -121,7 +121,7 @@ class AIController {
         }
 
         // Priority 6: Increase Efficiency (Buying car takes time, but AI checks if it can afford it first)
-        if (player.cash > 3500 && !player.hasCar) {
+        if (player.credits > 3500 && !player.hasCar) {
             const carCostTime = 4;
             if (player.location === 'Mobility-Asset') {
                 if (player.time >= carCostTime) {

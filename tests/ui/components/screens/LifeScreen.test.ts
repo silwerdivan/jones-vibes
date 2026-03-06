@@ -140,7 +140,7 @@ describe('LifeScreen', () => {
     describe('Gauge Updates', () => {
         it('should update wealth gauge correctly', () => {
             const player = gameState.getCurrentPlayer();
-            (player as any).cash = 5000;
+            (player as any).credits = 5000;
             (player as any).savings = 3000;
             lifeScreen.render(gameState);
 
@@ -152,7 +152,7 @@ describe('LifeScreen', () => {
 
         it('should cap wealth gauge at 100%', () => {
             const player = gameState.getCurrentPlayer();
-            (player as any).cash = 20000;
+            (player as any).credits = 20000;
             (player as any).savings = 5000;
             lifeScreen.render(gameState);
 

@@ -163,6 +163,12 @@ const Icons = {
         </svg>
     `,
 
+    bolt: (size = 24, color = 'currentColor') => `
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+        </svg>
+    `,
+
     /**
      * Life Goal Icons
      */

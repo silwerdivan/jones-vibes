@@ -20,7 +20,7 @@ describe('GameState AI Logic', () => {
         aiPlayer.time = 2; // Exactly enough for one travel (no car)
         aiPlayer.location = 'Hab-Pod 404';
         aiPlayer.hunger = 35;
-        aiPlayer.cash = 100;
+        aiPlayer.credits = 100;
 
         // Mock AI controller to return travel then buyItem
         const takeTurnSpy = vi.spyOn(gameState.aiController!, 'takeTurn');

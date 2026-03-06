@@ -39,12 +39,12 @@ describe('TimeSystem', () => {
 
     it('should handle daily expenses when turn ends', () => {
         const player = gameState.getCurrentPlayer();
-        player.cash = 100;
+        player.credits = 100;
         gameState.DAILY_EXPENSE = 50;
         
         timeSystem.endTurn();
         
-        expect(player.cash).toBe(50);
+        expect(player.credits).toBe(50);
     });
 
     it('should apply hunger penalty if hunger is high', () => {

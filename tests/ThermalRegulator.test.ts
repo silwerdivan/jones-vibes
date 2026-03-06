@@ -4,7 +4,7 @@ import TimeSystem from '../src/systems/TimeSystem';
 import Player from '../src/game/Player';
 import { SHOPPING_ITEMS } from '../src/data/items';
 
-describe('Omni-Chill Buff', () => {
+describe('Thermal-Regulator Buff', () => {
     let gameState: GameState;
     let timeSystem: TimeSystem;
 
@@ -17,7 +17,7 @@ describe('Omni-Chill Buff', () => {
         }
     });
 
-    it('should increase hunger by 20 without Omni-Chill', () => {
+    it('should increase hunger by 20 without Thermal-Regulator', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 0;
         player.inventory = [];
@@ -27,13 +27,13 @@ describe('Omni-Chill Buff', () => {
         expect(player.hunger).toBe(20);
     });
 
-    it('should increase hunger by 10 with Omni-Chill', () => {
+    it('should increase hunger by 10 with Thermal-Regulator', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 0;
         
-        const omniChill = SHOPPING_ITEMS.find(i => i.name === 'Omni-Chill');
-        expect(omniChill).toBeDefined();
-        player.inventory.push(omniChill!);
+        const thermalRegulator = SHOPPING_ITEMS.find(i => i.name === 'Thermal-Regulator');
+        expect(thermalRegulator).toBeDefined();
+        player.inventory.push(thermalRegulator!);
 
         timeSystem.endTurn();
 

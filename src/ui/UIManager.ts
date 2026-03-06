@@ -314,7 +314,7 @@ class UIManager {
                     const job = JOBS.find(j => j.level === player.careerLevel);
                     if (job) {
                         const earnings = Math.round(job.wage * job.shiftHours * player.wageMultiplier);
-                        this.spawnFeedback(e.currentTarget as HTMLElement, `+$${earnings}`, 'success');
+                        this.spawnFeedback(e.currentTarget as HTMLElement, `+₡${earnings}`, 'success');
                     }
                 }
 
@@ -326,7 +326,7 @@ class UIManager {
                 if (action.label === 'Work Shift') {
                     setTimeout(() => {
                         this.showLocationDashboard(location);
-                    }, 100);
+                    }, 1000);
                 }
             }, action.className);
         });
@@ -346,9 +346,9 @@ class UIManager {
                     const amount = this.choiceModal.getInputValue();
 
                     if (choice.value === 'deposit' || choice.value === 'repay') {
-                        this.spawnFeedback(e.currentTarget as HTMLElement, `-$${amount}`, 'error');
+                        this.spawnFeedback(e.currentTarget as HTMLElement, `-₡${amount}`, 'error');
                     } else {
-                        this.spawnFeedback(e.currentTarget as HTMLElement, `+$${amount}`, 'success');
+                        this.spawnFeedback(e.currentTarget as HTMLElement, `+₡${amount}`, 'success');
                     }
 
                     choice.action(amount);

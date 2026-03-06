@@ -222,7 +222,7 @@ export class ChoiceModal extends Modal {
 }
 
 export class PlayerStatsModal extends Modal {
-  private cash: HTMLElement | null;
+  private credits: HTMLElement | null;
   private savings: HTMLElement | null;
   private loan: HTMLElement | null;
   private happiness: HTMLElement | null;
@@ -233,7 +233,7 @@ export class PlayerStatsModal extends Modal {
 
   constructor() {
     super('player-stats-modal-overlay', 'player-stats-modal-title');
-    this.cash = document.getElementById('modal-cash');
+    this.credits = document.getElementById('modal-cash');
     this.savings = document.getElementById('modal-savings');
     this.loan = document.getElementById('modal-loan');
     this.happiness = document.getElementById('modal-happiness');
@@ -253,9 +253,9 @@ export class PlayerStatsModal extends Modal {
     const modalElement = document.getElementById('player-stats-modal');
     if (modalElement) modalElement.className = playerIndex === 1 ? 'player-1' : 'player-2';
     
-    if (this.cash) this.cash.textContent = `[OC]${player.cash}`;
-    if (this.savings) this.savings.textContent = `[OC]${player.savings}`;
-    if (this.loan) this.loan.textContent = `[OC]${player.loan}`;
+    if (this.credits) this.credits.textContent = `₡${player.credits}`;
+    if (this.savings) this.savings.textContent = `₡${player.savings}`;
+    if (this.loan) this.loan.textContent = `₡${player.loan}`;
     if (this.happiness) this.happiness.textContent = player.happiness.toString();
     
     const course = COURSES.find((c: Course) => c.educationMilestone === player.educationLevel);
@@ -308,7 +308,7 @@ export class IntelTerminalModal extends Modal {
 export class TurnSummaryModal extends Modal {
   private eventList: HTMLElement | null;
   private subtitle: HTMLElement | null;
-  private cashTotal: HTMLElement | null;
+  private creditsTotal: HTMLElement | null;
   private happinessTotal: HTMLElement | null;
   private nextWeekBtn: HTMLElement | null;
 
@@ -316,7 +316,7 @@ export class TurnSummaryModal extends Modal {
     super('turn-summary-modal', undefined, false);
     this.eventList = document.getElementById('event-list');
     this.subtitle = document.getElementById('summary-subtitle');
-    this.cashTotal = document.getElementById('summary-cash-total');
+    this.creditsTotal = document.getElementById('summary-cash-total');
     this.happinessTotal = document.getElementById('summary-happiness-total');
     this.nextWeekBtn = document.getElementById('btn-start-next-week');
   }
@@ -324,9 +324,9 @@ export class TurnSummaryModal extends Modal {
   public update(summary: TurnSummary, onNextWeek: () => void): void {
     if (this.subtitle) this.subtitle.textContent = `${summary.playerName.toUpperCase()} - CYCLE ${summary.week} REPORT`;
     
-    if (this.cashTotal) {
-        this.cashTotal.textContent = (summary.totals.cashChange >= 0 ? '+[OC]' : '-[OC]') + Math.abs(summary.totals.cashChange).toLocaleString();
-        this.cashTotal.className = `total-value ${summary.totals.cashChange >= 0 ? 'log-success' : 'log-error'}`;
+    if (this.creditsTotal) {
+        this.creditsTotal.textContent = (summary.totals.creditsChange >= 0 ? '+₡' : '-₡') + Math.abs(summary.totals.creditsChange).toLocaleString();
+        this.creditsTotal.className = `total-value ${summary.totals.creditsChange >= 0 ? 'log-success' : 'log-error'}`;
     }
     
     if (this.happinessTotal) {
@@ -341,7 +341,7 @@ export class TurnSummaryModal extends Modal {
           const card = document.createElement('div');
           card.className = `event-card ${event.type}`;
           
-          const valueText = event.unit === 'NONE' ? '' : (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '[OC]' ? '[OC]' : ' ' + event.unit);
+          const valueText = event.unit === 'NONE' ? '' : (event.value >= 0 ? '+' : '-') + Math.abs(event.value).toLocaleString() + (event.unit === '₡' ? '₡' : ' ' + event.unit);
           
           card.innerHTML = `
             <div class="event-icon-circle">
@@ -366,7 +366,7 @@ export class TurnSummaryModal extends Modal {
     }
 
     setTimeout(() => {
-      if (this.cashTotal) this.animateValue(this.cashTotal, 0, summary.totals.cashChange, 1000, '[OC]');
+      if (this.creditsTotal) this.animateValue(this.creditsTotal, 0, summary.totals.creditsChange, 1000, '₡');
       if (this.happinessTotal) this.animateValue(this.happinessTotal, 0, summary.totals.happinessChange, 1000);
     }, 500);
   }
@@ -383,8 +383,8 @@ export class TurnSummaryModal extends Modal {
       const sign = isPositive ? '+' : '-';
       const absValue = Math.abs(current).toLocaleString();
       
-      if (prefix === '[OC]') {
-        obj.textContent = `${sign}[OC]${absValue}`;
+      if (prefix === '₡') {
+        obj.textContent = `${sign}₡${absValue}`;
       } else {
         obj.textContent = `${sign}${absValue}`;
       }

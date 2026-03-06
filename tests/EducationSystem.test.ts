@@ -13,7 +13,7 @@ describe('Education System Upgrade', () => {
         gameState = new GameState(2, true); // AI player is player 2
         gameState.currentPlayerIndex = 0; // Test with Player 1 first
         player = gameState.getCurrentPlayer();
-        player.cash = 5000;
+        player.credits = 5000;
         player.time = 24;
         player.happiness = 100;
         player.location = 'Cognitive Re-Ed';
@@ -31,7 +31,7 @@ describe('Education System Upgrade', () => {
         const result = gameState.takeCourse(1); // Found. Compl.
         expect(result).toBe(true);
         expect(player.educationCreditsGoal).toBe(50);
-        expect(player.cash).toBe(4500); // 5000 - 500
+        expect(player.credits).toBe(4500); // 5000 - 500
         expect(player.time).toBe(23); // 24 - 1
     });
 
@@ -81,10 +81,10 @@ describe('Education System Upgrade', () => {
         expect(gameState.log[0].text).toContain('must enroll in Intermed. Prod (Level 2)');
 
         // Enroll in Level 2
-        player.cash = 1000;
+        player.credits = 1000;
         gameState.takeCourse(2);
         expect(player.educationCreditsGoal).toBe(120);
-        expect(player.cash).toBe(0);
+        expect(player.credits).toBe(0);
 
         // Now can study
         player.time = 24;
@@ -111,7 +111,7 @@ describe('Education System Upgrade', () => {
         const aiPlayer = gameState.getCurrentPlayer();
         const aiController = gameState.aiController!;
         aiPlayer.isAI = true;
-        aiPlayer.cash = 2000;
+        aiPlayer.credits = 2000;
         aiPlayer.time = 24;
         aiPlayer.happiness = 100;
         aiPlayer.location = 'Hab-Pod 404';
@@ -141,7 +141,7 @@ describe('Education System Upgrade', () => {
         aiPlayer.educationLevel = 1;
         aiPlayer.educationCredits = 0;
         aiPlayer.educationCreditsGoal = 0;
-        aiPlayer.cash = 1500; // Enough for Intermed. Prod ($1000)
+        aiPlayer.credits = 1500; // Enough for Intermed. Prod ($1000)
 
         // AI should try to enroll in Level 2
         action = aiController.takeTurn(gameState, aiPlayer);

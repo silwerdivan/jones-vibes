@@ -50,7 +50,7 @@ class EconomySystem {
             return false;
         }
 
-        if (currentPlayer.cash < item.cost) {
+        if (currentPlayer.credits < item.cost) {
             this.gameState.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(item.cost)} to buy ${item.name}.`,
                 'error'
@@ -58,7 +58,7 @@ class EconomySystem {
             return false;
         }
 
-        currentPlayer.spendCash(item.cost);
+        currentPlayer.spendCredits(item.cost);
         currentPlayer.updateHappiness(item.happinessBoost);
 
         // Apply hunger reduction if the item has it
@@ -95,7 +95,7 @@ class EconomySystem {
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -item.cost, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -item.cost, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.HAPPINESS_CHANGED, { player: currentPlayer, amount: item.happinessBoost, gameState: this.gameState });
         if (item.hungerReduction) {
             EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: -item.hungerReduction, gameState: this.gameState });
@@ -111,7 +111,7 @@ class EconomySystem {
 
         if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to deposit cash.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to deposit credits.`,
                 'error'
             );
             return false;
@@ -128,14 +128,14 @@ class EconomySystem {
                 'success'
             );
             this.gameState.checkGameEndConditions(currentPlayer);
-            EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
             EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
             this._checkAutoEndTurn();
             return true;
         } else {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough cash to deposit.`,
+                `${this._getPlayerName(currentPlayer)} doesn't have enough credits to deposit.`,
                 'error'
             );
             return false;
@@ -147,7 +147,7 @@ class EconomySystem {
 
         if (currentPlayer.location !== 'Cred-Debt Ctr') {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to withdraw cash.`,
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to withdraw credits.`,
                 'error'
             );
             return false;
@@ -164,7 +164,7 @@ class EconomySystem {
                 'success'
             );
             this.gameState.checkGameEndConditions(currentPlayer);
-            EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
             EventBus.publish(STATE_EVENTS.SAVINGS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
             EventBus.publish('stateChanged', this.gameState);
             this._checkAutoEndTurn();
@@ -204,13 +204,13 @@ class EconomySystem {
         }
 
         currentPlayer.takeLoan(amount);
-        currentPlayer.addCash(amount);
+        currentPlayer.addCredits(amount);
         this.gameState.addLogMessage(
             `${this._getPlayerName(currentPlayer)} took a loan of ${this._formatMoney(amount)}. Total loan: ${this._formatMoney(currentPlayer.loan)}.`,
             'warning'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
@@ -233,9 +233,9 @@ class EconomySystem {
             return false;
         }
 
-        if (currentPlayer.cash < amount) {
+        if (currentPlayer.credits < amount) {
             this.gameState.addLogMessage(
-                `${this._getPlayerName(currentPlayer)} doesn't have enough cash to repay this amount.`,
+                `${this._getPlayerName(currentPlayer)} doesn't have enough credits to repay this amount.`,
                 'error'
             );
             return false;
@@ -249,14 +249,14 @@ class EconomySystem {
             return false;
         }
 
-        currentPlayer.spendCash(amount);
+        currentPlayer.spendCredits(amount);
         currentPlayer.repayLoan(amount);
         this.gameState.addLogMessage(
             `${this._getPlayerName(currentPlayer)} repaid ${this._formatMoney(amount)}. Remaining loan: ${this._formatMoney(currentPlayer.loan)}.`,
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();
@@ -284,7 +284,7 @@ class EconomySystem {
             return false;
         }
 
-        if (currentPlayer.cash < CAR_COST) {
+        if (currentPlayer.credits < CAR_COST) {
             this.gameState.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} needs ${this._formatMoney(CAR_COST)} to buy a car.`,
                 'error'
@@ -300,7 +300,7 @@ class EconomySystem {
             return false;
         }
 
-        currentPlayer.spendCash(CAR_COST);
+        currentPlayer.spendCredits(CAR_COST);
         currentPlayer.deductTime(TIME_COST);
         currentPlayer.giveCar();
         this.gameState.addLogMessage(
@@ -308,7 +308,7 @@ class EconomySystem {
             'success'
         );
         this.gameState.checkGameEndConditions(currentPlayer);
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);

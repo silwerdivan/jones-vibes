@@ -98,16 +98,16 @@ describe('EventManager', () => {
         expect(publishSpy).not.toHaveBeenCalled();
     });
 
-    it('should apply choice effects (CASH)', () => {
-        player.addCash(500); // Give cash so spendCash works
-        const initialCash = player.cash;
+    it('should apply choice effects (CREDITS)', () => {
+        player.addCredits(500); // Give credits so spendCredits works
+        const initialCredits = player.credits;
         const event = RANDOM_EVENTS.find(e => e.id === 'global_transit_strike');
         if (!event) throw new Error('Event not found');
         
         // Choice 1: Bribe (-150)
         eventManager.applyChoice(event, 1, gameState);
         
-        expect(player.cash).toBe(initialCash - 150);
+        expect(player.credits).toBe(initialCredits - 150);
     });
 
     it('should apply choice effects (CONDITION)', () => {

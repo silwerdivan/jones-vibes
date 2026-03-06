@@ -14,7 +14,7 @@ describe('STATE_EVENTS', () => {
 
     describe('Event Constants', () => {
         it('should have all required event constants', () => {
-            expect(STATE_EVENTS.CASH_CHANGED).toBe('STATE_CASH_CHANGED');
+            expect(STATE_EVENTS.CREDITS_CHANGED).toBe('STATE_CREDITS_CHANGED');
             expect(STATE_EVENTS.SAVINGS_CHANGED).toBe('STATE_SAVINGS_CHANGED');
             expect(STATE_EVENTS.LOAN_CHANGED).toBe('STATE_LOAN_CHANGED');
             expect(STATE_EVENTS.TIME_CHANGED).toBe('STATE_TIME_CHANGED');
@@ -30,9 +30,9 @@ describe('STATE_EVENTS', () => {
     });
 
     describe('GameState Granular Events', () => {
-        it('should publish CASH_CHANGED when player earns money from work', () => {
+        it('should publish CREDITS_CHANGED when player earns money from work', () => {
             const handler = vi.fn();
-            EventBus.subscribe(STATE_EVENTS.CASH_CHANGED, handler);
+            EventBus.subscribe(STATE_EVENTS.CREDITS_CHANGED, handler);
             
             // Setup player at Labor Sector with a job
             const player = gameState.getCurrentPlayer();
@@ -91,7 +91,7 @@ describe('STATE_EVENTS', () => {
             
             const player = gameState.getCurrentPlayer();
             player.location = 'Cognitive Re-Ed';
-            player.cash = 1000;
+            player.credits = 1000;
             player.time = 100; 
             player.happiness = 100;
             
@@ -133,20 +133,20 @@ describe('STATE_EVENTS', () => {
     });
 
     describe('EconomySystem Granular Events', () => {
-        it('should publish CASH_CHANGED and INVENTORY_CHANGED when buying an item', () => {
-            const cashHandler = vi.fn();
+        it('should publish CREDITS_CHANGED and INVENTORY_CHANGED when buying an item', () => {
+            const creditsHandler = vi.fn();
             const inventoryHandler = vi.fn();
             
-            EventBus.subscribe(STATE_EVENTS.CASH_CHANGED, cashHandler);
+            EventBus.subscribe(STATE_EVENTS.CREDITS_CHANGED, creditsHandler);
             EventBus.subscribe(STATE_EVENTS.INVENTORY_CHANGED, inventoryHandler);
             
             const player = gameState.getCurrentPlayer();
             player.location = 'Shopping Mall';
-            player.cash = 500;
+            player.credits = 500;
             player.time = 8;
             
             // Directly test the event publishing
-            EventBus.publish(STATE_EVENTS.CASH_CHANGED, { 
+            EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { 
                 player, 
                 amount: -100, 
                 gameState 
@@ -156,7 +156,7 @@ describe('STATE_EVENTS', () => {
                 gameState 
             });
             
-            expect(cashHandler).toHaveBeenCalled();
+            expect(creditsHandler).toHaveBeenCalled();
             expect(inventoryHandler).toHaveBeenCalled();
         });
     });
@@ -202,7 +202,7 @@ describe('STATE_EVENTS', () => {
     describe('Event Payload Structure', () => {
         it('should include player and gameState in all state event payloads', () => {
             const events = [
-                STATE_EVENTS.CASH_CHANGED,
+                STATE_EVENTS.CREDITS_CHANGED,
                 STATE_EVENTS.SAVINGS_CHANGED,
                 STATE_EVENTS.LOAN_CHANGED,
                 STATE_EVENTS.TIME_CHANGED,

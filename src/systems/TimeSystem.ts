@@ -14,7 +14,7 @@ interface TurnSummary {
         icon: string;
     }>;
     totals: {
-        cashChange: number;
+        creditsChange: number;
         happinessChange: number;
     };
 }
@@ -27,7 +27,7 @@ class TimeSystem {
     }
 
     private _formatMoney(amount: number): string {
-        return `[OC]${amount.toLocaleString()}`;
+        return `₡${amount.toLocaleString()}`;
     }
 
     private _getPlayerName(player: Player): string {
@@ -42,7 +42,7 @@ class TimeSystem {
             week: this.gameState.turn,
             events: [],
             totals: {
-                cashChange: 0,
+                creditsChange: 0,
                 happinessChange: 0
             }
         };
@@ -53,7 +53,7 @@ class TimeSystem {
                 type: 'income',
                 label: 'Yield: Cycles',
                 value: currentPlayer.weeklyIncome,
-                unit: '[OC]',
+                unit: '₡',
                 icon: 'payments'
             });
         }
@@ -64,18 +64,18 @@ class TimeSystem {
                 type: 'expense',
                 label: 'Outflow: Logistics',
                 value: -currentPlayer.weeklyExpenses,
-                unit: '[OC]',
+                unit: '₡',
                 icon: 'shopping_cart'
             });
         }
 
         // 3. Apply daily expenses (weekend)
-        currentPlayer.spendCash(this.gameState.DAILY_EXPENSE);
+        currentPlayer.spendCredits(this.gameState.DAILY_EXPENSE);
         summary.events.push({
             type: 'expense',
             label: 'Hab-Unit Tax',
             value: -this.gameState.DAILY_EXPENSE,
-            unit: '[OC]',
+            unit: '₡',
             icon: 'home'
         });
 
@@ -83,7 +83,7 @@ class TimeSystem {
             `${this._getPlayerName(currentPlayer)} deducted ${this._formatMoney(this.gameState.DAILY_EXPENSE)} for Hab-Unit maintenance.`,
             'expense'
         );
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -this.gameState.DAILY_EXPENSE, gameState: this.gameState });
 
         // 4. Apply loan interest
         if (currentPlayer.loan > 0) {
@@ -96,7 +96,7 @@ class TimeSystem {
                 type: 'warning',
                 label: 'Debt-Cost Accumulation',
                 value: -interest,
-                unit: '[OC]',
+                unit: '₡',
                 icon: 'account_balance'
             });
             
@@ -108,8 +108,8 @@ class TimeSystem {
         }
 
         // 5. Apply hunger
-        const hasOmniChill = currentPlayer.inventory.some(i => i.name === 'Omni-Chill');
-        const hungerIncrease = hasOmniChill ? 10 : 20;
+        const hasThermalRegulator = currentPlayer.inventory.some(i => i.name === 'Thermal-Regulator');
+        const hungerIncrease = hasThermalRegulator ? 10 : 20;
         currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + hungerIncrease);
         if (currentPlayer.hunger > 50) {
             currentPlayer.updateHappiness(-5);
@@ -156,7 +156,7 @@ class TimeSystem {
         }
 
         // 7. Calculate totals from tracked stats
-        summary.totals.cashChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
+        summary.totals.creditsChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
         summary.totals.happinessChange = currentPlayer.weeklyHappinessChange;
 
         // Reset weekly stats for the next week

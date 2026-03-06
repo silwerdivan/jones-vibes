@@ -41,7 +41,7 @@ export interface Clerk {
 
 export interface PlayerState {
     id: number;
-    cash: number;
+    credits: number;
     savings: number;
     happiness: number;
     educationLevel: number;
@@ -110,7 +110,7 @@ export interface GameCondition {
 export type RandomEventType = 'Global' | 'Local' | 'Consequence';
 
 export interface RandomEventEffect {
-    type: 'CASH' | 'HAPPINESS' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
+    type: 'CREDITS' | 'HAPPINESS' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
     value: number;
     conditionId?: string;
 }
@@ -156,7 +156,7 @@ export interface TurnSummary {
     week: number;
     events: TurnEvent[];
     totals: {
-        cashChange: number;
+        creditsChange: number;
         happinessChange: number;
     };
 }

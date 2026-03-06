@@ -83,7 +83,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
     private setupGranularSubscriptions(): void {
         // Subscribe to specific state changes for targeted updates
-        this.subscribe(STATE_EVENTS.CASH_CHANGED, ({ gameState }: { gameState: GameState }) => {
+        this.subscribe(STATE_EVENTS.CREDITS_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateGauges(gameState.getCurrentPlayer());
         });
 
@@ -171,13 +171,13 @@ export default class LifeScreen extends BaseComponent<GameState> {
     }
 
     private updateGauges(player: {
-        cash: number;
+        credits: number;
         savings: number;
         happiness: number;
         educationLevel: number;
         careerLevel: number;
     }): void {
-        const wealth = Math.min(100, Math.round(((player.cash + player.savings) / 10000) * 100));
+        const wealth = Math.min(100, Math.round(((player.credits + player.savings) / 10000) * 100));
         const happiness = player.happiness;
         const education = Math.min(100, Math.round((player.educationLevel / 5) * 100));
         const career = Math.min(100, Math.round((player.careerLevel / 5) * 100));

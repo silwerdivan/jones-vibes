@@ -27,7 +27,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
                         <p class="degree-benefit">Unlocks higher productivity tiers</p>
                     </div>
                     <div class="degree-cost">
-                        <span class="cost-badge"><i class="material-icons">payments</i> <span data-next-degree-cost>[OC]500</span></span>
+                        <span class="cost-badge"><i class="material-icons">payments</i> <span data-next-degree-cost>₡500</span></span>
                     </div>
                     <button class="btn btn-primary enroll-btn" data-enroll-btn>ENROLL NOW</button>
                 </div>
@@ -93,7 +93,7 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
              if (this._lastState) this.render(this._lastState);
         });
         
-        this.subscribe(STATE_EVENTS.CASH_CHANGED, () => {
+        this.subscribe(STATE_EVENTS.CREDITS_CHANGED, () => {
              if (this._lastState) this.render(this._lastState);
         });
         
@@ -137,13 +137,13 @@ export default class CollegeDashboard extends BaseComponent<GameState> {
         const enrollBtn = this.element.querySelector('[data-enroll-btn]') as HTMLButtonElement;
 
         nameEl.textContent = nextCourse.name;
-        costEl.textContent = `[OC]${nextCourse.cost}`;
+        costEl.textContent = `₡${nextCourse.cost}`;
         
-        const canAfford = player.cash >= nextCourse.cost;
+        const canAfford = player.credits >= nextCourse.cost;
         enrollBtn.disabled = !canAfford;
         
         if (!canAfford) {
-            enrollBtn.title = "Insufficient Omni-Creds";
+            enrollBtn.title = "Insufficient Credits";
         } else {
             enrollBtn.title = "";
         }

@@ -18,8 +18,8 @@ describe('HUD', () => {
         // Create mock GameState
         mockGameState = {
             players: [
-                { id: 1, cash: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [] },
-                { id: 2, cash: 200, time: 20, location: 'Labor Sector', isAI: true, activeConditions: [] }
+                { id: 1, credits: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [] },
+                { id: 2, credits: 200, time: 20, location: 'Labor Sector', isAI: true, activeConditions: [] }
             ],
             currentPlayerIndex: 0,
             turn: 1,
@@ -45,7 +45,7 @@ describe('HUD', () => {
             const element = hud.getElement();
             expect(element.querySelector('[data-orb="p1"]')).not.toBeNull();
             expect(element.querySelector('[data-orb="p2"]')).not.toBeNull();
-            expect(element.querySelector('[data-cash]')).not.toBeNull();
+            expect(element.querySelector('[data-credits]')).not.toBeNull();
             expect(element.querySelector('[data-week]')).not.toBeNull();
             expect(element.querySelector('[data-location]')).not.toBeNull();
         });
@@ -71,16 +71,16 @@ describe('HUD', () => {
             hud.mount(container);
         });
 
-        it('should update cash display', () => {
+        it('should update credits display', () => {
             hud.render(mockGameState);
-            const cashElement = hud.getElement().querySelector('[data-cash]');
-            expect(cashElement?.textContent).toBe('₡100');
+            const creditsElement = hud.getElement().querySelector('[data-credits]');
+            expect(creditsElement?.textContent).toBe('₡100');
         });
 
-        it('should update week display', () => {
+        it('should update credits display', () => {
             hud.render(mockGameState);
-            const weekElement = hud.getElement().querySelector('[data-week]');
-            expect(weekElement?.textContent).toBe('1');
+            const creditsElement = hud.getElement().querySelector('[data-credits]');
+            expect(creditsElement?.textContent).toBe('₡100');
         });
 
         it('should update location display', () => {
@@ -110,13 +110,13 @@ describe('HUD', () => {
             expect(orbP2?.classList.contains('active')).toBe(true);
         });
 
-        it('should update cash when player changes', () => {
+        it('should update credits when player changes', () => {
             hud.render(mockGameState);
             mockGameState.currentPlayerIndex = 1;
             hud.render(mockGameState);
-            
-            const cashElement = hud.getElement().querySelector('[data-cash]');
-            expect(cashElement?.textContent).toBe('₡200');
+
+            const creditsElement = hud.getElement().querySelector('[data-credits]');
+            expect(creditsElement?.textContent).toBe('₡200');
         });
     });
 

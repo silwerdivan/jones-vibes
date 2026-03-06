@@ -294,13 +294,13 @@ class GameState {
     checkWinCondition(player: Player): void {
         if (this.gameOver) return;
 
-        const totalWealth = player.cash + player.savings;
-        const cashCondition = totalWealth >= 10000;
+        const totalWealth = player.credits + player.savings;
+        const creditsCondition = totalWealth >= 10000;
         const happinessCondition = player.happiness >= 80;
         const educationCondition = player.educationLevel >= 3; // Completed Community College
         const careerCondition = player.careerLevel >= 4; // Junior Manager
 
-        if (cashCondition && happinessCondition && educationCondition && careerCondition) {
+        if (creditsCondition && happinessCondition && educationCondition && careerCondition) {
             this.gameOver = true;
             this.winner = player;
             this.addLogMessage(
@@ -323,7 +323,7 @@ class GameState {
             this.gameOver = true;
             this.winner = null;
             this.addLogMessage(
-                `💀 ${this._getPlayerName(player)}'s Sanity has bottomed out. OmniCorp has terminated your session.`,
+                `💀 ${this._getPlayerName(player)}'s Sanity has bottomed out. The Network has terminated your session.`,
                 'error'
             );
             EventBus.publish('gameOver', this);
@@ -430,9 +430,9 @@ class GameState {
         // Deduct the shiftHours from the player's time.
         this._deductTime(currentPlayer, jobToWork.shiftHours);
 
-        // Calculate earnings and add to cash.
-        const earnings = Math.round(jobToWork.wage * jobToWork.shiftHours * currentPlayer.wageMultiplier);
-        currentPlayer.addCash(earnings);
+        // Calculate earnings and add to credits.
+        const earnings = Math.round(jobToWork.wage * jobToWork.shiftHours * currentPlayer.baseWageMultiplier);
+        currentPlayer.addCredits(earnings);
 
         // Update the player's careerLevel to jobToWork.level if it's an advancement.
         if (jobToWork.level > currentPlayer.careerLevel) {
@@ -444,7 +444,7 @@ class GameState {
             'success'
         );
         this.checkGameEndConditions(currentPlayer);
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: earnings, gameState: this });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: earnings, gameState: this });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         if (jobToWork.level > currentPlayer.careerLevel) {
             EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobToWork.level, gameState: this });
@@ -481,7 +481,7 @@ class GameState {
             return false;
         }
 
-        if (currentPlayer.cash < course.cost) {
+        if (currentPlayer.credits < course.cost) {
             this.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} requires ${this._formatMoney(course.cost)} for ${course.name} enrollment.`,
                 'error'
@@ -489,7 +489,7 @@ class GameState {
             return false;
         }
 
-        currentPlayer.spendCash(course.cost);
+        currentPlayer.spendCredits(course.cost);
         // Enrollment doesn't take much time, let's say 1 hour
         const enrollmentTime = 1;
         if (currentPlayer.time < enrollmentTime) {
@@ -508,7 +508,7 @@ class GameState {
             'success'
         );
         
-        EventBus.publish(STATE_EVENTS.CASH_CHANGED, { player: currentPlayer, amount: -course.cost, gameState: this });
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -course.cost, gameState: this });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
         EventBus.publish('stateChanged', this);
         this.checkConsequenceEvents();

@@ -30,8 +30,8 @@ export default class MascotUI extends BaseComponent<GameState> {
     }
 
     private setupMascotSubscriptions(): void {
-        // Step 2: Logic - Listen to STATE_EVENTS.CASH_CHANGED, TIME_CHANGED, PLAYER_CHANGED
-        this.subscribe(STATE_EVENTS.CASH_CHANGED, (data: any) => {
+        // Step 2: Logic - Listen to STATE_EVENTS.CREDITS_CHANGED, TIME_CHANGED, PLAYER_CHANGED
+        this.subscribe(STATE_EVENTS.CREDITS_CHANGED, (data: any) => {
             if (data.player && data.player.id === this.playerIndex + 1 && data.amount > 0) {
                 this.triggerProfitState();
             }

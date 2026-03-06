@@ -144,7 +144,7 @@ describe('ActionCard', () => {
         });
 
         it('should lock card when player cannot afford item', () => {
-            player.cash = 10;
+            player.credits = 10;
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             
             expect(card.classList.contains('locked')).toBe(true);
@@ -170,7 +170,7 @@ describe('ActionCard', () => {
         });
 
         it('should call onClick with correct feedback for shopping', () => {
-            player.cash = 100;
+            player.credits = 100;
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             card.click();
             

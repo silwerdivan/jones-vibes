@@ -52,7 +52,7 @@ function getCourseState(course: Course, player: Player | null): ActionCardState 
 }
 
 function getShoppingState(item: Item, player: Player | null): ActionCardState {
-    const isLocked = !!(player && player.cash < item.cost);
+    const isLocked = !!(player && player.credits < item.cost);
     
     return {
         isLocked,

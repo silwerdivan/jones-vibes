@@ -16,7 +16,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Bribe: "Pay a private aerocab." (₡150)`,
                 effects: [
-                    { type: 'CASH', value: -150 }
+                    { type: 'CREDITS', value: -150 }
                 ]
             },
             {
@@ -31,14 +31,14 @@ export const RANDOM_EVENTS: RandomEvent[] = [
     {
         id: 'global_stimulus_windfall',
         type: 'Global',
-        title: 'OmniCorp Stimulus Drop',
-        flavorText: `OmniCorp is distributing digital stimulus tokens to low-tier citizens... provided you agree to 24/7 retinal ad-tracking.`,
+        title: 'Network Stimulus Drop',
+        flavorText: `The city network is distributing digital stimulus tokens to low-tier citizens... provided you agree to 24/7 retinal ad-tracking.`,
         prerequisites: { maxWealth: 500 },
         choices: [
             {
-                text: `Accept: "I need the eddies."`,
+                text: `Accept: "I need the credits."`,
                 effects: [
-                    { type: 'CASH', value: 300 },
+                    { type: 'CREDITS', value: 300 },
                     { type: 'CONDITION', value: 1.0, conditionId: 'AD_FATIGUE' }
                 ]
             },
@@ -53,7 +53,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 requirement: { type: 'ITEM', id: 'Computer' },
                 effects: [
                     { type: 'TIME', value: -4 },
-                    { type: 'CASH', value: 300 }
+                    { type: 'CREDITS', value: 300 }
                 ]
             }
         ]
@@ -74,7 +74,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Safe: "Buy a sealed protein bar." (₡20)`,
                 effects: [
-                    { type: 'CASH', value: -20 },
+                    { type: 'CREDITS', value: -20 },
                     { type: 'HUNGER', value: -25 }
                 ]
             },
@@ -98,7 +98,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Buy: "Knowledge is power, but time is money." (₡250)`,
                 effects: [
-                    { type: 'CASH', value: -250 },
+                    { type: 'CREDITS', value: -250 },
                     { type: 'EDUCATION_CREDITS', value: 30 }
                 ]
             },
@@ -106,7 +106,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 text: `Report: "I do my own work."`,
                 effects: [
                     { type: 'HAPPINESS', value: 15 },
-                    { type: 'CASH', value: 50 }
+                    { type: 'CREDITS', value: 50 }
                 ]
             },
             {
@@ -127,7 +127,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Take: "Finders keepers."`,
                 effects: [
-                    { type: 'CASH', value: 400 },
+                    { type: 'CREDITS', value: 400 },
                     { type: 'CONDITION', value: 1.0, conditionId: 'PARANOIA' }
                 ]
             },
@@ -135,7 +135,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 text: `Report: "The corpos always find out."`,
                 effects: [
                     { type: 'HAPPINESS', value: 10 },
-                    { type: 'CASH', value: 20 }
+                    { type: 'CREDITS', value: 20 }
                 ]
             }
         ]
@@ -178,7 +178,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             {
                 text: `Market: "Let's make some investments."`,
                 effects: [
-                    { type: 'CASH', value: 100 }
+                    { type: 'CREDITS', value: 100 }
                 ]
             },
             {

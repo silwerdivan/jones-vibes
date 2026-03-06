@@ -56,7 +56,7 @@ export class EventManager {
         if (minHappiness !== undefined && player.happiness < minHappiness) return false;
         if (maxHappiness !== undefined && player.happiness > maxHappiness) return false;
         
-        const totalWealth = player.cash + player.savings;
+        const totalWealth = player.credits + player.savings;
         if (minWealth !== undefined && totalWealth < minWealth) return false;
         if (maxWealth !== undefined && totalWealth > maxWealth) return false;
         
@@ -125,8 +125,8 @@ export class EventManager {
         if (event.id === 'state_high_happiness_flow' && choiceIndex === 1) {
             // Market: multiply by credits
             const bonus = player.educationCredits * 3;
-            player.addCash(bonus);
-            gameState.addLogMessage(`Market insight yielded [OC]${bonus}.`, 'success');
+            player.addCredits(bonus);
+            gameState.addLogMessage(`Market insight yielded ₡${bonus}.`, 'success');
         }
 
         gameState.addLogMessage(`Event: ${event.title} - choice recorded.`, 'info');
@@ -135,9 +135,9 @@ export class EventManager {
 
     private applyEffect(effect: RandomEventEffect, player: Player, _gameState: GameState): void {
         switch (effect.type) {
-            case 'CASH':
-                if (effect.value < 0) player.spendCash(-effect.value);
-                else player.addCash(effect.value);
+            case 'CREDITS':
+                if (effect.value < 0) player.spendCredits(-effect.value);
+                else player.addCredits(effect.value);
                 break;
             case 'HAPPINESS':
                 player.updateHappiness(effect.value);

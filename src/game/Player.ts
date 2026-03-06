@@ -3,7 +3,7 @@ import { LocationName } from '../data/locations';
 
 export default class Player {
     id: number;
-    cash: number;
+    credits: number;
     savings: number;
     happiness: number;
     educationLevel: number;
@@ -28,7 +28,7 @@ export default class Player {
 
     constructor(id: number) {
         this.id = id;
-        this.cash = 0;
+        this.credits = 0;
         this.savings = 0;
         this.happiness = 50;
         this.educationLevel = 0;
@@ -98,7 +98,7 @@ export default class Player {
     toJSON(): PlayerState {
         return {
             id: this.id,
-            cash: this.cash,
+            credits: this.credits,
             savings: this.savings,
             happiness: this.happiness,
             educationLevel: this.educationLevel,
@@ -124,7 +124,7 @@ export default class Player {
 
     static fromJSON(data: PlayerState): Player {
         const player = new Player(data.id);
-        player.cash = data.cash;
+        player.credits = data.credits;
         player.savings = data.savings;
         player.happiness = data.happiness;
         player.educationLevel = data.educationLevel;
@@ -148,14 +148,14 @@ export default class Player {
         return player;
     }
 
-    addCash(amount: number): void {
-        this.cash += amount;
+    addCredits(amount: number): void {
+        this.credits += amount;
         this.weeklyIncome += amount;
     }
 
-    spendCash(amount: number): boolean {
-        if (this.cash >= amount) {
-            this.cash -= amount;
+    spendCredits(amount: number): boolean {
+        if (this.credits >= amount) {
+            this.credits -= amount;
             this.weeklyExpenses += amount;
             return true;
         }
@@ -228,8 +228,8 @@ export default class Player {
     }
 
     deposit(amount: number): boolean {
-        if (this.cash >= amount) {
-            this.cash -= amount;
+        if (this.credits >= amount) {
+            this.credits -= amount;
             this.savings += amount;
             return true;
         }
@@ -239,7 +239,7 @@ export default class Player {
     withdraw(amount: number): boolean {
         if (this.savings >= amount) {
             this.savings -= amount;
-            this.cash += amount;
+            this.credits += amount;
             return true;
         }
         return false;
