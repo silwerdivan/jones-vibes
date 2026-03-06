@@ -24,8 +24,8 @@ describe('Hypno-Screen Buff', () => {
 
         timeSystem.endTurn();
 
-        // Baseline: Sanity should increase by 10 (Rest)
-        expect(player.sanity).toBe(60);
+        // Baseline: Sanity should stay at 50 because -10 Ambient Stress negates +10 Cycle Rest
+        expect(player.sanity).toBe(50);
     });
 
     it('should increase sanity by 11 with Hypno-Screen', () => {
@@ -38,7 +38,8 @@ describe('Hypno-Screen Buff', () => {
 
         timeSystem.endTurn();
 
-        // Hypno-Screen gives 10% bonus (11 total)
-        expect(player.sanity).toBe(61);
+        // Hypno-Screen gives 10% bonus on Cycle Rest (11 total)
+        // Combined with -10 Ambient Stress, net is +1
+        expect(player.sanity).toBe(51);
     });
 });

@@ -83,6 +83,7 @@ export interface GameStateState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: ActiveChoiceContext | null;
+    activeEvent: RandomEvent | null;
     activeGraduation: GraduationData | null;
     isAIThinking?: boolean;
     eventHistory: string[];

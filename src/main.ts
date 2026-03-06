@@ -39,14 +39,22 @@ function main() {
 
   // PHASE 3: Event Routing
   console.log('PHASE 3: Setting up Event Routing...');
-  EventBus.subscribe(UI_EVENTS.REST_END_TURN, () => timeSystem.endTurn());
-  EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, () => timeSystem.advanceTurn());
-  EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, (amount: number) => economySystem.deposit(amount));
-  EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, (amount: number) => economySystem.withdraw(amount));
-  EventBus.subscribe(UI_EVENTS.BANK_LOAN, (amount: number) => economySystem.takeLoan(amount));
-  EventBus.subscribe(UI_EVENTS.BANK_REPAY, (amount: number) => economySystem.repayLoan(amount));
-  EventBus.subscribe(UI_EVENTS.BUY_ITEM, (itemName: string) => economySystem.buyItem(itemName));
-  EventBus.subscribe(UI_EVENTS.BUY_CAR, () => economySystem.buyCar());
+  const guard = (fn: Function) => (...args: any[]) => {
+    if (gameState.isAIThinking) {
+        console.warn('Action ignored: AI is thinking.');
+        return;
+    }
+    return fn.apply(null, args);
+  };
+
+  EventBus.subscribe(UI_EVENTS.REST_END_TURN, guard(() => timeSystem.endTurn()));
+  EventBus.subscribe(UI_EVENTS.ADVANCE_TURN, guard(() => timeSystem.advanceTurn()));
+  EventBus.subscribe(UI_EVENTS.BANK_DEPOSIT, guard((amount: number) => economySystem.deposit(amount)));
+  EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, guard((amount: number) => economySystem.withdraw(amount)));
+  EventBus.subscribe(UI_EVENTS.BANK_LOAN, guard((amount: number) => economySystem.takeLoan(amount)));
+  EventBus.subscribe(UI_EVENTS.BANK_REPAY, guard((amount: number) => economySystem.repayLoan(amount)));
+  EventBus.subscribe(UI_EVENTS.BUY_ITEM, guard((itemName: string) => economySystem.buyItem(itemName)));
+  EventBus.subscribe(UI_EVENTS.BUY_CAR, guard(() => economySystem.buyCar()));
 
   // PHASE 4: Manager & UI Initialization
   console.log('PHASE 4: Initializing Managers & UI...');

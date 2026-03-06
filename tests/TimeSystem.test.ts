@@ -56,8 +56,8 @@ describe('TimeSystem', () => {
         
         // Hunger increases by 20, penalty is applied if hunger > 50
         expect(player.hunger).toBe(80);
-        // Base rest: +10, Hunger penalty: -5. Total change: +5.
-        expect(player.sanity).toBe(55);
+        // Ambient Stress: -10, Hunger penalty: -5, Cycle Recovery: +10. Total change: -5.
+        expect(player.sanity).toBe(45);
     });
 
     it('should apply loan interest if player has a loan', () => {
@@ -68,6 +68,22 @@ describe('TimeSystem', () => {
         
         // 10% interest
         expect(player.loan).toBe(1100);
+    });
+
+    it('should confirm sanity stays constant with ambient drain negating recovery', () => {
+        const player = gameState.getCurrentPlayer();
+        player.hunger = 0;
+        player.sanity = 50;
+        
+        // End turn 1
+        timeSystem.endTurn();
+        // -10 Ambient Stress + 10 Cycle Recovery = 0 net change
+        expect(player.sanity).toBe(50); 
+        
+        // End turn 2
+        player.hunger = 0; // keep hunger low
+        timeSystem.endTurn();
+        expect(player.sanity).toBe(50);
     });
 
     it('should advance turn correctly', () => {

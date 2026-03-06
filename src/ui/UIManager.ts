@@ -44,6 +44,7 @@ class UIManager {
     private lastPlayerId: number | null = null;
     private isSummaryShown: boolean = false;
     private loadingOverlay: HTMLElement | null;
+    private trackedTimeouts: number[] = [];
 
     constructor() {
         // Initialize components
@@ -155,12 +156,26 @@ class UIManager {
         }
     }
 
+    private setTrackedTimeout(callback: () => void, delay: number): void {
+        const timeoutId = window.setTimeout(() => {
+            this.trackedTimeouts = this.trackedTimeouts.filter(id => id !== timeoutId);
+            callback();
+        }, delay);
+        this.trackedTimeouts.push(timeoutId);
+    }
+
+    private clearTrackedTimeouts(): void {
+        this.trackedTimeouts.forEach(id => window.clearTimeout(id));
+        this.trackedTimeouts = [];
+    }
+
     private subscribeToEvents(): void {
         EventBus.subscribe('aiThinkingStart', () => this.showLoading());
         EventBus.subscribe('aiThinkingEnd', () => this.hideLoading());
 
         EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
             if (data.modalId === 'choice-modal-overlay') {
+                this.clearTrackedTimeouts();
                 EventBus.publish('dashboardSwitched', { location: null });
                 EventBus.publish('choiceModalSwitched', null);
             }
@@ -177,8 +192,16 @@ class UIManager {
 
             // Handle modal visibility based on state for live updates
             // If both are null, it means no dashboard or choice modal should be open
-            if (!gameState.activeLocationDashboard && !gameState.activeChoiceContext) {
-                this.hideModal();
+            if (!gameState.activeLocationDashboard && !gameState.activeChoiceContext && !gameState.activeEvent) {
+                if (this.choiceModal.isVisible()) {
+                    this.hideModal();
+                }
+            }
+
+            // If a dashboard is active in state but the modal is not visible, and no event is active, show it
+            // This handles re-showing the dashboard after a random event is dismissed
+            if (gameState.activeLocationDashboard && !this.choiceModal.isVisible() && !gameState.activeEvent && !gameState.pendingTurnSummary && !this.isSummaryShown) {
+                this.showLocationDashboard(gameState.activeLocationDashboard);
             }
 
             // Components now auto-update via granular event subscriptions
@@ -275,8 +298,8 @@ class UIManager {
     showLocationDashboard(location: string) {
         if (!this.gameState) return;
 
-        // Skip showing the dashboard if a summary is already visible or about to be
-        if (this.isSummaryShown || this.gameState.pendingTurnSummary) {
+        // Skip showing the dashboard if a summary or event is active
+        if (this.isSummaryShown || this.gameState.pendingTurnSummary || this.gameState.activeEvent) {
             return;
         }
 
@@ -324,8 +347,11 @@ class UIManager {
                 action.onClick(e);
 
                 if (action.label === 'Work Shift') {
-                    setTimeout(() => {
-                        this.showLocationDashboard(location);
+                    this.setTrackedTimeout(() => {
+                        // Ensure dashboard is still active before re-showing
+                        if (this.gameState?.activeLocationDashboard === location) {
+                            this.showLocationDashboard(location);
+                        }
                     }, 1000);
                 }
             }, action.className);
@@ -352,8 +378,10 @@ class UIManager {
                     }
 
                     choice.action(amount);
-                    setTimeout(() => {
-                        this.showLocationDashboard('Cred-Debt Ctr');
+                    this.setTrackedTimeout(() => {
+                        if (this.gameState?.activeLocationDashboard === 'Cred-Debt Ctr') {
+                            this.showLocationDashboard('Cred-Debt Ctr');
+                        }
                     }, 100);
                 });
             });
@@ -374,6 +402,7 @@ class UIManager {
     }
 
     hideModal() {
+        this.clearTrackedTimeouts();
         this.choiceModal.hide();
     }
 
@@ -395,8 +424,10 @@ class UIManager {
                 if (type === 'jobs') {
                     const job = item as Job;
                     EventBus.publish(UI_EVENTS.APPLY_JOB, job.level);
-                    setTimeout(() => {
-                        this.showLocationDashboard('Labor Sector');
+                    this.setTrackedTimeout(() => {
+                        if (this.gameState?.activeLocationDashboard === 'Labor Sector') {
+                            this.showLocationDashboard('Labor Sector');
+                        }
                     }, 100);
                 } else if (type === 'college') {
                     const course = item as Course;
@@ -408,8 +439,10 @@ class UIManager {
                     
                     if (shoppingItem.location === 'Sustenance Hub') {
                         // Keep modal open for Fast Food purchases
-                        setTimeout(() => {
-                            this.showLocationDashboard('Sustenance Hub');
+                        this.setTrackedTimeout(() => {
+                            if (this.gameState?.activeLocationDashboard === 'Sustenance Hub') {
+                                this.showLocationDashboard('Sustenance Hub');
+                            }
                         }, 100);
                     } else {
                         this.choiceModal.hide();
@@ -471,7 +504,7 @@ class UIManager {
         const isNewLocation = this.lastLocation !== null && this.lastLocation !== currentPlayer.location;
 
         if (isNewLocation && !isNewTurn && !currentPlayer.isAI && currentPlayer.time > 0) {
-            setTimeout(() => {
+            this.setTrackedTimeout(() => {
                 this.showLocationDashboard(currentPlayer.location);
             }, 300);
         }

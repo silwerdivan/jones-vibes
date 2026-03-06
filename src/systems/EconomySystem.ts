@@ -24,7 +24,11 @@ class EconomySystem {
         this.gameState._checkAutoEndTurn();
     }
 
-    buyItem(itemName: string): boolean {
+    buyItem(itemName: string, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
         const item = SHOPPING_ITEMS.find(i => i.name === itemName);
 
@@ -109,7 +113,11 @@ class EconomySystem {
         return true;
     }
 
-    deposit(amount: number): boolean {
+    deposit(amount: number, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Cred-Debt Ctr') {
@@ -145,7 +153,11 @@ class EconomySystem {
         }
     }
 
-    withdraw(amount: number): boolean {
+    withdraw(amount: number, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Cred-Debt Ctr') {
@@ -181,7 +193,11 @@ class EconomySystem {
         }
     }
 
-    takeLoan(amount: number): boolean {
+    takeLoan(amount: number, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
         const MAX_LOAN = 2500;
 
@@ -220,7 +236,11 @@ class EconomySystem {
         return true;
     }
 
-    repayLoan(amount: number): boolean {
+    repayLoan(amount: number, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Cred-Debt Ctr') {
@@ -266,7 +286,11 @@ class EconomySystem {
         return true;
     }
 
-    buyCar(): boolean {
+    buyCar(isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.gameState.getCurrentPlayer();
         const CAR_COST = 3000;
         const TIME_COST = 4;

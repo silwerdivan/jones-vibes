@@ -22,9 +22,12 @@ class GameState {
     activeScreenId: string;
     activeLocationDashboard: string | null;
     activeChoiceContext: any | null;
+    activeEvent: any | null;
     activeGraduation: any | null;
     isAIThinking: boolean = false;
     eventManager: EventManager;
+    private _autoEndTurnTimeout: any = null;
+    private _aiTurnTimeout: any = null;
 
     constructor(numberOfPlayers: number, isPlayer2AI: boolean = false) {
         if (numberOfPlayers < 1 || numberOfPlayers > 2) {
@@ -72,6 +75,7 @@ class GameState {
 
         // Subscribe to dashboard switches to keep persistence in sync
         EventBus.subscribe('dashboardSwitched', (data: { location: string | null }) => {
+            // CRITICAL: If location is being set to null (closed), ensure we don't allow a quick re-trigger
             if (this.activeLocationDashboard !== data.location) {
                 this.activeLocationDashboard = data.location;
                 EventBus.publish('stateChanged', this);
@@ -86,17 +90,30 @@ class GameState {
             }
         });
 
+        // Subscribe to random events to keep persistence in sync
+        EventBus.subscribe('randomEventTriggered', (data: { event: any }) => {
+            this.activeEvent = data.event;
+            EventBus.publish('stateChanged', this);
+        });
+
         // Subscribe to graduation to keep persistence in sync
         EventBus.subscribe('graduation', (data: any) => {
             this.activeGraduation = data;
             EventBus.publish('stateChanged', this);
         });
 
-        // Subscribe to modal hidden to clear graduation state
+        // Subscribe to modal hidden to clear states
         EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
             if (data.modalId === 'graduation-modal') {
                 this.activeGraduation = null;
                 EventBus.publish('stateChanged', this);
+            }
+            if (data.modalId === 'choice-modal-overlay') {
+                // If the choice modal is hidden and we had an active event, clear it
+                if (this.activeEvent) {
+                    this.activeEvent = null;
+                    EventBus.publish('stateChanged', this);
+                }
             }
         });
     }
@@ -128,6 +145,7 @@ class GameState {
             activeScreenId: this.activeScreenId,
             activeLocationDashboard: this.activeLocationDashboard,
             activeChoiceContext: serializableChoiceContext,
+            activeEvent: this.activeEvent,
             activeGraduation: this.activeGraduation,
             isAIThinking: this.isAIThinking,
             eventHistory: this.eventManager.getHistory()
@@ -148,6 +166,7 @@ class GameState {
         gameState.activeScreenId = data.activeScreenId || 'city';
         gameState.activeLocationDashboard = data.activeLocationDashboard || null;
         gameState.activeChoiceContext = data.activeChoiceContext || null;
+        gameState.activeEvent = data.activeEvent || null;
         gameState.activeGraduation = data.activeGraduation || null;
         gameState.isAIThinking = data.isAIThinking || false;
         gameState.eventManager = new EventManager(data.eventHistory || []);
@@ -198,6 +217,12 @@ class GameState {
     }
 
     handleAIAction(aiAction: AIAction): void {
+        // Clear any existing AI timeout
+        if (this._aiTurnTimeout) {
+            clearTimeout(this._aiTurnTimeout);
+            this._aiTurnTimeout = null;
+        }
+
         // 1) no action → end AI turn immediately
         if (!aiAction || !aiAction.action) {
             this.isAIThinking = false;
@@ -228,37 +253,37 @@ class GameState {
 
         switch(aiAction.action) {
             case 'travel':
-                success = this.travel(aiAction.params.destination);
+                success = this.travel(aiAction.params.destination, true);
                 break;
             case 'workShift':
-                success = this.workShift();
+                success = this.workShift(true);
                 break;
             case 'applyForJob':
-                success = this.applyForJob(aiAction.params.jobLevel);
+                success = this.applyForJob(aiAction.params.jobLevel, true);
                 break;
             case 'takeCourse':
-                success = this.takeCourse(aiAction.params.courseId);
+                success = this.takeCourse(aiAction.params.courseId, true);
                 break;
             case 'study':
-                success = this.study();
+                success = this.study(true);
                 break;
             case 'buyItem':
-                success = this._economySystem ? this._economySystem.buyItem(aiAction.params.itemName) : false;
+                success = this._economySystem ? this._economySystem.buyItem(aiAction.params.itemName, true) : false;
                 break;
             case 'buyCar':
-                success = this._economySystem ? this._economySystem.buyCar() : false;
+                success = this._economySystem ? this._economySystem.buyCar(true) : false;
                 break;
             case 'deposit':
-                success = this._economySystem ? this._economySystem.deposit(aiAction.params.amount) : false;
+                success = this._economySystem ? this._economySystem.deposit(aiAction.params.amount, true) : false;
                 break;
             case 'withdraw':
-                success = this._economySystem ? this._economySystem.withdraw(aiAction.params.amount) : false;
+                success = this._economySystem ? this._economySystem.withdraw(aiAction.params.amount, true) : false;
                 break;
             case 'takeLoan':
-                success = this._economySystem ? this._economySystem.takeLoan(aiAction.params.amount) : false;
+                success = this._economySystem ? this._economySystem.takeLoan(aiAction.params.amount, true) : false;
                 break;
             case 'repayLoan':
-                success = this._economySystem ? this._economySystem.repayLoan(aiAction.params.amount) : false;
+                success = this._economySystem ? this._economySystem.repayLoan(aiAction.params.amount, true) : false;
                 break;
             default:
                 console.warn(`AI tried an unknown action: ${aiAction.action}`);
@@ -280,7 +305,10 @@ class GameState {
                 'info'
             );
             // We stay in isAIThinking = true state
-            setTimeout(() => this.processAITurn(), 1000);
+            this._aiTurnTimeout = setTimeout(() => {
+                this._aiTurnTimeout = null;
+                this.processAITurn();
+            }, 1000);
         } else {
             // AI turn ends (either success but no time left, or action failed)
             if (!success) {
@@ -384,7 +412,13 @@ class GameState {
     _checkAutoEndTurn(): void {
         const player = this.getCurrentPlayer();
         if (player.time <= 0 && !player.isAI && !this.gameOver) {
-            setTimeout(() => {
+            // Clear existing timeout if any
+            if (this._autoEndTurnTimeout) {
+                clearTimeout(this._autoEndTurnTimeout);
+            }
+
+            this._autoEndTurnTimeout = setTimeout(() => {
+                this._autoEndTurnTimeout = null;
                 if (player.time <= 0) { // Double check if time is still 0
                     this.addLogMessage(`Cycle time exhausted. Turn finalization initiated.`, 'warning');
                     if (this._timeSystem) this._timeSystem.endTurn();
@@ -415,7 +449,11 @@ class GameState {
         this.eventManager.checkTriggers('Global', this);
     }
 
-    workShift(): boolean {
+    workShift(isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Labor Sector') {
@@ -483,7 +521,11 @@ class GameState {
         return true;
     }
 
-    takeCourse(courseId: number): boolean {
+    takeCourse(courseId: number, isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.getCurrentPlayer();
         const course = COURSES.find(c => c.id === courseId);
 
@@ -544,7 +586,11 @@ class GameState {
         return true;
     }
 
-    study(): boolean {
+    study(isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location !== 'Cognitive Re-Ed') {
@@ -638,7 +684,11 @@ class GameState {
         }
     }
 
-    travel(destination: LocationName): boolean {
+    travel(destination: LocationName, isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.getCurrentPlayer();
 
         if (currentPlayer.location === destination) {
@@ -693,7 +743,11 @@ class GameState {
         return true;
     }
 
-    applyForJob(jobLevel: number): boolean {
+    applyForJob(jobLevel: number, isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
         const currentPlayer = this.getCurrentPlayer();
         
         // Find the job by level

@@ -129,6 +129,7 @@ export class EventManager {
             gameState.addLogMessage(`Market insight yielded ₡${bonus}.`, 'success');
         }
 
+        gameState.activeEvent = null; // Clear the active event
         gameState.addLogMessage(`Event: ${event.title} - choice recorded.`, 'info');
         gameState.publishCurrentState();
     }
