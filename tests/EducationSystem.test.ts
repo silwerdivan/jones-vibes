@@ -141,7 +141,7 @@ describe('Education System Upgrade', () => {
         aiPlayer.educationLevel = 1;
         aiPlayer.educationCredits = 0;
         aiPlayer.educationCreditsGoal = 0;
-        aiPlayer.credits = 1500; // Enough for Intermed. Prod ($1000)
+        aiPlayer.credits = 1500; // Enough for Intermed. Prod (1000 Credits)
 
         // AI should try to enroll in Level 2
         action = aiController.takeTurn(gameState, aiPlayer);

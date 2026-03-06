@@ -74,7 +74,7 @@ describe('GameState Serialization', () => {
                 type: 'income',
                 label: 'Test',
                 value: 100,
-                unit: '$',
+                unit: '₡',
                 icon: 'money'
             }],
             totals: {

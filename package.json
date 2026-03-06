@@ -2,14 +2,14 @@
   "name": "250927-jones-in-the-fastlane-vibes",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-      "dev": "vite",
-      "build": "tsc && vite build",
-      "preview": "vite preview",
-      "test": "vitest run",
-      "test:watch": "vitest"
-    },
-  "repository": {
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+    },  "repository": {
     "type": "git",
     "url": "git+https://github.com/silwerdivan/jones-vibes.git"
   },
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/silwerdivan/jones-vibes#readme",
   "description": "",
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/node": "^25.3.0",
     "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^28.1.0",

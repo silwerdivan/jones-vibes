@@ -50,7 +50,7 @@ describe('AIController Hunger awareness', () => {
 
     it('should not prioritize food if it cannot afford it', () => {
         player.hunger = 35;
-        player.credits = 5; // Too poor for Monolith Burger ($10)
+        player.credits = 5; // Too poor for Monolith Burger (10 Credits)
         player.location = 'Hab-Pod 404';
         
         const nextAction = aiController.takeTurn(gameState, player);

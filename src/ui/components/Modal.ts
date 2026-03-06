@@ -233,7 +233,7 @@ export class PlayerStatsModal extends Modal {
 
   constructor() {
     super('player-stats-modal-overlay', 'player-stats-modal-title');
-    this.credits = document.getElementById('modal-cash');
+    this.credits = document.getElementById('modal-credits');
     this.savings = document.getElementById('modal-savings');
     this.loan = document.getElementById('modal-loan');
     this.happiness = document.getElementById('modal-happiness');
@@ -316,7 +316,7 @@ export class TurnSummaryModal extends Modal {
     super('turn-summary-modal', undefined, false);
     this.eventList = document.getElementById('event-list');
     this.subtitle = document.getElementById('summary-subtitle');
-    this.creditsTotal = document.getElementById('summary-cash-total');
+    this.creditsTotal = document.getElementById('summary-credits-total');
     this.happinessTotal = document.getElementById('summary-happiness-total');
     this.nextWeekBtn = document.getElementById('btn-start-next-week');
   }

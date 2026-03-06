@@ -111,8 +111,8 @@ describe('Persistence Stress Test', () => {
             playerName: 'Player 1',
             week: 4,
             events: [
-                { type: 'expense', label: 'Rent', value: 400, unit: '$', icon: 'home' },
-                { type: 'income', label: 'Salary', value: 800, unit: '$', icon: 'money' }
+                { type: 'expense', label: 'Rent', value: 400, unit: '₡', icon: 'home' },
+                { type: 'income', label: 'Salary', value: 800, unit: '₡', icon: 'money' }
             ],
             totals: {
                 creditsChange: 400,

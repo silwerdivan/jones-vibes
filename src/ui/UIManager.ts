@@ -250,7 +250,7 @@ class UIManager {
         this.choiceModal.clearContent();
         this.choiceModal.showInput(showInput);
 
-        if (location === 'Consumpt-Zone' || location === 'Sustenance Hub') {
+        if (location === 'Consumpt-Zone' || location === 'Sustenance Hub' || location === 'Ripperdoc Clinic') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
                 } else if (location === 'Cognitive Re-Ed') {
@@ -302,7 +302,7 @@ class UIManager {
         } else if (location === 'Cognitive Re-Ed') {
             this.collegeDashboard.render(this.gameState!);
             this.choiceModal.setContent(this.collegeDashboard.getElement());
-        } else if (location === 'Consumpt-Zone' || location === 'Sustenance Hub') {
+        } else if (location === 'Consumpt-Zone' || location === 'Sustenance Hub' || location === 'Ripperdoc Clinic') {
             const filteredItems = SHOPPING_ITEMS.filter(item => item.location === location);
             this.renderActionCards('shopping', filteredItems);
         }
