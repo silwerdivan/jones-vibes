@@ -105,8 +105,11 @@ function main() {
     document.body.appendChild(eulaModal.getElement());
     eulaModal.show();
 
-    EventBus.subscribe('eulaAccepted', (data: { selectedClauseIds: string[] }) => {
-      console.log('EULA accepted with clauses:', data.selectedClauseIds);
+    EventBus.subscribe('eulaAccepted', (data: { selectedClauseIds: string[], isPlayer2AI: boolean }) => {
+      console.log('Onboarding complete. AI enabled:', data.isPlayer2AI, 'Clauses:', data.selectedClauseIds);
+      
+      // Toggle AI based on onboarding choice
+      gameState.toggleAI(data.isPlayer2AI);
       
       // Task 4: Apply State Mutators
       const player1 = gameState.players[0];

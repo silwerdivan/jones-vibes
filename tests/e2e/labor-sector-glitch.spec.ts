@@ -95,9 +95,8 @@ test.describe('Labor Sector Double Popup Glitch', () => {
     const workShiftButton = page.locator('button', { hasText: 'Work Shift' });
     await workShiftButton.click();
 
-    // 5. Click "Leave Location" immediately
-    const leaveButton = page.locator('#modal-cancel-button');
-    await leaveButton.click();
+    // 5. Click the overlay to leave the location (Leave Location button is removed in Phase 5)
+    await modalOverlay.click({ position: { x: 5, y: 5 } });
 
     // 6. Assert the modal is hidden
     await expect(modalOverlay).toHaveClass(/hidden/);

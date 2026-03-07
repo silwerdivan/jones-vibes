@@ -49,6 +49,17 @@ export abstract class Modal {
     EventBus.publish('modalHidden', { modalId: this.overlay?.id });
   }
 
+  public setExtraClass(className: string | null): void {
+    if (!this.overlay) return;
+    
+    // Specifically handle location-dashboard-overlay for the overlay
+    if (className === 'location-dashboard') {
+      this.overlay.classList.add('location-dashboard-overlay');
+    } else {
+      this.overlay.classList.remove('location-dashboard-overlay');
+    }
+  }
+
   protected addSwipeToClose(modalElement: HTMLElement): void {
     let startY = 0;
     let currentY = 0;
@@ -116,6 +127,7 @@ export class ChoiceModal extends Modal {
   private primaryButtons: HTMLElement | null;
   private secondaryActions: HTMLElement | null;
   private cancelButton: HTMLElement | null;
+  private closeButton: HTMLElement | null;
   private clerkContainer: HTMLElement | null;
   private clerkAvatar: HTMLElement | null;
   private clerkName: HTMLElement | null;
@@ -131,6 +143,7 @@ export class ChoiceModal extends Modal {
     this.primaryButtons = document.getElementById('choice-modal-buttons');
     this.secondaryActions = document.getElementById('dashboard-secondary-actions');
     this.cancelButton = document.getElementById('modal-cancel-button');
+    this.closeButton = document.getElementById('choice-modal-close');
     
     this.clerkContainer = document.getElementById('modal-clerk-container');
     this.clerkAvatar = document.getElementById('modal-clerk-avatar');
@@ -139,6 +152,10 @@ export class ChoiceModal extends Modal {
     
     if (this.cancelButton) {
       this.cancelButton.addEventListener('click', () => this.hide());
+    }
+
+    if (this.closeButton) {
+      this.closeButton.addEventListener('click', () => this.hide());
     }
 
     const modalElement = document.getElementById('choice-modal');
@@ -179,6 +196,16 @@ export class ChoiceModal extends Modal {
       if (this.inputField) this.inputField.value = '';
     } else {
       this.inputContainer?.classList.add('hidden');
+    }
+  }
+
+  public showCancelButton(show: boolean): void {
+    if (this.cancelButton) {
+      if (show) {
+        this.cancelButton.classList.remove('hidden');
+      } else {
+        this.cancelButton.classList.add('hidden');
+      }
     }
   }
 

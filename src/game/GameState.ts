@@ -182,6 +182,15 @@ class GameState {
         return player.name || `Unit ${player.id}`;
     }
 
+    public toggleAI(enabled: boolean): void {
+        const player2 = this.players[1];
+        if (player2) {
+            player2.isAI = enabled;
+            player2.name = enabled ? "AI Opponent" : "Player 2";
+            this.aiController = enabled ? new AIController() : null;
+        }
+    }
+
     publishCurrentState(): void {
         EventBus.publish('stateChanged', this);
     }

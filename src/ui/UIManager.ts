@@ -177,6 +177,8 @@ class UIManager {
         EventBus.subscribe('modalHidden', (data: { modalId: string }) => {
             if (data.modalId === 'choice-modal-overlay') {
                 this.clearTrackedTimeouts();
+                this.choiceModal.setExtraClass(null);
+                this.choiceModal.showCancelButton(true);
                 EventBus.publish('dashboardSwitched', { location: null });
                 EventBus.publish('choiceModalSwitched', null);
             }
@@ -325,6 +327,8 @@ class UIManager {
 
         // Publish event for persistence
         EventBus.publish('dashboardSwitched', { location });
+
+        this.choiceModal.setExtraClass('location-dashboard');
 
         const clerk = (CLERKS as ClerkRegistry)[location];
 
@@ -589,7 +593,7 @@ class UIManager {
                 actions.push({
                     label: 'Work Shift',
                     icon: 'work',
-                    primary: true,
+                    primary: false,
                     onClick: () => EventBus.publish(UI_EVENTS.WORK_SHIFT)
                 });
                 break;

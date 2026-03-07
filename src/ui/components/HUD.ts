@@ -11,7 +11,6 @@ export default class HUD extends BaseComponent<GameState> {
     private hudDebt!: HTMLElement;
     private hudDebtContainer!: HTMLElement;
     private hudWeek!: HTMLElement;
-    private hudLocation!: HTMLElement;
     private orbP1!: HTMLElement;
     private orbP2!: HTMLElement;
     private terminalBadge!: HTMLElement;
@@ -74,10 +73,6 @@ export default class HUD extends BaseComponent<GameState> {
                     <span class="hud-label">CYCLE</span>
                     <span class="hud-value" data-week>1</span>
                 </div>
-                <div class="hud-stat-item text-right">
-                    <span class="hud-label">SECTOR</span>
-                    <span class="hud-value" data-location>Hab-Pod 404</span>
-                </div>
             </div>
         `;
     }
@@ -92,7 +87,6 @@ export default class HUD extends BaseComponent<GameState> {
         this.hudDebt = this.element.querySelector('[data-debt]')!;
         this.hudDebtContainer = this.element.querySelector('[data-debt-container]')!;
         this.hudWeek = this.element.querySelector('[data-week]')!;
-        this.hudLocation = this.element.querySelector('[data-location]')!;
         this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
         this.terminalTrigger = this.element.querySelector('[data-terminal-trigger]')!;
     }
@@ -109,14 +103,17 @@ export default class HUD extends BaseComponent<GameState> {
     }
 
     private initializeClockVisualizations(): void {
+        // Reverted to player-specific neon colors for better identity.
+        // Added dark semi-transparent background to the ring for clarity against complex mascots.
         if (this.timeRingP1) {
             this.hudClockVisualizationP1 = new ClockVisualization(this.timeRingP1, {
                 size: 52,
                 strokeWidth: 4,
-                backgroundColor: 'rgba(255, 0, 255, 0.1)',
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
                 foregroundColor: '#FF00FF',
-                textColor: 'transparent',
-                showNumeric: false
+                textColor: '#FFFFFF',
+                showNumeric: true,
+                fontSize: '12px'
             });
         }
 
@@ -124,10 +121,11 @@ export default class HUD extends BaseComponent<GameState> {
             this.hudClockVisualizationP2 = new ClockVisualization(this.timeRingP2, {
                 size: 52,
                 strokeWidth: 4,
-                backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                backgroundColor: 'rgba(0, 0, 0, 0.4)',
                 foregroundColor: '#00FFFF',
-                textColor: 'transparent',
-                showNumeric: false
+                textColor: '#FFFFFF',
+                showNumeric: true,
+                fontSize: '12px'
             });
         }
     }
@@ -184,12 +182,7 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateCredits(gameState);
             this.updateDebt(gameState);
             this.updateClocks(gameState);
-            this.updateLocation(gameState);
             this.updateMascots(gameState);
-        });
-
-        this.subscribe(STATE_EVENTS.LOCATION_CHANGED, ({ gameState }: { gameState: GameState }) => {
-            this.updateLocation(gameState);
         });
 
         this.subscribe(STATE_EVENTS.TURN_CHANGED, ({ gameState }: { gameState: GameState }) => {
@@ -198,7 +191,6 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateCredits(gameState);
             this.updateDebt(gameState);
             this.updateClocks(gameState);
-            this.updateLocation(gameState);
             this.updateMascots(gameState);
         });
 
@@ -232,11 +224,6 @@ export default class HUD extends BaseComponent<GameState> {
 
     private updateWeek(gameState: GameState): void {
         this.hudWeek.textContent = gameState.turn.toString();
-    }
-
-    private updateLocation(gameState: GameState): void {
-        const currentPlayer = gameState.getCurrentPlayer();
-        this.hudLocation.textContent = currentPlayer.location;
     }
 
     private updateClocks(gameState: GameState): void {
@@ -340,7 +327,6 @@ export default class HUD extends BaseComponent<GameState> {
         this.hudBurnRate.textContent = `₡${currentPlayer.calculateBurnRate()}`;
         this.updateDebt(gameState);
         this.hudWeek.textContent = gameState.turn.toString();
-        this.hudLocation.textContent = currentPlayer.location;
 
         // Update News Ticker
         if (this.newsTickerContent && gameState.log.length > 0) {

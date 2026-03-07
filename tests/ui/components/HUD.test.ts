@@ -47,7 +47,6 @@ describe('HUD', () => {
             expect(element.querySelector('[data-orb="p2"]')).not.toBeNull();
             expect(element.querySelector('[data-credits]')).not.toBeNull();
             expect(element.querySelector('[data-week]')).not.toBeNull();
-            expect(element.querySelector('[data-location]')).not.toBeNull();
         });
     });
 
@@ -81,12 +80,6 @@ describe('HUD', () => {
             hud.render(mockGameState);
             const creditsElement = hud.getElement().querySelector('[data-credits]');
             expect(creditsElement?.textContent).toBe('₡100');
-        });
-
-        it('should update location display', () => {
-            hud.render(mockGameState);
-            const locationElement = hud.getElement().querySelector('[data-location]');
-            expect(locationElement?.textContent).toBe('Hab-Pod 404');
         });
 
         it('should set active class on current player orb', () => {

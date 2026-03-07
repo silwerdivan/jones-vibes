@@ -25,6 +25,21 @@ export default class LifeScreen extends BaseComponent<GameState> {
     }
 
     private createStructure(): void {
+        const mobileStatsHeader = document.createElement('div');
+        mobileStatsHeader.className = 'mobile-life-stats';
+        mobileStatsHeader.innerHTML = `
+            <div class="stats-mobile-row">
+                <div class="stat-pill">
+                    <span class="pill-label">SANITY</span>
+                    <span class="pill-value" id="pill-sanity">0</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="pill-label">CREDITS</span>
+                    <span class="pill-value" id="pill-credits">₡0</span>
+                </div>
+            </div>
+        `;
+
         const lifeHeader = document.createElement('div');
         lifeHeader.className = 'life-header card glass';
 
@@ -63,12 +78,8 @@ export default class LifeScreen extends BaseComponent<GameState> {
             gaugeContainer.className = 'gauge-svg-container';
             gaugeContainer.id = `gauge-${config.id}`;
 
-            const gaugeLabel = document.createElement('div');
-            gaugeLabel.className = 'gauge-label';
-            gaugeLabel.textContent = config.label;
-
+            // Removed manual gaugeLabel creation here as Gauge component handles it
             gaugeCard.appendChild(gaugeContainer);
-            gaugeCard.appendChild(gaugeLabel);
             this.gaugeGrid.appendChild(gaugeCard);
 
             const gauge = new Gauge();
@@ -79,6 +90,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
         this.financialOverview = document.createElement('div');
         this.financialOverview.className = 'financial-overview card glass';
 
+        this.element.appendChild(mobileStatsHeader);
         this.element.appendChild(lifeHeader);
         this.element.appendChild(this.gaugeGrid);
         this.element.appendChild(this.financialOverview);
@@ -147,6 +159,21 @@ export default class LifeScreen extends BaseComponent<GameState> {
         this.renderStatusChips(player);
         this.updateGauges(player);
         this.renderFinancialOverview(player);
+        this.updateMobileStats(player);
+    }
+
+    private updateMobileStats(player: any): void {
+        const sanityPill = this.element.querySelector('#pill-sanity');
+        const creditsPill = this.element.querySelector('#pill-credits');
+        
+        if (sanityPill) {
+            sanityPill.textContent = player.sanity.toString();
+            sanityPill.className = `pill-value ${player.sanity <= 20 ? 'log-error' : ''}`;
+        }
+        
+        if (creditsPill) {
+            creditsPill.textContent = `₡${player.credits}`;
+        }
     }
 
     private updateAvatar(playerIndex: number): void {
