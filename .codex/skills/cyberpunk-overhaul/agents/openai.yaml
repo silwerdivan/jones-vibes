@@ -1,0 +1,4 @@
+﻿interface:
+  display_name: "Cyberpunk Overhaul"
+  short_description: "Run phased cyberpunk redesign workflow"
+  default_prompt: "Use $cyberpunk-overhaul to plan or execute the next phase of the game's cyberpunk redesign."
