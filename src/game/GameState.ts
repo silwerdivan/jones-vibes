@@ -1,5 +1,6 @@
 import Player from './Player';
 import { JOBS } from '../data/jobs';
+import { HUSTLES } from '../data/hustles';
 import { COURSES } from '../data/courses';
 import EventBus, { STATE_EVENTS } from '../EventBus';
 import AIController from './AIController';
@@ -516,6 +517,66 @@ class GameState {
             EventBus.publish(STATE_EVENTS.CAREER_CHANGED, { player: currentPlayer, level: jobToWork.level, gameState: this });
         }
         EventBus.publish('stateChanged', this);
+        this.checkConsequenceEvents();
+        this._checkAutoEndTurn();
+        return true;
+    }
+
+    executeHustle(hustleId: string, isAIAction: boolean = false): boolean {
+        if (this.isAIThinking && !isAIAction) {
+            return false;
+        }
+
+        const currentPlayer = this.getCurrentPlayer();
+        const hustle = HUSTLES.find(h => h.id === hustleId);
+
+        if (!hustle) {
+            this.addLogMessage(`Hustle protocol not found: ${hustleId}`, 'error');
+            return false;
+        }
+
+        if (currentPlayer.location !== 'Labor Sector') {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must be at Labor Sector for hustle execution.`,
+                'error'
+            );
+            return false;
+        }
+
+        if (currentPlayer.time < hustle.timeCost) {
+            this.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} insufficient cycle time for ${hustle.title}.`,
+                'error'
+            );
+            return false;
+        }
+
+        // Deduct time
+        this._deductTime(currentPlayer, hustle.timeCost);
+
+        // Deduct sanity
+        currentPlayer.updateSanity(-hustle.sanityCost);
+
+        // Add reward
+        currentPlayer.addCredits(hustle.reward);
+
+        this.addLogMessage(
+            `Hustle Completed: ${hustle.title}. Yield: ${this._formatMoney(hustle.reward)}. Stress: -${hustle.sanityCost} Sanity.`,
+            'success'
+        );
+
+        // Check risk
+        if (Math.random() < hustle.risk && hustle.consequenceId) {
+            this.addLogMessage(`Hustle consequence triggered!`, 'warning');
+            this.eventManager.triggerEventById(hustle.consequenceId, this);
+        }
+
+        this.checkGameEndConditions(currentPlayer);
+        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: hustle.reward, gameState: this });
+        EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this });
+        EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: -hustle.sanityCost, gameState: this });
+        EventBus.publish('stateChanged', this);
+        
         this.checkConsequenceEvents();
         this._checkAutoEndTurn();
         return true;

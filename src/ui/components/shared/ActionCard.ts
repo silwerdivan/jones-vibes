@@ -1,16 +1,16 @@
-import { Job, Course, Item } from '../../../models/types.js';
+import { Job, Course, Item, Hustle } from '../../../models/types.js';
 import Player from '../../../game/Player.js';
 
-export type ActionCardType = 'jobs' | 'college' | 'shopping';
+export type ActionCardType = 'jobs' | 'college' | 'shopping' | 'hustles';
 
 export interface ActionCardData {
     type: ActionCardType;
-    data: Job | Course | Item;
+    data: Job | Course | Item | Hustle;
 }
 
 export interface ActionCardConfig {
     player: Player | null;
-    onClick?: (data: Job | Course | Item, feedbackText: string, feedbackType: string) => void;
+    onClick?: (data: Job | Course | Item | Hustle, feedbackText: string, feedbackType: string) => void;
 }
 
 export interface ActionCardState {
@@ -63,7 +63,19 @@ function getShoppingState(item: Item, player: Player | null): ActionCardState {
     };
 }
 
-function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: ActionCardState, player: Player | null): string {
+function getHustleState(hustle: Hustle, player: Player | null): ActionCardState {
+    const isLocked = !!(player && (player.time < hustle.timeCost || player.sanity < hustle.sanityCost));
+    
+    return {
+        isLocked,
+        isCompleted: false,
+        buttonText: 'Hustle',
+        feedbackText: `+₡${hustle.reward}`,
+        feedbackType: 'success'
+    };
+}
+
+function createMetaTags(type: ActionCardType, data: Job | Course | Item | Hustle, state: ActionCardState, player: Player | null): string {
     if (type === 'jobs') {
         const job = data as Job;
         const multiplier = player ? player.wageMultiplier : 1.0;
@@ -85,6 +97,14 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
             <span class="action-card-tag price ${state.isLocked && !state.isCompleted ? 'locked' : ''}"><i class="material-icons">payments</i>₡${course.cost}</span>
             <span class="action-card-tag"><i class="material-icons">history</i>${course.time}CH total</span>
         `;
+    } else if (type === 'hustles') {
+        const hustle = data as Hustle;
+        return `
+            <span class="action-card-tag price"><i class="material-icons">payments</i>+₡${hustle.reward}</span>
+            <span class="action-card-tag"><i class="material-icons">schedule</i>${hustle.timeCost}CH</span>
+            <span class="action-card-tag penalty"><i class="material-icons">psychology</i>-${hustle.sanityCost} Sanity</span>
+            <div class="action-card-flavor">${hustle.flavorText}</div>
+        `;
     } else {
         const item = data as Item;
         let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.sanityBoost} Sanity (🧠)</span>`;
@@ -100,7 +120,7 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item, state: 
 
 export function createActionCard(
     type: ActionCardType,
-    data: Job | Course | Item,
+    data: Job | Course | Item | Hustle,
     config: ActionCardConfig
 ): HTMLElement {
     const card = document.createElement('div');
@@ -117,6 +137,10 @@ export function createActionCard(
         const course = data as Course;
         title = course.name;
         state = getCourseState(course, config.player);
+    } else if (type === 'hustles') {
+        const hustle = data as Hustle;
+        title = hustle.title;
+        state = getHustleState(hustle, config.player);
     } else {
         const item = data as Item;
         title = item.name;
@@ -151,7 +175,7 @@ export function createActionCard(
 
 export function createActionCardList(
     type: ActionCardType,
-    items: (Job | Course | Item)[],
+    items: (Job | Course | Item | Hustle)[],
     config: ActionCardConfig
 ): HTMLElement {
     const list = document.createElement('div');

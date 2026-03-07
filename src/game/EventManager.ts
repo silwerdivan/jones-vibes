@@ -18,6 +18,13 @@ export class EventManager {
         return [...this.eventHistory];
     }
 
+    triggerEventById(eventId: string, gameState: GameState): void {
+        const event = this.events.find(e => e.id === eventId);
+        if (event) {
+            this.triggerEvent(event, gameState);
+        }
+    }
+
     checkTriggers(triggerType: 'Global' | 'Local' | 'Consequence', gameState: GameState, context: any = {}): void {
         const currentPlayer = gameState.getCurrentPlayer();
         
@@ -82,7 +89,10 @@ export class EventManager {
                 case 'EDUCATION':
                     return player.educationLevel >= (req.value || 0);
                 case 'STAT':
-                    // Not implemented yet, could be sanity, etc.
+                    if (req.id === 'SANITY') return player.sanity >= (req.value || 0);
+                    if (req.id === 'HUNGER') return player.hunger <= (req.value || 0);
+                    if (req.id === 'TIME') return player.time >= (req.value || 0);
+                    if (req.id === 'CREDITS') return player.credits >= (req.value || 0);
                     return true;
                 default:
                     return true;

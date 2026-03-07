@@ -4,6 +4,11 @@ test.describe('Location Navigation and UI', () => {
   test.beforeEach(async ({ page }) => {
     // Seed localStorage to bypass EULA
     await page.addInitScript(() => {
+      // Mock Math.random to prevent random events during tests
+      // Local events have 30% chance, Consequence have 50%
+      // Setting to 0.99 ensures they don't trigger
+      Math.random = () => 0.99;
+
       const state = {
         players: [
           {

@@ -34,6 +34,17 @@ export interface Item {
     maintenanceCost?: number;
 }
 
+export interface Hustle {
+    id: string;
+    title: string;
+    reward: number;
+    sanityCost: number;
+    timeCost: number;
+    risk: number; // 0-1 probability
+    consequenceId?: string; // Reference to a RandomEvent ID
+    flavorText: string;
+}
+
 export interface Clerk {
     name: string;
     message: string;
@@ -111,7 +122,7 @@ export interface GameCondition {
     icon?: string;
 }
 
-export type RandomEventType = 'Global' | 'Local' | 'Consequence';
+export type RandomEventType = 'Global' | 'Local' | 'Consequence' | 'Hidden';
 
 export interface RandomEventEffect {
     type: 'CREDITS' | 'SANITY' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';

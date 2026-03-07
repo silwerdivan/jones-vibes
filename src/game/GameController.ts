@@ -37,6 +37,7 @@ class GameController {
     EventBus.subscribe(UI_EVENTS.APPLY_JOB, guard((level: number) => this.applyForJob(level)));
     EventBus.subscribe(UI_EVENTS.TAKE_COURSE, guard((courseId: number) => this.takeCourse(courseId)));
     EventBus.subscribe(UI_EVENTS.STUDY, guard(() => this.study()));
+    EventBus.subscribe(UI_EVENTS.HUSTLE_EXECUTE, guard((hustleId: string) => this.executeHustle(hustleId)));
     EventBus.subscribe(UI_EVENTS.REQUEST_STATE_REFRESH, () => this.gameState.publishCurrentState());
     
     // Direct system actions are now routed in main.ts
@@ -44,6 +45,10 @@ class GameController {
 
   workShift() {
     this.gameState.workShift();
+  }
+
+  executeHustle(hustleId: string) {
+    this.gameState.executeHustle(hustleId);
   }
 
   study() {

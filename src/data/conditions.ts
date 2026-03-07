@@ -82,5 +82,27 @@ export const CONDITIONS: Record<string, GameCondition> = {
             { type: 'MAX_ENERGY', value: 0.8 }
         ],
         icon: '🧠'
+    },
+    'FEVER': {
+        id: 'FEVER',
+        name: 'Fever',
+        description: 'Synthetic infection. Sanity and energy drain.',
+        remainingDuration: 48,
+        effects: [
+            { type: 'SANITY_TICK', value: -0.5 },
+            { type: 'WAGE_MULTIPLIER', value: 0.7 }
+        ],
+        icon: '🌡️'
+    },
+    'BIO_SYNC': {
+        id: 'BIO_SYNC',
+        name: 'Bio-Sync Upgrade',
+        description: 'Experimental neuro-sync. Increased work efficiency but slight mental strain.',
+        remainingDuration: 168,
+        effects: [
+            { type: 'WORK_EFFICIENCY', value: 1.3 },
+            { type: 'SANITY_TICK', value: -0.1 }
+        ],
+        icon: '⚡'
     }
 };

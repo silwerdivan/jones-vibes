@@ -1,5 +1,6 @@
 import EventBus, { UI_EVENTS } from '../EventBus.js';
 import { JOBS } from '../data/jobs.js';
+import { HUSTLES } from '../data/hustles.js';
 import { COURSES } from '../data/courses.js';
 import { CLERKS } from '../data/clerks.js';
 import { SHOPPING_ITEMS } from '../data/items.js';
@@ -15,7 +16,7 @@ import InventoryScreen from './components/screens/InventoryScreen.js';
 import PlaceholderScreen from './components/screens/PlaceholderScreen.js';
 import SystemScreen from './components/screens/SystemScreen.js';
 import { createActionCardList } from './components/shared/ActionCard.js';
-import { TurnSummary, Choice, LocationAction, Item, Course, Job, Clerk } from '../models/types.js';
+import { TurnSummary, Choice, LocationAction, Item, Course, Job, Clerk, Hustle } from '../models/types.js';
 import { PersistenceService } from '../services/PersistenceService.js';
 
 type ClerkRegistry = Record<string, Clerk>;
@@ -321,7 +322,27 @@ class UIManager {
         this.choiceModal.showInput(false);
 
         if (location === 'Labor Sector') {
-            this.renderActionCards('jobs', JOBS);
+            const container = document.createElement('div');
+            container.className = 'labor-sector-dashboard';
+            
+            const jobsHeader = document.createElement('h3');
+            jobsHeader.className = 'dashboard-section-header';
+            jobsHeader.textContent = 'Career Protocols';
+            container.appendChild(jobsHeader);
+            
+            const jobCards = this.renderActionCardList('jobs', JOBS);
+            container.appendChild(jobCards);
+            
+            const hustlesHeader = document.createElement('h3');
+            hustlesHeader.className = 'dashboard-section-header';
+            hustlesHeader.style.marginTop = '20px';
+            hustlesHeader.textContent = 'Unsanctioned Hustles';
+            container.appendChild(hustlesHeader);
+            
+            const hustleCards = this.renderActionCardList('hustles', HUSTLES);
+            container.appendChild(hustleCards);
+            
+            this.choiceModal.setContent(container);
         } else if (location === 'Cognitive Re-Ed') {
             this.collegeDashboard.render(this.gameState!);
             this.choiceModal.setContent(this.collegeDashboard.getElement());
@@ -410,10 +431,10 @@ class UIManager {
         this.showLocationDashboard('Labor Sector');
     }
 
-    renderActionCards(type: 'jobs' | 'college' | 'shopping', data: any[]) {
+    private renderActionCardList(type: 'jobs' | 'college' | 'shopping' | 'hustles', data: any[]): HTMLElement {
         const player = this.gameState ? this.gameState.getCurrentPlayer() : null;
         
-        const cardList = createActionCardList(type, data, {
+        return createActionCardList(type, data, {
             player,
             onClick: (item, feedbackText, feedbackType) => {
                 const cardElement = document.activeElement as HTMLElement;
@@ -424,6 +445,14 @@ class UIManager {
                 if (type === 'jobs') {
                     const job = item as Job;
                     EventBus.publish(UI_EVENTS.APPLY_JOB, job.level);
+                    this.setTrackedTimeout(() => {
+                        if (this.gameState?.activeLocationDashboard === 'Labor Sector') {
+                            this.showLocationDashboard('Labor Sector');
+                        }
+                    }, 100);
+                } else if (type === 'hustles') {
+                    const hustle = item as Hustle;
+                    EventBus.publish(UI_EVENTS.HUSTLE_EXECUTE, hustle.id);
                     this.setTrackedTimeout(() => {
                         if (this.gameState?.activeLocationDashboard === 'Labor Sector') {
                             this.showLocationDashboard('Labor Sector');
@@ -450,7 +479,10 @@ class UIManager {
                 }
             }
         });
+    }
 
+    renderActionCards(type: 'jobs' | 'college' | 'shopping', data: any[]) {
+        const cardList = this.renderActionCardList(type, data);
         this.choiceModal.setContent(cardList);
     }
 

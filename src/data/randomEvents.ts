@@ -188,5 +188,118 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 ]
             }
         ]
+    },
+    {
+        id: 'plasma-infection',
+        type: 'Hidden',
+        title: 'Bio-Sync Infection',
+        flavorText: 'The "sterile" clinic was anything but. Your arm is throbbing with a dull, synthetic heat.',
+        choices: [
+            {
+                text: 'Suffer: "I hope my insurance covers this... oh wait."',
+                effects: [
+                    { type: 'SANITY', value: -10 },
+                    { type: 'CONDITION', value: 2.0, conditionId: 'FEVER' }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'scrap-cut',
+        type: 'Hidden',
+        title: 'Tetanus-Grade Laceration',
+        flavorText: 'A jagged piece of rebar caught your leg. It’s bleeding more than you’d like.',
+        choices: [
+            {
+                text: 'Patch it up: "Just another scar for the collection."',
+                effects: [
+                    { type: 'SANITY', value: -5 },
+                    { type: 'TIME', value: -2 }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'global_maglev_panic',
+        type: 'Global',
+        title: 'Panic Attack on the Mag-Lev',
+        flavorText: `The flickering neon and the press of too many synthetic-clothed bodies suddenly feel suffocating. The Mag-Lev screeches around a bend.`,
+        choices: [
+            {
+                text: `Control: "Focus on your breathing."`,
+                requirement: { type: 'STAT', id: 'SANITY', value: 60 },
+                effects: [
+                    { type: 'SANITY', value: 10 }
+                ]
+            },
+            {
+                text: `Suffer: "Let the darkness in."`,
+                effects: [
+                    { type: 'SANITY', value: -20 },
+                    { type: 'TIME', value: -1 }
+                ]
+            },
+            {
+                text: `Medicate: "Drink some Focus-Fluids."`,
+                requirement: { type: 'ITEM', id: 'Focus-Fluids' },
+                effects: [
+                    { type: 'SANITY', value: 15 }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'local_shady_courier',
+        type: 'Local',
+        title: 'Shady Fixer Courier Job',
+        flavorText: `A hooded figure leans out from a dark alcove, offering you a quick ₡300 to deliver a "warm" datashard to the Cred-Debt Ctr.`,
+        prerequisites: { location: 'Labor Sector' },
+        choices: [
+            {
+                text: `Accept: "I need the credits."`,
+                requirement: { type: 'STAT', id: 'TIME', value: 4 },
+                effects: [
+                    { type: 'CREDITS', value: 300 },
+                    { type: 'TIME', value: -4 },
+                    { type: 'SANITY', value: -10 }
+                ]
+            },
+            {
+                text: `Decline: "Too risky."`,
+                effects: [
+                    { type: 'SANITY', value: 5 }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'local_black_market_biosync',
+        type: 'Local',
+        title: 'Black Market Bio-Sync',
+        flavorText: `A back-alley ripperdoc offers an experimental neuro-sync at a "deep discount." It's mostly sanitary. Probably.`,
+        prerequisites: { location: 'Ripperdoc Clinic' },
+        choices: [
+            {
+                text: `Sync: "Boost my efficiency." (₡500)`,
+                requirement: { type: 'STAT', id: 'CREDITS', value: 500 },
+                effects: [
+                    { type: 'CREDITS', value: -500 },
+                    { type: 'CONDITION', value: 1.0, conditionId: 'BIO_SYNC' }
+                ]
+            },
+            {
+                text: `Sell: "I'll sell some neural data instead."`,
+                effects: [
+                    { type: 'CREDITS', value: 200 },
+                    { type: 'SANITY', value: -20 }
+                ]
+            },
+            {
+                text: `Decline: "I like my brain the way it is."`,
+                effects: [
+                    { type: 'SANITY', value: 5 }
+                ]
+            }
+        ]
     }
 ];

@@ -4,6 +4,9 @@ test.describe('Labor Sector Double Popup Glitch', () => {
   test.beforeEach(async ({ page }) => {
     // Seed localStorage to bypass EULA and set initial state
     await page.addInitScript(() => {
+      // Mock Math.random to prevent random events during tests
+      Math.random = () => 0.99;
+
       const state = {
         players: [
           {
