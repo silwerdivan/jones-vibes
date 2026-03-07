@@ -36,6 +36,7 @@ class TimeSystem {
     }
 
     endTurn(): TurnSummary {
+        this.gameState.isEndingTurn = true;
         const currentPlayer = this.gameState.getCurrentPlayer();
         const summary: TurnSummary = {
             player: currentPlayer.id,
@@ -273,6 +274,7 @@ class TimeSystem {
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.LOCATION_CHANGED, { player: currentPlayer, location: 'Hab-Pod 404', gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
+        this.gameState.isEndingTurn = false;
         return summary;
     }
 
@@ -316,3 +318,4 @@ class TimeSystem {
 }
 
 export default TimeSystem;
+

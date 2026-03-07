@@ -26,6 +26,7 @@ class GameState {
     activeEvent: any | null;
     activeGraduation: any | null;
     isAIThinking: boolean = false;
+    isEndingTurn: boolean = false;
     eventManager: EventManager;
     private _autoEndTurnTimeout: any = null;
     private _aiTurnTimeout: any = null;
@@ -420,6 +421,10 @@ class GameState {
     }
 
     _checkAutoEndTurn(): void {
+        if (this.isEndingTurn || this.pendingTurnSummary) {
+            return;
+        }
+
         const player = this.getCurrentPlayer();
         if (player.time <= 0 && !player.isAI && !this.gameOver) {
             // Clear existing timeout if any

@@ -8,6 +8,7 @@ describe('UIManager', () => {
     let mockPlayer: any;
 
     beforeEach(() => {
+        EventBus.clearAll();
         document.body.innerHTML = `
             <div class="app-shell">
                 <div class="news-ticker"><div id="news-ticker-content"></div></div>
@@ -115,4 +116,23 @@ describe('UIManager', () => {
         expect(actions).toHaveLength(1);
         expect(actions[0].label).toBe('View Inventory');
     });
+    it('preserves the active dashboard when a random event modal closes', () => {
+        const spy = vi.spyOn(EventBus, 'publish');
+        mockPlayer.location = 'Labor Sector';
+        mockGameState.activeLocationDashboard = 'Labor Sector';
+        mockGameState.activeEvent = { id: 'local_fastfood_glitch' };
+        (uiManager as any).gameState = mockGameState;
+
+        uiManager.showRandomEventModal({
+            title: 'Broken Auto-Chef',
+            flavorText: 'Test event',
+            choices: [{ text: 'Take it' }]
+        }, vi.fn());
+
+        (uiManager as any).choiceModal.hide();
+
+        expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', { location: null });
+    });
 });
+
+

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import GameState from '../src/game/GameState';
 import TimeSystem from '../src/systems/TimeSystem';
 import EventBus from '../src/EventBus';
@@ -8,22 +8,23 @@ describe('TimeSystem', () => {
     let timeSystem: TimeSystem;
 
     beforeEach(() => {
+        vi.useFakeTimers();
+        EventBus.clearAll();
         gameState = new GameState(2, false);
         timeSystem = new TimeSystem(gameState);
         gameState.setTimeSystem(timeSystem);
-        // Reset event bus
-        (EventBus as any).events = {};
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     it('should clear UI state when turn ends', () => {
-        // Setup some UI state
         gameState.activeLocationDashboard = 'Labor Sector';
         gameState.activeChoiceContext = { title: 'Test' };
-        
-        // End the turn
+
         timeSystem.endTurn();
-        
-        // Verify UI state is cleared
+
         expect(gameState.activeLocationDashboard).toBeNull();
         expect(gameState.activeChoiceContext).toBeNull();
     });
@@ -31,21 +32,19 @@ describe('TimeSystem', () => {
     it('should reset player location to Home when turn ends', () => {
         const player = gameState.getCurrentPlayer();
         player.location = 'Shopping Mall';
-        
+
         timeSystem.endTurn();
-        
+
         expect(player.location).toBe('Hab-Pod 404');
     });
 
     it('should handle weekly Burn Rate when turn ends', () => {
         const player = gameState.getCurrentPlayer();
-        player.credits = 100; // Less than 150 (coffin-tube base)
+        player.credits = 100;
         player.burnRate = 150;
-        
+
         timeSystem.endTurn();
-        
-        // Paid what they could (100)
-        // Debt (50) + 10% interest (5) = 55
+
         expect(player.credits).toBe(0);
         expect(player.debt).toBe(55);
         expect(player.hasCondition('SUBSCRIPTION_DEFAULT')).toBe(true);
@@ -55,24 +54,21 @@ describe('TimeSystem', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 60;
         player.sanity = 50;
-        player.credits = 150; // Cover Burn Rate
-        
+        player.credits = 150;
+
         timeSystem.endTurn();
-        
-        // Hunger increases by 20, penalty is applied if hunger > 50
+
         expect(player.hunger).toBe(80);
-        // Ambient Stress: -10, Hunger penalty: -5, Cycle Recovery: +10. Total change: -5.
         expect(player.sanity).toBe(45);
     });
 
     it('should apply loan interest if player has a loan', () => {
         const player = gameState.getCurrentPlayer();
         player.loan = 1000;
-        player.credits = 150; // Cover Burn Rate
-        
+        player.credits = 150;
+
         timeSystem.endTurn();
-        
-        // 10% interest
+
         expect(player.loan).toBe(1100);
     });
 
@@ -80,16 +76,13 @@ describe('TimeSystem', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 0;
         player.sanity = 50;
-        player.credits = 150; // Cover Burn Rate
-        
-        // End turn 1
+        player.credits = 150;
+
         timeSystem.endTurn();
-        // -10 Ambient Stress + 10 Cycle Recovery = 0 net change
-        expect(player.sanity).toBe(50); 
-        
-        // End turn 2
-        player.hunger = 0; // keep hunger low
-        player.credits = 150; // Re-fund
+        expect(player.sanity).toBe(50);
+
+        player.hunger = 0;
+        player.credits = 150;
         timeSystem.endTurn();
         expect(player.sanity).toBe(50);
     });
@@ -97,15 +90,34 @@ describe('TimeSystem', () => {
     it('should advance turn correctly', () => {
         expect(gameState.currentPlayerIndex).toBe(0);
         expect(gameState.turn).toBe(1);
-        
+
         timeSystem.advanceTurn();
-        
+
         expect(gameState.currentPlayerIndex).toBe(1);
         expect(gameState.turn).toBe(1);
-        
+
         timeSystem.advanceTurn();
-        
+
         expect(gameState.currentPlayerIndex).toBe(0);
         expect(gameState.turn).toBe(2);
+    });
+
+    it('should not auto-finalize the turn again when burnout happens during end-turn condition ticks', () => {
+        const player = gameState.getCurrentPlayer();
+        const endTurnSpy = vi.spyOn(timeSystem, 'endTurn');
+        const tickSpy = vi.spyOn(gameState.eventManager, 'tickConditions').mockImplementation(() => {
+            gameState.handleBurnout(player);
+        });
+
+        player.credits = 150;
+
+        timeSystem.endTurn();
+        vi.advanceTimersByTime(1500);
+
+        expect(tickSpy).toHaveBeenCalled();
+        expect(endTurnSpy).toHaveBeenCalledTimes(1);
+        expect(gameState.pendingTurnSummary).not.toBeNull();
+        expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
+        expect(gameState.isEndingTurn).toBe(false);
     });
 });

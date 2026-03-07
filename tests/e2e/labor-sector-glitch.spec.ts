@@ -1,77 +1,77 @@
 import { test, expect } from '@playwright/test';
 
+const baseState = {
+  players: [
+    {
+      id: 1,
+      credits: 5000,
+      savings: 0,
+      sanity: 80,
+      educationLevel: 0,
+      educationCredits: 0,
+      educationCreditsGoal: 0,
+      careerLevel: 1,
+      time: 24,
+      location: 'Hab-Pod 404',
+      hasCar: false,
+      loan: 0,
+      inventory: [],
+      hunger: 0,
+      timeDeficit: 0,
+      weeklyIncome: 0,
+      weeklyExpenses: 0,
+      weeklySanityChange: 0,
+      isAI: false,
+      name: 'Test Player',
+      wageMultiplier: 1.0,
+      activeConditions: []
+    },
+    {
+      id: 2,
+      credits: 5000,
+      savings: 0,
+      sanity: 80,
+      educationLevel: 0,
+      educationCredits: 0,
+      educationCreditsGoal: 0,
+      careerLevel: 0,
+      time: 24,
+      location: 'Hab-Pod 404',
+      hasCar: false,
+      loan: 0,
+      inventory: [],
+      hunger: 0,
+      timeDeficit: 0,
+      weeklyIncome: 0,
+      weeklyExpenses: 0,
+      weeklySanityChange: 0,
+      isAI: true,
+      name: 'AI Opponent',
+      wageMultiplier: 1.0,
+      activeConditions: []
+    }
+  ],
+  currentPlayerIndex: 0,
+  turn: 1,
+  gameOver: false,
+  winnerId: null,
+  log: [],
+  isPlayer2AI: true,
+  pendingTurnSummary: null,
+  activeScreenId: 'city',
+  activeLocationDashboard: null,
+  activeChoiceContext: null,
+  activeGraduation: null,
+  isAIThinking: false,
+  eventHistory: []
+};
+
 test.describe('Labor Sector mobile rebuild', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
+    await page.addInitScript((state) => {
       Math.random = () => 0.99;
-
-      const state = {
-        players: [
-          {
-            id: 1,
-            credits: 5000,
-            savings: 0,
-            sanity: 80,
-            educationLevel: 0,
-            educationCredits: 0,
-            educationCreditsGoal: 0,
-            careerLevel: 1,
-            time: 24,
-            location: 'Hab-Pod 404',
-            hasCar: false,
-            loan: 0,
-            inventory: [],
-            hunger: 0,
-            timeDeficit: 0,
-            weeklyIncome: 0,
-            weeklyExpenses: 0,
-            weeklySanityChange: 0,
-            isAI: false,
-            name: 'Test Player',
-            wageMultiplier: 1.0,
-            activeConditions: []
-          },
-          {
-            id: 2,
-            credits: 5000,
-            savings: 0,
-            sanity: 80,
-            educationLevel: 0,
-            educationCredits: 0,
-            educationCreditsGoal: 0,
-            careerLevel: 0,
-            time: 24,
-            location: 'Hab-Pod 404',
-            hasCar: false,
-            loan: 0,
-            inventory: [],
-            hunger: 0,
-            timeDeficit: 0,
-            weeklyIncome: 0,
-            weeklyExpenses: 0,
-            weeklySanityChange: 0,
-            isAI: true,
-            name: 'AI Opponent',
-            wageMultiplier: 1.0,
-            activeConditions: []
-          }
-        ],
-        currentPlayerIndex: 0,
-        turn: 1,
-        gameOver: false,
-        winnerId: null,
-        log: [],
-        isPlayer2AI: true,
-        pendingTurnSummary: null,
-        activeScreenId: 'city',
-        activeLocationDashboard: null,
-        activeChoiceContext: null,
-        activeGraduation: null,
-        isAIThinking: false,
-        eventHistory: []
-      };
       window.localStorage.setItem('jones_fastlane_save', JSON.stringify(state));
-    });
+    }, baseState);
 
     await page.goto('/');
   });
@@ -121,5 +121,24 @@ test.describe('Labor Sector mobile rebuild', () => {
 
     await page.waitForTimeout(1500);
     await expect(modalOverlay).toHaveClass(/hidden/);
+  });
+
+  test('reopens Labor Sector after resolving a Labor Sector random event', async ({ page }) => {
+    await page.addInitScript((state) => {
+      let index = 0;
+      const scriptedRandom = [0.05, 0.0, 0.99];
+      Math.random = () => scriptedRandom[index++] ?? 0.99;
+      window.localStorage.setItem('jones_fastlane_save', JSON.stringify(state));
+    }, baseState);
+
+    await page.goto('/');
+
+    await page.locator('.bento-card', { hasText: 'Labor Sector' }).click();
+
+    await expect(page.locator('#choice-modal-title')).toHaveText('Broken Auto-Chef', { timeout: 5000 });
+    await page.locator('button', { hasText: 'Risk it:' }).click();
+
+    await expect(page.locator('#choice-modal-overlay')).not.toHaveClass(/hidden/, { timeout: 5000 });
+    await expect(page.locator('.labor-sector-tab[data-tab="jobs"]')).toBeVisible();
   });
 });

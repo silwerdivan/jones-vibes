@@ -44,6 +44,8 @@ class UIManager {
     private lastLocation: string | null = null;
     private lastPlayerId: number | null = null;
     private isSummaryShown: boolean = false;
+    private dashboardToRestoreAfterEvent: string | null = null;
+    private isRandomEventModalOpen: boolean = false;
     private loadingOverlay: HTMLElement | null;
     private trackedTimeouts: number[] = [];
 
@@ -179,7 +181,12 @@ class UIManager {
                 this.clearTrackedTimeouts();
                 this.choiceModal.setExtraClass(null);
                 this.choiceModal.showCancelButton(true);
-                EventBus.publish('dashboardSwitched', { location: null });
+                const shouldPreserveDashboard = this.isRandomEventModalOpen;
+                this.isRandomEventModalOpen = false;
+                if (!shouldPreserveDashboard) {
+                    this.dashboardToRestoreAfterEvent = null;
+                    EventBus.publish('dashboardSwitched', { location: null });
+                }
                 EventBus.publish('choiceModalSwitched', null);
             }
         });
@@ -201,10 +208,14 @@ class UIManager {
                 }
             }
 
-            // If a dashboard is active in state but the modal is not visible, and no event is active, show it
-            // This handles re-showing the dashboard after a random event is dismissed
-            if (gameState.activeLocationDashboard && !this.choiceModal.isVisible() && !gameState.activeEvent && !gameState.pendingTurnSummary && !this.isSummaryShown) {
-                this.showLocationDashboard(gameState.activeLocationDashboard);
+            // Re-open the location dashboard after random events once the modal is gone.
+            if (!this.choiceModal.isVisible() && !gameState.activeEvent && !gameState.pendingTurnSummary && !this.isSummaryShown) {
+                const dashboardToShow = gameState.activeLocationDashboard || this.dashboardToRestoreAfterEvent;
+                if (dashboardToShow) {
+                    this.dashboardToRestoreAfterEvent = null;
+                    this.isRandomEventModalOpen = false;
+                    this.showLocationDashboard(dashboardToShow);
+                }
             }
 
             // Components now auto-update via granular event subscriptions
@@ -403,7 +414,7 @@ class UIManager {
         intro.className = 'labor-sector-intro';
         intro.innerHTML = `
             <p class="labor-sector-kicker">LABOR SECTOR</p>
-            <h3 class="labor-sector-title">Secure income first. Dip into hustles when you need a short-term bailout.</h3>
+            <h3 class="labor-sector-title">Secure income first. Use hustles when you are short on time or need an emergency burn-rate bailout.</h3>
         `;
         container.appendChild(intro);
 
@@ -454,7 +465,7 @@ class UIManager {
 
         const hustlesHint = document.createElement('p');
         hustlesHint.className = 'labor-sector-hint';
-        hustlesHint.textContent = 'Fast cash with a real sanity and time cost.';
+        hustlesHint.textContent = 'Shorter than a full shift. Better burst credits, worse sanity and risk.';
         hustlesPanel.appendChild(hustlesHint);
 
         const hustleCards = this.renderActionCardList('hustles', HUSTLES);
@@ -710,6 +721,8 @@ class UIManager {
 
     showRandomEventModal(event: any, callback: (choiceIndex: number) => void) {
         if (!this.gameState) return;
+        this.isRandomEventModalOpen = true;
+        this.dashboardToRestoreAfterEvent = this.gameState.activeLocationDashboard || (event.type === 'Local' ? this.gameState.getCurrentPlayer().location : null);
         
         // Publish event for persistence
         EventBus.publish('choiceModalSwitched', { 
@@ -732,8 +745,19 @@ class UIManager {
 
         event.choices.forEach((choice: any, index: number) => {
             this.choiceModal.addPrimaryButton(choice.text, () => {
+                const dashboardToRestore = this.dashboardToRestoreAfterEvent;
                 this.choiceModal.hide();
                 callback(index);
+
+                if (dashboardToRestore) {
+                    this.setTrackedTimeout(() => {
+                        if (!this.choiceModal.isVisible() && !this.gameState?.activeEvent && !this.gameState?.pendingTurnSummary) {
+                            this.dashboardToRestoreAfterEvent = null;
+                            this.isRandomEventModalOpen = false;
+                            this.showLocationDashboard(dashboardToRestore);
+                        }
+                    }, 50);
+                }
             });
         });
 
@@ -746,5 +770,15 @@ class UIManager {
 }
 
 export default UIManager;
+
+
+
+
+
+
+
+
+
+
 
 

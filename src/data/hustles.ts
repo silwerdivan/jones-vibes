@@ -4,21 +4,22 @@ export const HUSTLES: Hustle[] = [
     {
         id: 'donate-plasma',
         title: 'Donate Blood-Plasma',
-        reward: 25,
-        sanityCost: 15,
+        reward: 42,
+        sanityCost: 18,
         timeCost: 4,
-        risk: 0.15,
+        risk: 0.2,
         consequenceId: 'plasma-infection',
-        flavorText: 'The extraction is slow and leaves you feeling light-headed and hollow.'
+        flavorText: 'A desperation-cash play: strong payout for a half-shift, but it leaves you hollow and exposed.'
     },
     {
         id: 'scrap-metal',
         title: 'Scrap Metal',
-        reward: 30,
-        sanityCost: 2,
+        reward: 38,
+        sanityCost: 6,
         timeCost: 4,
-        risk: 0.05,
+        risk: 0.12,
         consequenceId: 'scrap-cut',
-        flavorText: 'Rummaging through the industrial waste for anything salvageable.'
+        flavorText: 'A quick cash-out when you cannot fit a full shift into the cycle.'
     }
 ];
+
