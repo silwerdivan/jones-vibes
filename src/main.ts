@@ -53,6 +53,7 @@ function main() {
   EventBus.subscribe(UI_EVENTS.BANK_WITHDRAW, guard((amount: number) => economySystem.withdraw(amount)));
   EventBus.subscribe(UI_EVENTS.BANK_LOAN, guard((amount: number) => economySystem.takeLoan(amount)));
   EventBus.subscribe(UI_EVENTS.BANK_REPAY, guard((amount: number) => economySystem.repayLoan(amount)));
+  EventBus.subscribe(UI_EVENTS.BANK_PAY_DEBT, guard((amount: number) => economySystem.payDebt(amount)));
   EventBus.subscribe(UI_EVENTS.BUY_ITEM, guard((itemName: string) => economySystem.buyItem(itemName)));
   EventBus.subscribe(UI_EVENTS.BUY_CAR, guard(() => economySystem.buyCar()));
 

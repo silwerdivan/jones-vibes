@@ -1,6 +1,7 @@
 import GameState from '../game/GameState';
 import Player from '../game/Player';
 import EventBus, { STATE_EVENTS } from '../EventBus';
+import { CONDITIONS } from '../data/conditions';
 
 interface TurnSummary {
     player: number;
@@ -71,20 +72,42 @@ class TimeSystem {
 
         // 3. Apply weekly Burn Rate
         const burnRate = currentPlayer.calculateBurnRate();
-        currentPlayer.spendCredits(burnRate);
+        const availableCredits = currentPlayer.credits;
+        const paidAmount = Math.min(burnRate, availableCredits);
+        const unpaidAmount = burnRate - paidAmount;
+
+        if (paidAmount > 0) {
+            currentPlayer.spendCredits(paidAmount);
+        }
+
+        if (unpaidAmount > 0) {
+            currentPlayer.addDebt(unpaidAmount);
+        }
+
         summary.events.push({
-            type: 'expense',
-            label: 'Burn Rate',
-            value: -burnRate,
+            type: unpaidAmount > 0 ? 'warning' : 'expense',
+            label: unpaidAmount > 0 ? 'Burn Rate (Partial)' : 'Burn Rate',
+            value: -paidAmount,
             unit: '₡',
             icon: 'home'
         });
 
-        this.gameState.addLogMessage(
-            `${this._getPlayerName(currentPlayer)} paid weekly Burn Rate of ${this._formatMoney(burnRate)}.`,
-            'expense'
-        );
-        EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -burnRate, gameState: this.gameState });
+        if (unpaidAmount > 0) {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} failed to cover full Burn Rate. Paid ${this._formatMoney(paidAmount)}, ${this._formatMoney(unpaidAmount)} added to debt.`,
+                'warning'
+            );
+            EventBus.publish(STATE_EVENTS.DEBT_CHANGED, { player: currentPlayer, amount: unpaidAmount, gameState: this.gameState });
+        } else {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} paid weekly Burn Rate of ${this._formatMoney(burnRate)}.`,
+                'expense'
+            );
+        }
+        
+        if (paidAmount > 0) {
+            EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -paidAmount, gameState: this.gameState });
+        }
 
         // 4. Apply loan interest
         if (currentPlayer.loan > 0) {
@@ -106,6 +129,34 @@ class TimeSystem {
                 'warning'
             );
             EventBus.publish(STATE_EVENTS.LOAN_CHANGED, { player: currentPlayer, amount: interest, gameState: this.gameState });
+        }
+
+        // 4.5 Apply Burn Rate debt interest and default condition
+        if (currentPlayer.debt > 0) {
+            const debtInterest = Math.round(currentPlayer.debt * 0.10); // 10% interest
+            currentPlayer.addDebt(debtInterest);
+            
+            summary.events.push({
+                type: 'warning',
+                label: 'Service Interest',
+                value: -debtInterest,
+                unit: '₡',
+                icon: 'warning'
+            });
+            
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} charged ${this._formatMoney(debtInterest)} in subscription-debt interest.`,
+                'warning'
+            );
+            
+            // Apply SUBSCRIPTION_DEFAULT condition
+            currentPlayer.addCondition({...CONDITIONS['SUBSCRIPTION_DEFAULT']});
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} is in SUBSCRIPTION DEFAULT. Services limited.`,
+                'danger'
+            );
+            
+            EventBus.publish(STATE_EVENTS.DEBT_CHANGED, { player: currentPlayer, amount: debtInterest, gameState: this.gameState });
         }
 
         // 5. Apply hunger

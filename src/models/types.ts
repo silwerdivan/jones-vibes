@@ -75,6 +75,7 @@ export interface PlayerState {
     wageMultiplier: number;
     activeConditions: GameCondition[];
     burnRate: number;
+    debt: number;
 }
 
 export interface GraduationData {
@@ -125,7 +126,7 @@ export interface GameCondition {
 export type RandomEventType = 'Global' | 'Local' | 'Consequence' | 'Hidden';
 
 export interface RandomEventEffect {
-    type: 'CREDITS' | 'SANITY' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS';
+    type: 'CREDITS' | 'SANITY' | 'HUNGER' | 'TIME' | 'CONDITION' | 'EDUCATION_CREDITS' | 'CAR';
     value: number;
     conditionId?: string;
 }
@@ -134,7 +135,7 @@ export interface RandomEventChoiceData {
     text: string;
     effects: RandomEventEffect[];
     requirement?: {
-        type: 'ITEM' | 'CAREER' | 'EDUCATION' | 'STAT';
+        type: 'ITEM' | 'CAREER' | 'EDUCATION' | 'STAT' | 'CAR';
         id?: string;
         value?: number;
     };
@@ -154,6 +155,7 @@ export interface RandomEvent {
         maxWealth?: number;
         careerLevel?: number;
         itemRequired?: string;
+        hasCar?: boolean;
     };
 }
 

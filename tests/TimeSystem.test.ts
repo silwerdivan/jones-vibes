@@ -39,18 +39,23 @@ describe('TimeSystem', () => {
 
     it('should handle weekly Burn Rate when turn ends', () => {
         const player = gameState.getCurrentPlayer();
-        player.credits = 300;
+        player.credits = 100; // Less than 150 (coffin-tube base)
         player.burnRate = 150;
         
         timeSystem.endTurn();
         
-        expect(player.credits).toBe(150);
+        // Paid what they could (100)
+        // Debt (50) + 10% interest (5) = 55
+        expect(player.credits).toBe(0);
+        expect(player.debt).toBe(55);
+        expect(player.hasCondition('SUBSCRIPTION_DEFAULT')).toBe(true);
     });
 
     it('should apply hunger penalty if hunger is high', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 60;
         player.sanity = 50;
+        player.credits = 150; // Cover Burn Rate
         
         timeSystem.endTurn();
         
@@ -63,6 +68,7 @@ describe('TimeSystem', () => {
     it('should apply loan interest if player has a loan', () => {
         const player = gameState.getCurrentPlayer();
         player.loan = 1000;
+        player.credits = 150; // Cover Burn Rate
         
         timeSystem.endTurn();
         
@@ -74,6 +80,7 @@ describe('TimeSystem', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 0;
         player.sanity = 50;
+        player.credits = 150; // Cover Burn Rate
         
         // End turn 1
         timeSystem.endTurn();
@@ -82,6 +89,7 @@ describe('TimeSystem', () => {
         
         // End turn 2
         player.hunger = 0; // keep hunger low
+        player.credits = 150; // Re-fund
         timeSystem.endTurn();
         expect(player.sanity).toBe(50);
     });

@@ -388,11 +388,19 @@ class UIManager {
                 { text: 'Repay Loan', value: 'repay', action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_REPAY, amount) }
             ];
 
+            if (player.debt > 0) {
+                bankActions.push({ 
+                    text: 'Pay Debt', 
+                    value: 'pay_debt', 
+                    action: (amount: number) => EventBus.publish(UI_EVENTS.BANK_PAY_DEBT, amount) 
+                });
+            }
+
             bankActions.forEach(choice => {
                 this.choiceModal.addSecondaryButton(choice.text, 'payments', false, (e) => {
                     const amount = this.choiceModal.getInputValue();
 
-                    if (choice.value === 'deposit' || choice.value === 'repay') {
+                    if (choice.value === 'deposit' || choice.value === 'repay' || choice.value === 'pay_debt') {
                         this.spawnFeedback(e.currentTarget as HTMLElement, `-₡${amount}`, 'error');
                     } else {
                         this.spawnFeedback(e.currentTarget as HTMLElement, `+₡${amount}`, 'success');

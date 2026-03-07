@@ -286,6 +286,67 @@ class EconomySystem {
         return true;
     }
 
+    payDebt(amount: number, isAIAction: boolean = false): boolean {
+        if (this.gameState.isAIThinking && !isAIAction) {
+            return false;
+        }
+
+        const currentPlayer = this.gameState.getCurrentPlayer();
+
+        if (currentPlayer.location !== 'Cred-Debt Ctr') {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} must be at the Cred-Debt Ctr to pay debt.`,
+                'error'
+            );
+            return false;
+        }
+
+        if (amount <= 0) {
+            this.gameState.addLogMessage('Payment amount must be positive.', 'error');
+            return false;
+        }
+
+        if (currentPlayer.credits < amount) {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} doesn't have enough credits to pay this amount.`,
+                'error'
+            );
+            return false;
+        }
+
+        if (amount > currentPlayer.debt) {
+            this.gameState.addLogMessage(
+                `Payment amount (${this._formatMoney(amount)}) cannot exceed outstanding debt (${this._formatMoney(currentPlayer.debt)}).`,
+                'error'
+            );
+            return false;
+        }
+
+        if (currentPlayer.payDebt(amount)) {
+            this.gameState.addLogMessage(
+                `${this._getPlayerName(currentPlayer)} paid ${this._formatMoney(amount)} toward subscription debt.`,
+                'success'
+            );
+            
+            // If debt is fully cleared, check if we should remove the condition
+            if (currentPlayer.debt <= 0) {
+                currentPlayer.removeCondition('SUBSCRIPTION_DEFAULT');
+                this.gameState.addLogMessage(
+                    `Subscription debt cleared. Full service access restored.`,
+                    'success'
+                );
+            }
+
+            this.gameState.checkGameEndConditions(currentPlayer);
+            EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+            EventBus.publish(STATE_EVENTS.DEBT_CHANGED, { player: currentPlayer, amount: -amount, gameState: this.gameState });
+            EventBus.publish('stateChanged', this.gameState);
+            this._checkAutoEndTurn();
+            return true;
+        }
+        return false;
+    }
+
     buyCar(isAIAction: boolean = false): boolean {
         if (this.gameState.isAIThinking && !isAIAction) {
             return false;
@@ -337,6 +398,7 @@ class EconomySystem {
         this.gameState.checkGameEndConditions(currentPlayer);
         EventBus.publish(STATE_EVENTS.CREDITS_CHANGED, { player: currentPlayer, amount: -CAR_COST, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.TIME_CHANGED, { player: currentPlayer, gameState: this.gameState });
+        EventBus.publish(STATE_EVENTS.CAR_PURCHASED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish(STATE_EVENTS.INVENTORY_CHANGED, { player: currentPlayer, gameState: this.gameState });
         EventBus.publish('stateChanged', this.gameState);
         this._checkAutoEndTurn();

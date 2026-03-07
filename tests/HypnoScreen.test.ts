@@ -20,6 +20,7 @@ describe('Hypno-Screen Buff', () => {
     it('should increase sanity by 10 without Hypno-Screen', () => {
         const player = gameState.getCurrentPlayer();
         player.sanity = 50;
+        player.credits = 150; // Cover Burn Rate
         player.inventory = [];
 
         timeSystem.endTurn();
@@ -31,6 +32,7 @@ describe('Hypno-Screen Buff', () => {
     it('should increase sanity by 11 with Hypno-Screen', () => {
         const player = gameState.getCurrentPlayer();
         player.sanity = 50;
+        player.credits = 225; // Cover Burn Rate + Maintenance
         
         const hypnoScreen = SHOPPING_ITEMS.find(i => i.name === 'Hypno-Screen');
         expect(hypnoScreen).toBeDefined();

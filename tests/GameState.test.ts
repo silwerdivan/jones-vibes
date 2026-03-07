@@ -212,3 +212,76 @@ describe('Burnout Logic', () => {
         expect(player.hasCondition('TRAUMA_REBOOT')).toBe(false);
     });
 });
+
+describe('Labor Modifiers', () => {
+    let gameState: GameState;
+    let player: Player;
+
+    beforeEach(() => {
+        EventBus.clearAll();
+        gameState = new GameState(1);
+        player = gameState.players[0];
+        player.location = 'Labor Sector';
+        player.careerLevel = 1; // Sanitation-T3 (8 credits/hour, 6 hours = 48 base)
+        player.time = 24;
+    });
+
+    it('should apply WAGE_MULTIPLIER to workShift earnings', () => {
+        player.credits = 0;
+        // Apply 20% bonus (FAVOR_WITH_BOSS style)
+        player.addCondition({
+            id: 'BONUS',
+            name: 'Bonus',
+            description: 'Bonus',
+            remainingDuration: 24,
+            effects: [{ type: 'WAGE_MULTIPLIER', value: 1.2 }]
+        });
+
+        gameState.workShift();
+
+        // Base: 8 * 6 = 48
+        // Multiplier: 1.2
+        // Total: 48 * 1.2 = 57.6 -> 58 (rounded)
+        expect(player.credits).toBe(58);
+    });
+
+    it('should apply WORK_EFFICIENCY to workShift earnings', () => {
+        player.credits = 0;
+        // Apply 15% efficiency (Adrenaline Pump style)
+        player.addCondition({
+            id: 'EFFICIENCY',
+            name: 'Efficiency',
+            description: 'Efficiency',
+            remainingDuration: 24,
+            effects: [{ type: 'WORK_EFFICIENCY', value: 1.15 }]
+        });
+
+        gameState.workShift();
+
+        // Base: 8 * 6 = 48
+        // Efficiency: 1.15
+        // Total: 48 * 1.15 = 55.2 -> 55 (rounded)
+        expect(player.credits).toBe(55);
+    });
+
+    it('should apply both multipliers multiplicatively', () => {
+        player.credits = 0;
+        // WAGE_MULTIPLIER: 1.2, WORK_EFFICIENCY: 1.3 (BIO_SYNC)
+        player.addCondition({
+            id: 'BIO_SYNC',
+            name: 'Bio-Sync',
+            description: 'Bio-Sync',
+            remainingDuration: 24,
+            effects: [
+                { type: 'WAGE_MULTIPLIER', value: 1.2 },
+                { type: 'WORK_EFFICIENCY', value: 1.3 }
+            ]
+        });
+
+        gameState.workShift();
+
+        // Base: 48
+        // Total: 48 * 1.2 * 1.3 = 74.88 -> 75 (rounded)
+        expect(player.credits).toBe(75);
+    });
+});

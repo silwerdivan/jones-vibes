@@ -104,5 +104,16 @@ export const CONDITIONS: Record<string, GameCondition> = {
             { type: 'SANITY_TICK', value: -0.1 }
         ],
         icon: '⚡'
+    },
+    'SUBSCRIPTION_DEFAULT': {
+        id: 'SUBSCRIPTION_DEFAULT',
+        name: 'Subscription Default',
+        description: 'Unpaid bills. Retinal warnings and limited service access. Sanity drain and reduced wages.',
+        remainingDuration: 168, // 7 days
+        effects: [
+            { type: 'SANITY_TICK', value: -0.5 },
+            { type: 'WAGE_MULTIPLIER', value: 0.8 }
+        ],
+        icon: '🚫'
     }
 };

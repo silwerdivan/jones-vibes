@@ -57,7 +57,7 @@ export class EventManager {
     private evaluatePrerequisites(event: RandomEvent, player: Player, _gameState: GameState, _context: any): boolean {
         if (!event.prerequisites) return true;
 
-        const { location, minSanity, maxSanity, minWealth, maxWealth, careerLevel, itemRequired } = event.prerequisites;
+        const { location, minSanity, maxSanity, minWealth, maxWealth, careerLevel, itemRequired, hasCar } = event.prerequisites;
 
         if (location && player.location !== location) return false;
         if (minSanity !== undefined && player.sanity < minSanity) return false;
@@ -69,6 +69,7 @@ export class EventManager {
         
         if (careerLevel !== undefined && player.careerLevel < careerLevel) return false;
         if (itemRequired && !player.inventory.some(item => item.name === itemRequired)) return false;
+        if (hasCar !== undefined && player.hasCar !== hasCar) return false;
 
         return true;
     }
@@ -94,6 +95,8 @@ export class EventManager {
                     if (req.id === 'TIME') return player.time >= (req.value || 0);
                     if (req.id === 'CREDITS') return player.credits >= (req.value || 0);
                     return true;
+                case 'CAR':
+                    return player.hasCar;
                 default:
                     return true;
             }
@@ -171,6 +174,10 @@ export class EventManager {
                 break;
             case 'EDUCATION_CREDITS':
                 player.addEducationCredits(effect.value);
+                break;
+            case 'CAR':
+                if (effect.value === 1) player.hasCar = true;
+                else player.hasCar = false;
                 break;
         }
     }

@@ -100,6 +100,11 @@ export default class LifeScreen extends BaseComponent<GameState> {
             this.renderFinancialOverview(player);
         });
 
+        this.subscribe(STATE_EVENTS.DEBT_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.renderFinancialOverview(gameState.getCurrentPlayer());
+            this.renderStatusChips(gameState.getCurrentPlayer());
+        });
+
         this.subscribe(STATE_EVENTS.BURN_RATE_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.renderFinancialOverview(gameState.getCurrentPlayer());
         });
@@ -152,6 +157,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
     private renderFinancialOverview(player: any): void {
         const burnRate = player.calculateBurnRate();
+        const debt = player.debt || 0;
         this.financialOverview.innerHTML = `
             <div style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="font-size: 10px; font-weight: 800; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px;">Financial Overview</div>
@@ -164,6 +170,12 @@ export default class LifeScreen extends BaseComponent<GameState> {
                         <div style="font-size: 8px; opacity: 0.7; text-transform: uppercase;">Available Credits</div>
                         <div style="font-size: 18px; font-weight: 800; color: var(--neon-green);">₡${player.credits}</div>
                     </div>
+                    ${debt > 0 ? `
+                    <div style="grid-column: span 2; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; margin-top: 4px;">
+                        <div style="font-size: 8px; color: var(--neon-red); text-transform: uppercase;">Outstanding Debt</div>
+                        <div style="font-size: 20px; font-weight: 800; color: var(--neon-red);">₡${debt}</div>
+                    </div>
+                    ` : ''}
                 </div>
                 <div style="font-size: 9px; opacity: 0.6; margin-top: 4px; line-height: 1.2;">
                     Your Burn Rate includes base Burn Rate and active subscription fees for installed Cyberware/Assets.
@@ -176,6 +188,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
         time: number;
         hunger: number;
         loan: number;
+        debt: number;
     }): void {
         this.statusChips.innerHTML = '';
 
@@ -196,6 +209,10 @@ export default class LifeScreen extends BaseComponent<GameState> {
 
         if (player.loan > 0) {
             chips.push({ text: 'Negative Liquidity', className: 'chip-danger' });
+        }
+
+        if (player.debt > 0) {
+            chips.push({ text: 'IN DEBT', className: 'chip-danger' });
         }
 
         chips.forEach(chipData => {

@@ -4,12 +4,12 @@ export const HUSTLES: Hustle[] = [
     {
         id: 'donate-plasma',
         title: 'Donate Blood-Plasma',
-        reward: 50,
-        sanityCost: 5,
-        timeCost: 2,
+        reward: 25,
+        sanityCost: 15,
+        timeCost: 4,
         risk: 0.15,
         consequenceId: 'plasma-infection',
-        flavorText: 'The needle is slightly rusty, but the credits are clean.'
+        flavorText: 'The extraction is slow and leaves you feeling light-headed and hollow.'
     },
     {
         id: 'scrap-metal',

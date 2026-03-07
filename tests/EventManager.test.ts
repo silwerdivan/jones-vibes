@@ -55,7 +55,7 @@ describe('EventManager', () => {
     it('should obey Local trigger chance (30%)', () => {
         const publishSpy = vi.spyOn(EventBus, 'publish');
         // Set location so some local events are available
-        player.setLocation('Slums' as any);
+        player.setLocation('Labor Sector' as any);
         
         // 31% - should NOT trigger
         vi.spyOn(Math, 'random').mockReturnValue(0.31);
@@ -72,30 +72,62 @@ describe('EventManager', () => {
         const publishSpy = vi.spyOn(EventBus, 'publish');
         vi.spyOn(Math, 'random').mockReturnValue(0.01); // Force trigger chance
         
-        // Prerequisites for local_fastfood_glitch is location: 'Slums'
+        // Prerequisites for local_fastfood_glitch is location: 'Labor Sector'
         player.setLocation('Hab-Pod 404');
         eventManager.checkTriggers('Local', gameState);
         
         // Should not trigger because we are at Hab-Pod 404
         expect(publishSpy).not.toHaveBeenCalled();
         
-        player.setLocation('Slums' as any);
+        player.setLocation('Labor Sector' as any);
         eventManager.checkTriggers('Local', gameState);
         expect(publishSpy).toHaveBeenCalled();
     });
 
     it('should respect cooldown (last 3 events)', () => {
-        // Include ALL Global events in history to ensure NONE are triggered
-        const globalEventIds = RANDOM_EVENTS.filter(e => e.type === 'Global').map(e => e.id);
-        const managerWithHistory = new EventManager(globalEventIds);
+        // Find 3 global events to put in history
+        const globalEvents = RANDOM_EVENTS.filter(e => e.type === 'Global');
+        const testEventIds = globalEvents.slice(0, 3).map(e => e.id);
+        
+        // Create manager with these 3 in history
+        const managerWithHistory = new EventManager(testEventIds);
+        
+        // Mock Math.random to return the FIRST global event (which is in history)
+        vi.spyOn(Math, 'random').mockReturnValue(0.001);
+        
+        // We need to ensure availableEvents doesn't include any OTHER global events that might be triggered
+        // by our fixed random value.
+        // Actually, checkTriggers picks randomly from ALL available.
+        // If we put ALL global events in history, and history length > 3,
+        // then only the LAST 3 are actually blocking.
+        
+        // So let's mock the internal filter or just ensure history is long enough.
+        // But the code says: this.eventHistory.slice(-3).includes(event.id)
+        
+        // Let's just mock the available events or the trigger logic if it's too complex to setup perfectly.
+        // OR: Just ensure we know WHICH one will be picked.
         
         const publishSpy = vi.spyOn(EventBus, 'publish');
-        vi.spyOn(Math, 'random').mockReturnValue(0.01);
+        
+        // If we put the entire RANDOM_EVENTS list in history, then only the last 3 are blocked.
+        // That's the intended behavior of the code.
+        // The test should verify that the ones in the last 3 ARE blocked.
+        
+        const blockedEventId = testEventIds[2]; // The most recent one
+        
+        // Mocking availableEvents is hard as it's local.
+        // Let's just verify that if an event IS in the last 3, it's NOT in availableEvents.
+        
+        // For the sake of the test, let's just use 3 events in total.
+        const originalEvents = (managerWithHistory as any).events;
+        (managerWithHistory as any).events = globalEvents.slice(0, 3);
         
         managerWithHistory.checkTriggers('Global', gameState);
         
-        // Should NOT trigger because all matching events are in history
-        expect(publishSpy).not.toHaveBeenCalled();
+        expect(publishSpy).not.toHaveBeenCalledWith('randomEventTriggered', expect.any(Object));
+        
+        // Restore
+        (managerWithHistory as any).events = originalEvents;
     });
 
     it('should apply choice effects (CREDITS)', () => {
@@ -155,5 +187,32 @@ describe('EventManager', () => {
         
         expect(player.sanity).toBe(initialSanity - 2);
         expect(player.activeConditions[0].remainingDuration).toBe(8);
+    });
+
+    it('should correctly filter choices based on CAR requirement', () => {
+        const event = RANDOM_EVENTS.find(e => e.id === 'global_transit_strike');
+        if (!event) throw new Error('Transit Strike event not found');
+
+        let triggeredEvent: any = null;
+        const unsubscribe = EventBus.subscribe('randomEventTriggered', (data) => {
+            triggeredEvent = data.event;
+        });
+
+        // Test without car
+        player.hasCar = false;
+        (eventManager as any).triggerEvent(event, gameState);
+        
+        expect(triggeredEvent).toBeDefined();
+        let hasCarChoice = triggeredEvent.choices.some((c: any) => c.text.includes('Car:'));
+        expect(hasCarChoice).toBe(false);
+
+        // Test with car
+        player.hasCar = true;
+        (eventManager as any).triggerEvent(event, gameState);
+        
+        hasCarChoice = triggeredEvent.choices.some((c: any) => c.text.includes('Car:'));
+        expect(hasCarChoice).toBe(true);
+
+        unsubscribe();
     });
 });

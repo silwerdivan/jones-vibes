@@ -8,6 +8,8 @@ import MascotUI from './MascotUI.js';
 export default class HUD extends BaseComponent<GameState> {
     private hudCredits!: HTMLElement;
     private hudBurnRate!: HTMLElement;
+    private hudDebt!: HTMLElement;
+    private hudDebtContainer!: HTMLElement;
     private hudWeek!: HTMLElement;
     private hudLocation!: HTMLElement;
     private orbP1!: HTMLElement;
@@ -57,6 +59,10 @@ export default class HUD extends BaseComponent<GameState> {
                         <span class="hud-label">BURN RATE</span>
                         <span class="hud-value" data-burn-rate>₡0</span>
                     </div>
+                    <div class="hud-stat-item hidden" data-debt-container>
+                        <span class="hud-label">DEBT</span>
+                        <span class="hud-value currency danger" data-debt>₡0</span>
+                    </div>
                 </div>
             </div>
             <div class="hud-right">
@@ -83,6 +89,8 @@ export default class HUD extends BaseComponent<GameState> {
         this.timeRingP2 = this.element.querySelector('[data-time-ring="p2"]')!;
         this.hudCredits = this.element.querySelector('[data-credits]')!;
         this.hudBurnRate = this.element.querySelector('[data-burn-rate]')!;
+        this.hudDebt = this.element.querySelector('[data-debt]')!;
+        this.hudDebtContainer = this.element.querySelector('[data-debt-container]')!;
         this.hudWeek = this.element.querySelector('[data-week]')!;
         this.hudLocation = this.element.querySelector('[data-location]')!;
         this.terminalBadge = this.element.querySelector('[data-terminal-badge]')!;
@@ -162,6 +170,10 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateBurnRate(gameState);
         });
 
+        this.subscribe(STATE_EVENTS.DEBT_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateDebt(gameState);
+        });
+
         this.subscribe(STATE_EVENTS.TIME_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateClocks(gameState);
             this.updateMascots(gameState);
@@ -170,6 +182,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.subscribe(STATE_EVENTS.PLAYER_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateOrbs(gameState);
             this.updateCredits(gameState);
+            this.updateDebt(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
             this.updateMascots(gameState);
@@ -183,6 +196,7 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateWeek(gameState);
             this.updateOrbs(gameState);
             this.updateCredits(gameState);
+            this.updateDebt(gameState);
             this.updateClocks(gameState);
             this.updateLocation(gameState);
             this.updateMascots(gameState);
@@ -197,6 +211,18 @@ export default class HUD extends BaseComponent<GameState> {
     private updateCredits(gameState: GameState): void {
         const currentPlayer = gameState.getCurrentPlayer();
         this.hudCredits.textContent = `₡${currentPlayer.credits}`;
+        this.updateDebt(gameState);
+    }
+
+    private updateDebt(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        const debt = currentPlayer.debt || 0;
+        if (debt > 0) {
+            this.hudDebt.textContent = `₡${debt}`;
+            this.hudDebtContainer.classList.remove('hidden');
+        } else {
+            this.hudDebtContainer.classList.add('hidden');
+        }
     }
 
     private updateBurnRate(gameState: GameState): void {
@@ -312,6 +338,7 @@ export default class HUD extends BaseComponent<GameState> {
         // Update Stats
         this.hudCredits.textContent = `₡${currentPlayer.credits}`;
         this.hudBurnRate.textContent = `₡${currentPlayer.calculateBurnRate()}`;
+        this.updateDebt(gameState);
         this.hudWeek.textContent = gameState.turn.toString();
         this.hudLocation.textContent = currentPlayer.location;
 

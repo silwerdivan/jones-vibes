@@ -21,7 +21,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             },
             {
                 text: `Car: "Good thing I own a ride."`,
-                requirement: { type: 'ITEM', id: 'Car' },
+                requirement: { type: 'CAR' },
                 effects: [
                     { type: 'SANITY', value: 10 }
                 ]
@@ -63,7 +63,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
         type: 'Local',
         title: 'Broken Auto-Chef',
         flavorText: `The synthetic burger dispenser is sparking, spitting out double portions but smelling faintly of ozone.`,
-        prerequisites: { location: 'Slums' }, 
+        prerequisites: { location: 'Labor Sector' }, 
         choices: [
             {
                 text: `Risk it: "Free calories!"`,
@@ -122,7 +122,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
         type: 'Local',
         title: 'Glitching ATM',
         flavorText: `As you walk past the terminal, it spits out a stack of untraceable cred-chips. The camera above it is currently rebooting.`,
-        prerequisites: { location: 'Credit Union' },
+        prerequisites: { location: 'Cred-Debt Ctr' },
         choices: [
             {
                 text: `Take: "Finders keepers."`,
@@ -298,6 +298,45 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 text: `Decline: "I like my brain the way it is."`,
                 effects: [
                     { type: 'SANITY', value: 5 }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'global_speeding_ticket',
+        type: 'Global',
+        title: 'Retinal Speeding Citation',
+        flavorText: `A law-enforcement drone scanned your vehicle's signature while you were bypassing a congested logic-junction. A fine has been auto-deducted from your account.`,
+        prerequisites: { hasCar: true },
+        choices: [
+            {
+                text: `Pay: "Efficiency has its price." (₡500)`,
+                effects: [
+                    { type: 'CREDITS', value: -500 },
+                    { type: 'SANITY', value: -10 }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'consequence_car_accident',
+        type: 'Consequence',
+        title: 'Multi-Vehicle Collision',
+        flavorText: `A glitching delivery-bot swerved into your lane. The sound of crunching synth-steel is deafening. Your vehicle is a total loss.`,
+        prerequisites: { hasCar: true },
+        choices: [
+            {
+                text: `Repair: "Restore my mobility." (₡2000)`,
+                effects: [
+                    { type: 'CREDITS', value: -2000 },
+                    { type: 'SANITY', value: -30 }
+                ]
+            },
+            {
+                text: `Scrap: "I'm lucky to be alive."`,
+                effects: [
+                    { type: 'SANITY', value: -50 },
+                    { type: 'CAR', value: 0 }
                 ]
             }
         ]

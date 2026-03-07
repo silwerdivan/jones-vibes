@@ -27,6 +27,7 @@ export default class Player {
     baseWageMultiplier: number = 1.0;
     activeConditions: GameCondition[] = [];
     burnRate: number = 150; // Base 150 ₡ for Coffin Tube + basic subscriptions
+    debt: number = 0;
 
     constructor(id: number) {
         this.id = id;
@@ -52,6 +53,7 @@ export default class Player {
         this.weeklyGraduations = [];
         this.activeConditions = [];
         this.burnRate = 150;
+        this.debt = 0;
     }
 
     calculateBurnRate(): number {
@@ -65,6 +67,10 @@ export default class Player {
 
     set wageMultiplier(value: number) {
         this.baseWageMultiplier = value;
+    }
+
+    getWorkEfficiency(): number {
+        return this.getModifiedStat('WORK_EFFICIENCY', 1.0);
     }
 
     getModifiedStat(type: ConditionEffectType, baseValue: number): number {
@@ -127,7 +133,8 @@ export default class Player {
             name: this.name,
             wageMultiplier: this.baseWageMultiplier, // Save the base
             activeConditions: [...this.activeConditions],
-            burnRate: this.burnRate
+            burnRate: this.burnRate,
+            debt: this.debt
         };
     }
 
@@ -155,6 +162,7 @@ export default class Player {
         player.baseWageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
         player.activeConditions = data.activeConditions || [];
         player.burnRate = data.burnRate || 150;
+        player.debt = data.debt || 0;
         return player;
     }
 
@@ -166,6 +174,20 @@ export default class Player {
     spendCredits(amount: number): boolean {
         if (this.credits >= amount) {
             this.credits -= amount;
+            this.weeklyExpenses += amount;
+            return true;
+        }
+        return false;
+    }
+
+    addDebt(amount: number): void {
+        this.debt += amount;
+    }
+
+    payDebt(amount: number): boolean {
+        if (this.credits >= amount) {
+            this.credits -= amount;
+            this.debt -= amount;
             this.weeklyExpenses += amount;
             return true;
         }
