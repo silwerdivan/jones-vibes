@@ -210,12 +210,23 @@ class UIManager {
             this.handleAutoArrival();
 
             if (gameState.pendingTurnSummary && !this.isSummaryShown) {
-                this.showTurnSummary(gameState.pendingTurnSummary);
+                const currentPlayer = gameState.getCurrentPlayer();
+                if (!currentPlayer.isAI) {
+                    this.showTurnSummary(gameState.pendingTurnSummary);
+                }
             }
         });
 
         EventBus.subscribe('turnEnded', (summary: TurnSummary) => {
-            this.showTurnSummary(summary);
+            const currentPlayer = this.gameState!.getCurrentPlayer();
+            if (!currentPlayer.isAI) {
+                this.showTurnSummary(summary);
+            } else {
+                // Auto-advance for AI turns after a brief delay
+                setTimeout(() => {
+                    EventBus.publish(UI_EVENTS.ADVANCE_TURN);
+                }, 500);
+            }
         });
 
         EventBus.subscribe('graduation', (data: { player: any, course: any }) => {

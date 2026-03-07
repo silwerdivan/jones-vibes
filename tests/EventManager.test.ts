@@ -213,6 +213,6 @@ describe('EventManager', () => {
         hasCarChoice = triggeredEvent.choices.some((c: any) => c.text.includes('Car:'));
         expect(hasCarChoice).toBe(true);
 
-        unsubscribe();
+        EventBus.unsubscribe('randomEventTriggered', unsubscribe);
     });
 });
