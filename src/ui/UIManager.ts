@@ -337,27 +337,7 @@ class UIManager {
         this.choiceModal.showInput(false);
 
         if (location === 'Labor Sector') {
-            const container = document.createElement('div');
-            container.className = 'labor-sector-dashboard';
-            
-            const jobsHeader = document.createElement('h3');
-            jobsHeader.className = 'dashboard-section-header';
-            jobsHeader.textContent = 'Career Protocols';
-            container.appendChild(jobsHeader);
-            
-            const jobCards = this.renderActionCardList('jobs', JOBS);
-            container.appendChild(jobCards);
-            
-            const hustlesHeader = document.createElement('h3');
-            hustlesHeader.className = 'dashboard-section-header';
-            hustlesHeader.style.marginTop = '20px';
-            hustlesHeader.textContent = 'Unsanctioned Hustles';
-            container.appendChild(hustlesHeader);
-            
-            const hustleCards = this.renderActionCardList('hustles', HUSTLES);
-            container.appendChild(hustleCards);
-            
-            this.choiceModal.setContent(container);
+            this.choiceModal.setContent(this.createLaborSectorDashboard(player));
         } else if (location === 'Cognitive Re-Ed') {
             this.collegeDashboard.render(this.gameState!);
             this.choiceModal.setContent(this.collegeDashboard.getElement());
@@ -369,27 +349,8 @@ class UIManager {
         const actions = this.getLocationActions(location);
         actions.forEach(action => {
             this.choiceModal.addSecondaryButton(action.label, action.icon, action.primary, (e) => {
-                if (action.label === 'Work Shift') {
-                    const job = JOBS.find(j => j.level === player.careerLevel);
-                    if (job) {
-                        const earnings = Math.round(job.wage * job.shiftHours * player.wageMultiplier);
-                        this.spawnFeedback(e.currentTarget as HTMLElement, `+₡${earnings}`, 'success');
-                    }
-                }
-
-                if (action.label !== 'Work Shift') {
-                    this.choiceModal.hide();
-                }
+                this.choiceModal.hide();
                 action.onClick(e);
-
-                if (action.label === 'Work Shift') {
-                    this.setTrackedTimeout(() => {
-                        // Ensure dashboard is still active before re-showing
-                        if (this.gameState?.activeLocationDashboard === location) {
-                            this.showLocationDashboard(location);
-                        }
-                    }, 1000);
-                }
             }, action.className);
         });
 
@@ -432,6 +393,139 @@ class UIManager {
         }
 
         this.choiceModal.show({ title: location });
+    }
+
+    private createLaborSectorDashboard(player: any): HTMLElement {
+        const container = document.createElement('div');
+        container.className = 'labor-sector-dashboard';
+
+        const intro = document.createElement('div');
+        intro.className = 'labor-sector-intro';
+        intro.innerHTML = `
+            <p class="labor-sector-kicker">LABOR SECTOR</p>
+            <h3 class="labor-sector-title">Secure income first. Dip into hustles when you need a short-term bailout.</h3>
+        `;
+        container.appendChild(intro);
+
+        const segmented = document.createElement('div');
+        segmented.className = 'labor-sector-segmented';
+
+        const jobsTab = document.createElement('button');
+        jobsTab.type = 'button';
+        jobsTab.className = 'labor-sector-tab active';
+        jobsTab.dataset.tab = 'jobs';
+        jobsTab.textContent = 'Jobs';
+
+        const hustlesTab = document.createElement('button');
+        hustlesTab.type = 'button';
+        hustlesTab.className = 'labor-sector-tab';
+        hustlesTab.dataset.tab = 'hustles';
+        hustlesTab.textContent = 'Hustles';
+
+        segmented.appendChild(jobsTab);
+        segmented.appendChild(hustlesTab);
+        container.appendChild(segmented);
+
+        const panels = document.createElement('div');
+        panels.className = 'labor-sector-panels';
+
+        const jobsPanel = document.createElement('section');
+        jobsPanel.className = 'labor-sector-panel';
+        jobsPanel.dataset.panel = 'jobs';
+        jobsPanel.appendChild(this.createWorkShiftCard(player));
+
+        const jobsHeader = document.createElement('h3');
+        jobsHeader.className = 'dashboard-section-header';
+        jobsHeader.textContent = 'Career Protocols';
+        jobsPanel.appendChild(jobsHeader);
+
+        const jobCards = this.renderActionCardList('jobs', JOBS);
+        jobCards.classList.add('labor-list');
+        jobsPanel.appendChild(jobCards);
+
+        const hustlesPanel = document.createElement('section');
+        hustlesPanel.className = 'labor-sector-panel hidden';
+        hustlesPanel.dataset.panel = 'hustles';
+
+        const hustlesHeader = document.createElement('h3');
+        hustlesHeader.className = 'dashboard-section-header';
+        hustlesHeader.textContent = 'Unsanctioned Hustles';
+        hustlesPanel.appendChild(hustlesHeader);
+
+        const hustlesHint = document.createElement('p');
+        hustlesHint.className = 'labor-sector-hint';
+        hustlesHint.textContent = 'Fast cash with a real sanity and time cost.';
+        hustlesPanel.appendChild(hustlesHint);
+
+        const hustleCards = this.renderActionCardList('hustles', HUSTLES);
+        hustleCards.classList.add('labor-list');
+        hustlesPanel.appendChild(hustleCards);
+
+        panels.appendChild(jobsPanel);
+        panels.appendChild(hustlesPanel);
+        container.appendChild(panels);
+
+        const togglePanel = (target: 'jobs' | 'hustles') => {
+            jobsTab.classList.toggle('active', target === 'jobs');
+            hustlesTab.classList.toggle('active', target === 'hustles');
+            jobsPanel.classList.toggle('hidden', target !== 'jobs');
+            hustlesPanel.classList.toggle('hidden', target !== 'hustles');
+        };
+
+        jobsTab.addEventListener('click', () => togglePanel('jobs'));
+        hustlesTab.addEventListener('click', () => togglePanel('hustles'));
+
+        return container;
+    }
+
+    private createWorkShiftCard(player: any): HTMLElement {
+        const card = document.createElement('section');
+        card.className = 'labor-shift-card';
+
+        const currentJob = JOBS.find(job => job.level === player.careerLevel) || null;
+        if (!currentJob) {
+            card.innerHTML = `
+                <div>
+                    <p class="labor-sector-kicker">CURRENT SHIFT</p>
+                    <h3 class="labor-sector-title">No active job yet.</h3>
+                    <p class="labor-sector-hint">Apply for a role below to unlock repeatable shift income.</p>
+                </div>
+            `;
+
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-secondary labor-shift-button';
+            button.disabled = true;
+            button.textContent = 'Secure a Job First';
+            card.appendChild(button);
+            return card;
+        }
+
+        const earnings = Math.round(currentJob.wage * currentJob.shiftHours * player.wageMultiplier);
+        card.innerHTML = `
+            <div>
+                <p class="labor-sector-kicker">CURRENT SHIFT</p>
+                <h3 class="labor-sector-title">${currentJob.title}</h3>
+                <p class="labor-sector-hint">${currentJob.shiftHours}CH shift. Projected payout: +₡${earnings}.</p>
+            </div>
+        `;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-primary labor-shift-button';
+        button.innerHTML = '<i class="material-icons">work</i><span>Work Shift</span>';
+        button.addEventListener('click', (e) => {
+            this.spawnFeedback(e.currentTarget as HTMLElement, `+₡${earnings}`, 'success');
+            EventBus.publish(UI_EVENTS.WORK_SHIFT);
+            this.setTrackedTimeout(() => {
+                if (this.gameState?.activeLocationDashboard === 'Labor Sector') {
+                    this.showLocationDashboard('Labor Sector');
+                }
+            }, 1000);
+        });
+        card.appendChild(button);
+
+        return card;
     }
 
     spawnFeedback(element: HTMLElement, text: string, type: string) {
@@ -590,12 +684,6 @@ class UIManager {
                 });
                 break;
             case 'Labor Sector':
-                actions.push({
-                    label: 'Work Shift',
-                    icon: 'work',
-                    primary: false,
-                    onClick: () => EventBus.publish(UI_EVENTS.WORK_SHIFT)
-                });
                 break;
             case 'Cognitive Re-Ed':
                 break;
@@ -658,3 +746,5 @@ class UIManager {
 }
 
 export default UIManager;
+
+

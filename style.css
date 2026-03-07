@@ -2782,3 +2782,296 @@ body {
     display: none;
 }
 
+
+/* --- PHASE 6 OVERRIDES: ONBOARDING + LABOR + HUD --- */
+.hud-status-orbs {
+    gap: 12px;
+}
+
+.status-orb.inactive {
+    opacity: 0.4;
+    filter: grayscale(0.5);
+    transform: scale(0.9);
+}
+
+.status-orb.active {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--active-neon-glow);
+}
+
+.status-orb[data-orb="p1"].active {
+    --active-neon-glow: var(--neon-pink);
+}
+
+.status-orb[data-orb="p2"].active {
+    --active-neon-glow: var(--neon-cyan);
+}
+
+.time-ring-container {
+    z-index: 1;
+    filter: none;
+    background: transparent;
+}
+
+.time-ring-container svg text {
+    text-shadow: none;
+    stroke: none;
+}
+
+.orb-avatar {
+    z-index: 2;
+}
+
+.dashboard-header {
+    gap: var(--space-sm);
+}
+
+.dashboard-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-md);
+    width: 100%;
+}
+
+.dashboard-title {
+    flex: 1;
+}
+
+#choice-modal-close,
+.modal-close-btn {
+    margin-left: auto;
+    align-self: flex-start;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+
+.labor-sector-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.labor-sector-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.labor-sector-kicker {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+    font-weight: 800;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+}
+
+.labor-sector-title {
+    font-size: 15px;
+    line-height: 1.35;
+    color: #fff;
+}
+
+.labor-sector-hint {
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.labor-sector-segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    padding: 4px;
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.labor-sector-tab {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.62);
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+}
+
+.labor-sector-tab.active {
+    background: rgba(0, 255, 255, 0.12);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 16px rgba(0, 255, 255, 0.14);
+}
+
+.labor-sector-panels,
+.labor-sector-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.labor-shift-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-md);
+    border: 1px solid rgba(0, 255, 255, 0.18);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.labor-shift-button {
+    width: 100%;
+    min-height: 52px;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.labor-list.action-card-list,
+.labor-sector-dashboard .action-card-list {
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+}
+
+.dashboard-content {
+    padding-right: 2px;
+}
+
+.dashboard-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+}
+
+.eula-container {
+    padding: var(--space-lg);
+    background: linear-gradient(180deg, rgba(11, 1, 18, 0.98) 0%, rgba(13, 0, 21, 1) 100%);
+}
+
+.intro-screen {
+    justify-content: space-between;
+    gap: var(--space-lg);
+}
+
+.eula-intro-copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.intro-text {
+    min-height: 180px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.65;
+}
+
+.intro-callouts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.intro-callout {
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.intro-callout-label {
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.1px;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+}
+
+.intro-callout-text {
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.intro-start-btn {
+    flex-direction: row;
+    gap: 8px;
+}
+
+@media (max-width: 480px) {
+    .location-dashboard {
+        padding: var(--space-md) !important;
+        padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom)) !important;
+    }
+
+    .dashboard-content {
+        gap: var(--space-sm);
+    }
+
+    .labor-sector-title {
+        font-size: 14px;
+    }
+
+    .intro-text {
+        min-height: 160px;
+    }
+}
+
+/* --- PHASE 6.1 HOTFIX: MOBILE ONBOARDING CTA VISIBILITY --- */
+.eula-content {
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.intro-screen {
+    min-height: 100%;
+    justify-content: flex-start;
+}
+
+.eula-footer {
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(13, 0, 21, 0) 0%, rgba(13, 0, 21, 0.96) 18%, rgba(13, 0, 21, 0.99) 100%);
+    padding-bottom: calc(var(--space-sm) + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 480px) {
+    .eula-container {
+        padding: var(--space-md);
+    }
+
+    .eula-step-container {
+        gap: var(--space-md);
+        overflow: visible;
+        height: auto;
+    }
+
+    .intro-text {
+        min-height: 120px;
+        max-height: 28vh;
+        overflow-y: auto;
+    }
+
+    .intro-callout {
+        padding: 12px;
+    }
+
+    .eula-footer-note {
+        font-size: 8px;
+    }
+}

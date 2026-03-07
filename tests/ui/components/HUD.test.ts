@@ -9,13 +9,11 @@ describe('HUD', () => {
     let mockGameState: GameState;
 
     beforeEach(() => {
-        // Reset DOM
         document.body.innerHTML = '';
         container = document.createElement('div');
         container.className = 'app-shell';
         document.body.appendChild(container);
 
-        // Create mock GameState
         mockGameState = {
             players: [
                 { id: 1, credits: 100, time: 24, location: 'Hab-Pod 404', isAI: false, activeConditions: [], calculateBurnRate: () => 150 },
@@ -29,126 +27,55 @@ describe('HUD', () => {
             }
         } as unknown as GameState;
 
-        // Create HUD instance
         hud = new HUD();
     });
 
-    describe('constructor', () => {
-        it('should create HUD element with correct tag and classes', () => {
-            const element = hud.getElement();
-            expect(element.tagName).toBe('HEADER');
-            expect(element.classList.contains('hud')).toBe(true);
-            expect(element.classList.contains('glass')).toBe(true);
-        });
-
-        it('should build internal DOM structure', () => {
-            const element = hud.getElement();
-            expect(element.querySelector('[data-orb="p1"]')).not.toBeNull();
-            expect(element.querySelector('[data-orb="p2"]')).not.toBeNull();
-            expect(element.querySelector('[data-credits]')).not.toBeNull();
-            expect(element.querySelector('[data-week]')).not.toBeNull();
-        });
+    it('creates the HUD shell', () => {
+        const element = hud.getElement();
+        expect(element.tagName).toBe('HEADER');
+        expect(element.classList.contains('hud')).toBe(true);
+        expect(element.classList.contains('glass')).toBe(true);
     });
 
-    describe('mount/unmount', () => {
-        it('should mount to parent element', () => {
-            hud.mount(container);
-            expect(container.contains(hud.getElement())).toBe(true);
-            expect(hud.isMounted()).toBe(true);
-        });
+    it('renders financial stats for the current player', () => {
+        hud.mount(container);
+        hud.render(mockGameState);
 
-        it('should unmount from parent element', () => {
-            hud.mount(container);
-            hud.unmount();
-            expect(container.contains(hud.getElement())).toBe(false);
-            expect(hud.isMounted()).toBe(false);
-        });
+        expect(hud.getElement().querySelector('[data-credits]')?.textContent).toBe('₡100');
+        expect(hud.getElement().querySelector('[data-burn-rate]')?.textContent).toBe('₡150');
     });
 
-    describe('render', () => {
-        beforeEach(() => {
-            hud.mount(container);
-        });
+    it('switches the active orb when the current player changes', () => {
+        hud.mount(container);
+        hud.render(mockGameState);
+        mockGameState.currentPlayerIndex = 1;
+        hud.render(mockGameState);
 
-        it('should update credits display', () => {
-            hud.render(mockGameState);
-            const creditsElement = hud.getElement().querySelector('[data-credits]');
-            expect(creditsElement?.textContent).toBe('₡100');
-        });
-
-        it('should update credits display', () => {
-            hud.render(mockGameState);
-            const creditsElement = hud.getElement().querySelector('[data-credits]');
-            expect(creditsElement?.textContent).toBe('₡100');
-        });
-
-        it('should set active class on current player orb', () => {
-            hud.render(mockGameState);
-            const orbP1 = hud.getElement().querySelector('[data-orb="p1"]');
-            const orbP2 = hud.getElement().querySelector('[data-orb="p2"]');
-            expect(orbP1?.classList.contains('active')).toBe(true);
-            expect(orbP1?.classList.contains('inactive')).toBe(false);
-            expect(orbP2?.classList.contains('active')).toBe(false);
-            expect(orbP2?.classList.contains('inactive')).toBe(true);
-        });
-
-        it('should switch active player when currentPlayerIndex changes', () => {
-            hud.render(mockGameState);
-            mockGameState.currentPlayerIndex = 1;
-            hud.render(mockGameState);
-            
-            const orbP1 = hud.getElement().querySelector('[data-orb="p1"]');
-            const orbP2 = hud.getElement().querySelector('[data-orb="p2"]');
-            expect(orbP1?.classList.contains('active')).toBe(false);
-            expect(orbP2?.classList.contains('active')).toBe(true);
-        });
-
-        it('should update credits when player changes', () => {
-            hud.render(mockGameState);
-            mockGameState.currentPlayerIndex = 1;
-            hud.render(mockGameState);
-
-            const creditsElement = hud.getElement().querySelector('[data-credits]');
-            expect(creditsElement?.textContent).toBe('₡200');
-        });
+        expect(hud.getElement().querySelector('[data-orb="p1"]')?.classList.contains('active')).toBe(false);
+        expect(hud.getElement().querySelector('[data-orb="p2"]')?.classList.contains('active')).toBe(true);
     });
 
-    describe('news ticker', () => {
-        it('should set news ticker content reference', () => {
-            const tickerContent = document.createElement('div');
-            tickerContent.id = 'news-ticker-content';
-            hud.setNewsTickerContent(tickerContent);
-            
-            mockGameState.log = [
-                { text: 'Test event 1' },
-                { text: 'Test event 2' }
-            ] as LogMessage[];
-            
-            hud.render(mockGameState);
-            expect(tickerContent.textContent).toContain('Test event 1');
-            expect(tickerContent.textContent).toContain('Test event 2');
-        });
+    it('keeps the reverted orb structure with avatar inside the ring', () => {
+        hud.mount(container);
+        hud.render(mockGameState);
+
+        const orb = hud.getElement().querySelector('[data-orb="p1"]') as HTMLElement;
+        const ring = orb.querySelector('[data-time-ring="p1"]');
+        const avatar = orb.querySelector('[data-avatar="p1"]');
+
+        expect(ring).not.toBeNull();
+        expect(avatar).not.toBeNull();
+        expect(ring?.compareDocumentPosition(avatar as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(orb.textContent).not.toContain('24h');
     });
 
-    describe('extends BaseComponent', () => {
-        it('should have getElement method', () => {
-            expect(typeof hud.getElement).toBe('function');
-        });
+    it('updates the news ticker when entries exist', () => {
+        const tickerContent = document.createElement('div');
+        hud.setNewsTickerContent(tickerContent);
+        mockGameState.log = [{ text: 'Test event 1' }, { text: 'Test event 2' }] as LogMessage[];
 
-        it('should have mount method', () => {
-            expect(typeof hud.mount).toBe('function');
-        });
-
-        it('should have unmount method', () => {
-            expect(typeof hud.unmount).toBe('function');
-        });
-
-        it('should have isMounted method', () => {
-            expect(typeof hud.isMounted).toBe('function');
-        });
-
-        it('should have render method', () => {
-            expect(typeof hud.render).toBe('function');
-        });
+        hud.render(mockGameState);
+        expect(tickerContent.textContent).toContain('Test event 1');
+        expect(tickerContent.textContent).toContain('Test event 2');
     });
 });

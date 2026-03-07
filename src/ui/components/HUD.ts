@@ -102,18 +102,15 @@ export default class HUD extends BaseComponent<GameState> {
         this.mascotP2.mount(avatarP2);
     }
 
-    private initializeClockVisualizations(): void {
-        // Reverted to player-specific neon colors for better identity.
-        // Added dark semi-transparent background to the ring for clarity against complex mascots.
+        private initializeClockVisualizations(): void {
         if (this.timeRingP1) {
             this.hudClockVisualizationP1 = new ClockVisualization(this.timeRingP1, {
                 size: 52,
                 strokeWidth: 4,
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                backgroundColor: 'rgba(255, 0, 255, 0.1)',
                 foregroundColor: '#FF00FF',
-                textColor: '#FFFFFF',
-                showNumeric: true,
-                fontSize: '12px'
+                textColor: 'transparent',
+                showNumeric: false
             });
         }
 
@@ -121,11 +118,10 @@ export default class HUD extends BaseComponent<GameState> {
             this.hudClockVisualizationP2 = new ClockVisualization(this.timeRingP2, {
                 size: 52,
                 strokeWidth: 4,
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                backgroundColor: 'rgba(0, 255, 255, 0.1)',
                 foregroundColor: '#00FFFF',
-                textColor: '#FFFFFF',
-                showNumeric: true,
-                fontSize: '12px'
+                textColor: 'transparent',
+                showNumeric: false
             });
         }
     }
@@ -347,3 +343,4 @@ export default class HUD extends BaseComponent<GameState> {
         }
     }
 }
+

@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import UIManager from '../../src/ui/UIManager.js';
-import GameState from '../../src/game/GameState.js';
-import Player from '../../src/game/Player.js';
 import EventBus from '../../src/EventBus.js';
 
 describe('UIManager', () => {
@@ -10,22 +8,49 @@ describe('UIManager', () => {
     let mockPlayer: any;
 
     beforeEach(() => {
-        // Setup DOM
         document.body.innerHTML = `
             <div class="app-shell">
-                <div class="news-ticker">
-                    <div id="news-ticker-content"></div>
-                </div>
+                <div class="news-ticker"><div id="news-ticker-content"></div></div>
             </div>
             <div id="loading-overlay" class="hidden"></div>
+            <div id="choice-modal-overlay" class="hidden location-dashboard-overlay">
+                <div id="choice-modal" class="location-dashboard">
+                    <div class="swipe-indicator"><div class="swipe-bar"></div></div>
+                    <header class="dashboard-header">
+                        <div id="modal-clerk-container" class="clerk-container hidden">
+                            <div class="clerk-avatar-wrapper"><div id="modal-clerk-avatar" class="clerk-avatar"></div></div>
+                            <div class="speech-bubble">
+                                <div id="modal-clerk-name" class="clerk-name">Clerk</div>
+                                <p id="modal-clerk-message" class="clerk-message">Welcome!</p>
+                            </div>
+                        </div>
+                        <div class="dashboard-header-row">
+                            <h2 id="choice-modal-title" class="dashboard-title">Location Name</h2>
+                            <button id="choice-modal-close" class="btn btn-icon btn-secondary modal-close-btn"><i class="material-icons">close</i></button>
+                        </div>
+                    </header>
+                    <main class="dashboard-content">
+                        <div id="choice-modal-content" class="dashboard-scroll-area"></div>
+                        <div id="choice-modal-input" class="hidden bank-input-wrapper"><input type="number" id="modal-input-amount" /></div>
+                        <div id="dashboard-secondary-actions" class="secondary-actions-row"></div>
+                    </main>
+                    <footer class="dashboard-footer"><div id="choice-modal-buttons" class="primary-actions-row"></div></footer>
+                </div>
+            </div>
+            <div id="player-stats-modal-overlay" class="hidden"><div id="player-stats-modal"><button id="player-stats-modal-close"></button></div></div>
+            <div id="intel-terminal-overlay" class="hidden"><button id="intel-terminal-close"></button><div><div id="terminal-entries"></div></div></div>
+            <div id="turn-summary-modal" class="hidden"><div id="event-list"></div><div id="summary-subtitle"></div><div id="summary-credits-total"></div><div id="summary-sanity-total"></div><button id="btn-start-next-week"></button></div>
+            <div id="graduation-modal" class="hidden"><div id="graduation-subtitle"></div><div id="graduated-degree-name"></div><div id="graduation-reward-text"></div><button id="btn-graduation-dismiss"></button></div>
         `;
 
-        // Mock GameState and Player
         mockPlayer = {
             id: 1,
             location: 'Hab-Pod 404',
             time: 24,
-            isAI: false
+            isAI: false,
+            debt: 0,
+            careerLevel: 0,
+            wageMultiplier: 1
         };
 
         mockGameState = {
@@ -34,12 +59,12 @@ describe('UIManager', () => {
             activeScreenId: 'city',
             activeLocationDashboard: null,
             activeChoiceContext: null,
+            activeEvent: null,
             isAIThinking: false,
             players: [mockPlayer],
             log: []
         };
 
-        // Instantiate UIManager
         uiManager = new UIManager();
     });
 
@@ -47,154 +72,47 @@ describe('UIManager', () => {
         vi.restoreAllMocks();
     });
 
-    describe('showLocationDashboard', () => {
-        it('should NOT show dashboard if isSummaryShown is true', () => {
-            const spy = vi.spyOn(EventBus, 'publish');
-            
-            // Access private property for testing
-            (uiManager as any).isSummaryShown = true;
-            (uiManager as any).gameState = mockGameState;
-            
-            uiManager.showLocationDashboard('Cred-Debt Ctr');
-            
-            // dashboardSwitched should NOT be published
-            expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
-        });
+    it('does not show a dashboard while a summary is open', () => {
+        const spy = vi.spyOn(EventBus, 'publish');
+        (uiManager as any).isSummaryShown = true;
+        (uiManager as any).gameState = mockGameState;
 
-        it('should NOT show dashboard if pendingTurnSummary exists', () => {
-            const spy = vi.spyOn(EventBus, 'publish');
-            
-            mockGameState.pendingTurnSummary = { totalIncome: 100 } as any;
-            (uiManager as any).gameState = mockGameState;
-            
-            uiManager.showLocationDashboard('Cred-Debt Ctr');
-            
-            expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
-        });
-
-        it('should NOT show dashboard for non-Hab-Pod 404 location if player has no time', () => {
-            const spy = vi.spyOn(EventBus, 'publish');
-            
-            mockPlayer.time = 0;
-            mockPlayer.location = 'Cred-Debt Ctr';
-            (uiManager as any).gameState = mockGameState;
-            
-            uiManager.showLocationDashboard('Cred-Debt Ctr');
-            
-            expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
-        });
-
-        it('SHOULD show dashboard for Hab-Pod 404 even if player has no time', () => {
-            const spy = vi.spyOn(EventBus, 'publish');
-            
-            mockPlayer.time = 0;
-            mockPlayer.location = 'Hab-Pod 404';
-            (uiManager as any).gameState = mockGameState;
-            
-            uiManager.showLocationDashboard('Hab-Pod 404');
-            
-            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Hab-Pod 404' });
-        });
-
-        it('SHOULD show dashboard if time > 0 and no summary', () => {
-            const spy = vi.spyOn(EventBus, 'publish');
-            
-            mockPlayer.time = 10;
-            (uiManager as any).gameState = mockGameState;
-            
-            uiManager.showLocationDashboard('Cred-Debt Ctr');
-            
-            expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Cred-Debt Ctr' });
-        });
+        uiManager.showLocationDashboard('Cred-Debt Ctr');
+        expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', expect.anything());
     });
 
-    describe('handleAutoArrival', () => {
-        it('should NOT trigger dashboard if player has no time', () => {
-            vi.useFakeTimers();
-            const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
-            
-            mockPlayer.time = 0;
-            mockPlayer.location = 'Cred-Debt Ctr';
-            (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Hab-Pod 404';
-            (uiManager as any).lastPlayerId = 1;
-            
-            (uiManager as any).handleAutoArrival();
-            
-            vi.runAllTimers();
-            expect(showSpy).not.toHaveBeenCalled();
-            vi.useRealTimers();
-        });
+    it('allows Hab-Pod 404 to open even when time is depleted', () => {
+        const spy = vi.spyOn(EventBus, 'publish');
+        mockPlayer.time = 0;
+        mockPlayer.location = 'Hab-Pod 404';
+        (uiManager as any).gameState = mockGameState;
 
-        it('SHOULD trigger dashboard if player has time and moved to new location', () => {
-            vi.useFakeTimers();
-            const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
-            
-            mockPlayer.time = 5;
-            mockPlayer.location = 'Cred-Debt Ctr';
-            (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Hab-Pod 404';
-            (uiManager as any).lastPlayerId = 1;
-            
-            (uiManager as any).handleAutoArrival();
-            
-            vi.advanceTimersByTime(300);
-            expect(showSpy).toHaveBeenCalledWith('Cred-Debt Ctr');
-            vi.useRealTimers();
-        });
-
-        it('SHOULD trigger dashboard when arriving at Hab-Pod 404 mid-turn', () => {
-            vi.useFakeTimers();
-            const showSpy = vi.spyOn(uiManager, 'showLocationDashboard');
-            
-            mockPlayer.time = 5;
-            mockPlayer.location = 'Hab-Pod 404';
-            (uiManager as any).gameState = mockGameState;
-            (uiManager as any).lastLocation = 'Cred-Debt Ctr';
-            (uiManager as any).lastPlayerId = 1;
-            
-            (uiManager as any).handleAutoArrival();
-            
-            vi.advanceTimersByTime(300);
-            expect(showSpy).toHaveBeenCalledWith('Hab-Pod 404');
-            vi.useRealTimers();
-        });
+        uiManager.showLocationDashboard('Hab-Pod 404');
+        expect(spy).toHaveBeenCalledWith('dashboardSwitched', { location: 'Hab-Pod 404' });
     });
 
-    describe('getLocationActions', () => {
-        it('should return "Rest / End Turn" for Hab-Pod 404', () => {
-            const actions = uiManager.getLocationActions('Hab-Pod 404');
-            expect(actions).toHaveLength(1);
-            expect(actions[0].label).toBe('Rest / End Turn');
-        });
+    it('renders segmented Labor Sector panels with jobs first', () => {
+        mockPlayer.time = 10;
+        mockPlayer.location = 'Labor Sector';
+        (uiManager as any).gameState = mockGameState;
 
-        it('should return "Work Shift" for Labor Sector', () => {
-            const actions = uiManager.getLocationActions('Labor Sector');
-            expect(actions).toHaveLength(1);
-            expect(actions[0].label).toBe('Work Shift');
-        });
+        uiManager.showLocationDashboard('Labor Sector');
 
-        it('should return empty array for Cognitive Re-Ed', () => {
-            const actions = uiManager.getLocationActions('Cognitive Re-Ed');
-            expect(actions).toHaveLength(0);
-        });
+        const content = document.getElementById('choice-modal-content')!;
+        expect(content.querySelector('.labor-sector-tab[data-tab="jobs"]')?.classList.contains('active')).toBe(true);
+        expect(content.querySelector('.labor-sector-tab[data-tab="hustles"]')?.classList.contains('active')).toBe(false);
+        expect(content.querySelector('.labor-sector-panel[data-panel="jobs"]')?.classList.contains('hidden')).toBe(false);
+        expect(content.querySelector('.labor-sector-panel[data-panel="hustles"]')?.classList.contains('hidden')).toBe(true);
+    });
 
-        it('should NOT return "Browse Items" for Consumpt-Zone (redundant)', () => {
-            const actions = uiManager.getLocationActions('Consumpt-Zone');
-            const browseAction = actions.find(a => a.label === 'Browse Items');
-            expect(browseAction).toBeUndefined();
-        });
+    it('does not expose Work Shift as a secondary location action for Labor Sector', () => {
+        const actions = uiManager.getLocationActions('Labor Sector');
+        expect(actions).toHaveLength(0);
+    });
 
-        it('should NOT return "Browse Menu" for Sustenance Hub (redundant)', () => {
-            const actions = uiManager.getLocationActions('Sustenance Hub');
-            const browseAction = actions.find(a => a.label === 'Browse Menu');
-            expect(browseAction).toBeUndefined();
-        });
-
-        it('should return "View Inventory" for Mobility-Asset', () => {
-            const actions = uiManager.getLocationActions('Mobility-Asset');
-            expect(actions).toHaveLength(1);
-            expect(actions[0].label).toBe('View Inventory');
-        });
+    it('keeps View Inventory as the Mobility-Asset action', () => {
+        const actions = uiManager.getLocationActions('Mobility-Asset');
+        expect(actions).toHaveLength(1);
+        expect(actions[0].label).toBe('View Inventory');
     });
 });

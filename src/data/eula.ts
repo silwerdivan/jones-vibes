@@ -1,85 +1,25 @@
-import Player from '../game/Player';
-
-export interface EulaClause {
-    id: string;
-    title: string;
-    description: string;
-    benefit: string;
-    penalty: string;
-    apply: (player: Player) => void;
+export interface IntroCallout {
+    label: string;
+    text: string;
 }
 
-export const EULA_TEXT = `
-CYBERLIFE OS v4.2.0 - USER END-POINT LICENSE AGREEMENT (EULA)
+export const GAME_INTRO_BODY = `
+Jones in the Fastlane is a pressure-management game about clawing your way out of survival mode. Every cycle you move through the city, spend limited hours, protect your sanity, and decide whether to chase stability, gamble on hustles, or invest in the long climb upward.
 
-1. PROVISION OF EXISTENCE
-By clicking "I ACCEPT", the User (hereafter "Biological Asset") acknowledges that their continued existence within the CyberCity simulation is a privilege, not a right, provided by The Network (hereafter "The Provider"). 
-
-2. DATA HARVESTING & BIOMETRIC MONITORING
-The Biological Asset grants The Provider irrevocable, global, royalty-free access to all metabolic, financial, and cognitive data generated during the term of existence. This includes, but is not limited to: heart rate during labor, purchasing patterns of "Essential" goods, and any subversive thoughts regarding corporate "optimization".
-
-3. OPTIONAL PRODUCTIVITY ENHANCEMENTS (CLAUSES)
-Biological Assets may opt-in to specific productivity protocols to accelerate their contribution to The Provider's quarterly earnings. These protocols carry inherent biological and financial risks which the Biological Asset assumes in full.
-
-4. TERMINATION OF SERVICE
-The Provider reserves the right to terminate the Biological Asset's "Life Session" if productivity falls below acceptable margins, or if the Biological Asset's Sanity drops to a level that threatens the stability of the simulation's socio-economic fabric.
-
-5. LIMITATION OF LIABILITY
-The Network is not responsible for any "Turn 1 Deaths", existential dread, or loss of digital or physical assets resulting from the use of CyberLife OS. 
-
-BY PROCEEDING, YOU AGREE TO BE BOUND BY THE TERMS OF THIS AGREEMENT. SCROLL TO THE BOTTOM TO ACKNOWLEDGE YOUR COMPLIANCE.
+The run gets tighter if you ignore burn rate, debt, or time. The run opens up when you land better work, build education, and turn desperate short-term choices into sustainable momentum. The point is to survive the squeeze long enough to become dangerous.
 `;
 
-export const EULA_CLAUSES: EulaClause[] = [
+export const GAME_INTRO_CALLOUTS: IntroCallout[] = [
     {
-        id: 'A',
-        title: 'Micro-Stimulus Protocol',
-        description: 'Receive an upfront metabolic stimulus to jumpstart your contribution.',
-        benefit: '+200 Credits',
-        penalty: '+40 Bio-Deficit',
-        apply: (player: Player) => {
-            player.addCredits(200);
-            player.hunger += 40;
-        }
+        label: 'CORE LOOP',
+        text: 'Travel, choose actions, manage credits and sanity, then close the cycle before pressure compounds.'
     },
     {
-        id: 'B',
-        title: 'Hyper-Grindset Agreement',
-        description: 'Waive your right to a standard 24-hour cycle for the initial orientation.',
-        benefit: 'Orientation Overtime',
-        penalty: '+6 Cycle Hours, -20 Sanity',
-        apply: (player: Player) => {
-            player.time += 6;
-            player.updateSanity(-20);
-        }
+        label: 'EARLY GAME',
+        text: 'You start constrained. Stable labor keeps you alive, hustles cover emergencies, and bad tradeoffs can trap you.'
     },
     {
-        id: 'C',
-        title: 'Data-Harvest Consent',
-        description: 'Your data will be harvested for "optimization" in exchange for hardware.',
-        benefit: 'Cyber-Terminal Interface',
-        penalty: '-10% Wage Multiplier (Global)',
-        apply: (player: Player) => {
-            player.inventory.push({
-                name: 'Cyber-Terminal',
-                cost: 0,
-                sanityBoost: 0,
-                type: 'essential',
-                location: 'Anywhere',
-                benefit: 'Direct access to CyberNet'
-            });
-            player.baseWageMultiplier = 0.9;
-        }
-    },
-    {
-        id: 'D',
-        title: 'Liquidity Injection',
-        description: 'Instant credit line for assets who value momentum over solvency.',
-        benefit: '+500 Credits',
-        penalty: '+500 Cred-Debt',
-        apply: (player: Player) => {
-            player.addCredits(500);
-            player.takeLoan(500);
-        }
+        label: 'WIN FANTASY',
+        text: 'Convert scarcity into leverage. Better jobs, education, and discipline let you control the board instead of reacting to it.'
     }
 ];
