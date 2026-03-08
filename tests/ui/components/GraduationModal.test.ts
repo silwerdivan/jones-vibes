@@ -19,7 +19,7 @@ describe('GraduationModal', () => {
                         <div class="degree-display">
                             <span id="graduated-degree-name" class="degree-name">Associate's Degree</span>
                         </div>
-                        <p id="graduation-reward-text" class="reward-text">Level 2 Careers are now unlocked at the Employment Agency.</p>
+                        <p id="graduation-reward-text" class="reward-text">Level 2 Careers are now unlocked at the Labor Sector.</p>
                     </main>
                     <footer class="graduation-footer">
                         <button id="btn-graduation-dismiss" class="btn btn-primary btn-glow">EXCELLENT!</button>

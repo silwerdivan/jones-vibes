@@ -172,7 +172,7 @@ describe('Burnout Logic', () => {
         // Trigger burnout
         player.updateSanity(-100);
 
-        expect(player.sanity).toBe(0);
+        expect(player.sanity).toBe(20);
         expect(player.time).toBe(0);
         expect(player.credits).toBe(500); // 1000 - 500 medical fee
         expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);

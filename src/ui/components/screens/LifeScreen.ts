@@ -167,7 +167,7 @@ export default class LifeScreen extends BaseComponent<GameState> {
         const creditsPill = this.element.querySelector('#pill-credits');
         
         if (sanityPill) {
-            sanityPill.textContent = player.sanity.toString();
+            sanityPill.textContent = Math.round(player.sanity).toString();
             sanityPill.className = `pill-value ${player.sanity <= 20 ? 'log-error' : ''}`;
         }
         

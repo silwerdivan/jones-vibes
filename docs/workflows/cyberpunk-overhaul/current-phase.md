@@ -21,3 +21,7 @@
 - Fixed the Labor Sector random-event flow so resolving an event choice reopens the dashboard without another city-card click.
 - Rebalanced hustles into higher burst-credit, higher downside options and updated Labor Sector copy to explain the tradeoff.
 - Validation passed on 2026-03-07 with targeted Vitest coverage and the Labor Sector Playwright regression spec.
+- Phase 7 continuation on 2026-03-08: Gated synthetic burger choice by credits, rounded sanity display, renamed "Employment Agency" to "Labor Sector" globally, and added explainers for Burn Rate and Ambient Stress.
+- Fixed the "burnout loop" by restoring sanity to 20 during forced medical reboots.
+- Fixed mobile HUD layout where many conditions pushed stats off-screen.
+- Cleaned up Labor Sector UI by moving strategy text to the clerk and removing the redundant intro.

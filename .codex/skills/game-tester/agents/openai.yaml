@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Tester"
+  short_description: "Reproduce bugs and verify gameplay behavior"
+  default_prompt: "Use $game-tester to reproduce a bug, verify a fix, or run a focused gameplay regression."

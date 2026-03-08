@@ -295,11 +295,15 @@ body {
     gap: var(--space-md);
 }
 
-@media (max-width: 480px) {
-    .hud-left { gap: var(--space-sm); flex: 1; }
+.hud-left { gap: var(--space-sm); flex: 1; min-width: 0; }
     .hud-right { gap: var(--space-sm); }
-    .hud-stats { flex-direction: row !important; gap: var(--space-md); }
-    .hud-stat-item .hud-label { font-size: 7px; }
+    .hud-conditions { 
+        max-width: 80px; 
+        overflow: hidden; 
+        margin-left: 5px !important; 
+        gap: 4px !important; 
+    }
+    .hud-stats { flex-direction: row !important; gap: var(--space-md); flex-shrink: 0; }
     .hud-stat-item .hud-value { font-size: 13px; }
 }
 

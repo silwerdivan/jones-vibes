@@ -6,7 +6,9 @@ export interface IntroCallout {
 export const GAME_INTRO_BODY = `
 Jones in the Fastlane is a pressure-management game about clawing your way out of survival mode. Every cycle you move through the city, spend limited hours, protect your sanity, and decide whether to chase stability, gamble on hustles, or invest in the long climb upward.
 
-The run gets tighter if you ignore burn rate, debt, or time. The run opens up when you land better work, build education, and turn desperate short-term choices into sustainable momentum. The point is to survive the squeeze long enough to become dangerous.
+Burn Rate is the weekly bill you must cover just to stay operational. Debt grows when you miss it. Ambient Stress is the background sanity drain that hits every cycle before your rest recovery. The run gets tighter if you ignore those systems or spend all your time reacting.
+
+The run opens up when you land better work, build education, and turn desperate short-term choices into sustainable momentum. The point is to survive the squeeze long enough to become dangerous.
 `;
 
 export const GAME_INTRO_CALLOUTS: IntroCallout[] = [

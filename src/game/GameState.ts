@@ -383,6 +383,7 @@ class GameState {
         );
 
         player.setTime(0);
+        player.updateSanity(20);
         
         const medicalFee = 500;
         // Forced deduction even if it goes slightly negative or just takes what's left?

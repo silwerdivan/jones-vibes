@@ -1,0 +1,73 @@
+continue with phase 7 of cyberpunk overhaul. i noticed a couple more things, while playing, that i've noted as observations. some of it might just be me being confused about mechanics / dynamics, or it might be ligitimate room for improvement.
+
+
+1.
+synthetic burger ... sparks, random event popup when visiting labor sector, i chose safe 20 credit option, then modal closed, but i dind't have 20 credits? maybe i missed that i went into debt.
+
+2.
+labor sector, think space is lost, clerk: agent smith, can move "secure income first..." text and get rid of "looking for new start..."
+
+3. 
+after week 1, burn rate -134, quite hectic, maybe this is correct, maybe this is what causes the early game tention.
+
+4.
+retinal ad tracking? what is that? network stimulus drop. your options, not clear what effect it has.
+
+5.
+2nd week, nett +254 credits, becuase stimulus drop. at least now we're getting somewhere.
+
+6.
+sanity 14% on life screen shows as 14.399999999999999995
+
+7.
+you have all these things, burn rate, ambient stress, but what is it? what is it tied to? how can it be overcome? maybe this can be explained at the start of the game.
+
+8.
+panic attach random event popup, week ended automatically
+
+sanity 0, no time, have to rest (all i can do, with no time),no time, stuck in this loop.
+
+maybe this is good? maybe player should learn to borrow money at cred debt centr?
+
+i see ai has debt. ok now i see i have debt as well, was just off HUD, because of eye, brain, red cirle with diagonal line icons pushing debt off screen.
+
+9.
+i see at life screen i also have outstanding debt.
+
+10.
+ai player still has time, just not me, seems inconsistent / unfair.
+
+maybe i have to wait for some random event? could also end up making me feel hopeless and give up.
+
+how long does effects like the leg icon, red circle with diagonal line, brain icon last?
+
+leg did eventually go away.
+
+fact that i don't have time definitely feels like bug
+
+11.
+visit the employment agency to find work, in news ticker, this is legacy text, from before cyberpunk overhaul. it's now labor sector.
+
+remember, don't take my word, you need to reproduce issues before just assuming what i'm saying is true.
+
+Using cyberpunk-overhaul skill because this is a Phase 7 continuation with gameplay observations to verify. I’m opening the workflow state and the relevant game systems first, then I’ll reproduce each report before deciding what to change.
+
+I’ve got the Phase 7 workflow state. Next I’m reading the active phase plan and tracing the reported terms and events through the codebase so I can separate real defects from intended-but-undocumented mechanics.
+
+The broad text scan mostly hit legacy docs, so I’m narrowing to src/ and tests/ and checking the available test/runtime entry points. After that I’ll reproduce the candidate bugs in the smallest reliable way.
+
+I’ve located the likely sources: event data, condition definitions, Labor Sector UI copy, HUD/Life formatting, AI turn logic, and the legacy ticker text. I’m reading those exact files now and then I’ll add/adjust tests only for behavior I can actually reproduce.
+
+I’ve narrowed the candidate fixes enough to inspect by line instead of loading whole files. Next I’m reading the exact code paths for the burger event, weekly summary math, burnout/time-deficit handling, and the legacy ticker copy.
+
+I’ve confirmed a few probable issues from code inspection already: the burger event doesn’t gate the paid option by credits, the sanity UI prints raw floats, the Labor clerk copy still has the legacy line, and the ticker likely mirrors raw log strings. I’m now checking whether the “no time but AI still acts” report is a real logic bug in the turn/action flow or an expected time-deficit edge case that just lacks explanation.
+
+I’ve got a concrete edit set now: gate the paid burger option by actual credits, clean up the Labor Sector copy, round sanity display, normalize legacy ticker text, and add clearer onboarding/explainer copy for burn rate and ambient stress. I’m patching those files and then I’ll wire in focused tests for each verified behavior.
+
+The code edits are in. I’m doing a quick readback now because a few files had encoding-heavy strings, and I want to catch any accidental formatting damage before I touch tests.
+
+The targeted tests are ready. I’m running just the affected unit suites first so I can catch syntax or regression issues before I update Phase 7 notes.
+
+One targeted test failed, but it’s the test, not the code path: the sanity pill lives in the mounted screen DOM, so the selector needs to read from the mounted container. I’m fixing that assertion and rerunning the same suite set.
+
+The code and tests are green for the touched area. I’m updating the Phase 7 workflow note now with the verified fixes and the one item I could not validate as a code defect from this pass.

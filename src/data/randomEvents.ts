@@ -73,6 +73,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
             },
             {
                 text: `Safe: "Buy a sealed protein bar." (₡20)`,
+                requirement: { type: 'STAT', id: 'CREDITS', value: 20 },
                 effects: [
                     { type: 'CREDITS', value: -20 },
                     { type: 'HUNGER', value: -25 }

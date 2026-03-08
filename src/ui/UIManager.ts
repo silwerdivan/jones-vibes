@@ -410,14 +410,6 @@ class UIManager {
         const container = document.createElement('div');
         container.className = 'labor-sector-dashboard';
 
-        const intro = document.createElement('div');
-        intro.className = 'labor-sector-intro';
-        intro.innerHTML = `
-            <p class="labor-sector-kicker">LABOR SECTOR</p>
-            <h3 class="labor-sector-title">Secure income first. Use hustles when you are short on time or need an emergency burn-rate bailout.</h3>
-        `;
-        container.appendChild(intro);
-
         const segmented = document.createElement('div');
         segmented.className = 'labor-sector-segmented';
 

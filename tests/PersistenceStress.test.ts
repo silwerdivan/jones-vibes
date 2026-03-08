@@ -31,7 +31,7 @@ describe('Persistence Stress Test', () => {
         p1.educationLevel = 2;
         p1.careerLevel = 3;
         p1.time = 12;
-        p1.setLocation('Employment Agency');
+        p1.setLocation('Labor Sector');
         p1.hasCar = true;
         p1.loan = 2000;
         p1.inventory = [{ name: 'Computer', cost: 800, sanityBoost: 10, type: 'asset', location: 'Electronics Store' }];
@@ -47,7 +47,7 @@ describe('Persistence Stress Test', () => {
         expect(restored.players[0].credits).toBe(1250);
         expect(restored.players[0].savings).toBe(5000);
         expect(restored.players[0].inventory.length).toBe(1);
-        expect(restored.players[0].location).toBe('Employment Agency');
+        expect(restored.players[0].location).toBe('Labor Sector');
         expect(restored.activeScreenId).toBe('city');
         expect(restored.activeLocationDashboard).toBeNull();
     });

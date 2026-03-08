@@ -1,7 +1,7 @@
 import { Clerk } from '../models/types';
 
 export const CLERKS: Record<string, Clerk> = {
-    "Labor Sector": { name: "Agent Smith", message: "Looking for a new start? I've got just the position for you.", icon: "clerk" },
+    "Labor Sector": { name: "Agent Smith", message: "Secure income first. Hustles are for emergency burst-credit when burn rate is closing in.", icon: "clerk" },
     "Cognitive Re-Ed": { name: "Dean Wright", message: "Knowledge is the ultimate currency. Which course interests you?", icon: "clerk" },
     "Shopping Mall": { name: "Skylar", message: "Treat yourself! You've been working hard lately.", icon: "clerk" },
     "Sustenance Hub": { name: "Chip", message: "Welcome to Monolith Burger! Big bites for big dreams. What can I get you?", icon: "clerk" },
