@@ -179,7 +179,7 @@ class TimeSystem {
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
 
         // 5.5 Apply ambient sanity drain (Ambient Stress)
-        const ambientDrain = -10;
+        const ambientDrain = -8;
         currentPlayer.updateSanity(ambientDrain);
         summary.events.push({
             type: 'warning',
@@ -196,7 +196,7 @@ class TimeSystem {
 
         // 6. Apply sanity gain (Cycle Rest)
         const hasHypnoScreen = currentPlayer.inventory.some(i => i.name === 'Hypno-Screen');
-        const sanityGain = hasHypnoScreen ? 11 : 10;
+        const sanityGain = hasHypnoScreen ? 16 : 15;
         currentPlayer.updateSanity(sanityGain);
         summary.events.push({
             type: 'success',

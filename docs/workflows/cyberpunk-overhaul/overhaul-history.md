@@ -47,3 +47,12 @@
   - Remove theatrical onboarding when it obscures the actual game loop.
   - Labor Sector needs mobile-first information hierarchy instead of stacked dashboards.
   - Separate slow-render console warnings from pass/fail validation so closeout signals stay readable.
+
+## Phase 8: Game Math Reviewer & Simulation Pipeline (ACTIVE)
+- **Objective:** Structural reinforcement of the design workflow. Stop "feel-based" quick fixes by introducing a mathematical review skill and headless economy simulation.
+- **Key Deliverables:**
+  - .gemini/skills/game-math-reviewer/SKILL.md (Formalizing the mathematician role).
+  - Mandatory math review step in cyberpunk-overhaul skill.
+  - npm run simulate:economy (Headless human-player simulation).
+  - Balance Testing mode in game-tester skill.
+- **Status:** Structural tasks complete. Validation of simulation data in progress.

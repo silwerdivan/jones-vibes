@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "simulate:economy": "vitest run tests/simulate-economy.test.ts"
     },  "repository": {
     "type": "git",
     "url": "git+https://github.com/silwerdivan/jones-vibes.git"

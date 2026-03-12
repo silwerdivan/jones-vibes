@@ -383,10 +383,9 @@ class GameState {
         );
 
         player.setTime(0);
-        player.updateSanity(20);
-        
-        const medicalFee = 500;
-        // Forced deduction even if it goes slightly negative or just takes what's left?
+        player.updateSanity(40);
+
+        const medicalFee = 250;        // Forced deduction even if it goes slightly negative or just takes what's left?
         // Let's use spendCredits which currently doesn't allow negative, 
         // but we want to charge the fee.
         const actualDeducted = Math.min(player.credits, medicalFee);

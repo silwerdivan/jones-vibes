@@ -172,9 +172,9 @@ describe('Burnout Logic', () => {
         // Trigger burnout
         player.updateSanity(-100);
 
-        expect(player.sanity).toBe(20);
+        expect(player.sanity).toBe(40);
         expect(player.time).toBe(0);
-        expect(player.credits).toBe(500); // 1000 - 500 medical fee
+        expect(player.credits).toBe(750); // 1000 - 250 medical fee
         expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
         expect(gameState.log[0].text).toContain('Forced Reboot complete');
         expect(gameState.log[1].text).toContain('BURNOUT DETECTED');
@@ -239,10 +239,10 @@ describe('Labor Modifiers', () => {
 
         gameState.workShift();
 
-        // Base: 8 * 6 = 48
+        // Base: 14 * 6 = 84
         // Multiplier: 1.2
-        // Total: 48 * 1.2 = 57.6 -> 58 (rounded)
-        expect(player.credits).toBe(58);
+        // Total: 84 * 1.2 = 100.8 -> 101 (rounded)
+        expect(player.credits).toBe(101);
     });
 
     it('should apply WORK_EFFICIENCY to workShift earnings', () => {
@@ -258,10 +258,10 @@ describe('Labor Modifiers', () => {
 
         gameState.workShift();
 
-        // Base: 8 * 6 = 48
+        // Base: 14 * 6 = 84
         // Efficiency: 1.15
-        // Total: 48 * 1.15 = 55.2 -> 55 (rounded)
-        expect(player.credits).toBe(55);
+        // Total: 84 * 1.15 = 96.6 -> 97 (rounded)
+        expect(player.credits).toBe(97);
     });
 
     it('should apply both multipliers multiplicatively', () => {
@@ -280,8 +280,8 @@ describe('Labor Modifiers', () => {
 
         gameState.workShift();
 
-        // Base: 48
-        // Total: 48 * 1.2 * 1.3 = 74.88 -> 75 (rounded)
-        expect(player.credits).toBe(75);
+        // Base: 84
+        // Total: 84 * 1.2 * 1.3 = 131.04 -> 131 (rounded)
+        expect(player.credits).toBe(131);
     });
 });

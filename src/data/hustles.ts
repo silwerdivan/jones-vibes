@@ -5,7 +5,7 @@ export const HUSTLES: Hustle[] = [
         id: 'donate-plasma',
         title: 'Donate Blood-Plasma',
         reward: 42,
-        sanityCost: 18,
+        sanityCost: 8,
         timeCost: 4,
         risk: 0.2,
         consequenceId: 'plasma-infection',

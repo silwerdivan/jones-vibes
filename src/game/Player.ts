@@ -52,7 +52,7 @@ export default class Player {
         this.weeklySanityChange = 0;
         this.weeklyGraduations = [];
         this.activeConditions = [];
-        this.burnRate = 150;
+        this.burnRate = 80;
         this.debt = 0;
     }
 

@@ -1,27 +1,15 @@
-# Current Phase
+# Current Overhaul Phase
 
-- Status: Active
-- Phase: 7
-- Last completed phase: 6
-- Last theme: Onboarding Reset and Labor Sector Mobile Rebuild
-- Active plan: `docs/workflows/cyberpunk-overhaul/phase-7-plan.md`
-- Next workflow target: continue Phase 7 with broader labor-loop evaluation after live play feedback
-- Latest retro: `docs/workflows/cyberpunk-overhaul/phase-6-retro.md`
+## Status: ACTIVE
+**Active Phase:** Phase 8: Game Math Reviewer & Headless Simulation
+**Active Plan:** `docs/workflows/cyberpunk-overhaul/phase-8-plan.md`
 
-## Next work
+## Summary
+Building structural tools for game balance and mathematical validation. This phase adds a dedicated reviewer skill and a headless simulation pipeline to stop "quick fixes" and ensure the "poverty feel" is mathematically grounded.
 
-- Playtest whether the new hustle burst-credit positioning creates real mid-week decisions or needs a stronger downstream hook.
-- Migrate the legacy Phase 5 completed summary into `docs/workflows/cyberpunk-overhaul/overhaul-history.md`.
-- Decide whether the slow-render warnings observed during `npm test` need a dedicated performance cleanup task or can remain informational.
-
-## Progress notes
-
-- Phase 7 created on 2026-03-07 around Labor Sector reliability and hustle relevance.
-- Fixed the burnout-driven end-of-week re-entry loop by guarding auto-end-turn scheduling during turn finalization.
-- Fixed the Labor Sector random-event flow so resolving an event choice reopens the dashboard without another city-card click.
-- Rebalanced hustles into higher burst-credit, higher downside options and updated Labor Sector copy to explain the tradeoff.
-- Validation passed on 2026-03-07 with targeted Vitest coverage and the Labor Sector Playwright regression spec.
-- Phase 7 continuation on 2026-03-08: Gated synthetic burger choice by credits, rounded sanity display, renamed "Employment Agency" to "Labor Sector" globally, and added explainers for Burn Rate and Ambient Stress.
-- Fixed the "burnout loop" by restoring sanity to 20 during forced medical reboots.
-- Fixed mobile HUD layout where many conditions pushed stats off-screen.
-- Cleaned up Labor Sector UI by moving strategy text to the clerk and removing the redundant intro.
+## Progress Notes
+- [2026-03-12] Phase 8 initialized.
+- [2026-03-12] `game-math-reviewer` skill created.
+- [2026-03-12] `cyberpunk-overhaul` skill updated to require math reviews.
+- [2026-03-12] `simulate:economy` vitest-based simulation script created and wired to `package.json`.
+- [2026-03-12] `game-tester` skill updated with Balance Testing mode.
