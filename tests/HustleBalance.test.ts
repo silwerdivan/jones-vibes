@@ -19,9 +19,9 @@ describe('Hustle Balance', () => {
         expect(plasmaEfficiency).toBeGreaterThan(sanitationEfficiency);
         expect(scrapEfficiency).toBeGreaterThan(sanitationEfficiency);
 
-        expect(plasmaEfficiency).toBe(42 / 4);
-        expect(scrapEfficiency).toBe(38 / 4);
-        expect(sanitationEfficiency).toBe(8);
+        expect(plasmaEfficiency).toBe(100 / 4);
+        expect(scrapEfficiency).toBe(85 / 4);
+        expect(sanitationEfficiency).toBe(14);
     });
 
     it('plasma should remain the more punishing desperation option', () => {

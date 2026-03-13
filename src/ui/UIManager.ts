@@ -460,7 +460,16 @@ class UIManager {
         hustlesHint.textContent = 'Shorter than a full shift. Better burst credits, worse sanity and risk.';
         hustlesPanel.appendChild(hustlesHint);
 
-        const hustleCards = this.renderActionCardList('hustles', HUSTLES);
+        const currentTurn = this.gameState?.turn || 1;
+        const availableHustles = HUSTLES.filter(hustle => {
+            if (hustle.availabilityChance === undefined) return true;
+            // Simple deterministic check based on turn + string length
+            const pseudoRandom = (Math.sin(currentTurn * 12.9898 + hustle.id.length * 78.233) * 43758.5453) % 1;
+            const positiveRandom = Math.abs(pseudoRandom);
+            return positiveRandom < hustle.availabilityChance;
+        });
+
+        const hustleCards = this.renderActionCardList('hustles', availableHustles);
         hustleCards.classList.add('labor-list');
         hustlesPanel.appendChild(hustleCards);
 

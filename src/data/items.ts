@@ -25,18 +25,47 @@ export const SHOPPING_ITEMS: Item[] = [
         location: 'Consumpt-Zone',
         maintenanceCost: 50 
     },
-    { 
-        name: 'Computer', 
-        cost: 800, 
-        sanityBoost: 25, 
-        type: 'asset', 
-        icon: 'computer', 
-        benefit: 'Study Speed +15%', 
+    {
+        name: 'Computer',
+        cost: 800,
+        sanityBoost: 25,
+        type: 'asset',
+        icon: 'computer',
+        benefit: 'Study Speed +15%',
         location: 'Consumpt-Zone',
-        maintenanceCost: 75 
+        maintenanceCost: 75
     },
-    { name: 'Vacation Package', cost: 500, sanityBoost: 50, type: 'essential', location: 'Consumpt-Zone' },
-    { name: 'Bio-Block-01', cost: 10, sanityBoost: 5, type: 'essential', hungerReduction: 40, location: 'Sustenance Hub' },
+    {
+        name: 'Filtered-Respirator',
+        cost: 150,
+        sanityBoost: 0,
+        type: 'asset',
+        icon: 'masks',
+        benefit: 'Scrap Metal Risk -50%',
+        location: 'Consumpt-Zone',
+        maintenanceCost: 10
+    },
+    {
+        name: 'Blood-Scrubber',
+        cost: 250,
+        sanityBoost: 0,
+        type: 'asset',
+        icon: 'healing',
+        benefit: 'Plasma Donate Sanity Cost -5',
+        location: 'Ripperdoc Clinic',
+        maintenanceCost: 20
+    },
+    {
+        name: 'Burner-Comm',
+        cost: 350,
+        sanityBoost: 0,
+        type: 'asset',
+        icon: 'phone_android',
+        benefit: 'Hustle Heat Generation -50%',
+        location: 'Consumpt-Zone',
+        maintenanceCost: 30
+    },
+    { name: 'Vacation Package', cost: 500, sanityBoost: 50, type: 'essential', location: 'Consumpt-Zone' },    { name: 'Bio-Block-01', cost: 10, sanityBoost: 5, type: 'essential', hungerReduction: 40, location: 'Sustenance Hub' },
     { name: 'Synth-Salad', cost: 12, sanityBoost: 8, type: 'essential', hungerReduction: 30, location: 'Sustenance Hub' },
     { 
         name: 'Neural Co-Processor', 

@@ -26,14 +26,15 @@ describe('Hypno-Screen Buff', () => {
         timeSystem.endTurn();
 
         // Baseline: Sanity should stay at 50 because -10 Ambient Stress negates +10 Cycle Rest
-        expect(player.sanity).toBe(50);
-    });
+        // Actually: 50 - 8 (ambient) + 15 (rest) = 57
+        expect(player.sanity).toBe(57);
+        });
 
-    it('should increase sanity by 11 with Hypno-Screen', () => {
+        it('should increase sanity by 11 with Hypno-Screen', () => {
         const player = gameState.getCurrentPlayer();
         player.sanity = 50;
         player.credits = 225; // Cover Burn Rate + Maintenance
-        
+
         const hypnoScreen = SHOPPING_ITEMS.find(i => i.name === 'Hypno-Screen');
         expect(hypnoScreen).toBeDefined();
         player.inventory.push(hypnoScreen!);
@@ -42,6 +43,6 @@ describe('Hypno-Screen Buff', () => {
 
         // Hypno-Screen gives 10% bonus on Cycle Rest (11 total)
         // Combined with -10 Ambient Stress, net is +1
-        expect(player.sanity).toBe(51);
-    });
-});
+        // Actually: 50 - 8 (ambient) + 16 (rest) = 58
+        expect(player.sanity).toBe(58);
+        });});

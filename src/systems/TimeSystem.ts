@@ -238,6 +238,15 @@ class TimeSystem {
         // Tick conditions for the 24 hours that pass between turns (rest/sleep)
         this.gameState.eventManager.tickConditions(currentPlayer, 24);
 
+        // Decay hustle heat
+        if (currentPlayer.hustleHeat) {
+            for (const hustleId in currentPlayer.hustleHeat) {
+                if (currentPlayer.hustleHeat[hustleId] > 0) {
+                    currentPlayer.hustleHeat[hustleId] -= 1;
+                }
+            }
+        }
+
         if (timeDeficit > 0) {
             this.gameState.addLogMessage(
                 `${this._getPlayerName(currentPlayer)} started with ${timeDeficit}CH deficit due to relocation protocol.`,

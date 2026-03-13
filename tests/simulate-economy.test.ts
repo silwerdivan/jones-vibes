@@ -98,18 +98,69 @@ function simulateGame(strategy: 'hustle' | 'job', maxTurns: number) {
                 }
             } 
             else if (strategy === 'hustle') {
-                if (player.location !== 'Labor Sector') {
-                    if (player.time >= travelTime) {
-                        gameState.travel('Labor Sector');
-                        actionTaken = true;
+                // Scavenger items to buy if we have enough credits
+                const desiredItems = [
+                    { name: 'Filtered-Respirator', loc: 'Consumpt-Zone', cost: 150 },
+                    { name: 'Blood-Scrubber', loc: 'Ripperdoc Clinic', cost: 250 },
+                    { name: 'Burner-Comm', loc: 'Consumpt-Zone', cost: 350 }
+                ];
+                
+                let boughtItem = false;
+                for (const item of desiredItems) {
+                    if (!player.inventory.some(i => i.name === item.name) && player.credits >= item.cost + 50) { // Keep 50 buffer
+                        if (player.location !== item.loc) {
+                            if (player.time >= travelTime) {
+                                gameState.travel(item.loc as any);
+                                actionTaken = true;
+                                boughtItem = true;
+                                break;
+                            }
+                        } else {
+                            economySystem.buyItem(item.name);
+                            actionTaken = true;
+                            boughtItem = true;
+                            break;
+                        }
                     }
-                } else {
-                    // Hustle 'donate-plasma' costs 4 hours.
-                    const hustle = HUSTLES.find(h => h.id === 'donate-plasma');
-                    const hustleTime = hustle ? hustle.timeCost : 4;
-                    if (player.time >= hustleTime) {
-                        gameState.executeHustle('donate-plasma');
-                        actionTaken = true;
+                }
+
+                if (!boughtItem) {
+                    if (player.location !== 'Labor Sector') {
+                        if (player.time >= travelTime) {
+                            gameState.travel('Labor Sector');
+                            actionTaken = true;
+                        }
+                    } else {
+                        // Prioritize Big Scores if available (simulated via 10% chance since they aren't globally managed yet,
+                        // but actually they are just randomly available if heat doesn't restrict them, wait, 
+                        // availabilityChance is just a property. The test doesn't filter by availabilityChance directly 
+                        // because we bypass UIManager. Let's manually enforce it here.)
+                        const bigScores = ['heist-getaway', 'data-snatch'];
+                        let bigScoreHustle: any = null;
+                        for (const bs of bigScores) {
+                            const h = HUSTLES.find(x => x.id === bs);
+                            if (h && Math.random() < (h.availabilityChance || 1)) {
+                                bigScoreHustle = h;
+                                break;
+                            }
+                        }
+
+                        if (bigScoreHustle && player.time >= bigScoreHustle.timeCost) {
+                            gameState.executeHustle(bigScoreHustle.id);
+                            actionTaken = true;
+                        } else {
+                            // Pick between plasma and scrap based on heat
+                            const plasmaHeat = player.hustleHeat['donate-plasma'] || 0;
+                            const scrapHeat = player.hustleHeat['scrap-metal'] || 0;
+                            
+                            const targetHustleId = plasmaHeat <= scrapHeat ? 'donate-plasma' : 'scrap-metal';
+                            const targetHustle = HUSTLES.find(h => h.id === targetHustleId);
+
+                            if (targetHustle && player.time >= targetHustle.timeCost) {
+                                gameState.executeHustle(targetHustleId);
+                                actionTaken = true;
+                            }
+                        }
                     }
                 }
             } else if (strategy === 'job') {

@@ -43,6 +43,7 @@ export interface Hustle {
     risk: number; // 0-1 probability
     consequenceId?: string; // Reference to a RandomEvent ID
     flavorText: string;
+    availabilityChance?: number; // 0-1 probability of appearing per turn
 }
 
 export interface Clerk {
@@ -76,6 +77,7 @@ export interface PlayerState {
     activeConditions: GameCondition[];
     burnRate: number;
     debt: number;
+    hustleHeat: Record<string, number>;
 }
 
 export interface GraduationData {

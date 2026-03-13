@@ -1,10 +1,11 @@
 # Current Overhaul Phase
 
 ## Status: COMPLETED
-**Active Phase:** Phase 8: Game Math Reviewer & Headless Simulation
+**Active Phase:** Phase 9: Hustle Depth & High-Variance Risk/Reward
 
 ## Summary
-Phase 8 is closed. The Game Math Reviewer is active, the headless simulation script is live, and the early-game 'poverty trap' has been mathematically resolved via the Hustle Yield Boost.
+Phase 9 is closed. The Hustle mechanic is now a deep "Scavenger" progression path with Heat levels, Big Scores, and risk-mitigation gear. Wealth parity between Hustling and Jobs is stable but higher variance.
 
 ## Next Steps
-- Identify Phase 9 goals (potentially around 'Hustle Depth' or NPC interactions).
+- Identify Phase 10 goals (potentially around "Dynamic Pricing & Systemic Pressure" or "Heat-Triggered Events").
+- Expand the Heat system to influence global event triggers.

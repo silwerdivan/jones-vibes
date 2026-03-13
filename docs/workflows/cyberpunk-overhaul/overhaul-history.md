@@ -57,6 +57,15 @@
   - Balance Testing mode in game-tester skill.
 - **Status:** Structural tasks complete. Validation of simulation data in progress.
 
-### Future Research: Hustle Depth (Philosophical Seed)
-- **Problem:** Current hustles are 'taxing' but mathematically flat. They lack the high-variance 'jackpot' feel of real-world hustling.
-- **Proposal:** In a future phase, explore 'Hustle Heat' (social/legal risk), rare 'Big Score' payouts (1 in 50 chance for 10x reward), and a 'Scavenger' progression track to make hustling a deep alternative to labor, not just a desperate fallback.
+## Phase 9: Hustle Depth & High-Variance Risk/Reward (COMPLETE)
+- **Objective:** Transition the "Hustle" mechanic from a desperate fallback into a viable, high-risk/high-reward "Scavenger" progression path.
+- **Key Deliverables:**
+  - **Hustle Heat System:** Diminishing returns and increasing risk for repeated actions.
+  - **Big Score Hustles:** Rare, high-payout opportunities (Data Snatch, Heist Driver).
+  - **Scavenger Gear:** New items (Filtered-Respirator, Blood-Scrubber, Burner-Comm) to mitigate hustle risks and costs.
+  - **Telemetry Validation:** Updated `simulate:economy` to verify wealth parity and high-variance outcomes for the Scavenger path.
+- **Status:** Completed 2026-03-13. 277 tests passing.
+- **Lessons:**
+  - "Heat" creates a natural, non-punitive diversification pressure.
+  - Scavenger gear provides a meaningful early-game alternative to "Career/Education" progression.
+  - High-variance mechanics (Big Scores) are essential for the "Ruthless Empowerment" theme.

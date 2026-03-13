@@ -65,12 +65,15 @@ function getShoppingState(item: Item, player: Player | null): ActionCardState {
 
 function getHustleState(hustle: Hustle, player: Player | null): ActionCardState {
     const isLocked = !!(player && (player.time < hustle.timeCost || player.sanity < hustle.sanityCost));
-    
+    const currentHeat = player?.hustleHeat?.[hustle.id] || 0;
+    const heatPenalty = Math.min(0.5, currentHeat * 0.1);
+    const actualReward = Math.round(hustle.reward * (1 - heatPenalty));
+
     return {
         isLocked,
         isCompleted: false,
         buttonText: 'Hustle',
-        feedbackText: `+₡${hustle.reward}`,
+        feedbackText: `+₡${actualReward}`,
         feedbackType: 'success'
     };
 }
@@ -80,7 +83,7 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item | Hustle
         const job = data as Job;
         const multiplier = player ? player.wageMultiplier : 1.0;
         const adjustedWage = Math.round(job.wage * multiplier);
-        const wageHtml = multiplier < 1.0 
+        const wageHtml = multiplier < 1.0
             ? `<span class="wage-original">₡${job.wage}</span> <span class="wage-reduced">₡${adjustedWage}</span>/CH`
             : `₡${job.wage}/CH`;
 
@@ -99,14 +102,23 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item | Hustle
         `;
     } else if (type === 'hustles') {
         const hustle = data as Hustle;
+        const currentHeat = player?.hustleHeat?.[hustle.id] || 0;
+        const heatPenalty = Math.min(0.5, currentHeat * 0.1);
+        const actualReward = Math.round(hustle.reward * (1 - heatPenalty));
+        const actualRisk = hustle.risk + (currentHeat * 0.05);
+        const heatHtml = currentHeat > 0 ? `<span class="action-card-tag penalty"><i class="material-icons">local_fire_department</i>Heat: ${currentHeat}</span>` : '';
+        const rewardHtml = heatPenalty > 0 
+            ? `<span class="wage-original">₡${hustle.reward}</span> <span class="wage-reduced">₡${actualReward}</span>` 
+            : `+₡${hustle.reward}`;
+
         return `
-            <span class="action-card-tag price"><i class="material-icons">payments</i>+₡${hustle.reward}</span>
+            <span class="action-card-tag price"><i class="material-icons">payments</i>${rewardHtml}</span>
             <span class="action-card-tag"><i class="material-icons">schedule</i>${hustle.timeCost}CH</span>
             <span class="action-card-tag penalty"><i class="material-icons">psychology</i>-${hustle.sanityCost} Sanity</span>
-            <div class="action-card-flavor">${hustle.flavorText}</div>
+            ${heatHtml}
+            <div class="action-card-flavor">${hustle.flavorText} <br/><span class="action-card-tag warning"><i class="material-icons">warning</i>Risk: ${Math.round(actualRisk * 100)}%</span></div>
         `;
-    } else {
-        const item = data as Item;
+    } else {        const item = data as Item;
         let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.sanityBoost} Sanity (🧠)</span>`;
         if (item.hungerReduction) {
             boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Energy Drain (⚡)</span>`;

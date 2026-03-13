@@ -59,7 +59,8 @@ describe('TimeSystem', () => {
         timeSystem.endTurn();
 
         expect(player.hunger).toBe(80);
-        expect(player.sanity).toBe(45);
+        // 50 (init) - 5 (hunger) - 8 (ambient) + 15 (rest) = 52
+        expect(player.sanity).toBe(52);
     });
 
     it('should apply loan interest if player has a loan', () => {
@@ -79,12 +80,13 @@ describe('TimeSystem', () => {
         player.credits = 150;
 
         timeSystem.endTurn();
-        expect(player.sanity).toBe(50);
+        // 50 - 8 + 15 = 57
+        expect(player.sanity).toBe(57);
 
         player.hunger = 0;
         player.credits = 150;
         timeSystem.endTurn();
-        expect(player.sanity).toBe(50);
+        expect(player.sanity).toBe(64);
     });
 
     it('should advance turn correctly', () => {

@@ -565,22 +565,47 @@ class GameState {
             return false;
         }
 
+        // Scavenger Item Modifiers
+        const hasBurnerComm = currentPlayer.inventory.some(i => i.name === 'Burner-Comm');
+        const hasBloodScrubber = currentPlayer.inventory.some(i => i.name === 'Blood-Scrubber');
+        const hasRespirator = currentPlayer.inventory.some(i => i.name === 'Filtered-Respirator');
+
+        let baseRisk = hustle.risk;
+        if (hustleId === 'scrap-metal' && hasRespirator) {
+            baseRisk *= 0.5; // Reduce risk by 50%
+        }
+
+        let baseSanityCost = hustle.sanityCost;
+        if (hustleId === 'donate-plasma' && hasBloodScrubber) {
+            baseSanityCost = Math.max(0, baseSanityCost - 5);
+        }
+
+        // Heat calculation
+        const currentHeat = currentPlayer.hustleHeat[hustleId] || 0;
+        const heatPenalty = Math.min(0.5, currentHeat * 0.1);
+        const actualReward = Math.round(hustle.reward * (1 - heatPenalty));
+        const actualRisk = baseRisk + (currentHeat * 0.05);
+
+        // Increase heat for next time (less with Burner-Comm)
+        const heatGain = hasBurnerComm ? 0.5 : 1;
+        currentPlayer.hustleHeat[hustleId] = currentHeat + heatGain;
+
         // Deduct time
         this._deductTime(currentPlayer, hustle.timeCost);
 
         // Deduct sanity
-        currentPlayer.updateSanity(-hustle.sanityCost);
+        currentPlayer.updateSanity(-baseSanityCost);
 
         // Add reward
-        currentPlayer.addCredits(hustle.reward);
+        currentPlayer.addCredits(actualReward);
 
         this.addLogMessage(
-            `Hustle Completed: ${hustle.title}. Yield: ${this._formatMoney(hustle.reward)}. Stress: -${hustle.sanityCost} Sanity.`,
+            `Hustle Completed: ${hustle.title}. Yield: ${this._formatMoney(actualReward)}. Stress: -${baseSanityCost} Sanity.`,
             'success'
         );
 
         // Check risk
-        if (Math.random() < hustle.risk && hustle.consequenceId) {
+        if (Math.random() < actualRisk && hustle.consequenceId) {
             this.addLogMessage(`Hustle consequence triggered!`, 'warning');
             this.eventManager.triggerEventById(hustle.consequenceId, this);
         }

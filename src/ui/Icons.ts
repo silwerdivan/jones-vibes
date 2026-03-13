@@ -262,6 +262,24 @@ const Icons = {
         </svg>
     `,
 
+    masks: (size = 24, color = 'currentColor') => `
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Z"/><path d="M9 14h6"/><path d="M12 11v3"/><path d="M9 9h.01"/><path d="M15 9h.01"/>
+        </svg>
+    `,
+
+    healing: (size = 24, color = 'currentColor') => `
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 4v16"/><path d="M4 12h16"/>
+        </svg>
+    `,
+
+    phone_android: (size = 24, color = 'currentColor') => `
+        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+    `,
+
     restaurant: (size = 24, color = 'currentColor') => `
         <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 11h18a1 1 0 0 1 1 1v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1a1 1 0 0 1 1-1Z"></path>

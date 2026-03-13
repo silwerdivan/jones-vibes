@@ -28,6 +28,7 @@ export default class Player {
     activeConditions: GameCondition[] = [];
     burnRate: number = 150; // Base 150 ₡ for Coffin Tube + basic subscriptions
     debt: number = 0;
+    hustleHeat: Record<string, number> = {};
 
     constructor(id: number) {
         this.id = id;
@@ -134,7 +135,8 @@ export default class Player {
             wageMultiplier: this.baseWageMultiplier, // Save the base
             activeConditions: [...this.activeConditions],
             burnRate: this.burnRate,
-            debt: this.debt
+            debt: this.debt,
+            hustleHeat: { ...this.hustleHeat }
         };
     }
 
@@ -163,6 +165,7 @@ export default class Player {
         player.activeConditions = data.activeConditions || [];
         player.burnRate = data.burnRate || 150;
         player.debt = data.debt || 0;
+        player.hustleHeat = data.hustleHeat || {};
         return player;
     }
 
