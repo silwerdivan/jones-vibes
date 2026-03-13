@@ -48,7 +48,7 @@
   - Labor Sector needs mobile-first information hierarchy instead of stacked dashboards.
   - Separate slow-render console warnings from pass/fail validation so closeout signals stay readable.
 
-## Phase 8: Game Math Reviewer & Simulation Pipeline (ACTIVE)
+## Phase 8: Game Math Reviewer & Simulation Pipeline (COMPLETE)
 - **Objective:** Structural reinforcement of the design workflow. Stop "feel-based" quick fixes by introducing a mathematical review skill and headless economy simulation.
 - **Key Deliverables:**
   - .gemini/skills/game-math-reviewer/SKILL.md (Formalizing the mathematician role).
@@ -56,3 +56,7 @@
   - npm run simulate:economy (Headless human-player simulation).
   - Balance Testing mode in game-tester skill.
 - **Status:** Structural tasks complete. Validation of simulation data in progress.
+
+### Future Research: Hustle Depth (Philosophical Seed)
+- **Problem:** Current hustles are 'taxing' but mathematically flat. They lack the high-variance 'jackpot' feel of real-world hustling.
+- **Proposal:** In a future phase, explore 'Hustle Heat' (social/legal risk), rare 'Big Score' payouts (1 in 50 chance for 10x reward), and a 'Scavenger' progression track to make hustling a deep alternative to labor, not just a desperate fallback.

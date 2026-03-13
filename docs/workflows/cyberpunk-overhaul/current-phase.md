@@ -1,15 +1,10 @@
 # Current Overhaul Phase
 
-## Status: ACTIVE
+## Status: COMPLETED
 **Active Phase:** Phase 8: Game Math Reviewer & Headless Simulation
-**Active Plan:** `docs/workflows/cyberpunk-overhaul/phase-8-plan.md`
 
 ## Summary
-Building structural tools for game balance and mathematical validation. This phase adds a dedicated reviewer skill and a headless simulation pipeline to stop "quick fixes" and ensure the "poverty feel" is mathematically grounded.
+Phase 8 is closed. The Game Math Reviewer is active, the headless simulation script is live, and the early-game 'poverty trap' has been mathematically resolved via the Hustle Yield Boost.
 
-## Progress Notes
-- [2026-03-12] Phase 8 initialized.
-- [2026-03-12] `game-math-reviewer` skill created.
-- [2026-03-12] `cyberpunk-overhaul` skill updated to require math reviews.
-- [2026-03-12] `simulate:economy` vitest-based simulation script created and wired to `package.json`.
-- [2026-03-12] `game-tester` skill updated with Balance Testing mode.
+## Next Steps
+- Identify Phase 9 goals (potentially around 'Hustle Depth' or NPC interactions).

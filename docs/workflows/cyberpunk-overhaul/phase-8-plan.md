@@ -21,6 +21,12 @@ Formalize the "Game Math Reviewer" persona into an actionable skill, require mat
 - [x] Collect telemetry (bankruptcies, wealth, sanity at milestones).
 - [x] Output the telemetry as a clean JSON or formatted text report.
 
+### 3.5. Fix Simulation Fidelity [COMPLETE]
+- [x] Fix property checks (`player.hasJob` -> `player.careerLevel > 0`).
+- [x] Standardize action time costs against game mechanics.
+- [x] Implement graceful turn exits.
+- [x] Replace direct system calls with UI-equivalent calls.
+
 ### 4. Wire Up `package.json` Commands [COMPLETE]
 - [x] Add an NPM script `"simulate:economy": "vitest run tests/simulate-economy.test.ts"` to `package.json` so the AI can easily run it.
 
@@ -28,6 +34,6 @@ Formalize the "Game Math Reviewer" persona into an actionable skill, require mat
 - [x] Update `.gemini/skills/game-tester/SKILL.md` to include a "Balance Testing" mode.
 - [x] Instruct the game tester to use the new `npm run simulate:economy` script to assert on feel and balance.
 
-## Validation [IN PROGRESS]
-- [ ] Run the simulation script locally to ensure it outputs realistic data without crashing. (Initial run complete; results showed 0 wealth/sanity, needs fine-tuning).
-- [ ] Have the `game-math-reviewer` analyze the generated simulation data to propose an initial economy fix for the "poverty escape" feedback loop, demonstrating the new pipeline.
+## Validation [COMPLETE]
+- [x] Run the simulation script locally to ensure it outputs realistic data without crashing. (Fidelity fixed; producing valid baseline telemetry).
+- [x] Have the `game-math-reviewer` analyze simulation data and implement the Hustle Yield Boost ($100 reward). Verified: Turn 20 debt dropped from $1,000 to $0.

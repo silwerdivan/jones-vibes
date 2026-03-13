@@ -3,6 +3,8 @@ import GameState from '../src/game/GameState';
 import EconomySystem from '../src/systems/EconomySystem';
 import TimeSystem from '../src/systems/TimeSystem';
 import { SHOPPING_ITEMS } from '../src/data/items';
+import { JOBS } from '../src/data/jobs';
+import { HUSTLES } from '../src/data/hustles';
 
 const NUM_GAMES = 50;
 const MAX_TURNS = 20;
@@ -72,54 +74,78 @@ function simulateGame(strategy: 'hustle' | 'job', maxTurns: number) {
         }
 
         let actionCount = 0;
-        while (player.time > 0 && !gameState.gameOver && actionCount < 20) {
+        const maxActions = 20;
+        let actionTaken = true;
+
+        while (player.time > 0 && !gameState.gameOver && actionCount < maxActions && actionTaken) {
             actionCount++;
-            const initialTime = player.time;
+            actionTaken = false;
+            const travelTime = player.hasCar ? 1 : 2;
             
-            if (player.hunger > 40) {
+            const affordableFood = SHOPPING_ITEMS
+                .filter(i => i.location === 'Sustenance Hub' && player.credits >= i.cost)
+                .sort((a, b) => (a.cost / (a.hungerReduction || 1)) - (b.cost / (b.hungerReduction || 1)));
+
+            if (player.hunger > 40 && affordableFood.length > 0) {
                 if (player.location !== 'Sustenance Hub') {
-                    if (player.time >= 2) gameState.travel('Sustenance Hub');
-                    else { player.time = 0; break; }
-                } else {
-                    const affordableFood = SHOPPING_ITEMS
-                        .filter(i => i.location === 'Sustenance Hub' && player.credits >= i.cost)
-                        .sort((a, b) => (a.cost / (a.hungerReduction || 1)) - (b.cost / (b.hungerReduction || 1)));
-                    
-                    if (affordableFood.length > 0) {
-                        economySystem.buyItem(affordableFood[0].name);
-                    } else {
-                        player.time = 0; break; 
+                    if (player.time >= travelTime) {
+                        gameState.travel('Sustenance Hub');
+                        actionTaken = true;
                     }
+                } else {
+                    economySystem.buyItem(affordableFood[0].name);
+                    actionTaken = true;
                 }
             } 
             else if (strategy === 'hustle') {
                 if (player.location !== 'Labor Sector') {
-                    if (player.time >= 2) gameState.travel('Labor Sector');
-                    else { player.time = 0; break; }
+                    if (player.time >= travelTime) {
+                        gameState.travel('Labor Sector');
+                        actionTaken = true;
+                    }
                 } else {
-                    gameState.executeHustle('donate-plasma');
+                    // Hustle 'donate-plasma' costs 4 hours.
+                    const hustle = HUSTLES.find(h => h.id === 'donate-plasma');
+                    const hustleTime = hustle ? hustle.timeCost : 4;
+                    if (player.time >= hustleTime) {
+                        gameState.executeHustle('donate-plasma');
+                        actionTaken = true;
+                    }
                 }
             } else if (strategy === 'job') {
-                if (!player.hasJob) {
+                if (player.careerLevel === 0) {
                     if (player.location !== 'Labor Sector') {
-                        if (player.time >= 2) gameState.travel('Labor Sector');
-                        else { player.time = 0; break; }
+                        if (player.time >= travelTime) {
+                            gameState.travel('Labor Sector');
+                            actionTaken = true;
+                        }
                     } else {
-                        gameState.applyForJob(1);
+                        // Apply for job level 1 (Sanitation-T3) which requires education 0
+                        const jobToApply = JOBS.find(j => j.level === 1);
+                        if (jobToApply && player.educationLevel >= jobToApply.educationRequired) {
+                            gameState.applyForJob(1);
+                            actionTaken = true;
+                        }
                     }
                 } else {
                     if (player.location !== 'Labor Sector') {
-                        if (player.time >= 2) gameState.travel('Labor Sector');
-                        else { player.time = 0; break; }
+                        if (player.time >= travelTime) {
+                            gameState.travel('Labor Sector');
+                            actionTaken = true;
+                        }
                     } else {
-                        gameState.workShift();
+                        const currentJob = JOBS.find(j => j.level === player.careerLevel);
+                        const shiftHours = currentJob ? currentJob.shiftHours : 8;
+                        if (player.time >= shiftHours) {
+                            gameState.workShift();
+                            actionTaken = true;
+                        }
                     }
                 }
             }
             
-            if (player.time === initialTime) {
-                player.time = 0;
-            }
+            // If no action was affordable/valid in this loop pass, actionTaken remains false
+            // and the while loop naturally exits, preserving player.time.
         }
 
         if (!gameState.isEndingTurn) {
