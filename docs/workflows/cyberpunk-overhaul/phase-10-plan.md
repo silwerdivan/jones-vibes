@@ -1,6 +1,6 @@
-﻿# Phase 10: Early Game Poverty, Sanity, and Hunger Balancing
+# Phase 10: Early Game Poverty, Sanity, and Hunger Balancing
 
-## Status: Planned
+## Status: COMPLETED
 
 ## Objective
 Evaluate and rebalance the early game economy and life simulation mechanics to ensure the intended "poverty/survival" aesthetics are met, focusing on MDA (Mechanics, Dynamics, Aesthetics) and mathematical balancing.
@@ -20,10 +20,10 @@ Evaluate and rebalance the early game economy and life simulation mechanics to e
    - **Hunger > 90:** Starvation. -30 Sanity/turn.
 
 ## Tasks
-- [ ] Implement Hunger visualization in HUD (add numeric or warning state)
-- [ ] Update \RANDOM_EVENTS.ts\ to nerf \global_stimulus_windfall\ and \conditions.ts\ to buff \AD_FATIGUE\
-- [ ] Update \TimeSystem.ts\ to adjust Ambient Stress (-10) and Cycle Rest (+5)
-- [ ] Update \items.ts\ to adjust food sanity values and add "Real-Meat Burger"
-- [ ] Update \TimeSystem.ts\ and \GameState.ts\ to implement the cascading Hunger penalties (>50 lockout, >70 time penalty, scaling sanity drains)
-- [ ] Update UI elements (HUD/Action Cards) to reflect job/course lockouts under hunger
-- [ ] Update tests for Sanity, Hunger, and Random Events to reflect new balance
+- [x] Implement Hunger visualization in HUD (add numeric or warning state)
+- [x] Update \RANDOM_EVENTS.ts\ to nerf \global_stimulus_windfall\ and \conditions.ts\ to buff \AD_FATIGUE\
+- [x] Update \TimeSystem.ts\ to adjust Ambient Stress (-10) and Cycle Rest (+5)
+- [x] Update \items.ts\ to adjust food sanity values and add "Real-Meat Burger"
+- [x] Update \TimeSystem.ts\ and \GameState.ts\ to implement the cascading Hunger penalties (>50 lockout, >70 time penalty, scaling sanity drains)
+- [x] Update UI elements (HUD/Action Cards) to reflect job/course lockouts under hunger
+- [x] Update tests for Sanity, Hunger, and Random Events to reflect new balance
