@@ -69,3 +69,17 @@
   - "Heat" creates a natural, non-punitive diversification pressure.
   - Scavenger gear provides a meaningful early-game alternative to "Career/Education" progression.
   - High-variance mechanics (Big Scores) are essential for the "Ruthless Empowerment" theme.
+
+## Phase 10: Early Game Poverty, Sanity, and Hunger Balancing (COMPLETE)
+- **Objective:** Rebalance early-game pressure to ensure "poverty/survival" aesthetics. Restore the threat of hunger and the need for active sanity management.
+- **Key Deliverables:**
+  - **"Drowning Slowly" Loop:** Passive sanity shifted from +7/turn to -5/turn (Ambient Stress -10, Cycle Rest +5).
+  - **Starvation Spiral:** Cascading penalties for hunger (>50 Cognitive Decline/Lockouts, >70 Exhaustion/Time Penalty, >90 Starvation Damage).
+  - **Survival Economics:** Nerfed Network Stimulus windfall (₡100), decoupled cheap food from sanity (Bio-Block -2 Sanity), and added "Real-Meat Burger" (₡40, +10 Sanity).
+  - **HUD Hunger Gauge:** Integrated visual Bio-Deficit tracking with critical warning states.
+  - **MDA-BALANCE-LOG.md:** Established a permanent mathematical/aesthetic source of truth for game balance.
+- **Status:** Completed 2026-03-15. 277 tests passing.
+- **Lessons:**
+  - "Time" is the most valuable currency in a life-sim; use it as a penalty for physical failure (exhaustion).
+  - Documenting the "why" (Aesthetic Goals) in the Balance Log is critical for AI-human alignment.
+  - Visualizing hidden metrics (Hunger) in the HUD immediately elevates their perceived importance.

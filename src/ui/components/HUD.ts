@@ -55,6 +55,13 @@ export default class HUD extends BaseComponent<GameState> {
                         <span class="hud-value currency" data-credits>₡0</span>
                     </div>
                     <div class="hud-stat-item">
+                        <span class="hud-label">BIO-DEFICIT</span>
+                        <div class="hud-gauge-container">
+                            <div class="hud-gauge-fill" data-hunger-fill></div>
+                            <span class="hud-gauge-value" data-hunger-value>0%</span>
+                        </div>
+                    </div>
+                    <div class="hud-stat-item">
                         <span class="hud-label">BURN RATE</span>
                         <span class="hud-value" data-burn-rate>₡0</span>
                     </div>
@@ -168,6 +175,10 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateDebt(gameState);
         });
 
+        this.subscribe(STATE_EVENTS.HUNGER_CHANGED, ({ gameState }: { gameState: GameState }) => {
+            this.updateHunger(gameState);
+        });
+
         this.subscribe(STATE_EVENTS.TIME_CHANGED, ({ gameState }: { gameState: GameState }) => {
             this.updateClocks(gameState);
             this.updateMascots(gameState);
@@ -177,6 +188,7 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateOrbs(gameState);
             this.updateCredits(gameState);
             this.updateDebt(gameState);
+            this.updateHunger(gameState);
             this.updateClocks(gameState);
             this.updateMascots(gameState);
         });
@@ -186,6 +198,7 @@ export default class HUD extends BaseComponent<GameState> {
             this.updateOrbs(gameState);
             this.updateCredits(gameState);
             this.updateDebt(gameState);
+            this.updateHunger(gameState);
             this.updateClocks(gameState);
             this.updateMascots(gameState);
         });
@@ -194,6 +207,33 @@ export default class HUD extends BaseComponent<GameState> {
         EventBus.subscribe('stateChanged', (gameState: GameState) => {
             if (gameState) this.render(gameState);
         });
+    }
+
+    private updateHunger(gameState: GameState): void {
+        const currentPlayer = gameState.getCurrentPlayer();
+        const hunger = currentPlayer.hunger || 0;
+        
+        const fill = this.element.querySelector('[data-hunger-fill]') as HTMLElement;
+        const value = this.element.querySelector('[data-hunger-value]') as HTMLElement;
+        
+        if (fill && value) {
+            fill.style.width = `${hunger}%`;
+            value.textContent = `${Math.round(hunger)}%`;
+            
+            // Color mapping
+            let color = '#00E676'; // Green
+            if (hunger > 75) {
+                color = '#FF5252'; // Red
+            } else if (hunger > 50) {
+                color = '#FFD600'; // Yellow
+            }
+            fill.style.backgroundColor = color;
+            
+            value.classList.toggle('critical', hunger > 50);
+            if (hunger > 50) {
+                value.innerHTML = `<i class="material-icons" style="font-size: 10px;">warning</i> ${Math.round(hunger)}%`;
+            }
+        }
     }
 
     private updateCredits(gameState: GameState): void {
@@ -322,6 +362,7 @@ export default class HUD extends BaseComponent<GameState> {
         this.hudCredits.textContent = `₡${currentPlayer.credits}`;
         this.hudBurnRate.textContent = `₡${currentPlayer.calculateBurnRate()}`;
         this.updateDebt(gameState);
+        this.updateHunger(gameState);
         this.hudWeek.textContent = gameState.turn.toString();
 
         // Update News Ticker

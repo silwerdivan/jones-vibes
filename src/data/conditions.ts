@@ -17,7 +17,7 @@ export const CONDITIONS: Record<string, GameCondition> = {
         description: 'Retinal ads are everywhere. Constant drain on sanity.',
         remainingDuration: 72, // 3 days
         effects: [
-            { type: 'SANITY_TICK', value: -0.2 } // -0.2 per hour = -4.8 per day
+            { type: 'SANITY_TICK', value: -0.5 } // -0.5 per hour = -12 per day
         ],
         icon: '👁️'
     },

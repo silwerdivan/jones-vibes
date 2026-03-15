@@ -58,9 +58,10 @@ describe('TimeSystem', () => {
 
         timeSystem.endTurn();
 
+        // Initial 60 + 20 = 80 (Exhaustion Protocol: -15 Sanity)
         expect(player.hunger).toBe(80);
-        // 50 (init) - 5 (hunger) - 8 (ambient) + 15 (rest) = 52
-        expect(player.sanity).toBe(52);
+        // 50 (init) - 15 (exhaustion) - 10 (ambient) + 5 (rest) = 30
+        expect(player.sanity).toBe(30);
     });
 
     it('should apply loan interest if player has a loan', () => {
@@ -73,20 +74,21 @@ describe('TimeSystem', () => {
         expect(player.loan).toBe(1100);
     });
 
-    it('should confirm sanity stays constant with ambient drain negating recovery', () => {
+    it('should confirm sanity decreases due to net-negative passive loop', () => {
         const player = gameState.getCurrentPlayer();
         player.hunger = 0;
         player.sanity = 50;
         player.credits = 150;
 
         timeSystem.endTurn();
-        // 50 - 8 + 15 = 57
-        expect(player.sanity).toBe(57);
+        // 50 (init) - 10 (ambient) + 5 (rest) = 45
+        expect(player.sanity).toBe(45);
 
         player.hunger = 0;
         player.credits = 150;
         timeSystem.endTurn();
-        expect(player.sanity).toBe(64);
+        // 45 - 10 + 5 = 40
+        expect(player.sanity).toBe(40);
     });
 
     it('should advance turn correctly', () => {

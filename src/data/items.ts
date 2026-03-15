@@ -65,8 +65,10 @@ export const SHOPPING_ITEMS: Item[] = [
         location: 'Consumpt-Zone',
         maintenanceCost: 30
     },
-    { name: 'Vacation Package', cost: 500, sanityBoost: 50, type: 'essential', location: 'Consumpt-Zone' },    { name: 'Bio-Block-01', cost: 10, sanityBoost: 5, type: 'essential', hungerReduction: 40, location: 'Sustenance Hub' },
-    { name: 'Synth-Salad', cost: 12, sanityBoost: 8, type: 'essential', hungerReduction: 30, location: 'Sustenance Hub' },
+    { name: 'Vacation Package', cost: 500, sanityBoost: 50, type: 'essential', location: 'Consumpt-Zone' },
+    { name: 'Bio-Block-01', cost: 10, sanityBoost: -2, type: 'essential', hungerReduction: 40, location: 'Sustenance Hub' },
+    { name: 'Synth-Salad', cost: 12, sanityBoost: 0, type: 'essential', hungerReduction: 30, location: 'Sustenance Hub' },
+    { name: 'Real-Meat Burger', cost: 40, sanityBoost: 10, type: 'essential', hungerReduction: 50, location: 'Sustenance Hub' },
     { 
         name: 'Neural Co-Processor', 
         cost: 1000, 

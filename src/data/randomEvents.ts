@@ -33,12 +33,12 @@ export const RANDOM_EVENTS: RandomEvent[] = [
         type: 'Global',
         title: 'Network Stimulus Drop',
         flavorText: `The city network is distributing digital stimulus tokens to low-tier citizens... provided you agree to 24/7 retinal ad-tracking.`,
-        prerequisites: { maxWealth: 500 },
+        prerequisites: { maxWealth: 200 },
         choices: [
             {
                 text: `Accept: "I need the credits."`,
                 effects: [
-                    { type: 'CREDITS', value: 300 },
+                    { type: 'CREDITS', value: 100 },
                     { type: 'CONDITION', value: 1.0, conditionId: 'AD_FATIGUE' }
                 ]
             },
@@ -53,7 +53,7 @@ export const RANDOM_EVENTS: RandomEvent[] = [
                 requirement: { type: 'ITEM', id: 'Computer' },
                 effects: [
                     { type: 'TIME', value: -4 },
-                    { type: 'CREDITS', value: 300 }
+                    { type: 'CREDITS', value: 100 }
                 ]
             }
         ]

@@ -22,31 +22,40 @@ export interface ActionCardState {
 }
 
 function getJobState(job: Job, player: Player | null): ActionCardState {
-    const isLocked = !!(player && player.educationLevel < job.educationRequired);
+    const isLockedByEducation = !!(player && player.educationLevel < job.educationRequired);
+    const isLockedByHunger = !!(player && player.hunger > 50 && job.level > 1);
+    const isLocked = isLockedByEducation || isLockedByHunger;
     const isHired = !!(player && player.careerLevel === job.level);
     const isBetterJob = !!(player && player.careerLevel > job.level);
     
     let buttonText = isHired ? 'Hired' : (isBetterJob ? 'Lower Level' : 'Apply');
+    if (isLockedByHunger) buttonText = 'Focus Lost';
+
     const finalIsLocked = isLocked || isBetterJob;
     
     return {
         isLocked: finalIsLocked,
         isCompleted: isHired,
         buttonText,
-        feedbackText: 'HIRED!',
-        feedbackType: 'success'
+        feedbackText: isLockedByHunger ? 'Too Hungry' : 'HIRED!',
+        feedbackType: isLockedByHunger ? 'error' : 'success'
     };
 }
 
 function getCourseState(course: Course, player: Player | null): ActionCardState {
-    const isLocked = !!(player && player.educationLevel < (course.educationMilestone - 1));
+    const isLockedByEducation = !!(player && player.educationLevel < (course.educationMilestone - 1));
+    const isLockedByHunger = !!(player && player.hunger > 50);
+    const isLocked = isLockedByEducation || isLockedByHunger;
     const alreadyTaken = !!(player && player.educationLevel >= course.educationMilestone);
     
+    let buttonText = alreadyTaken ? 'Completed' : 'Study';
+    if (isLockedByHunger && !alreadyTaken) buttonText = 'Focus Lost';
+
     return {
         isLocked: isLocked || alreadyTaken,
         isCompleted: alreadyTaken,
-        buttonText: alreadyTaken ? 'Completed' : 'Study',
-        feedbackText: `-₡${course.cost}`,
+        buttonText,
+        feedbackText: isLockedByHunger ? 'Too Hungry' : `-₡${course.cost}`,
         feedbackType: 'error'
     };
 }
@@ -87,18 +96,30 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item | Hustle
             ? `<span class="wage-original">₡${job.wage}</span> <span class="wage-reduced">₡${adjustedWage}</span>/CH`
             : `₡${job.wage}/CH`;
 
+        const isLockedByHunger = !!(player && player.hunger > 50 && job.level > 1);
+        const hungerLockHtml = isLockedByHunger 
+            ? `<span class="action-card-tag danger"><i class="material-icons">warning</i>Starvation Lockout</span>` 
+            : '';
+
         return `
             <span class="action-card-tag price"><i class="material-icons">payments</i>${wageHtml}</span>
             <span class="action-card-tag"><i class="material-icons">schedule</i>${job.shiftHours}CH</span>
-            <span class="action-card-tag requirement ${state.isLocked ? 'locked' : ''}">
-                <i class="material-icons">${state.isLocked ? 'lock' : 'school'}</i>Compliance Level ${job.educationRequired}
+            <span class="action-card-tag requirement ${state.isLocked && !isLockedByHunger ? 'locked' : ''}">
+                <i class="material-icons">${state.isLocked && !isLockedByHunger ? 'lock' : 'school'}</i>Compliance Level ${job.educationRequired}
             </span>
+            ${hungerLockHtml}
         `;
     } else if (type === 'college') {
         const course = data as Course;
+        const isLockedByHunger = !!(player && player.hunger > 50);
+        const hungerLockHtml = isLockedByHunger 
+            ? `<span class="action-card-tag danger"><i class="material-icons">warning</i>Starvation Lockout</span>` 
+            : '';
+            
         return `
-            <span class="action-card-tag price ${state.isLocked && !state.isCompleted ? 'locked' : ''}"><i class="material-icons">payments</i>₡${course.cost}</span>
+            <span class="action-card-tag price ${state.isLocked && !state.isCompleted && !isLockedByHunger ? 'locked' : ''}"><i class="material-icons">payments</i>₡${course.cost}</span>
             <span class="action-card-tag"><i class="material-icons">history</i>${course.time}CH total</span>
+            ${hungerLockHtml}
         `;
     } else if (type === 'hustles') {
         const hustle = data as Hustle;
@@ -118,8 +139,11 @@ function createMetaTags(type: ActionCardType, data: Job | Course | Item | Hustle
             ${heatHtml}
             <div class="action-card-flavor">${hustle.flavorText} <br/><span class="action-card-tag warning"><i class="material-icons">warning</i>Risk: ${Math.round(actualRisk * 100)}%</span></div>
         `;
-    } else {        const item = data as Item;
-        let boostHtml = `<span class="action-card-tag"><i class="material-icons">sentiment_very_satisfied</i>+${item.sanityBoost} Sanity (🧠)</span>`;
+    } else {
+        const item = data as Item;
+        const sanityLabel = item.sanityBoost >= 0 ? `+${item.sanityBoost}` : `${item.sanityBoost}`;
+        const sanityClass = item.sanityBoost < 0 ? 'penalty' : '';
+        let boostHtml = `<span class="action-card-tag ${sanityClass}"><i class="material-icons">sentiment_very_satisfied</i>${sanityLabel} Sanity (🧠)</span>`;
         if (item.hungerReduction) {
             boostHtml += `<span class="action-card-tag"><i class="material-icons">restaurant</i>-${item.hungerReduction} Energy Drain (⚡)</span>`;
         }

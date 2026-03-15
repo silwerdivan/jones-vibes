@@ -160,26 +160,43 @@ class TimeSystem {
             EventBus.publish(STATE_EVENTS.DEBT_CHANGED, { player: currentPlayer, amount: debtInterest, gameState: this.gameState });
         }
 
-        // 5. Apply hunger
+        // 5. Apply hunger (Starvation Spiral)
         const hasThermalRegulator = currentPlayer.inventory.some(i => i.name === 'Thermal-Regulator');
         const hungerIncrease = hasThermalRegulator ? 10 : 20;
         currentPlayer.hunger = Math.min(100, (currentPlayer.hunger || 0) + hungerIncrease);
-        if (currentPlayer.hunger > 50) {
-            currentPlayer.updateSanity(-5);
+        
+        let hungerSanityPenalty = 0;
+        let hungerLabel = '';
+        
+        if (currentPlayer.hunger > 90) {
+            hungerSanityPenalty = -30;
+            hungerLabel = 'Starvation Protocol';
+        } else if (currentPlayer.hunger > 70) {
+            hungerSanityPenalty = -15;
+            hungerLabel = 'Exhaustion Protocol';
+            // Exhaustion also penalizes time for the next turn
+            currentPlayer.timeDeficit = Math.max(currentPlayer.timeDeficit, 8); 
+        } else if (currentPlayer.hunger > 50) {
+            hungerSanityPenalty = -5;
+            hungerLabel = 'Cognitive Decline';
+        }
+
+        if (hungerSanityPenalty < 0) {
+            currentPlayer.updateSanity(hungerSanityPenalty);
             summary.events.push({
-                type: 'warning',
-                label: 'Bio-Deficit Deduction',
-                value: -5,
+                type: 'danger',
+                label: hungerLabel,
+                value: hungerSanityPenalty,
                 unit: 'Sanity',
-                icon: 'restaurant'
+                icon: 'warning'
             });
-            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)} bio-integrity at risk...`, 'warning');
-            EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: -5, gameState: this.gameState });
+            this.gameState.addLogMessage(`${this._getPlayerName(currentPlayer)}: ${hungerLabel} active.`, 'danger');
+            EventBus.publish(STATE_EVENTS.SANITY_CHANGED, { player: currentPlayer, amount: hungerSanityPenalty, gameState: this.gameState });
         }
         EventBus.publish(STATE_EVENTS.HUNGER_CHANGED, { player: currentPlayer, amount: hungerIncrease, gameState: this.gameState });
 
         // 5.5 Apply ambient sanity drain (Ambient Stress)
-        const ambientDrain = -8;
+        const ambientDrain = -10;
         currentPlayer.updateSanity(ambientDrain);
         summary.events.push({
             type: 'warning',
@@ -196,7 +213,7 @@ class TimeSystem {
 
         // 6. Apply sanity gain (Cycle Rest)
         const hasHypnoScreen = currentPlayer.inventory.some(i => i.name === 'Hypno-Screen');
-        const sanityGain = hasHypnoScreen ? 16 : 15;
+        const sanityGain = hasHypnoScreen ? 8 : 5;
         currentPlayer.updateSanity(sanityGain);
         summary.events.push({
             type: 'success',
