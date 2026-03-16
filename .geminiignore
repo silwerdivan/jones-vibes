@@ -1,2 +1,13 @@
-/docs/
 /docs-2026/
+/docs-archive/
+/node_modules
+/dist
+/coverage
+.env
+.env.*
+.idea/
+.vscode/
+*.swp
+.serena
+.gemini
+*.log
