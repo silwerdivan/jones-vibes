@@ -7,13 +7,15 @@ description: Browser automation with the agent-browser CLI for opening sites, in
 
 Use this skill to drive websites with the `agent-browser` CLI.
 
+On Linux, always invoke `agent-browser` with `--args "--no-sandbox"`.
+
 Read [references/authentication.md](references/authentication.md) when the task involves login state, persistent sessions, cookies, or saved credentials.
 
 ## Check Availability
 
 1. Confirm the CLI exists before planning around it:
-   - `agent-browser --help`
-   - or `npx agent-browser --help`
+   - `agent-browser --args "--no-sandbox" --help`
+   - or `npx agent-browser --args "--no-sandbox" --help`
 2. If the CLI is missing, say so and stop before inventing browser results.
 3. If Chrome or Chromium is not installed for the tool, suggest `agent-browser install`.
 
@@ -30,14 +32,14 @@ Follow this loop:
 Example:
 
 ```bash
-agent-browser open https://example.com/login
-agent-browser wait --load networkidle
-agent-browser snapshot -i
-agent-browser fill @e1 "user@example.com"
-agent-browser fill @e2 "password123"
-agent-browser click @e3
-agent-browser wait --load networkidle
-agent-browser snapshot -i
+agent-browser --args "--no-sandbox" open https://example.com/login
+agent-browser --args "--no-sandbox" wait --load networkidle
+agent-browser --args "--no-sandbox" snapshot -i
+agent-browser --args "--no-sandbox" fill @e1 "user@example.com"
+agent-browser --args "--no-sandbox" fill @e2 "password123"
+agent-browser --args "--no-sandbox" click @e3
+agent-browser --args "--no-sandbox" wait --load networkidle
+agent-browser --args "--no-sandbox" snapshot -i
 ```
 
 ## Preferred Command Patterns
@@ -45,36 +47,37 @@ agent-browser snapshot -i
 Use separate commands when you need to inspect output before continuing. Use chained commands only when no intermediate parsing is required.
 
 ```bash
-agent-browser open https://example.com && agent-browser wait --load networkidle && agent-browser screenshot page.png
+agent-browser --args "--no-sandbox" open https://example.com && agent-browser --args "--no-sandbox" wait --load networkidle && agent-browser --args "--no-sandbox" screenshot page.png
 ```
 
 Prefer these commands:
 
-- `agent-browser open <url>` to navigate.
-- `agent-browser snapshot -i` to discover actionable elements.
-- `agent-browser click @e1` to activate an element from a snapshot.
-- `agent-browser fill @e2 "text"` to replace field contents.
-- `agent-browser type @e2 "text"` to append or type without clearing.
-- `agent-browser select @e3 "Option"` for dropdowns.
-- `agent-browser check @e4` for checkboxes.
-- `agent-browser wait --load networkidle` after navigation-heavy actions.
-- `agent-browser wait --text "..."` or `agent-browser wait <selector>` for content-specific waits.
-- `agent-browser get text @e1`, `agent-browser get url`, and `agent-browser get title` for verification.
-- `agent-browser screenshot path.png` for visual evidence.
+- `agent-browser --args "--no-sandbox" open <url>` to navigate.
+- `agent-browser --args "--no-sandbox" snapshot -i` to discover actionable elements.
+- `agent-browser --args "--no-sandbox" click @e1` to activate an element from a snapshot.
+- `agent-browser --args "--no-sandbox" fill @e2 "text"` to replace field contents.
+- `agent-browser --args "--no-sandbox" type @e2 "text"` to append or type without clearing.
+- `agent-browser --args "--no-sandbox" select @e3 "Option"` for dropdowns.
+- `agent-browser --args "--no-sandbox" check @e4` for checkboxes.
+- `agent-browser --args "--no-sandbox" wait --load networkidle` after navigation-heavy actions.
+- `agent-browser --args "--no-sandbox" wait --text "..."` or `agent-browser --args "--no-sandbox" wait <selector>` for content-specific waits.
+- `agent-browser --args "--no-sandbox" get text @e1`, `agent-browser --args "--no-sandbox" get url`, and `agent-browser --args "--no-sandbox" get title` for verification.
+- `agent-browser --args "--no-sandbox" screenshot path.png` for visual evidence.
 
 ## Operating Rules
 
 1. Treat snapshot references as ephemeral. Do not reuse them after navigation, rerender, or modal transitions.
 2. Prefer explicit waits over blind sleeps. Use timed waits only as a fallback.
-3. Keep screenshots and downloaded artifacts inside the workspace unless the user asks otherwise.
-4. If the task is a test or bug reproduction, record:
+3. On Linux, include `--args "--no-sandbox"` on every `agent-browser` invocation unless the environment is explicitly known not to need it.
+4. Keep screenshots and downloaded artifacts inside the workspace unless the user asks otherwise.
+5. If the task is a test or bug reproduction, record:
    - exact URL,
    - commands used,
    - expected result,
    - actual result,
    - any saved screenshot path.
-5. Never claim a browser action succeeded unless the follow-up snapshot, text check, URL check, or screenshot supports it.
-6. Be careful with destructive actions such as submitting forms, deleting data, or clicking checkout flows. Pause and confirm when the action has real-world side effects.
+6. Never claim a browser action succeeded unless the follow-up snapshot, text check, URL check, or screenshot supports it.
+7. Be careful with destructive actions such as submitting forms, deleting data, or clicking checkout flows. Pause and confirm when the action has real-world side effects.
 
 ## Common Task Shapes
 

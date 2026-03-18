@@ -1,0 +1,43 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md"
+    ]
+  },
+  "next_slice": "Replay Persona A from scratch in a fresh onboarding run. Complete exactly one in-game week, log it as the start of the approved replay timeline, update the phase progress docs and persona audit to note that replay mode is now authoritative, then stop.",
+  "last_run": {
+    "at": "2026-03-18",
+    "outcome": "replay_authorized",
+    "summary": "Human approved a replay-from-scratch policy for Persona A after the original persisted browser session could not be recovered."
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

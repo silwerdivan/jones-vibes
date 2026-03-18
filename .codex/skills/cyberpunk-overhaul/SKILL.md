@@ -11,10 +11,11 @@ Read `references/file-map.md` if the task requires old prompt-chain context or m
 
 ## Load context
 
-1. Read `docs/workflows/cyberpunk-overhaul/current-phase.md`.
-2. Read `docs/workflows/cyberpunk-overhaul/overhaul-history.md`.
-3. Read the design inputs `0. designer-1-input.md` and `0. designer-2-input.md` when planning a new phase or checking thematic fit.
-4. Read the relevant code, tests, and existing phase plan or retro files only as needed.
+1. If `docs/workflows/cyberpunk-overhaul/run-state.json` exists, read it first and treat it as the bounded control surface for autonomous continuation.
+2. Read `docs/workflows/cyberpunk-overhaul/current-phase.md`.
+3. Read `docs/workflows/cyberpunk-overhaul/overhaul-history.md`.
+4. Read the design inputs `0. designer-1-input.md` and `0. designer-2-input.md` when planning a new phase or checking thematic fit.
+5. Read the relevant code, tests, and existing phase plan or retro files only as needed.
 
 ## Plan a new phase
 

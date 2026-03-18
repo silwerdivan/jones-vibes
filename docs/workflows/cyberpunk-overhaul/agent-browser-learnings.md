@@ -19,6 +19,11 @@ This log tracks technical patterns, selector strategies, and "gotchas" discovere
 - **City Hub**: The main navigation is via `div.location-card`. These contain both a name (e.g., "Labor Sector") and a sub-label ("Productivity shifts").
 - **Modal Bypassing**: The EULA and initial onboarding modals must be clicked through using the "ACCEPT" or "CLOSE" buttons before the City Hub is accessible.
 
+### Labor Sector Interaction Quirk
+- **Job Application Buttons**: The visible `Apply` button inside Labor Sector may not trigger the job application reliably when clicked directly.
+- **Root Cause Pattern**: The handler is attached to the parent `.action-card`, not the inner button, so automation should prefer clicking the card container or dispatching the event on `.action-card`.
+- **Practical Rule**: For `Sanitation-T3` and similar job cards, target the card text block or `.action-card` wrapper first. Treat button-only clicks as untrusted until state changes are confirmed in `localStorage` or the rendered "CURRENT SHIFT" panel.
+
 ### State Tracking
 - **HUD Elements**: Text-based stats (₡, %, etc.) are best extracted via `agent-browser get text @ref` after identifying the correct orb or gauge ref.
 - **Evaluation**: Use `agent-browser eval "document.body.innerText"` for a quick, "global" state check when refs are ambiguous or when you need to verify if the game has truly loaded or reset.
