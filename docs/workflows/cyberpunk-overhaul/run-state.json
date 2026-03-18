@@ -26,11 +26,11 @@
       "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md"
     ]
   },
-  "next_slice": "Replay Persona A from scratch in a fresh onboarding run. Complete exactly one in-game week, log it as the start of the approved replay timeline, update the phase progress docs and persona audit to note that replay mode is now authoritative, then stop.",
+  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 1 turn summary (`₡172 / Debt ₡0 / Hunger 20% / Sanity 45%`). Start Week 2, complete exactly one additional in-game week using Safe Grinder priorities, log any event choices and the Week 2 close, then stop.",
   "last_run": {
     "at": "2026-03-18",
-    "outcome": "replay_authorized",
-    "summary": "Human approved a replay-from-scratch policy for Persona A after the original persisted browser session could not be recovered."
+    "outcome": "authoritative_week1_replayed",
+    "summary": "A fresh-context slice replayed Persona A Week 1 from onboarding to turn summary, re-established the authoritative baseline at ₡172 / Debt 0 / Hunger 20% / Sanity 45%, and confirmed the stable Labor Sector apply path is focus inner Apply button then click the parent action-card."
   },
   "runner": {
     "sleep_seconds": 5,

@@ -22,13 +22,18 @@
     - **Week 3 opening shock:** `Panic Attack on the Mag-Lev` forced the only available branch because sanity was below `60`, immediately pushing the run to `Sanity 35%` and `23CH`.
     - **Decision notes:** rejected `Network Stimulus Drop` and `Shady Fixer Courier Job` because the Safe Grinder prioritizes long-term stability over short-term cash spikes and sanity-drain conditions.
     - **Emerging feel:** the baseline labor path is solvent, but two "safe" refusals followed by one unavoidable panic event still create a sharp sanity collapse before the player has many interesting mitigation tools.
+- **Authoritative Replay Baseline (Fresh-context slice, 2026-03-18):**
+    - **Week 1 close re-verified:** `₡172`, `Debt ₡0`, `Bio-Deficit 20%`, `Sanity 45%`.
+    - **Path used:** onboarding accept, travel to `Labor Sector`, secure `Sanitation-T3`, `Work Shift x3`, return to `Hab-Pod 404`, `Rest / End Turn`.
+    - **Automation note:** direct wrapper clicks were insufficient on their own; the stable path was to focus the inner `Apply` button first, then trigger the parent `.action-card` click so the job application state mutation actually occurred.
+    - **Telemetry note:** the replay session is now the authoritative Persona A timeline. Earlier Week 2 and Week 3 observations remain useful but provisional until the replay catches up.
 
 
 
 ### 3. Current Technical State
-- **Browser State:** Replay mode authorized. The fresh onboarding run at `CYCLE 1` is now the expected starting point for Persona A.
-- **Identified Elements:** The latest `workflow:phase11:once` test successfully reached the Labor Sector modal, but job application automation still misfires if it targets the visible `Apply` button directly.
-- **Next Action:** Re-run the one-shot slice using the updated `.action-card` click guidance so the replay can complete a new authoritative Week 1.
+- **Browser State:** The `phase11-safe-grinder` session now holds the authoritative Persona A replay at the end of Week 1, paused on the turn summary immediately before `START NEXT WEEK`.
+- **Identified Elements:** Labor Sector application succeeds when automation preserves an active element inside the card. In practice that meant focusing the inner `Apply` button and then clicking the parent `.action-card`; plain wrapper clicks left `careerLevel` unchanged.
+- **Next Action:** Resume from the saved Week 1 replay checkpoint, start Week 2, complete exactly one additional in-game week for Persona A, and log any event choices against the authoritative replay timeline.
 
 
 ### 4. Observations & Notes
@@ -38,4 +43,4 @@
 - The turn summary still labels sanity as `HAPPINESS`, which is a terminology regression against the cyberpunk reskin and will pollute qualitative audit reads.
 - AI parity looks unstable. The AI bought `Thermal-Regulator` in Cycle 2, then failed Burn Rate coverage, took on `₡89` debt, and entered `SUBSCRIPTION_DEFAULT` by the start of Cycle 3 while the Safe Grinder remained debt-free.
 - Historical blocker resolved by policy: the original persisted `phase11-safe-grinder` checkpoint is gone, so the workflow now treats fresh onboarding as the approved replay baseline.
-- Current automation blocker: Labor Sector job application is flaky under automation when the slice clicks the visible `Apply` button instead of the `.action-card` wrapper.
+- Current automation blocker resolved for replay: Labor Sector job application is stable when the inner button is focused before the `.action-card` click.

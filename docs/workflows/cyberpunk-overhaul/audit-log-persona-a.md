@@ -4,8 +4,8 @@
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
 - **Date:** 2026-03-18
-- **Session Duration:** 2 completed weeks, Week 3 in progress
-- **Current Slice Status:** Replay-from-scratch approved on 2026-03-18. No new replay week has been logged yet because the latest one-shot runner test was interrupted while validating the Labor Sector Apply interaction.
+- **Session Duration:** 1 completed authoritative replay week, plus older provisional notes from the superseded pre-replay attempt
+- **Current Slice Status:** Completed one authoritative replay week on 2026-03-18. The `phase11-safe-grinder` browser session is now parked at the Week 1 turn summary, ready for a fresh-context Week 2 continuation.
 
 ---
 
@@ -19,10 +19,13 @@
 
 \* Week 3 is currently in progress; row captures the opening state immediately after the mandatory event resolution.
 
-## Blockers
+Authoritative replay note: Week 1 above has now been re-verified in the approved replay session and is the canonical restart point for Persona A. Weeks 2 and 3 remain informative but provisional until the replay catches up to them.
+
+## Blockers & Resolutions
 
 - 2026-03-18: Historical continuity blocker. Fresh-context autonomous continuation could not resume the Week 3 checkpoint because the persisted `phase11-safe-grinder` browser/app state could not be recovered.
-- 2026-03-18: Current replay blocker. The latest `workflow:phase11:once` test reached Labor Sector from fresh onboarding, but the visible `Apply` button did not reliably trigger the Sanitation-T3 job application under automation. The next replay slice should target the parent `.action-card` wrapper and verify state mutation before spending more week actions.
+- 2026-03-18: Replay blocker reproduced before the fix. The latest `workflow:phase11:once` test reached Labor Sector from fresh onboarding, but the visible `Apply` button did not reliably trigger the Sanitation-T3 job application under automation.
+- 2026-03-18: Replay blocker resolved. A stable automation path exists now: focus the inner `Apply` button, then click the parent `.action-card`. That preserved `document.activeElement`, advanced `careerLevel` to `1`, and unlocked the `CURRENT SHIFT` panel reliably enough to finish the week.
 
 ---
 
