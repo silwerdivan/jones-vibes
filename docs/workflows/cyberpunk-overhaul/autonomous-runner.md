@@ -6,6 +6,7 @@ This workflow can keep running with a fresh Codex context on every pass. Continu
 - `docs/workflows/cyberpunk-overhaul/current-phase.md`
 - `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`
 - the active persona log
+- the Phase 11 per-slice detail logs under `docs/workflows/cyberpunk-overhaul/phase-11-slices/`
 - persistent `agent-browser` session state
 
 ## Commands

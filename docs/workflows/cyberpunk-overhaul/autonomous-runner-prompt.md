@@ -9,6 +9,7 @@ This invocation is one fresh-context autonomous slice of the active Phase 11 wor
 2. Read `docs/workflows/cyberpunk-overhaul/current-phase.md`.
 3. Read `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`.
 4. Read the active persona log referenced in `run-state.json`.
+5. Read the most recent persona slice record under `docs/workflows/cyberpunk-overhaul/phase-11-slices/` if one exists for the active persona.
 
 ## Operating rules
 - Respect `run-state.json` as the bounded control surface for this run.
@@ -25,6 +26,9 @@ This invocation is one fresh-context autonomous slice of the active Phase 11 wor
   - set `status` to `blocked` and `needs_human` to `true` if you hit a blocker or need a human decision,
   - set `status` to `complete` if the persona or phase target is finished.
 - Update the relevant workflow markdown files in the same run.
+- Preserve detailed history:
+  - write or update one canonical per-slice detail file under `docs/workflows/cyberpunk-overhaul/phase-11-slices/<persona>/week-NN.md`,
+  - keep `phase-11-audit-progress.md` concise and synthesis-oriented rather than week-by-week exhaustive.
 
 ## Final output contract
 End the final response with exactly one of these tokens on its own line:

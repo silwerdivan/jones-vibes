@@ -16,14 +16,11 @@
 ### 2. Persona A: The Safe Grinder (Task 2 - IN_PROGRESS)
 - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Prioritizing low-risk survival and steady labor to test the "Poverty Trap" baseline.
+- **Canonical Slice Records:** `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`.
 - **Authoritative Replay Timeline (Fresh 2026-03-18 Run):**
     - **Week 1 close re-verified:** `₡172`, `Debt ₡0`, `Bio-Deficit 20%`, `Sanity 45%`.
     - **Week 2 close re-verified:** `₡344`, `Debt ₡0`, `Bio-Deficit 40%`, `Sanity 40%`.
-    - **Week 2 path used:** `START NEXT WEEK`, choose `Suffer` on `Transit Strike`, walk to `Labor Sector`, `Work Shift x3`, return to `Hab-Pod 404`, `Rest / End Turn`.
-    - **Decision notes:** Safe Grinder refused the `₡150` aerocab bailout because paying nearly two weeks of burn rate for commute relief violated the persona's low-risk cash-preservation rule. The run accepted `Sore Legs` instead and still hit the full three-shift labor quota because the travel tax landed at `3CH` each way.
-    - **Emerging feel:** the event created real pressure without collapsing the week economically, but it also showed how opaque the tradeoff presentation is. The summary reports the same `+₡172` net week even though the player absorbed a full-week mobility debuff and a hidden `-5` sanity drift.
-    - **Automation note:** direct wrapper clicks were insufficient on their own; the stable Labor Sector apply path was to focus the inner `Apply` button first, then trigger the parent `.action-card` click so the job application state mutation actually occurred.
-    - **Replay note:** the authoritative replay has now caught up through Week 2, so the earlier provisional Week 2 and Week 3 notes are superseded rather than canonical.
+    - **Summary intent:** this file now keeps only the current checkpoint, the strongest cross-slice findings, and the next action. Detailed pathing, rationale, and week-specific wrinkles live in the per-slice records above.
 
 
 
@@ -34,6 +31,9 @@
 
 
 ### 4. Observations & Notes
+- Phase 11 now uses a two-layer history model:
+    - per-slice canonical detail in `docs/workflows/cyberpunk-overhaul/phase-11-slices/`
+    - high-level synthesis and handoff state in this progress file
 - `agent-browser` requires full DOM reads or `snapshot -i -c` plus targeted DOM evaluation because the city location cards are custom divs rather than standard `<button>` or `<a>` elements.
 - The server is responding correctly at the `/jones-vibes/` base path.
 - Passive Sanity drain (`-5` net before event effects) and Hunger penalties (`>50%`) remain the primary early-game variables.

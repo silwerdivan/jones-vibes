@@ -18,6 +18,13 @@
 
 Authoritative replay note: Week 1 and Week 2 above are now the canonical Persona A timeline. Earlier provisional Week 2 and Week 3 notes were superseded once the replay diverged at the Cycle 2 opening event.
 
+## Detailed Slice Records
+
+- Week 1 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`
+- Week 2 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`
+
+Workflow note: this persona log remains the compact index plus synthesis layer. Durable per-week detail now lives in the linked slice files so future runs can preserve rich history without making this file unreadable.
+
 ## Blockers & Resolutions
 
 - 2026-03-18: Historical continuity blocker. Fresh-context autonomous continuation could not resume the Week 3 checkpoint because the persisted `phase11-safe-grinder` browser/app state could not be recovered.

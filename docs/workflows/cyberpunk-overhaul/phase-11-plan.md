@@ -18,6 +18,7 @@ Instead of simple bug hunting, this phase focuses on simulating distinct player 
 For every week played, the following data points will be captured:
 - **Quantitative (The Math):** Cash, Debt, Health/Stress, Hunger, Education, Time Efficiency (Commute vs. Action).
 - **Qualitative (The Feel):** Available Options, Decision Rationale ("Why this action?"), Friction Points ("What felt punishing?"), Reward Sensation ("Did this feel rewarding?").
+- **Storage Rule:** Detailed week-by-week history should live in per-slice files under `docs/workflows/cyberpunk-overhaul/phase-11-slices/`. Keep `phase-11-audit-progress.md` as the executive rollup and keep persona logs as compact indexes plus milestone synthesis layers.
 
 ### 3. Milestone Vibe Checks
 Deep-dive evaluations at Week 10, 25, and 50 to assess:
