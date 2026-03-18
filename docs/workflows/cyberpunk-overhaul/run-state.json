@@ -26,11 +26,11 @@
       "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md"
     ]
   },
-  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 1 turn summary (`₡172 / Debt ₡0 / Hunger 20% / Sanity 45%`). Start Week 2, complete exactly one additional in-game week using Safe Grinder priorities, log any event choices and the Week 2 close, then stop.",
+  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 2 turn summary (`₡344 / Debt ₡0 / Hunger 40% / Sanity 40%`, `Sore Legs` still active). Start Week 3, complete exactly one additional in-game week using Safe Grinder priorities, log any opening event choices and the Week 3 close, then stop.",
   "last_run": {
     "at": "2026-03-18",
-    "outcome": "authoritative_week1_replayed",
-    "summary": "A fresh-context slice replayed Persona A Week 1 from onboarding to turn summary, re-established the authoritative baseline at ₡172 / Debt 0 / Hunger 20% / Sanity 45%, and confirmed the stable Labor Sector apply path is focus inner Apply button then click the parent action-card."
+    "outcome": "authoritative_week2_completed",
+    "summary": "A fresh-context slice resumed Persona A from the authoritative Week 1 summary, chose `Suffer` on `Transit Strike`, carried `Sore Legs` through the week, still completed three Sanitation-T3 shifts, and closed Week 2 at ₡344 / Debt 0 / Hunger 40% / Sanity 40% on the authoritative replay timeline."
   },
   "runner": {
     "sleep_seconds": 5,

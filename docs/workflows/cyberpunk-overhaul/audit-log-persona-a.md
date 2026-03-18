@@ -4,8 +4,8 @@
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
 - **Date:** 2026-03-18
-- **Session Duration:** 1 completed authoritative replay week, plus older provisional notes from the superseded pre-replay attempt
-- **Current Slice Status:** Completed one authoritative replay week on 2026-03-18. The `phase11-safe-grinder` browser session is now parked at the Week 1 turn summary, ready for a fresh-context Week 2 continuation.
+- **Session Duration:** 2 completed authoritative replay weeks
+- **Current Slice Status:** Completed the authoritative replay through Week 2 on 2026-03-18. The `phase11-safe-grinder` browser session is now parked at the Week 2 turn summary, ready for a fresh-context Week 3 continuation.
 
 ---
 
@@ -14,12 +14,9 @@
 | Week | Cash | Debt | Hunger | Sanity | Education | Time Efficiency | Action Taken | Rationale | Feel/Friction |
 |------|------|------|--------|--------|-----------|-----------------|--------------|-----------|---------------|
 | 1    | 172  | 0    | 20%    | 45%    | 0         | 75% (18/24CH productive) | Travel to Labor Sector, secure Sanitation-T3, Work Shift x3, return home, rest | Cover burn rate first and validate the baseline labor loop before gambling on events or study | Stable but narrow. Three shifts cleanly solve burn rate, yet the run still loses 5 sanity net on a quiet week. |
-| 2    | 344  | 0    | 40%    | 55%    | 0         | 75% (18/24CH productive) | Reject Network Stimulus, travel to Labor Sector, decline Shady Fixer job, Work Shift x3, return home, rest | Preserve long-term sanity and debt safety instead of taking spyware or courier variance | Refusing risk feels coherent, but it also means most "interesting" choices are just sanity hedges around the same labor grind. |
-| 3*   | 344  | 0    | 40%    | 35%    | 0         | 0% before voluntary action | Forced `Suffer` on Panic Attack event at cycle start | Sanity was only 55, so the safer `Control` branch was locked out | Major pressure spike. A nominally stable run can be kicked from 55 to 35 sanity before making its first real decision of the week. |
+| 2    | 344  | 0    | 40%    | 40%    | 0         | 75% (18/24CH productive) | Choose `Suffer` on `Transit Strike`, walk to Labor Sector under `Sore Legs`, Work Shift x3, return home, rest | Keep liquidity intact instead of paying `₡150` for commute relief; Safe Grinder will absorb time friction before taking a major cash hit | Sharp but readable pressure. The event feels meaningful because the commute tax lasts all week, yet the turn summary under-reports the pain by flattening it into the same familiar `+₡172` net week. |
 
-\* Week 3 is currently in progress; row captures the opening state immediately after the mandatory event resolution.
-
-Authoritative replay note: Week 1 above has now been re-verified in the approved replay session and is the canonical restart point for Persona A. Weeks 2 and 3 remain informative but provisional until the replay catches up to them.
+Authoritative replay note: Week 1 and Week 2 above are now the canonical Persona A timeline. Earlier provisional Week 2 and Week 3 notes were superseded once the replay diverged at the Cycle 2 opening event.
 
 ## Blockers & Resolutions
 
@@ -49,7 +46,7 @@ Authoritative replay note: Week 1 above has now been re-verified in the approved
 ---
 
 ## Final Synthesis
-- **Overall "Wrinkles" Identified:** Early labor is solvent but emotionally brittle. Refusing risky offers is often correct, yet the baseline loop still drifts toward panic-event vulnerability.
-- **Key Broken Math / Probability Frustrations:** The Safe Grinder reached a forced downside event branch in Cycle 3 even after two comparatively disciplined weeks. That suggests the sanity floor may collapse faster than the rest of the economy signals to the player.
+- **Overall "Wrinkles" Identified:** Early labor is solvent but emotionally brittle. Event costs often hide in time-tax or condition space rather than obvious credit swings, so the week can feel harsher than the summary screen admits.
+- **Key Broken Math / Probability Frustrations:** `Transit Strike` let the Safe Grinder keep the exact same `+₡172` net-credit week while silently spending `6CH` on commute tax and carrying a 7-day debuff forward. The accounting layer undersells how punishing that trade actually was.
 - **Thematic Hit/Miss:**
 - **Phase 12 Recommendations:**
