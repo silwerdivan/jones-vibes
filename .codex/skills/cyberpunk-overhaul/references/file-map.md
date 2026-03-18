@@ -1,4 +1,4 @@
-﻿# File Map
+# File Map
 
 ## Primary workflow state
 

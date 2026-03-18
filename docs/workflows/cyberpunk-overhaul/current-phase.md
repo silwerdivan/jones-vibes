@@ -1,11 +1,18 @@
-﻿# Current Overhaul Phase
+# Current Overhaul Phase
 
-## Status: COMPLETED
-**Active Phase:** Phase 10: Early Game Poverty, Sanity, and Hunger Balancing
+## Status: IN_PROGRESS
+**Active Phase:** Phase 11: Gameplay Audit & MDA Deep-Dive
 
 ## Summary
-Phase 10 is closed. The early-game pressure systems (Sanity, Hunger, Stimulus) have been rebalanced to ensure a "poverty/survival" aesthetic. The Starvation Spiral introduces real systemic consequences for neglect, and the MDA-BALANCE-LOG.md protects these decisions.
+Phase 11 is active. This is a non-coding phase focused on gathering high-fidelity telemetry, decision-making logs, and qualitative "feel" data through extended play sessions using `agent-browser` and specialized Player Personas (Safe Grinder, High-Risk Scholar, Street Hustler, AI Control).
+
+## Objective
+Identify remaining balance wrinkles, broken math, and opportunities for systemic depth before committing to Phase 12 coding tasks.
 
 ## Next Steps
-- Identify Phase 11 goals (potentially around "Dynamic Pricing & Global Environmental Conditions").
-- Monitor simulation telemetry to ensure the 8-hour exhaustion penalty isn't causing unintended total deadlocks for AI players.
+- [ ] Task 1: Setup Audit Infrastructure (Configure `agent-browser` and logging templates).
+- [ ] Task 2: Execute "The Safe Grinder" Run (Persona A).
+- [ ] Task 3: Execute "The High-Risk Scholar" Run (Persona B).
+- [ ] Task 4: Execute "The Street Hustler" Run (Persona C).
+- [ ] Task 5: Comparative AI Analysis (Persona D).
+- [ ] Task 6: Synthesis & "Wrinkle" Report.
