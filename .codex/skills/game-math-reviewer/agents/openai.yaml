@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Math Reviewer"
+  short_description: "Review balance, pacing, and economy math"
+  default_prompt: "Use $game-math-reviewer to audit formulas, balance, progression, or economy changes through an MDA lens."
