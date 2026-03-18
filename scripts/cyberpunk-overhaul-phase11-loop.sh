@@ -10,10 +10,12 @@ LOG_FILE="${RUNTIME_DIR}/autonomous-runner.log"
 
 usage() {
   cat <<'EOF'
-Usage: bash scripts/cyberpunk-overhaul-phase11-loop.sh
+Usage: bash scripts/cyberpunk-overhaul-phase11-loop.sh [--commit]
 
 Runs the active Phase 11 workflow continuously, but each iteration launches a
 brand-new `codex exec --ephemeral` process to guarantee fresh context.
+Pass --commit to let each iteration auto-commit its slice when the worktree was
+clean at the start of that slice.
 EOF
 }
 
@@ -53,10 +55,25 @@ json_get_or_default() {
   fi
 }
 
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-  usage
-  exit 0
-fi
+AUTO_COMMIT="${AUTONOMOUS_GIT_COMMIT:-0}"
+
+while (($# > 0)); do
+  case "${1}" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --commit)
+      AUTO_COMMIT=1
+      ;;
+    *)
+      echo "[phase11-loop] unknown argument: ${1}" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
 
 mkdir -p "${RUNTIME_DIR}"
 touch "${LOG_FILE}"
@@ -85,7 +102,11 @@ while true; do
 
   iteration=$((iteration + 1))
   echo "[phase11-loop] starting iteration ${iteration}" | tee -a "${LOG_FILE}"
-  "${ONCE_SCRIPT}"
+  if [[ "${AUTO_COMMIT}" == "1" ]]; then
+    "${ONCE_SCRIPT}" --commit
+  else
+    "${ONCE_SCRIPT}"
+  fi
 
   status="$(json_get_or_default status unknown)"
   needs_human="$(json_get_or_default needs_human false)"

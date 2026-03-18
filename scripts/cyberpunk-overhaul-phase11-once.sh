@@ -13,9 +13,11 @@ PROMPT_FILE="${RUNTIME_DIR}/current-codex-prompt.md"
 
 usage() {
   cat <<'EOF'
-Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run]
+Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run] [--commit]
 
 Runs exactly one fresh-context Codex slice for the active Phase 11 workflow.
+Pass --commit to auto-commit slice changes when the worktree was clean before
+the run started.
 EOF
 }
 
@@ -56,13 +58,28 @@ json_get_or_default() {
 }
 
 DRY_RUN="${DRY_RUN:-0}"
-if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
-  usage
-  exit 0
-fi
-if [[ "${1:-}" == "--dry-run" ]]; then
-  DRY_RUN=1
-fi
+AUTO_COMMIT="${AUTONOMOUS_GIT_COMMIT:-0}"
+
+while (($# > 0)); do
+  case "${1}" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --dry-run)
+      DRY_RUN=1
+      ;;
+    --commit)
+      AUTO_COMMIT=1
+      ;;
+    *)
+      echo "[phase11-once] unknown argument: ${1}" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
 
 mkdir -p "${RUNTIME_DIR}"
 touch "${LOG_FILE}"
@@ -78,6 +95,11 @@ fi
 if [[ "${needs_human}" == "true" ]]; then
   echo "[phase11-once] run-state requests human intervention; stopping"
   exit 0
+fi
+
+pre_run_dirty=0
+if [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]; then
+  pre_run_dirty=1
 fi
 
 "${ENSURE_DEV}"
@@ -137,6 +159,7 @@ fi
   echo "[phase11-once] app_url=${app_url}"
   echo "[phase11-once] session_name=${AGENT_BROWSER_SESSION_NAME}"
   echo "[phase11-once] exec_strategy=${exec_strategy}"
+  echo "[phase11-once] auto_commit=${AUTO_COMMIT}"
 } >>"${LOG_FILE}"
 
 if [[ "${DRY_RUN}" == "1" ]]; then
@@ -152,3 +175,25 @@ fi
 status_after="$(json_get_or_default status unknown)"
 needs_human_after="$(json_get_or_default needs_human false)"
 echo "[phase11-once] post-run status=${status_after} needs_human=${needs_human_after}" | tee -a "${LOG_FILE}"
+
+if [[ "${AUTO_COMMIT}" != "1" ]]; then
+  exit 0
+fi
+
+if [[ "${pre_run_dirty}" == "1" ]]; then
+  echo "[phase11-once] auto-commit skipped: worktree was dirty before the slice started" | tee -a "${LOG_FILE}"
+  exit 0
+fi
+
+if [[ -z "$(git -C "${ROOT_DIR}" status --short)" ]]; then
+  echo "[phase11-once] auto-commit skipped: slice produced no git changes" | tee -a "${LOG_FILE}"
+  exit 0
+fi
+
+persona_slug="$(json_get_or_default current_persona.id persona)"
+last_run_at="$(json_get_or_default last_run.at "$(date -Iseconds)")"
+commit_message="Phase 11 slice: ${persona_slug} (${status_after}) ${last_run_at}"
+
+git -C "${ROOT_DIR}" add -A
+git -C "${ROOT_DIR}" commit -m "${commit_message}" | tee -a "${LOG_FILE}"
+echo "[phase11-once] auto-commit created: ${commit_message}" | tee -a "${LOG_FILE}"

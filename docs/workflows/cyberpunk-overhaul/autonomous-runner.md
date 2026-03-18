@@ -17,10 +17,22 @@ One bounded fresh-context slice:
 npm run workflow:phase11:once
 ```
 
+One bounded fresh-context slice with an automatic git commit at the end:
+
+```bash
+npm run workflow:phase11:once:commit
+```
+
 Continuous loop with a fresh Codex process each iteration:
 
 ```bash
 npm run workflow:phase11:loop
+```
+
+Continuous loop with one auto-commit attempt after each slice:
+
+```bash
+npm run workflow:phase11:loop:commit
 ```
 
 Ensure the local Vite app is available:
@@ -61,6 +73,10 @@ npm run workflow:phase11:ensure-dev
   Override the delay between loop iterations.
 - `AUTONOMOUS_MAX_ITERATIONS`
   Stop the loop after a fixed number of slices.
+- `AUTONOMOUS_GIT_COMMIT=1`
+  Auto-commit after a slice. The runner only does this when the worktree was
+  clean before the slice started; otherwise it skips the commit to avoid mixing
+  pre-existing edits into the automation commit.
 - `DRY_RUN=1`
   Show the resolved prompt and runner configuration without launching Codex.
 

@@ -12,7 +12,9 @@
     "simulate:economy": "vitest run tests/simulate-economy.test.ts",
     "workflow:phase11:ensure-dev": "bash scripts/cyberpunk-overhaul-ensure-dev.sh",
     "workflow:phase11:once": "bash scripts/cyberpunk-overhaul-phase11-once.sh",
-    "workflow:phase11:loop": "bash scripts/cyberpunk-overhaul-phase11-loop.sh"
+    "workflow:phase11:once:commit": "bash scripts/cyberpunk-overhaul-phase11-once.sh --commit",
+    "workflow:phase11:loop": "bash scripts/cyberpunk-overhaul-phase11-loop.sh",
+    "workflow:phase11:loop:commit": "bash scripts/cyberpunk-overhaul-phase11-loop.sh --commit"
   },
   "repository": {
     "type": "git",
