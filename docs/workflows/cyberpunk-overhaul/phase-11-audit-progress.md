@@ -16,7 +16,7 @@
 ### 2. Persona A: The Safe Grinder (Task 2 - IN_PROGRESS)
 - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Prioritizing low-risk survival and steady labor to test the "Poverty Trap" baseline.
-- **Canonical Slice Records:** `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`.
+- **Canonical Slice Records:** `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`.
 - **Authoritative Replay Timeline (Fresh 2026-03-18 Run):**
     - **Week 1 close re-verified:** `₡172`, `Debt ₡0`, `Bio-Deficit 20%`, `Sanity 45%`.
     - **Week 2 close re-verified:** `₡344`, `Debt ₡0`, `Bio-Deficit 40%`, `Sanity 40%`.
@@ -24,14 +24,16 @@
     - **Week 4 close completed:** `₡424`, `Debt ₡0`, `Bio-Deficit 50%`, `Sanity 55%`.
     - **Week 5 close completed:** `₡596`, `Debt ₡0`, `Bio-Deficit 70%`, `Sanity 45%`.
     - **Week 6 close completed:** `₡644`, `Debt ₡0`, `Bio-Deficit 40%`, `Sanity 30%`.
+    - **Week 7 close completed:** `₡692`, `Debt ₡0`, `Bio-Deficit 20%`, `Sanity 35%`.
     - **Summary intent:** this file now keeps only the current checkpoint, the strongest cross-slice findings, and the next action. Detailed pathing, rationale, and week-specific wrinkles live in the per-slice records above.
 
 
 
 ### 3. Current Technical State
-- **Browser State:** The `phase11-safe-grinder` session now holds the authoritative Persona A replay at the end of Week 6, paused on the turn summary immediately before `START NEXT WEEK`.
+- **Browser State:** The `phase11-safe-grinder` session now holds the authoritative Persona A replay at the end of Week 7, paused on the turn summary immediately before `START NEXT WEEK`.
 - **Identified Elements:** Labor Sector application succeeds when automation preserves an active element inside the card. In practice that meant focusing the inner `Apply` button and then clicking the parent `.action-card`; plain wrapper clicks left `careerLevel` unchanged.
-- **Next Action:** Resume from the saved Week 6 replay checkpoint, start Week 7, complete exactly one additional in-game week for Persona A, and log any opening event choices against the authoritative replay timeline.
+- **Shopping Automation:** Sustenance Hub purchases now show a parallel quirk. Generic `BUY` clicks did not mutate player state during Week 7, but focusing the inner button before invoking the bound action-card click path successfully applied the purchase and preserved the replay.
+- **Next Action:** Resume from the saved Week 7 replay checkpoint, start Week 8, complete exactly one additional in-game week for Persona A, and log any opening event choices against the authoritative replay timeline.
 
 
 ### 4. Observations & Notes
@@ -50,6 +52,7 @@
 - The summary regression is stronger than label drift alone. The persisted Week 3 summary tracked `sanityChange: +15`, but the rendered modal still displayed `HAPPINESS 0`.
 - The same summary bug now affects negative sanity weeks too. The persisted Week 5 summary tracked `sanityChange: -10`, but the rendered modal still displayed `HAPPINESS 0`.
 - Week 6 exposed a second summary defect: the modal displayed only `Ambient Stress -10` and `Cycle Recovery +5`, omitting the opener's `Panic Attack -20` and the burger's `+10` sanity even though the persisted total still landed at `sanityChange: -15`.
+- Week 7 shows the same omission pattern without an opening event. The summary again displayed only `Ambient Stress -10` and `Cycle Recovery +5`, but the persisted checkpoint climbed from `30` to `35` sanity because the burger's `+10` was applied silently.
 - AI parity looks unstable. The AI bought `Thermal-Regulator` in Cycle 2, then failed Burn Rate coverage, took on `₡89` debt, and entered `SUBSCRIPTION_DEFAULT` by the start of Cycle 3 while the Safe Grinder remained debt-free.
 - Historical blocker resolved by policy: the original persisted `phase11-safe-grinder` checkpoint is gone, so the workflow now treats fresh onboarding as the approved replay baseline.
 - Current automation blocker resolved for replay: Labor Sector job application is stable when the inner button is focused before the `.action-card` click.

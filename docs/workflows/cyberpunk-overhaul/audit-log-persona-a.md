@@ -4,8 +4,8 @@
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
 - **Date:** 2026-03-18
-- **Session Duration:** 6 completed authoritative replay weeks
-- **Current Slice Status:** Completed the authoritative replay through Week 6 on 2026-03-18. The `phase11-safe-grinder` browser session is now parked at the Week 6 turn summary, ready for a fresh-context Week 7 continuation.
+- **Session Duration:** 7 completed authoritative replay weeks
+- **Current Slice Status:** Completed the authoritative replay through Week 7 on 2026-03-18. The `phase11-safe-grinder` browser session is now parked at the Week 7 turn summary, ready for a fresh-context Week 8 continuation.
 
 ---
 
@@ -19,8 +19,9 @@
 | 4    | 424  | 0    | 50%    | 55%    | 0         | 75% (18/24CH productive) | Travel to Labor Sector, decline `Shady Fixer Courier Job`, Work Shift x3, return home, rest | Preserve the deterministic labor line instead of trading `4CH` and `10` sanity for a courier payout that would break the full-shift baseline under `Sore Legs` | Temptation pressure is now legible: the event looks lucrative, but declining it cleanly stabilizes the week and keeps the run on the same `+₡172` solvent track. |
 | 5    | 596  | 0    | 70%    | 45%    | 0         | 75% (18/24CH productive) | Choose `Suffer` on the repeated `Transit Strike`, travel to Labor Sector, Work Shift x3, return home, rest | Keep the cash buffer intact and continue testing whether the baseline labor loop survives a refreshed commute debuff better than it survives another cash shock | The credit line is still stable, but the survival loop is no longer emotionally neutral: repeating the same safe route now crosses the hunger threshold, adds `Cognitive Decline -5`, and the summary still lies with `HAPPINESS 0` instead of the real `-10` sanity week. |
 | 6    | 644  | 0    | 40%    | 30%    | 0         | 50% (12/24CH productive) | Forced `Suffer` on `Panic Attack on the Mag-Lev`, buy `Real-Meat Burger`, travel to Labor Sector, Work Shift x2, return home, rest | Hunger reached the point where preserving the old three-shift route would have caused `Exhaustion Protocol`; Safe Grinder spent credits to stabilize and accepted a lower-income week instead | The run is still solvent, but the baseline loop has broken: safe play now means sacrificing one shift for food, and the summary hides both the panic hit and the burger recovery while still claiming `HAPPINESS 0` on a true `-15` sanity week. |
+| 7    | 692  | 0    | 20%    | 35%    | 0         | 50% (12/24CH productive) | No opening event, travel to Labor Sector, Work Shift x2, buy `Real-Meat Burger`, return home, rest | With `Sore Legs` still taxing every commute, Safe Grinder chose to protect the next checkpoint rather than squeeze a third shift and hand Week 8 a `60%` hunger / low-sanity opener | The run feels more stable than Week 6, but the summary bug is now unambiguous: it still shows `HAPPINESS 0` and still omits the burger's `+10` sanity even on a clean, positive-sanity week. |
 
-Authoritative replay note: Weeks 1 through 6 above are now the canonical Persona A timeline. Earlier provisional Week 2 and Week 3 notes were superseded once the replay diverged at the Cycle 2 opening event.
+Authoritative replay note: Weeks 1 through 7 above are now the canonical Persona A timeline. Earlier provisional Week 2 and Week 3 notes were superseded once the replay diverged at the Cycle 2 opening event.
 
 ## Detailed Slice Records
 
@@ -30,6 +31,7 @@ Authoritative replay note: Weeks 1 through 6 above are now the canonical Persona
 - Week 4 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`
 - Week 5 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`
 - Week 6 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`
+- Week 7 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`
 
 Workflow note: this persona log remains the compact index plus synthesis layer. Durable per-week detail now lives in the linked slice files so future runs can preserve rich history without making this file unreadable.
 
@@ -62,6 +64,6 @@ Workflow note: this persona log remains the compact index plus synthesis layer. 
 
 ## Final Synthesis
 - **Overall "Wrinkles" Identified:** Early labor is solvent but emotionally brittle. Event costs hide in time-tax, condition carryover, and low-sanity consequence chains more often than in obvious credit swings, so the run feels harsher than the summary screen admits.
-- **Key Broken Math / Probability Frustrations:** `Transit Strike` let the Safe Grinder keep the exact same `+₡172` net-credit week while silently spending `6CH` on commute tax and carrying a 7-day debuff forward. Week 5 then proved the event can re-fire before the old debuff expires and refresh `Sore Legs` back to `168h`, keeping the same solvent credits line while pushing Hunger high enough to add `Cognitive Decline -5`. Week 6 showed the follow-on cost: safe play required a `₡40` food purchase plus one fewer shift just to avoid `Exhaustion Protocol`. The accounting layer still flattened both the Week 3 `+15` sanity rebound and the Week 5/6 negative sanity weeks into `HAPPINESS 0`, and the Week 6 modal even hid the in-week `-20/+10` sanity swings from the visible event list.
+- **Key Broken Math / Probability Frustrations:** `Transit Strike` let the Safe Grinder keep the exact same `+₡172` net-credit week while silently spending `6CH` on commute tax and carrying a 7-day debuff forward. Week 5 then proved the event can re-fire before the old debuff expires and refresh `Sore Legs` back to `168h`, keeping the same solvent credits line while pushing Hunger high enough to add `Cognitive Decline -5`. Weeks 6 and 7 showed the follow-on cost: safe play now means a `₡40` burger plus one fewer shift just to preserve a non-fragile next checkpoint. The accounting layer still flattened the Week 3 `+15` sanity rebound, the Week 5/6 negative sanity weeks, and now the Week 7 positive-sanity stabilization week into `HAPPINESS 0`, while the modal keeps hiding item-driven sanity swings from the visible event list.
 - **Thematic Hit/Miss:**
 - **Phase 12 Recommendations:**

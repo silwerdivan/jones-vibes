@@ -28,11 +28,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 6 turn summary (`₡644 / Debt ₡0 / Hunger 40% / Sanity 30%`, `Sore Legs` remaining `75h`). Start Week 7, complete exactly one additional in-game week using Safe Grinder priorities, log any opening event choices and the Week 7 close, then stop.",
+  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 7 turn summary (`₡692 / Debt ₡0 / Hunger 20% / Sanity 35%`, `Sore Legs` remaining `30h`). Start Week 8, complete exactly one additional in-game week using Safe Grinder priorities, log any opening event choices and the Week 8 close, then stop.",
   "last_run": {
     "at": "2026-03-18",
-    "outcome": "authoritative_week6_completed",
-    "summary": "A fresh-context slice resumed Persona A from the authoritative Week 5 summary, took the forced `Panic Attack on the Mag-Lev` opener, bought `Real-Meat Burger` to avoid `Exhaustion Protocol`, completed `Work Shift x2`, returned home, and closed Week 6 at ₡644 / Debt 0 / Hunger 40% / Sanity 30% on the authoritative replay timeline."
+    "outcome": "authoritative_week7_completed",
+    "summary": "A fresh-context slice resumed Persona A from the authoritative Week 6 summary, found no opening event, completed `Work Shift x2`, bought `Real-Meat Burger` to avoid a brittle Week 8 opener under lingering `Sore Legs`, returned home, and closed Week 7 at ₡692 / Debt 0 / Hunger 20% / Sanity 35% on the authoritative replay timeline."
   },
   "runner": {
     "sleep_seconds": 5,
