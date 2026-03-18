@@ -28,11 +28,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 2 turn summary (`₡344 / Debt ₡0 / Hunger 40% / Sanity 40%`, `Sore Legs` still active). Start Week 3, complete exactly one additional in-game week using Safe Grinder priorities, log any opening event choices and the Week 3 close, then stop.",
+  "next_slice": "Resume Persona A from the saved authoritative replay checkpoint at the end of Week 3 turn summary (`₡252 / Debt ₡0 / Hunger 30% / Sanity 55%`, `Sore Legs` remaining `90h`). Start Week 4, complete exactly one additional in-game week using Safe Grinder priorities, log any opening event choices and the Week 4 close, then stop.",
   "last_run": {
     "at": "2026-03-18",
-    "outcome": "authoritative_week2_completed",
-    "summary": "A fresh-context slice resumed Persona A from the authoritative Week 1 summary, chose `Suffer` on `Transit Strike`, carried `Sore Legs` through the week, still completed three Sanitation-T3 shifts, and closed Week 2 at ₡344 / Debt 0 / Hunger 40% / Sanity 40% on the authoritative replay timeline."
+    "outcome": "authoritative_week3_completed",
+    "summary": "A fresh-context slice resumed Persona A from the authoritative Week 2 summary, took the forced `Suffer` branch on `Panic Attack on the Mag-Lev`, then hit `Crushing Burnout` on the first recovery travel. Safe Grinder chose `REST`, bought `Synth-Salad`, returned home, and closed Week 3 at ₡252 / Debt 0 / Hunger 30% / Sanity 55% on the authoritative replay timeline."
   },
   "runner": {
     "sleep_seconds": 5,
