@@ -9,6 +9,8 @@ This workflow can keep running with a fresh Codex context on every pass. Continu
 - the Phase 11 per-slice detail logs under `docs/workflows/cyberpunk-overhaul/phase-11-slices/`
 - persistent `agent-browser` session state
 
+The runner now keeps stdout compact by default and moves the higher-detail evidence into per-slice artifacts under `.codex-runtime/cyberpunk-overhaul/`.
+
 ## Commands
 
 One bounded fresh-context slice:
@@ -46,8 +48,83 @@ npm run workflow:phase11:ensure-dev
 1. `workflow:phase11:ensure-dev` restores `node_modules` if missing and starts Vite at `http://127.0.0.1:5173/jones-vibes/` when needed.
 2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
 3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs.
-4. The Codex prompt is intentionally small and tells the agent to read the workflow files locally.
-5. The loop script rereads `run-state.json` after each slice and stops only when the workflow is `blocked`, `complete`, or the process is interrupted.
+4. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, checkpoint summary, expected next action, and trusted UI workaround notes.
+5. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
+   - meaningful milestones are written to structured JSONL artifacts,
+   - repeated `git diff` output is suppressed from the live stream,
+   - the terminal/log stream keeps short status, retry, fallback, failure, and usage lines instead of the full raw event firehose.
+6. The loop script rereads `run-state.json` after each slice and stops only when the workflow is `blocked`, `complete`, or the process is interrupted.
+
+## Logging Model
+
+### Compact by default
+
+Each slice gets its own artifact directory:
+
+```text
+.codex-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/
+```
+
+Normal successful runs keep the operator-facing stream small:
+
+- `.codex-runtime/cyberpunk-overhaul/autonomous-runner.log`
+  Append-only top-level runner log with slice headers plus the compact live stream.
+- `events.jsonl`
+  Structured milestone/event log for the slice.
+- `checkpoints.jsonl`
+  Filtered subset of state-oriented events such as browser/session checks, checkpoint reads, and status transitions.
+- `summary.json`
+  Consolidated per-slice outcome, token usage, wall time, changed files, artifact paths, and debug status.
+- `changed-files.txt`
+  Final changed-file list for the slice.
+- `final.diff`
+  One consolidated final diff artifact for tracked and untracked changes, instead of repeated live `diff --git` dumps.
+- `prompt.md`
+  Exact prompt used for that slice.
+- `last-message.txt`
+  Final Codex message captured with `codex exec -o`.
+- `state/before/` and `state/after/`
+  Snapshots of the bounded control-surface files listed in `run-state.json`.
+
+The structured logs live in the slice directory above, not in `docs/workflows/...`. The workflow docs remain the bounded control surface; the runtime directory is the execution evidence.
+
+### Debug escalation
+
+The runner automatically keeps raw debug artifacts when a slice looks suspicious or stops in trouble. Debug preservation turns on when any of these happen:
+
+- `codex exec` exits nonzero.
+- `run-state.json` ends the slice with `status = "blocked"`.
+- `run-state.json` ends the slice with `needs_human = true`.
+- A tool command exits nonzero.
+- The same failing `agent-browser` command crosses `AUTONOMOUS_RETRY_THRESHOLD` retries. Default: `2`.
+- The stream parser detects a fallback strategy and marks `fallback_invoked`.
+
+When debug escalation is off, the runner deletes the temporary raw event files after the slice and keeps only the compact artifacts above.
+
+When debug escalation is on, raw failure traces live here:
+
+- `debug/raw-codex-events.jsonl`
+  Full raw JSONL event stream emitted by `codex exec --json` for that slice.
+- `debug/suspicious-commands.jsonl`
+  Full command payloads for failed commands or commands whose output looked suspicious enough to preserve.
+
+Check `summary.json` first. It records `debug.escalated`, `debug.reasons`, the artifact paths, usage totals, timings, and changed files in one place.
+
+### Forcing verbose preservation
+
+If you want the raw debug artifacts even for a slice that may succeed cleanly, run the slice or loop with:
+
+```bash
+AUTONOMOUS_FORCE_VERBOSE=1 npm run workflow:phase11:once
+```
+
+or:
+
+```bash
+AUTONOMOUS_FORCE_VERBOSE=1 npm run workflow:phase11:loop
+```
+
+This does not disable the compact live stream. It forces the slice to retain the raw `debug/` artifacts and marks `summary.json` with the `forced_verbose` debug reason.
 
 ## Important Files
 
@@ -73,12 +150,24 @@ npm run workflow:phase11:ensure-dev
   Override the delay between loop iterations.
 - `AUTONOMOUS_MAX_ITERATIONS`
   Stop the loop after a fixed number of slices.
+- `AUTONOMOUS_RETRY_THRESHOLD`
+  Retry count that triggers debug escalation for repeated failing `agent-browser`
+  commands. Defaults to `2`.
+- `AUTONOMOUS_FORCE_VERBOSE=1`
+  Always retain the raw slice debug artifacts under `debug/` even if the slice
+  would normally stay in compact mode.
 - `AUTONOMOUS_GIT_COMMIT=1`
   Auto-commit after a slice. The runner only does this when the worktree was
   clean before the slice started; otherwise it skips the commit to avoid mixing
   pre-existing edits into the automation commit.
 - `DRY_RUN=1`
   Show the resolved prompt and runner configuration without launching Codex.
+- `AGENT_BROWSER_SESSION_NAME`
+  Optional manual override for the browser session name. By default the runner
+  exports the value from `run-state.json`.
+- `AGENT_BROWSER_ARGS`
+  Browser launch args passed through to `agent-browser`. Defaults to
+  `--no-sandbox`.
 
 ## Keeping It Running After Terminal Close
 
@@ -89,6 +178,16 @@ nohup npm run workflow:phase11:loop > /tmp/jones-vibes-phase11.out 2>&1 &
 ```
 
 More durable option: run the loop under a `systemd --user` service with this repo as `WorkingDirectory` and `scripts/cyberpunk-overhaul-phase11-loop.sh` as `ExecStart`.
+
+## Reading A Blocked Slice
+
+After a blocked slice, read the artifacts in this order:
+
+1. Open the newest slice `summary.json` under `.codex-runtime/cyberpunk-overhaul/slices/` to see status, debug reasons, timings, changed files, and the exact artifact paths.
+2. Open `checkpoints.jsonl` to reconstruct the last known state transition and where the run stopped.
+3. If `summary.json` shows `debug.escalated = true`, open `debug/suspicious-commands.jsonl` first for the failing command chain, then `debug/raw-codex-events.jsonl` only if you need the full raw transcript.
+4. Compare `state/before/` and `state/after/` if you need to confirm what the slice changed in the bounded control surface.
+5. Use `final.diff` and `changed-files.txt` only after you understand the blocker; they are for code/doc output review, not for reconstructing the runtime failure.
 
 ## Stop Conditions
 

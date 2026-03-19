@@ -2,10 +2,10 @@
 
 ## Status
 
-- Current next work item: `Task C: Documentation Refresh`
+- Current next work item: `Task D: Optional Automation Hardening Follow-Up`
 - [x] Task A: Compact Logging + Failure-Preserving Debug Mode
 - [x] Task B: Prompt and Handoff Tightening
-- [ ] Task C: Documentation Refresh
+- [x] Task C: Documentation Refresh
 - [ ] Task D: Optional Automation Hardening Follow-Up
 
 ## Purpose
@@ -217,9 +217,9 @@ Definition of done for Task D:
 
 ### Task C checklist
 
-- [ ] Update `docs/workflows/cyberpunk-overhaul/autonomous-runner.md`.
-- [ ] Document artifact locations and debug behavior.
-- [ ] Add operator notes for blocked slices and UI automation failures.
+- [x] Update `docs/workflows/cyberpunk-overhaul/autonomous-runner.md`.
+- [x] Document artifact locations and debug behavior.
+- [x] Add operator notes for blocked slices and UI automation failures.
 
 ### Task D checklist
 
@@ -291,3 +291,4 @@ Deliverables:
 ## Progress Notes
 
 - 2026-03-18: Initial refactor plan created from review of the Week 7 autonomous slice log. Plan favors compact default logging plus automatic debug preservation instead of a blanket reduction in output.
+- 2026-03-19: Task C completed. `autonomous-runner.md` now documents the compact-by-default logging model, automatic debug escalation triggers, the slice artifact layout under `.codex-runtime/cyberpunk-overhaul/`, blocked-slice triage order, and the new `AUTONOMOUS_FORCE_VERBOSE=1` override for always retaining raw debug artifacts.

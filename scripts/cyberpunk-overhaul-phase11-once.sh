@@ -174,6 +174,7 @@ write_slice_summary() {
     "${pre_run_dirty}" \
     "${codex_exit}" \
     "${debug_preserved}" \
+    "${FORCE_VERBOSE}" \
     "${DEBUG_DIR}/raw-codex-events.jsonl" \
     "${DEBUG_DIR}/suspicious-commands.jsonl" \
     "${CHANGED_FILES_FILE}" \
@@ -192,6 +193,7 @@ const [
   preRunDirty,
   codexExit,
   debugPreserved,
+  forceVerbose,
   rawTracePath,
   suspiciousPath,
   changedFilesPath,
@@ -242,6 +244,12 @@ if (summary.status === 'blocked') {
   summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'status_blocked'])];
 }
 
+if (forceVerbose === '1') {
+  summary.debug = summary.debug || {};
+  summary.debug.escalated = true;
+  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'forced_verbose'])];
+}
+
 if (summary.needs_human) {
   summary.debug = summary.debug || {};
   summary.debug.escalated = true;
@@ -261,6 +269,7 @@ NODE
 DRY_RUN="${DRY_RUN:-0}"
 AUTO_COMMIT="${AUTONOMOUS_GIT_COMMIT:-0}"
 RETRY_THRESHOLD="${AUTONOMOUS_RETRY_THRESHOLD:-2}"
+FORCE_VERBOSE="${AUTONOMOUS_FORCE_VERBOSE:-0}"
 
 while (($# > 0)); do
   case "${1}" in
@@ -403,6 +412,7 @@ fi
   echo "[phase11-once] session_name=${AGENT_BROWSER_SESSION_NAME}"
   echo "[phase11-once] exec_strategy=${exec_strategy}"
   echo "[phase11-once] auto_commit=${AUTO_COMMIT}"
+  echo "[phase11-once] force_verbose=${FORCE_VERBOSE}"
   echo "[phase11-once] slice_id=${SLICE_ID}"
   echo "[phase11-once] slice_dir=${SLICE_DIR}"
 } >>"${LOG_FILE}"
@@ -453,7 +463,7 @@ snapshot_control_surface after
 write_changed_file_artifacts
 
 debug_preserved=0
-if [[ "${codex_exit}" != "0" || "${status_after}" == "blocked" || "${needs_human_after}" == "true" ]]; then
+if [[ "${FORCE_VERBOSE}" == "1" || "${codex_exit}" != "0" || "${status_after}" == "blocked" || "${needs_human_after}" == "true" ]]; then
   debug_preserved=1
 fi
 
