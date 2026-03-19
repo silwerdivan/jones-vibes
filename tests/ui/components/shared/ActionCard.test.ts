@@ -27,6 +27,10 @@ describe('ActionCard', () => {
             expect(card.classList.contains('action-card')).toBe(true);
             expect(card.querySelector('.action-card-title')?.textContent).toBe('Test Job');
             expect(card.querySelector('.action-card-btn')?.textContent?.trim()).toBe('Apply');
+            expect(card.dataset.actionCardType).toBe('jobs');
+            expect(card.dataset.actionCardKey).toBe('level-1-test-job');
+            expect(card.dataset.testid).toBe('action-card-jobs-level-1-test-job');
+            expect(card.querySelector('.action-card-btn')?.getAttribute('data-testid')).toBe('action-card-btn-jobs-level-1-test-job');
         });
 
         it('should show "Hired" button when player has this job', () => {
@@ -141,6 +145,10 @@ describe('ActionCard', () => {
             expect(card.classList.contains('action-card')).toBe(true);
             expect(card.querySelector('.action-card-title')?.textContent).toBe('Test Item');
             expect(card.querySelector('.action-card-btn')?.textContent?.trim()).toBe('Buy');
+            expect(card.dataset.actionCardType).toBe('shopping');
+            expect(card.dataset.actionCardKey).toBe('consumpt-zone-test-item');
+            expect(card.dataset.testid).toBe('action-card-shopping-consumpt-zone-test-item');
+            expect(card.querySelector('.action-card-btn')?.getAttribute('data-testid')).toBe('action-card-btn-shopping-consumpt-zone-test-item');
         });
 
         it('should lock card when player cannot afford item', () => {

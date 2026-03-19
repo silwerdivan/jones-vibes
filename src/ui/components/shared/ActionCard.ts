@@ -21,6 +21,34 @@ export interface ActionCardState {
     feedbackType: 'success' | 'error';
 }
 
+function slugifyActionCardValue(value: string): string {
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-{2,}/g, '-');
+}
+
+function getActionCardAutomationKey(type: ActionCardType, data: Job | Course | Item | Hustle): string {
+    if (type === 'jobs') {
+        const job = data as Job;
+        return slugifyActionCardValue(`level-${job.level}-${job.title}`);
+    }
+
+    if (type === 'college') {
+        const course = data as Course;
+        return slugifyActionCardValue(`course-${course.id}-${course.name}`);
+    }
+
+    if (type === 'hustles') {
+        const hustle = data as Hustle;
+        return slugifyActionCardValue(`hustle-${hustle.id}`);
+    }
+
+    const item = data as Item;
+    return slugifyActionCardValue(`${item.location}-${item.name}`);
+}
+
 function getJobState(job: Job, player: Player | null): ActionCardState {
     const isLockedByEducation = !!(player && player.educationLevel < job.educationRequired);
     const isLockedByHunger = !!(player && player.hunger > 50 && job.level > 1);
@@ -161,6 +189,9 @@ export function createActionCard(
 ): HTMLElement {
     const card = document.createElement('div');
     card.className = 'action-card';
+    const automationKey = getActionCardAutomationKey(type, data);
+    const cardTestId = `action-card-${type}-${automationKey}`;
+    const buttonTestId = `action-card-btn-${type}-${automationKey}`;
     
     let state: ActionCardState;
     let title = '';
@@ -194,11 +225,15 @@ export function createActionCard(
             <div class="action-card-meta">${metaHtml}</div>
         </div>
         <div class="action-card-action">
-            <button class="btn btn-primary action-card-btn" ${state.isLocked || state.isCompleted ? 'disabled' : ''}>
+            <button class="btn btn-primary action-card-btn" data-testid="${buttonTestId}" ${state.isLocked || state.isCompleted ? 'disabled' : ''}>
                 ${state.buttonText}
             </button>
         </div>
     `;
+
+    card.dataset.actionCardType = type;
+    card.dataset.actionCardKey = automationKey;
+    card.dataset.testid = cardTestId;
     
     if (!state.isLocked && !state.isCompleted && config.onClick) {
         card.onclick = () => {

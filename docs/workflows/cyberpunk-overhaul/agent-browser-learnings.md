@@ -22,12 +22,14 @@ This log tracks technical patterns, selector strategies, and "gotchas" discovere
 ### Labor Sector Interaction Quirk
 - **Job Application Buttons**: The visible `Apply` button inside Labor Sector may not trigger the job application reliably when clicked directly.
 - **Root Cause Pattern**: The handler is attached to the parent `.action-card`, not the inner button, so automation should prefer clicking the card container or dispatching the event on `.action-card`.
-- **Practical Rule**: For `Sanitation-T3` and similar job cards, target the card text block or `.action-card` wrapper first. Treat button-only clicks as untrusted until state changes are confirmed in `localStorage` or the rendered "CURRENT SHIFT" panel.
+- **Stable Selectors**: Action cards now expose deterministic `data-testid` hooks such as `action-card-jobs-level-1-sanitation-t3` and `action-card-btn-jobs-level-1-sanitation-t3`.
+- **Practical Rule**: For `Sanitation-T3` and similar job cards, prefer the stable card or button `data-testid` selector first, then still treat button-only clicks as untrusted until state changes are confirmed in `localStorage` or the rendered "CURRENT SHIFT" panel.
 
 ### Sustenance Hub Purchase Quirk
 - **Buy Buttons**: The visible `BUY` button in `Sustenance Hub` did not reliably mutate player state during Persona A Week 7 when triggered through ordinary `agent-browser click` paths.
 - **Root Cause Pattern**: The shopping card callback expects `document.activeElement` to resolve inside the `.action-card` before feedback is spawned, so generic clicks can look successful without actually producing the purchase side effects.
-- **Practical Rule**: For food buys, focus the inner button first and then trigger the card's bound click path, or otherwise verify the purchase directly in persisted state (`credits`, `hunger`, `sanity`) before continuing.
+- **Stable Selectors**: Sustenance Hub cards now expose deterministic `data-testid` hooks such as `action-card-shopping-sustenance-hub-real-meat-burger` and `action-card-btn-shopping-sustenance-hub-real-meat-burger`.
+- **Practical Rule**: For food buys, prefer the stable card or button `data-testid` selector first, then verify the purchase directly in persisted state (`credits`, `hunger`, `sanity`) before continuing.
 
 ### State Tracking
 - **HUD Elements**: Text-based stats (₡, %, etc.) are best extracted via `agent-browser get text @ref` after identifying the correct orb or gauge ref.

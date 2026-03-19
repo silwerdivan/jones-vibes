@@ -101,8 +101,8 @@ latest_persona_slice_file() {
 
 append_ui_workaround_notes() {
   cat <<'EOF'
-- Labor Sector job applications: focus the inner `Apply` button first, then trigger the parent `.action-card` click path; verify the `CURRENT SHIFT` panel or persisted state changed before moving on.
-- Sustenance Hub purchases: focus the inner `BUY` button first, then trigger the card-bound click path; verify `credits`, `hunger`, or `sanity` changed before assuming the purchase worked.
+- Labor Sector job applications: prefer the stable `[data-testid="action-card-jobs-..."]` or `[data-testid="action-card-btn-jobs-..."]` selectors when targeting a known job card, then verify the `CURRENT SHIFT` panel or persisted state changed before moving on.
+- Sustenance Hub purchases: prefer the stable `[data-testid="action-card-shopping-..."]` or `[data-testid="action-card-btn-shopping-..."]` selectors when targeting a known food card, then verify `credits`, `hunger`, or `sanity` changed before assuming the purchase worked.
 - If the session appears reset or onboarding reappears unexpectedly: capture a screenshot and run `agent-browser eval "document.body.innerText"` before clicking through anything.
 EOF
 }

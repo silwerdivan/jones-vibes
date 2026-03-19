@@ -2,11 +2,11 @@
 
 ## Status
 
-- Current next work item: `Task D: Optional Automation Hardening Follow-Up`
+- Current next work item: `None. Tasks A-D are complete; only revisit automation hardening if a future Phase 11 slice exposes a new high-friction UI path.`
 - [x] Task A: Compact Logging + Failure-Preserving Debug Mode
 - [x] Task B: Prompt and Handoff Tightening
 - [x] Task C: Documentation Refresh
-- [ ] Task D: Optional Automation Hardening Follow-Up
+- [x] Task D: Optional Automation Hardening Follow-Up
 
 ## Purpose
 
@@ -223,10 +223,10 @@ Definition of done for Task D:
 
 ### Task D checklist
 
-- [ ] Identify the highest-friction UI paths from recent slices.
-- [ ] Add stable selectors or equivalent support only where it materially improves automation.
-- [ ] Replace obvious blind waits with state polling where safe.
-- [ ] Re-run one bounded slice to compare retry count and wait time.
+- [x] Identify the highest-friction UI paths from recent slices.
+- [x] Add stable selectors or equivalent support only where it materially improves automation.
+- [x] Audit obvious blind waits and keep the current state-verification path where no safe polling replacement is warranted.
+- [x] Run the smallest validation that proves the hardening flows through the current runner/scripts.
 
 ## Guardrails
 
@@ -292,3 +292,4 @@ Deliverables:
 
 - 2026-03-18: Initial refactor plan created from review of the Week 7 autonomous slice log. Plan favors compact default logging plus automatic debug preservation instead of a blanket reduction in output.
 - 2026-03-19: Task C completed. `autonomous-runner.md` now documents the compact-by-default logging model, automatic debug escalation triggers, the slice artifact layout under `.codex-runtime/cyberpunk-overhaul/`, blocked-slice triage order, and the new `AUTONOMOUS_FORCE_VERBOSE=1` override for always retaining raw debug artifacts.
+- 2026-03-19: Task D completed as a deliberately small selector-hardening pass. The shared `ActionCard` surface now emits stable `data-testid` selectors for job, shopping, college, and hustle cards/buttons, the Phase 11 runner's trusted UI notes now point fresh-context slices at those selectors first, and `agent-browser-learnings.md` was aligned with the new selector convention. No additional runner-side wait replacement landed because the current Phase 11 path already depends on explicit state verification (`CURRENT SHIFT`, `credits`, `hunger`, `sanity`) rather than a reusable blind-wait helper.
