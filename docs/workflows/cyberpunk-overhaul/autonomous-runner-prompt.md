@@ -4,19 +4,24 @@ Use the `cyberpunk-overhaul` skill for this run.
 
 This invocation is one fresh-context autonomous slice of the active Phase 11 workflow. Continuity must come from repository files and persistent browser/app state, not from prior chat memory.
 
+The runner appends a `## Runner Context` section below with exact paths, checkpoint data, and trusted UI notes. Treat that section as canonical for this slice unless it directly conflicts with the bounded control surface in `run-state.json`.
+
 ## Required startup reads
 1. Read `docs/workflows/cyberpunk-overhaul/run-state.json`.
 2. Read `docs/workflows/cyberpunk-overhaul/current-phase.md`.
 3. Read `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`.
-4. Read the active persona log referenced in `run-state.json`.
-5. Read the most recent persona slice record under `docs/workflows/cyberpunk-overhaul/phase-11-slices/` if one exists for the active persona.
+4. Read the exact active persona log path provided in `Runner Context`.
+5. Read the exact `Canonical latest slice file` from `Runner Context` if one is provided.
+
+Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe alternate persona logs when `Runner Context` already supplies the path you need.
 
 ## Operating rules
 - Respect `run-state.json` as the bounded control surface for this run.
+- Prefer exact paths, checkpoint summary, and expected next action from `Runner Context` over reconstructing state from older slice files.
 - Reuse the existing app and browser state from the environment. `AGENT_BROWSER_SESSION_NAME` is already set for the active persona.
 - On Linux, keep using `agent-browser` with the `--no-sandbox` configuration.
-- Read `docs/workflows/cyberpunk-overhaul/agent-browser-learnings.md` before taking repeated UI actions in the game.
-- In Labor Sector, do not trust the visible `Apply` button by itself. Prefer clicking the parent `.action-card` container and verify that state changed before proceeding.
+- Use the trusted UI workaround notes from `Runner Context` first. Read `docs/workflows/cyberpunk-overhaul/agent-browser-learnings.md` only if a listed UI path fails, the notes are missing, or you need a new automation pattern that is not already covered.
+- Avoid source-code spelunking during startup unless gameplay state is ambiguous, a UI path fails, or a new mechanic must be verified.
 - Complete exactly one bounded slice:
   - default bound is one completed in-game week for the active persona,
   - stop earlier only for a meaningful blocker or a clearly high-signal audit event that should be logged immediately.

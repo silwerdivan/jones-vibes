@@ -2,9 +2,9 @@
 
 ## Status
 
-- Current next work item: `Task A: Compact Logging + Failure-Preserving Debug Mode`
-- [ ] Task A: Compact Logging + Failure-Preserving Debug Mode
-- [ ] Task B: Prompt and Handoff Tightening
+- Current next work item: `Task C: Documentation Refresh`
+- [x] Task A: Compact Logging + Failure-Preserving Debug Mode
+- [x] Task B: Prompt and Handoff Tightening
 - [ ] Task C: Documentation Refresh
 - [ ] Task D: Optional Automation Hardening Follow-Up
 
@@ -208,12 +208,12 @@ Definition of done for Task D:
 
 ### Task B checklist
 
-- [ ] Inspect current prompt assembly in `scripts/cyberpunk-overhaul-phase11-once.sh`.
-- [ ] Tighten `docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md`.
-- [ ] Pass canonical slice file path and checkpoint details explicitly.
-- [ ] Pass proven UI workaround notes explicitly when available.
-- [ ] Reduce startup read ambiguity without weakening the bounded control surface.
-- [ ] Verify a fresh-context slice reaches the first meaningful action with fewer exploratory reads.
+- [x] Inspect current prompt assembly in `scripts/cyberpunk-overhaul-phase11-once.sh`.
+- [x] Tighten `docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md`.
+- [x] Pass canonical slice file path and checkpoint details explicitly.
+- [x] Pass proven UI workaround notes explicitly when available.
+- [x] Reduce startup read ambiguity without weakening the bounded control surface.
+- [x] Verify a fresh-context slice reaches the first meaningful action with fewer exploratory reads.
 
 ### Task C checklist
 

@@ -79,6 +79,34 @@ for (const entry of seen) {
 NODE
 }
 
+latest_persona_slice_file() {
+  local detail_log_root="$1"
+  local persona_log_path="$2"
+  local persona_dir_name=""
+  local persona_slice_dir=""
+
+  persona_dir_name="$(basename "${persona_log_path}" .md)"
+  persona_dir_name="${persona_dir_name#audit-log-}"
+  persona_slice_dir="${detail_log_root}/${persona_dir_name}"
+
+  if [[ ! -d "${ROOT_DIR}/${persona_slice_dir}" ]]; then
+    return 0
+  fi
+
+  (
+    cd "${ROOT_DIR}"
+    find "${persona_slice_dir}" -maxdepth 1 -type f -name 'week-*.md' | sort | tail -n 1
+  )
+}
+
+append_ui_workaround_notes() {
+  cat <<'EOF'
+- Labor Sector job applications: focus the inner `Apply` button first, then trigger the parent `.action-card` click path; verify the `CURRENT SHIFT` panel or persisted state changed before moving on.
+- Sustenance Hub purchases: focus the inner `BUY` button first, then trigger the card-bound click path; verify `credits`, `hunger`, or `sanity` changed before assuming the purchase worked.
+- If the session appears reset or onboarding reappears unexpectedly: capture a screenshot and run `agent-browser eval "document.body.innerText"` before clicking through anything.
+EOF
+}
+
 snapshot_control_surface() {
   local phase="$1"
   local rel_path=""
@@ -284,7 +312,16 @@ persona_slug="$(json_get_or_default current_persona.id persona)"
 persona_log="$(json_get current_persona.log_path)"
 session_name="$(json_get current_persona.agent_browser_session_name)"
 app_url="$(json_get runtime.app_url)"
+detail_log_root="$(json_get_or_default slice_policy.detail_log_root docs/workflows/cyberpunk-overhaul/phase-11-slices)"
+phase_progress_log="docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md"
 next_slice="$(json_get next_slice)"
+last_run_at="$(json_get_or_default last_run.at unknown)"
+last_run_outcome="$(json_get_or_default last_run.outcome unknown)"
+last_run_summary="$(json_get_or_default last_run.summary "No prior checkpoint summary recorded.")"
+persona_slice_dir="$(basename "${persona_log}" .md)"
+persona_slice_dir="${persona_slice_dir#audit-log-}"
+persona_slice_dir="${detail_log_root}/${persona_slice_dir}"
+latest_slice_file="$(latest_persona_slice_file "${detail_log_root}" "${persona_log}")"
 exec_strategy="${CODEX_EXEC_STRATEGY:-$(json_get_or_default runner.codex_exec_strategy dangerous)}"
 
 slice_timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -315,11 +352,19 @@ export JONES_VIBES_APP_URL="${app_url}"
 ## Runner Context
 - App URL: ${app_url}
 - Run-state path: docs/workflows/cyberpunk-overhaul/run-state.json
+- Phase progress rollup: ${phase_progress_log}
 - Active persona: ${persona_name}
 - Active persona log: ${persona_log}
+- Canonical persona slice directory: ${persona_slice_dir}
+- Canonical latest slice file: ${latest_slice_file:-"(none yet)"}
+- Last authoritative checkpoint: ${last_run_at} (${last_run_outcome})
+- Current checkpoint summary: ${last_run_summary}
+- Expected next action: ${next_slice}
 - agent-browser session name: ${AGENT_BROWSER_SESSION_NAME}
-- Next slice: ${next_slice}
+
+### Trusted UI Workarounds
 EOF
+  append_ui_workaround_notes
 } >"${SLICE_PROMPT_FILE}"
 
 cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
