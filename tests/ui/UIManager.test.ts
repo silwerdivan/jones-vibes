@@ -40,7 +40,21 @@ describe('UIManager', () => {
             </div>
             <div id="player-stats-modal-overlay" class="hidden"><div id="player-stats-modal"><button id="player-stats-modal-close"></button></div></div>
             <div id="intel-terminal-overlay" class="hidden"><button id="intel-terminal-close"></button><div><div id="terminal-entries"></div></div></div>
-            <div id="turn-summary-modal" class="hidden"><div id="event-list"></div><div id="summary-subtitle"></div><div id="summary-credits-total"></div><div id="summary-sanity-total"></div><button id="btn-start-next-week"></button></div>
+            <div id="turn-summary-modal" class="hidden">
+                <div id="event-list"></div>
+                <div id="summary-subtitle"></div>
+                <div class="net-impact">
+                    <div class="impact-item">
+                        <span class="impact-label">NET CREDITS</span>
+                        <div id="summary-credits-total"></div>
+                    </div>
+                    <div class="impact-item">
+                        <span class="impact-label">SANITY</span>
+                        <div id="summary-sanity-total"></div>
+                    </div>
+                </div>
+                <button id="btn-start-next-week"></button>
+            </div>
             <div id="graduation-modal" class="hidden"><div id="graduation-subtitle"></div><div id="graduated-degree-name"></div><div id="graduation-reward-text"></div><button id="btn-graduation-dismiss"></button></div>
         `;
 
@@ -71,6 +85,24 @@ describe('UIManager', () => {
 
     afterEach(() => {
         vi.restoreAllMocks();
+    });
+
+    it('renders the turn summary sanity total with the cyberpunk label', () => {
+        const summary = {
+            player: 1,
+            playerName: 'Test Player',
+            week: 1,
+            events: [],
+            totals: {
+                creditsChange: 120,
+                sanityChange: -5
+            }
+        };
+
+        uiManager.showTurnSummary(summary);
+
+        expect(document.querySelectorAll('.impact-label')[1]?.textContent).toBe('SANITY');
+        expect(document.getElementById('summary-sanity-total')?.textContent).toBe('-5');
     });
 
     it('does not show a dashboard while a summary is open', () => {
@@ -134,5 +166,3 @@ describe('UIManager', () => {
         expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', { location: null });
     });
 });
-
-

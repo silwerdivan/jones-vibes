@@ -94,6 +94,8 @@ test.describe('Turn Summary Endless Loop Glitch', () => {
     const summaryModal = page.locator('#turn-summary-modal');
     await expect(summaryModal).not.toHaveClass(/hidden/);
     await expect(page.locator('#summary-subtitle')).toContainText('TEST PLAYER');
+    await expect(page.locator('.impact-label').nth(1)).toHaveText('SANITY');
+    await expect(page.locator('#summary-sanity-total')).toHaveText('-5');
 
     // 4. Click "START NEXT WEEK ->"
     const nextWeekBtn = page.locator('#btn-start-next-week');
