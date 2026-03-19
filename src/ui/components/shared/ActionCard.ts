@@ -10,7 +10,12 @@ export interface ActionCardData {
 
 export interface ActionCardConfig {
     player: Player | null;
-    onClick?: (data: Job | Course | Item | Hustle, feedbackText: string, feedbackType: string) => void;
+    onClick?: (
+        data: Job | Course | Item | Hustle,
+        feedbackText: string,
+        feedbackType: string,
+        sourceElement: HTMLElement
+    ) => void;
 }
 
 export interface ActionCardState {
@@ -225,7 +230,7 @@ export function createActionCard(
             <div class="action-card-meta">${metaHtml}</div>
         </div>
         <div class="action-card-action">
-            <button class="btn btn-primary action-card-btn" data-testid="${buttonTestId}" ${state.isLocked || state.isCompleted ? 'disabled' : ''}>
+            <button type="button" class="btn btn-primary action-card-btn" data-testid="${buttonTestId}" ${state.isLocked || state.isCompleted ? 'disabled' : ''}>
                 ${state.buttonText}
             </button>
         </div>
@@ -236,9 +241,24 @@ export function createActionCard(
     card.dataset.testid = cardTestId;
     
     if (!state.isLocked && !state.isCompleted && config.onClick) {
-        card.onclick = () => {
-            config.onClick!(data, state.feedbackText, state.feedbackType);
+        const actionButton = card.querySelector('.action-card-btn') as HTMLButtonElement | null;
+        const triggerClick = (sourceElement: HTMLElement) => {
+            config.onClick!(data, state.feedbackText, state.feedbackType, sourceElement);
         };
+
+        actionButton?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            triggerClick(actionButton);
+        });
+
+        card.addEventListener('click', (event) => {
+            const target = event.target as HTMLElement | null;
+            if (target?.closest('.action-card-btn')) {
+                return;
+            }
+
+            triggerClick(card);
+        });
     }
     
     return card;

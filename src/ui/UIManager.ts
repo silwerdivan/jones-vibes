@@ -541,6 +541,10 @@ class UIManager {
     }
 
     spawnFeedback(element: HTMLElement, text: string, type: string) {
+        if (!element?.isConnected) {
+            return;
+        }
+
         const rect = element.getBoundingClientRect();
         const particle = document.createElement('div');
         particle.className = `feedback-particle log-${type}`;
@@ -565,11 +569,9 @@ class UIManager {
         
         return createActionCardList(type, data, {
             player,
-            onClick: (item, feedbackText, feedbackType) => {
-                const cardElement = document.activeElement as HTMLElement;
-                if (cardElement) {
-                    this.spawnFeedback(cardElement.closest('.action-card') as HTMLElement, feedbackText, feedbackType);
-                }
+            onClick: (item, feedbackText, feedbackType, sourceElement) => {
+                const feedbackAnchor = sourceElement.closest('.action-card') as HTMLElement | null;
+                this.spawnFeedback(feedbackAnchor ?? sourceElement, feedbackText, feedbackType);
                 
                 if (type === 'jobs') {
                     const job = item as Job;
@@ -771,7 +773,6 @@ class UIManager {
 }
 
 export default UIManager;
-
 
 
 

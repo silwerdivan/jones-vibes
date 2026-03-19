@@ -62,7 +62,7 @@ describe('ActionCard', () => {
             const card = createActionCard('jobs', mockJob, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockJob, 'HIRED!', 'success');
+            expect(mockOnClick).toHaveBeenCalledWith(mockJob, 'HIRED!', 'success', card);
         });
 
         it('should not call onClick when card is locked', () => {
@@ -126,7 +126,7 @@ describe('ActionCard', () => {
             const card = createActionCard('college', mockCourse, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-₡100', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockCourse, '-₡100', 'error', card);
         });
     });
 
@@ -182,7 +182,18 @@ describe('ActionCard', () => {
             const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
             card.click();
             
-            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-₡50', 'error');
+            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-₡50', 'error', card);
+        });
+
+        it('should treat the visible button as a direct action target', () => {
+            player.credits = 100;
+            const card = createActionCard('shopping', mockItem, { player, onClick: mockOnClick });
+            const button = card.querySelector('.action-card-btn') as HTMLButtonElement;
+
+            button.click();
+
+            expect(mockOnClick).toHaveBeenCalledTimes(1);
+            expect(mockOnClick).toHaveBeenCalledWith(mockItem, '-₡50', 'error', button);
         });
     });
 

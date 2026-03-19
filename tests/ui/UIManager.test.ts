@@ -63,6 +63,7 @@ describe('UIManager', () => {
             location: 'Hab-Pod 404',
             time: 24,
             isAI: false,
+            credits: 100,
             debt: 0,
             careerLevel: 0,
             wageMultiplier: 1
@@ -164,5 +165,26 @@ describe('UIManager', () => {
         (uiManager as any).choiceModal.hide();
 
         expect(spy).not.toHaveBeenCalledWith('dashboardSwitched', { location: null });
+    });
+
+    it('lets the visible Sustenance Hub buy button publish directly without focus-state coupling', () => {
+        const publishSpy = vi.spyOn(EventBus, 'publish');
+        const feedbackSpy = vi.spyOn(uiManager, 'spawnFeedback').mockImplementation(() => {});
+        mockPlayer.location = 'Sustenance Hub';
+        mockGameState.activeLocationDashboard = 'Sustenance Hub';
+        (uiManager as any).gameState = mockGameState;
+
+        uiManager.showLocationDashboard('Sustenance Hub');
+
+        const buyButton = document.querySelector(
+            '[data-testid="action-card-btn-shopping-sustenance-hub-bio-block-01"]'
+        ) as HTMLButtonElement | null;
+
+        expect(document.activeElement).not.toBe(buyButton);
+
+        buyButton?.click();
+
+        expect(publishSpy).toHaveBeenCalledWith('UI_INTENT_BUY_ITEM', 'Bio-Block-01');
+        expect(feedbackSpy).toHaveBeenCalledWith(expect.any(HTMLElement), '-₡10', 'error');
     });
 });

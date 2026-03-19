@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-19 - GitHub issue #4
+- Status: fixed out of band on `main`.
+- Summary: Shared action cards now pass the actual clicked control into `UIManager`, so visible `Apply` and `Buy` buttons are direct reliable action targets and feedback no longer depends on `document.activeElement`.
+- Resolved date: 2026-03-19
+- Runner guidance: treat older Phase 11 notes that recommend focusing the inner button and then clicking the parent `.action-card` as historical evidence from the pre-fix build. On the live app, use the visible button or card `data-testid` directly and only reopen this if a fresh run shows job applications or purchases still failing without the old focus workaround.
+
 ### 2026-03-19 - GitHub issue #3
 - Status: closed as fixed out of band in commit `0bf6cec`.
 - Summary: The same DOM cleanup that fixed issue `#2` also fixed the stale weekly sanity total render path by renaming the shell element from `summary-happiness-total` to `summary-sanity-total`, which matches the modal code again.

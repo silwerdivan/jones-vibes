@@ -20,16 +20,18 @@ This log tracks technical patterns, selector strategies, and "gotchas" discovere
 - **Modal Bypassing**: The EULA and initial onboarding modals must be clicked through using the "ACCEPT" or "CLOSE" buttons before the City Hub is accessible.
 
 ### Labor Sector Interaction Quirk
-- **Job Application Buttons**: The visible `Apply` button inside Labor Sector may not trigger the job application reliably when clicked directly.
-- **Root Cause Pattern**: The handler is attached to the parent `.action-card`, not the inner button, so automation should prefer clicking the card container or dispatching the event on `.action-card`.
+- **Status**: Resolved by GitHub issue `#4` on 2026-03-19.
+- **Job Application Buttons**: The visible `Apply` button inside Labor Sector is now a direct reliable action target.
+- **Root Cause Pattern**: The old failure path came from shared action cards binding the action through the parent `.action-card` and deriving feedback from `document.activeElement`.
 - **Stable Selectors**: Action cards now expose deterministic `data-testid` hooks such as `action-card-jobs-level-1-sanitation-t3` and `action-card-btn-jobs-level-1-sanitation-t3`.
-- **Practical Rule**: For `Sanitation-T3` and similar job cards, prefer the stable card or button `data-testid` selector first, then still treat button-only clicks as untrusted until state changes are confirmed in `localStorage` or the rendered "CURRENT SHIFT" panel.
+- **Practical Rule**: Prefer the stable button `data-testid` first for `Sanitation-T3` and similar job cards. Treat older notes that require focusing the inner button and then clicking the parent card as pre-fix history only.
 
 ### Sustenance Hub Purchase Quirk
-- **Buy Buttons**: The visible `BUY` button in `Sustenance Hub` did not reliably mutate player state during Persona A Week 7 when triggered through ordinary `agent-browser click` paths.
-- **Root Cause Pattern**: The shopping card callback expects `document.activeElement` to resolve inside the `.action-card` before feedback is spawned, so generic clicks can look successful without actually producing the purchase side effects.
+- **Status**: Resolved by GitHub issue `#4` on 2026-03-19.
+- **Buy Buttons**: The visible `BUY` button in `Sustenance Hub` is now a direct reliable action target.
+- **Root Cause Pattern**: The old failure path came from the shopping callback reading `document.activeElement` and assuming it lived inside the clicked card before feedback was spawned.
 - **Stable Selectors**: Sustenance Hub cards now expose deterministic `data-testid` hooks such as `action-card-shopping-sustenance-hub-real-meat-burger` and `action-card-btn-shopping-sustenance-hub-real-meat-burger`.
-- **Practical Rule**: For food buys, prefer the stable card or button `data-testid` selector first, then verify the purchase directly in persisted state (`credits`, `hunger`, `sanity`) before continuing.
+- **Practical Rule**: Prefer the stable button `data-testid` first for food buys. Treat older Phase 11 notes about focus-dependent purchase workarounds as pre-fix history only.
 
 ### State Tracking
 - **HUD Elements**: Text-based stats (₡, %, etc.) are best extracted via `agent-browser get text @ref` after identifying the correct orb or gauge ref.
