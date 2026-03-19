@@ -7,9 +7,11 @@ RUNTIME_DIR="${ROOT_DIR}/.codex-runtime/cyberpunk-overhaul"
 RUN_STATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/run-state.json"
 PROMPT_TEMPLATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md"
 ENSURE_DEV="${ROOT_DIR}/scripts/cyberpunk-overhaul-ensure-dev.sh"
+LOG_STREAM_HELPER="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-log-stream.mjs"
 LOG_FILE="${RUNTIME_DIR}/autonomous-runner.log"
 LAST_MESSAGE_FILE="${RUNTIME_DIR}/last-codex-message.txt"
 PROMPT_FILE="${RUNTIME_DIR}/current-codex-prompt.md"
+SLICE_ROOT_DIR="${RUNTIME_DIR}/slices"
 
 usage() {
   cat <<'EOF'
@@ -57,8 +59,180 @@ json_get_or_default() {
   fi
 }
 
+list_control_surface_paths() {
+  node - "$RUN_STATE" <<'NODE'
+const fs = require('fs');
+
+const file = process.argv[2];
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+const seen = new Set(['docs/workflows/cyberpunk-overhaul/run-state.json']);
+
+for (const entry of data.slice_policy?.update_paths || []) {
+  if (typeof entry === 'string' && entry.length > 0) {
+    seen.add(entry);
+  }
+}
+
+for (const entry of seen) {
+  process.stdout.write(`${entry}\n`);
+}
+NODE
+}
+
+snapshot_control_surface() {
+  local phase="$1"
+  local rel_path=""
+  while IFS= read -r rel_path; do
+    [[ -z "${rel_path}" ]] && continue
+    local src="${ROOT_DIR}/${rel_path}"
+    local dest="${SLICE_DIR}/state/${phase}/${rel_path}"
+    mkdir -p "$(dirname "${dest}")"
+    if [[ -f "${src}" ]]; then
+      cp "${src}" "${dest}"
+    else
+      : >"${dest}.missing"
+    fi
+  done < <(list_control_surface_paths)
+}
+
+write_changed_file_artifacts() {
+  local tracked_changed=()
+  local untracked_changed=()
+  local file=""
+
+  while IFS= read -r file; do
+    [[ -z "${file}" ]] && continue
+    tracked_changed+=("${file}")
+  done < <(git -C "${ROOT_DIR}" diff --name-only --relative HEAD)
+
+  while IFS= read -r file; do
+    [[ -z "${file}" ]] && continue
+    untracked_changed+=("${file}")
+  done < <(git -C "${ROOT_DIR}" ls-files --others --exclude-standard)
+
+  {
+    if ((${#tracked_changed[@]} > 0)); then
+      printf '%s\n' "${tracked_changed[@]}"
+    fi
+    if ((${#untracked_changed[@]} > 0)); then
+      printf '%s\n' "${untracked_changed[@]}"
+    fi
+  } | sed '/^$/d' | sort -u >"${CHANGED_FILES_FILE}"
+
+  : >"${FINAL_DIFF_FILE}"
+  if ((${#tracked_changed[@]} > 0)); then
+    git -C "${ROOT_DIR}" diff --binary --no-ext-diff HEAD -- "${tracked_changed[@]}" >"${FINAL_DIFF_FILE}"
+  fi
+
+  if ((${#untracked_changed[@]} > 0)); then
+    local untracked_file=""
+    for untracked_file in "${untracked_changed[@]}"; do
+      if [[ -f "${ROOT_DIR}/${untracked_file}" ]]; then
+        git -C "${ROOT_DIR}" diff --binary --no-index -- /dev/null "${ROOT_DIR}/${untracked_file}" >>"${FINAL_DIFF_FILE}" || true
+      fi
+    done
+  fi
+}
+
+write_slice_summary() {
+  node - \
+    "${STREAM_SUMMARY_FILE}" \
+    "${SUMMARY_FILE}" \
+    "${SLICE_ID}" \
+    "${SLICE_DIR}" \
+    "${persona_name}" \
+    "${status_after}" \
+    "${needs_human_after}" \
+    "${pre_run_dirty}" \
+    "${codex_exit}" \
+    "${debug_preserved}" \
+    "${DEBUG_DIR}/raw-codex-events.jsonl" \
+    "${DEBUG_DIR}/suspicious-commands.jsonl" \
+    "${CHANGED_FILES_FILE}" \
+    "${FINAL_DIFF_FILE}" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const [
+  streamSummaryFile,
+  summaryFile,
+  sliceId,
+  sliceDir,
+  personaName,
+  statusAfter,
+  needsHumanAfter,
+  preRunDirty,
+  codexExit,
+  debugPreserved,
+  rawTracePath,
+  suspiciousPath,
+  changedFilesPath,
+  finalDiffPath,
+] = process.argv.slice(2);
+
+const base = JSON.parse(fs.readFileSync(streamSummaryFile, 'utf8'));
+const changedFiles = fs
+  .readFileSync(changedFilesPath, 'utf8')
+  .split('\n')
+  .map((line) => line.trim())
+  .filter(Boolean);
+
+let diffBytes = 0;
+try {
+  diffBytes = fs.statSync(finalDiffPath).size;
+} catch (error) {
+  diffBytes = 0;
+}
+
+const summary = {
+  ...base,
+  slice_id: sliceId,
+  persona: personaName,
+  status: statusAfter,
+  needs_human: needsHumanAfter === 'true',
+  codex_exit_code: Number(codexExit),
+  worktree_dirty_at_start: preRunDirty === '1',
+  changed_files: changedFiles,
+  artifacts: {
+    slice_dir: sliceDir,
+    prompt: path.join(sliceDir, 'prompt.md'),
+    last_message: path.join(sliceDir, 'last-message.txt'),
+    events: path.join(sliceDir, 'events.jsonl'),
+    checkpoints: path.join(sliceDir, 'checkpoints.jsonl'),
+    summary: summaryFile,
+    changed_files: changedFilesPath,
+    final_diff: finalDiffPath,
+    raw_codex_events: debugPreserved === '1' ? rawTracePath : '',
+    suspicious_commands: debugPreserved === '1' ? suspiciousPath : '',
+  },
+  diff_bytes: diffBytes,
+};
+
+if (summary.status === 'blocked') {
+  summary.debug = summary.debug || {};
+  summary.debug.escalated = true;
+  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'status_blocked'])];
+}
+
+if (summary.needs_human) {
+  summary.debug = summary.debug || {};
+  summary.debug.escalated = true;
+  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'needs_human'])];
+}
+
+if (Number(codexExit) !== 0) {
+  summary.debug = summary.debug || {};
+  summary.debug.escalated = true;
+  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'codex_exec_failed'])];
+}
+
+fs.writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`);
+NODE
+}
+
 DRY_RUN="${DRY_RUN:-0}"
 AUTO_COMMIT="${AUTONOMOUS_GIT_COMMIT:-0}"
+RETRY_THRESHOLD="${AUTONOMOUS_RETRY_THRESHOLD:-2}"
 
 while (($# > 0)); do
   case "${1}" in
@@ -82,6 +256,7 @@ while (($# > 0)); do
 done
 
 mkdir -p "${RUNTIME_DIR}"
+mkdir -p "${SLICE_ROOT_DIR}"
 touch "${LOG_FILE}"
 
 status="$(json_get status)"
@@ -105,11 +280,29 @@ fi
 "${ENSURE_DEV}"
 
 persona_name="$(json_get current_persona.name)"
+persona_slug="$(json_get_or_default current_persona.id persona)"
 persona_log="$(json_get current_persona.log_path)"
 session_name="$(json_get current_persona.agent_browser_session_name)"
 app_url="$(json_get runtime.app_url)"
 next_slice="$(json_get next_slice)"
 exec_strategy="${CODEX_EXEC_STRATEGY:-$(json_get_or_default runner.codex_exec_strategy dangerous)}"
+
+slice_timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+SLICE_ID="${slice_timestamp}-${persona_slug}"
+SLICE_DIR="${SLICE_ROOT_DIR}/${SLICE_ID}"
+DEBUG_DIR="${SLICE_DIR}/debug"
+SLICE_PROMPT_FILE="${SLICE_DIR}/prompt.md"
+SLICE_LAST_MESSAGE_FILE="${SLICE_DIR}/last-message.txt"
+EVENT_LOG_FILE="${SLICE_DIR}/events.jsonl"
+CHECKPOINT_LOG_FILE="${SLICE_DIR}/checkpoints.jsonl"
+STREAM_SUMMARY_FILE="${SLICE_DIR}/stream-summary.json"
+SUMMARY_FILE="${SLICE_DIR}/summary.json"
+RAW_JSONL_TEMP="${SLICE_DIR}/raw-codex-events.tmp.jsonl"
+DEBUG_CANDIDATES_TEMP="${SLICE_DIR}/suspicious-commands.tmp.jsonl"
+CHANGED_FILES_FILE="${SLICE_DIR}/changed-files.txt"
+FINAL_DIFF_FILE="${SLICE_DIR}/final.diff"
+
+mkdir -p "${SLICE_DIR}" "${DEBUG_DIR}"
 
 export AGENT_BROWSER_SESSION_NAME="${AGENT_BROWSER_SESSION_NAME:-${session_name}}"
 export AGENT_BROWSER_ARGS="${AGENT_BROWSER_ARGS:---no-sandbox}"
@@ -127,14 +320,19 @@ export JONES_VIBES_APP_URL="${app_url}"
 - agent-browser session name: ${AGENT_BROWSER_SESSION_NAME}
 - Next slice: ${next_slice}
 EOF
-} >"${PROMPT_FILE}"
+} >"${SLICE_PROMPT_FILE}"
+
+cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
+
+snapshot_control_surface before
 
 codex_args=(
   codex
   exec
   --ephemeral
+  --json
   -C "${ROOT_DIR}"
-  -o "${LAST_MESSAGE_FILE}"
+  -o "${SLICE_LAST_MESSAGE_FILE}"
 )
 
 case "${exec_strategy}" in
@@ -160,40 +358,101 @@ fi
   echo "[phase11-once] session_name=${AGENT_BROWSER_SESSION_NAME}"
   echo "[phase11-once] exec_strategy=${exec_strategy}"
   echo "[phase11-once] auto_commit=${AUTO_COMMIT}"
+  echo "[phase11-once] slice_id=${SLICE_ID}"
+  echo "[phase11-once] slice_dir=${SLICE_DIR}"
 } >>"${LOG_FILE}"
 
 if [[ "${DRY_RUN}" == "1" ]]; then
   echo "[phase11-once] dry run"
-  echo "[phase11-once] prompt file: ${PROMPT_FILE}"
+  echo "[phase11-once] prompt file: ${SLICE_PROMPT_FILE}"
   echo "[phase11-once] codex args: ${codex_args[*]} -"
-  cat "${PROMPT_FILE}"
+  cat "${SLICE_PROMPT_FILE}"
   exit 0
 fi
 
-"${codex_args[@]}" - <"${PROMPT_FILE}" 2>&1 | tee -a "${LOG_FILE}"
+codex_exit=0
+parser_exit=0
+tee_exit=0
+
+set +e
+"${codex_args[@]}" - <"${SLICE_PROMPT_FILE}" \
+  | node "${LOG_STREAM_HELPER}" \
+      --slice-id "${SLICE_ID}" \
+      --persona "${persona_name}" \
+      --retry-threshold "${RETRY_THRESHOLD}" \
+      --event-log "${EVENT_LOG_FILE}" \
+      --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
+      --summary "${STREAM_SUMMARY_FILE}" \
+      --raw-jsonl "${RAW_JSONL_TEMP}" \
+      --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
+  | tee -a "${LOG_FILE}"
+pipeline_status=("${PIPESTATUS[@]}")
+set -e
+
+codex_exit="${pipeline_status[0]}"
+parser_exit="${pipeline_status[1]}"
+tee_exit="${pipeline_status[2]}"
+
+if [[ "${parser_exit}" != "0" || "${tee_exit}" != "0" ]]; then
+  echo "[phase11-once] logging pipeline failed: codex_exit=${codex_exit} parser_exit=${parser_exit} tee_exit=${tee_exit}" | tee -a "${LOG_FILE}"
+  exit 1
+fi
+
+if [[ -f "${SLICE_LAST_MESSAGE_FILE}" ]]; then
+  cp "${SLICE_LAST_MESSAGE_FILE}" "${LAST_MESSAGE_FILE}"
+fi
 
 status_after="$(json_get_or_default status unknown)"
 needs_human_after="$(json_get_or_default needs_human false)"
-echo "[phase11-once] post-run status=${status_after} needs_human=${needs_human_after}" | tee -a "${LOG_FILE}"
+snapshot_control_surface after
+write_changed_file_artifacts
+
+debug_preserved=0
+if [[ "${codex_exit}" != "0" || "${status_after}" == "blocked" || "${needs_human_after}" == "true" ]]; then
+  debug_preserved=1
+fi
+
+if [[ "${debug_preserved}" == "0" && -f "${STREAM_SUMMARY_FILE}" ]]; then
+  if node -e 'const fs = require("fs"); const data = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); process.exit(data.debug?.escalated ? 0 : 1);' "${STREAM_SUMMARY_FILE}"; then
+    debug_preserved=1
+  fi
+fi
+
+if [[ "${debug_preserved}" == "1" ]]; then
+  mv "${RAW_JSONL_TEMP}" "${DEBUG_DIR}/raw-codex-events.jsonl"
+  if [[ -s "${DEBUG_CANDIDATES_TEMP}" ]]; then
+    mv "${DEBUG_CANDIDATES_TEMP}" "${DEBUG_DIR}/suspicious-commands.jsonl"
+  else
+    rm -f "${DEBUG_CANDIDATES_TEMP}"
+  fi
+else
+  rm -f "${RAW_JSONL_TEMP}" "${DEBUG_CANDIDATES_TEMP}"
+  rmdir "${DEBUG_DIR}" 2>/dev/null || true
+fi
+
+write_slice_summary
+
+metrics_line="$(node -e 'const fs = require("fs"); const data = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); const parts = []; parts.push(`input_tokens=${data.usage?.input_tokens ?? 0}`); parts.push(`cached_tokens=${data.usage?.cached_input_tokens ?? 0}`); parts.push(`output_tokens=${data.usage?.output_tokens ?? 0}`); parts.push(`wall_time_ms=${data.wall_time_ms ?? 0}`); parts.push(`commands=${data.counts?.commands_total ?? 0}`); parts.push(`changed_files=${(data.changed_files || []).length}`); parts.push(`debug=${data.debug?.escalated ? "on" : "off"}`); if (data.debug?.escalated && Array.isArray(data.debug.reasons) && data.debug.reasons.length > 0) { parts.push(`debug_reasons=${data.debug.reasons.join(",")}`); } process.stdout.write(parts.join(" "));' "${SUMMARY_FILE}")"
+echo "[phase11-once] post-run status=${status_after} needs_human=${needs_human_after} codex_exit=${codex_exit} ${metrics_line}" | tee -a "${LOG_FILE}"
 
 if [[ "${AUTO_COMMIT}" != "1" ]]; then
-  exit 0
+  exit "${codex_exit}"
 fi
 
 if [[ "${pre_run_dirty}" == "1" ]]; then
   echo "[phase11-once] auto-commit skipped: worktree was dirty before the slice started" | tee -a "${LOG_FILE}"
-  exit 0
+  exit "${codex_exit}"
 fi
 
 if [[ -z "$(git -C "${ROOT_DIR}" status --short)" ]]; then
   echo "[phase11-once] auto-commit skipped: slice produced no git changes" | tee -a "${LOG_FILE}"
-  exit 0
+  exit "${codex_exit}"
 fi
 
-persona_slug="$(json_get_or_default current_persona.id persona)"
 last_run_at="$(json_get_or_default last_run.at "$(date -Iseconds)")"
 commit_message="Phase 11 slice: ${persona_slug} (${status_after}) ${last_run_at}"
 
 git -C "${ROOT_DIR}" add -A
 git -C "${ROOT_DIR}" commit -m "${commit_message}" | tee -a "${LOG_FILE}"
 echo "[phase11-once] auto-commit created: ${commit_message}" | tee -a "${LOG_FILE}"
+exit "${codex_exit}"
