@@ -4,8 +4,8 @@
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
 - **Date:** 2026-03-19
-- **Session Duration:** 9 completed authoritative replay weeks
-- **Current Slice Status:** Completed the authoritative replay through Week 9 on 2026-03-19. The `phase11-safe-grinder` browser session is now parked at the Week 9 turn summary, ready for a fresh-context Week 10 continuation.
+- **Session Duration:** 10 completed authoritative replay weeks
+- **Current Slice Status:** Completed the authoritative replay through Week 10 on 2026-03-19. The `phase11-safe-grinder` browser session is now parked at the Week 10 turn summary, ready for a fresh-context Week 11 continuation.
 
 ---
 
@@ -22,6 +22,7 @@
 | 7    | 692  | 0    | 20%    | 35%    | 0         | 50% (12/24CH productive) | No opening event, travel to Labor Sector, Work Shift x2, buy `Real-Meat Burger`, return home, rest | With `Sore Legs` still taxing every commute, Safe Grinder chose to protect the next checkpoint rather than squeeze a third shift and hand Week 8 a `60%` hunger / low-sanity opener | The run feels more stable than Week 6, but the summary bug is now unambiguous: it still shows `HAPPINESS 0` and still omits the burger's `+10` sanity even on a clean, positive-sanity week. |
 | 8    | 844  | 0    | 20%    | 30%    | 0         | 75% (18/24CH productive) | No opening event, travel to Labor Sector, choose `SAFE` on `BROKEN AUTO-CHEF`, Work Shift x3, return home, rest | A cheap guaranteed food reset reopened the full labor loop, so Safe Grinder took the solvency-positive branch instead of spending another week in burger-driven stabilization mode | This is the first slice since Week 5 that feels comfortably solvent again, but the summary screen still breaks trust by showing `HAPPINESS 0` on a week whose own visible sanity lines already add up to `-5`. |
 | 9    | 1016 | 0    | 40%    | 25%    | 0         | 75% (18/24CH productive) | No opening event, travel to Labor Sector, Work Shift x3, return home, rest | With no carryover debuff and no new interruption, Safe Grinder tested whether the restored baseline labor loop could stand on its own without event assistance | The answer is "yes, but barely": the route cleanly produces the classic `+₡172` solvent week again, yet it still drifts down to `25` sanity and `40%` hunger, so the next slice starts stable but one quiet week away from the same food-pressure cliff. |
+| 10   | 1188 | 0    | 60%    | 20%    | 0         | 75% (18/24CH productive) | No opening event, travel to Labor Sector, decline `Shady Fixer Courier Job`, Work Shift x3, return home, rest | Preserve the deterministic labor line again instead of spending time and sanity on a courier payout that does not fit the Safe Grinder risk profile | The route is still solvent, and the live summary total is finally trustworthy again, but the run is now back in the danger band: `60%` hunger triggered `Cognitive Decline`, the checkpoint fell to `20` sanity, and the modal appears to omit the decline branch's likely `+5` sanity line even while the total is correct. |
 
 Authoritative replay note: Weeks 1 through 8 above are now the canonical Persona A timeline. Earlier provisional Week 2 and Week 3 notes were superseded once the replay diverged at the Cycle 2 opening event.
 
@@ -36,6 +37,7 @@ Authoritative replay note: Weeks 1 through 8 above are now the canonical Persona
 - Week 7 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`
 - Week 8 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md`
 - Week 9 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-09.md`
+- Week 10 detail: `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-10.md`
 
 Workflow note: this persona log remains the compact index plus synthesis layer. Durable per-week detail now lives in the linked slice files so future runs can preserve rich history without making this file unreadable.
 
@@ -49,10 +51,10 @@ Workflow note: this persona log remains the compact index plus synthesis layer. 
 
 ## Milestone Vibe Checks
 
-### Week 10: [Vibe Summary]
-- **Snowballing vs. Stagnation:**
-- **Decision Space:**
-- **Pacing:**
+### Week 10: Solvent But Back On The Cliff
+- **Snowballing vs. Stagnation:** Credits keep snowballing on paper, but the character state is stagnating or worsening; the run gained another `₡172` while dropping to `60%` hunger and `20%` sanity.
+- **Decision Space:** The labor loop still offers clear low-risk choices, but the real space is narrow. Declining the courier job fits the persona, yet the next week now strongly pressures food stabilization or a reduced-shift line.
+- **Pacing:** The cycle still reads cleanly, but the recovery window is shrinking again. A quiet week is no longer restful; it now functions as a countdown to the next forced maintenance purchase.
 
 ### Week 25: [Vibe Summary]
 - **Snowballing vs. Stagnation:**
@@ -68,50 +70,4 @@ Workflow note: this persona log remains the compact index plus synthesis layer. 
 
 ## Final Synthesis
 - **Overall "Wrinkles" Identified:** Early labor is solvent but emotionally brittle. Event costs hide in time-tax, condition carryover, and low-sanity consequence chains more often than in obvious credit swings, so the run feels harsher than the summary screen admits.
-- **Key Broken Math / Probability Frustrations:** `Transit Strike` let the Safe Grinder keep the exact same `+₡172` net-credit week while silently spending `6CH` on commute tax and carrying a 7-day debuff forward. Week 5 then proved the event can re-fire before the old debuff expires and refresh `Sore Legs` back to `168h`, keeping the same solvent credits line while pushing Hunger high enough to add `Cognitive Decline -5`. Weeks 6 and 7 showed the follow-on cost: safe play now means a `₡40` burger plus one fewer shift just to preserve a non-fragile next checkpoint. Week 8 then showed the inverse volatility: one low-cost food event instantly reopened the full three-shift line and cleared the commute debuff by close, and Week 9 confirmed that the clean baseline route is still mathematically solvent once restored, but only on a razor-thin buffer because a quiet week still ends at `40%` hunger and `25%` sanity. The accounting layer still flattened the Week 3 `+15` sanity rebound, the Week 5/6 negative sanity weeks, the Week 7 positive-sanity stabilization week, and now both Weeks 8 and 9's visible `-5` sanity weeks into `HAPPINESS 0`, while the modal keeps breaking trust around item-driven and even plainly listed sanity swings.
-*** Add File: /home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-09.md
-# Phase 11 Slice Log
-
-## Metadata
-- **Persona:** Persona A: The Safe Grinder
-- **Slice Date:** 2026-03-19
-- **Week Covered:** 9
-- **Canonical Status:** authoritative
-- **Source Session:** phase11-safe-grinder
-
-## Start State
-- **Checkpoint:** Week 8 turn summary on the authoritative replay.
-- **Cash:** 844
-- **Debt:** 0
-- **Hunger:** 20%
-- **Sanity:** 30%
-- **Education:** 0
-- **Conditions:** none
-
-## Decisions & Path
-1. Start Week 9 from the authoritative Week 8 summary checkpoint.
-2. No opening event fired at the Week 9 transition, so Safe Grinder tested the restored baseline route without spending on food, study, or hustles.
-3. Travel from `Hab-Pod 404` to `Labor Sector`, paying the normal `2CH` commute because `Sore Legs` had fully cleared by the prior close.
-4. With `Sanitation-T3` still active and no labor-screen event interrupting the panel, complete `Work Shift x3` for `+₡252`.
-5. Return to `Hab-Pod 404` on the last `2CH` and end the cycle from home.
-
-## Telemetry
-- **End Cash:** 1016
-- **End Debt:** 0
-- **End Hunger:** 40%
-- **End Sanity:** 25%
-- **Education:** 0
-- **Time Efficiency:** 75% (`18/24CH` productive)
-- **Net Credits:** +172
-- **Net Sanity:** -5
-
-## High-Signal Findings
-- Week 9 confirms the reopened `Sanitation-T3` labor line is stable for at least one quiet slice once `Sore Legs` is gone. The run cleanly supports `travel + Work Shift x3 + home` with no event subsidy.
-- That stability remains fragile rather than comfortable. A normal full-labor week still advanced Hunger from `20%` to `40%` and Sanity from `30%` to `25%`, so the checkpoint is solvent but trending back toward the same food-pressure thresholds that broke the route in Weeks 6 and 7.
-- The summary modal remains untrustworthy even on straightforward weeks. Its visible line items total `-5` sanity (`Ambient Stress -10`, `Cycle Recovery +5`), the persisted save closes at `25` sanity, and the modal still renders `HAPPINESS 0`.
-
-## Blockers / Follow-Ups
-- Resume the next fresh-context slice from the Week 9 summary checkpoint with `₡1016 / Debt 0 / Hunger 40% / Sanity 25%` and no active conditions.
-- Watch whether Week 10 can still support `Work Shift x3` without an intervention purchase or whether Safe Grinder now has to preemptively buy food to avoid repeating the Week 6-7 stabilization pattern.
-- **Thematic Hit/Miss:**
-- **Phase 12 Recommendations:**
+- **Key Broken Math / Probability Frustrations:** `Transit Strike` let the Safe Grinder keep the exact same `+₡172` net-credit week while silently spending `6CH` on commute tax and carrying a 7-day debuff forward. Week 5 then proved the event can re-fire before the old debuff expires and refresh `Sore Legs` back to `168h`, keeping the same solvent credits line while pushing Hunger high enough to add `Cognitive Decline -5`. Weeks 6 and 7 showed the follow-on cost: safe play now means a `₡40` burger plus one fewer shift just to preserve a non-fragile next checkpoint. Week 8 then showed the inverse volatility: one low-cost food event instantly reopened the full three-shift line and cleared the commute debuff by close, and Weeks 9 and 10 confirmed that the clean baseline route is still mathematically solvent once restored, but only on a razor-thin buffer because two ordinary weeks were enough to drift from `20%` to `60%` hunger and from `30%` to `20%` sanity. The accounting layer's worst regression is partially fixed on the live build: Week 10 finally reports `SANITY -5` instead of `HAPPINESS 0`, but the detailed event list still appears to omit at least one sanity-affecting choice effect even when the total is correct.
