@@ -5,6 +5,7 @@ This workflow can keep running with a fresh Codex context on every pass. Continu
 - `docs/workflows/cyberpunk-overhaul/run-state.json`
 - `docs/workflows/cyberpunk-overhaul/current-phase.md`
 - `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`
+- `docs/workflows/cyberpunk-overhaul/external-fixes.md`
 - the active persona log
 - the Phase 11 per-slice detail logs under `docs/workflows/cyberpunk-overhaul/phase-11-slices/`
 - persistent `agent-browser` session state
@@ -48,7 +49,7 @@ npm run workflow:phase11:ensure-dev
 1. `workflow:phase11:ensure-dev` restores `node_modules` if missing and starts Vite at `http://127.0.0.1:5173/jones-vibes/` when needed.
 2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
 3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs.
-4. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, checkpoint summary, expected next action, and trusted UI workaround notes.
+4. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, checkpoint summary, external baseline handoff path, expected next action, and trusted UI workaround notes.
 5. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
@@ -132,6 +133,8 @@ This does not disable the compact live stream. It forces the slice to retain the
   Machine-readable handoff state for autonomous slices.
 - `docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md`
   The reusable fresh-context prompt for each `codex exec` call.
+- `docs/workflows/cyberpunk-overhaul/external-fixes.md`
+  Out-of-band baseline changes from ad hoc fixes that the next audit slice must know about.
 - `scripts/cyberpunk-overhaul-ensure-dev.sh`
   Keeps the local app reachable.
 - `scripts/cyberpunk-overhaul-phase11-once.sh`

@@ -323,6 +323,7 @@ session_name="$(json_get current_persona.agent_browser_session_name)"
 app_url="$(json_get runtime.app_url)"
 detail_log_root="$(json_get_or_default slice_policy.detail_log_root docs/workflows/cyberpunk-overhaul/phase-11-slices)"
 phase_progress_log="docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md"
+external_handoff_path="$(json_get_or_default runner.external_handoff_path "")"
 next_slice="$(json_get next_slice)"
 last_run_at="$(json_get_or_default last_run.at unknown)"
 last_run_outcome="$(json_get_or_default last_run.outcome unknown)"
@@ -366,6 +367,7 @@ export JONES_VIBES_APP_URL="${app_url}"
 - Active persona log: ${persona_log}
 - Canonical persona slice directory: ${persona_slice_dir}
 - Canonical latest slice file: ${latest_slice_file:-"(none yet)"}
+- External baseline handoff: ${external_handoff_path:-"(none)"}
 - Last authoritative checkpoint: ${last_run_at} (${last_run_outcome})
 - Current checkpoint summary: ${last_run_summary}
 - Expected next action: ${next_slice}
