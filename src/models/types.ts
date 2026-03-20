@@ -71,6 +71,7 @@ export interface PlayerState {
     weeklyIncome: number;
     weeklyExpenses: number;
     weeklySanityChange: number;
+    weeklyTurnEvents?: TurnEvent[];
     isAI: boolean;
     name: string;
     wageMultiplier: number;

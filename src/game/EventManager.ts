@@ -122,7 +122,7 @@ export class EventManager {
         const choice = event.choices[choiceIndex];
 
         choice.effects.forEach(effect => {
-            this.applyEffect(effect, player, gameState);
+            this.applyEffect(effect, player, gameState, event.title);
         });
 
         // Special handling for some events
@@ -147,7 +147,7 @@ export class EventManager {
         gameState.publishCurrentState();
     }
 
-    private applyEffect(effect: RandomEventEffect, player: Player, _gameState: GameState): void {
+    private applyEffect(effect: RandomEventEffect, player: Player, _gameState: GameState, sourceLabel: string): void {
         switch (effect.type) {
             case 'CREDITS':
                 if (effect.value < 0) player.spendCredits(-effect.value);
@@ -155,6 +155,15 @@ export class EventManager {
                 break;
             case 'SANITY':
                 player.updateSanity(effect.value);
+                if (effect.value !== 0) {
+                    player.recordWeeklyTurnEvent({
+                        type: effect.value > 0 ? 'success' : 'warning',
+                        label: sourceLabel,
+                        value: effect.value,
+                        unit: 'Sanity',
+                        icon: 'psychology'
+                    });
+                }
                 break;
             case 'HUNGER':
                 player.hunger += effect.value;

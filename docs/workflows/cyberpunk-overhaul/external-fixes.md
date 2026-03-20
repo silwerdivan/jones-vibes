@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-20 - GitHub issue #5
+- Status: fixed out of band on `main`.
+- Summary: The turn summary now carries in-week sanity-affecting events into `pendingTurnSummary.events`, so the visible detail list can include random-event and shopping sanity changes instead of only end-of-turn passive modifiers.
+- Resolved date: 2026-03-20
+- Runner guidance: treat older Phase 11 notes that describe a correct `SANITY` total with missing sanity detail lines as historical evidence from the pre-fix build. On the live app, the Week 6 / Week 7 / Week 10 style omissions should no longer appear for sanity-affecting event choices or item purchases. Only reopen this if a fresh run shows the summary total and visible sanity breakdown diverging again.
+
 ### 2026-03-19 - GitHub issue #4
 - Status: fixed out of band on `main`.
 - Summary: Shared action cards now pass the actual clicked control into `UIManager`, so visible `Apply` and `Buy` buttons are direct reliable action targets and feedback no longer depends on `document.activeElement`.

@@ -17,6 +17,13 @@ describe('GameState Serialization', () => {
         gameState.currentPlayerIndex = 1;
         gameState.players[0].credits = 100;
         gameState.players[1].credits = 200;
+        gameState.players[0].recordWeeklyTurnEvent({
+            type: 'success',
+            label: 'Test Event',
+            value: 5,
+            unit: 'Sanity',
+            icon: 'psychology'
+        });
         gameState.addLogMessage('Test message', 'info');
 
         const json = gameState.toJSON();
@@ -26,6 +33,13 @@ describe('GameState Serialization', () => {
         expect(json.players.length).toBe(2);
         expect(json.players[0].credits).toBe(100);
         expect(json.players[1].credits).toBe(200);
+        expect(json.players[0].weeklyTurnEvents).toContainEqual({
+            type: 'success',
+            label: 'Test Event',
+            value: 5,
+            unit: 'Sanity',
+            icon: 'psychology'
+        });
         expect(json.players[1].isAI).toBe(true);
         expect(json.log.length).toBe(1);
         expect(json.log[0].text).toBe('Test message');
@@ -38,6 +52,13 @@ describe('GameState Serialization', () => {
         gameState.players[0].credits = 500;
         gameState.players[1].credits = 1000;
         gameState.players[1].isAI = true;
+        gameState.players[0].recordWeeklyTurnEvent({
+            type: 'success',
+            label: 'Recovered',
+            value: 10,
+            unit: 'Sanity',
+            icon: 'psychology'
+        });
         gameState.addLogMessage('Another test message', 'success');
         
         const json = gameState.toJSON();
@@ -48,6 +69,13 @@ describe('GameState Serialization', () => {
         expect(newGameState.players.length).toBe(2);
         expect(newGameState.players[0].credits).toBe(500);
         expect(newGameState.players[1].credits).toBe(1000);
+        expect(newGameState.players[0].weeklyTurnEvents).toContainEqual({
+            type: 'success',
+            label: 'Recovered',
+            value: 10,
+            unit: 'Sanity',
+            icon: 'psychology'
+        });
         expect(newGameState.players[1].isAI).toBe(true);
         expect(newGameState.log.length).toBe(1);
         expect(newGameState.log[0].text).toBe('Another test message');

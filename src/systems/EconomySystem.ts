@@ -64,6 +64,15 @@ class EconomySystem {
 
         currentPlayer.spendCredits(item.cost);
         currentPlayer.updateSanity(item.sanityBoost);
+        if (item.sanityBoost !== 0) {
+            currentPlayer.recordWeeklyTurnEvent({
+                type: item.sanityBoost > 0 ? 'success' : 'warning',
+                label: item.name,
+                value: item.sanityBoost,
+                unit: 'Sanity',
+                icon: item.location === 'Sustenance Hub' ? 'restaurant' : 'psychology'
+            });
+        }
 
         // Apply hunger reduction if the item has it
         if (item.hungerReduction) {

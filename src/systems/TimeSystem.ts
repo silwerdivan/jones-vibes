@@ -2,23 +2,7 @@ import GameState from '../game/GameState';
 import Player from '../game/Player';
 import EventBus, { STATE_EVENTS } from '../EventBus';
 import { CONDITIONS } from '../data/conditions';
-
-interface TurnSummary {
-    player: number;
-    playerName: string;
-    week: number;
-    events: Array<{
-        type: string;
-        label: string;
-        value: number;
-        unit: string;
-        icon: string;
-    }>;
-    totals: {
-        creditsChange: number;
-        sanityChange: number;
-    };
-}
+import { TurnSummary } from '../models/types';
 
 class TimeSystem {
     private gameState: GameState;
@@ -42,7 +26,7 @@ class TimeSystem {
             player: currentPlayer.id,
             playerName: this._getPlayerName(currentPlayer),
             week: this.gameState.turn,
-            events: [],
+            events: [...currentPlayer.weeklyTurnEvents],
             totals: {
                 creditsChange: 0,
                 sanityChange: 0
@@ -344,4 +328,3 @@ class TimeSystem {
 }
 
 export default TimeSystem;
-

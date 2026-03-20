@@ -152,6 +152,22 @@ describe('EventManager', () => {
         expect(player.hasCondition('BRAIN_FOG')).toBe(true);
     });
 
+    it('should record weekly turn events for sanity-affecting choices', () => {
+        const event = RANDOM_EVENTS.find(e => e.id === 'local_shady_courier');
+        if (!event) throw new Error('Shady courier event not found');
+
+        eventManager.applyChoice(event, 1, gameState);
+
+        expect(player.weeklySanityChange).toBe(5);
+        expect(player.weeklyTurnEvents).toContainEqual({
+            type: 'success',
+            label: 'Shady Fixer Courier Job',
+            value: 5,
+            unit: 'Sanity',
+            icon: 'psychology'
+        });
+    });
+
     it('should filter choices by requirement', () => {
         // Find an event with requirements
         const event = RANDOM_EVENTS.find(e => e.choices.some(c => c.requirement));

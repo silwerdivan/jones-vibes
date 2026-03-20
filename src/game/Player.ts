@@ -1,4 +1,4 @@
-import { Item, PlayerState, GameCondition, ConditionEffectType } from '../models/types';
+import { Item, PlayerState, GameCondition, ConditionEffectType, TurnEvent } from '../models/types';
 import { LocationName } from '../data/locations';
 import EventBus, { STATE_EVENTS } from '../EventBus';
 
@@ -21,6 +21,7 @@ export default class Player {
     weeklyIncome: number;
     weeklyExpenses: number;
     weeklySanityChange: number;
+    weeklyTurnEvents: TurnEvent[] = [];
     weeklyGraduations: string[] = [];
     isAI: boolean = false;
     name: string = '';
@@ -51,6 +52,7 @@ export default class Player {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklySanityChange = 0;
+        this.weeklyTurnEvents = [];
         this.weeklyGraduations = [];
         this.activeConditions = [];
         this.burnRate = 80;
@@ -130,6 +132,7 @@ export default class Player {
             weeklyIncome: this.weeklyIncome,
             weeklyExpenses: this.weeklyExpenses,
             weeklySanityChange: this.weeklySanityChange,
+            weeklyTurnEvents: [...this.weeklyTurnEvents],
             isAI: this.isAI,
             name: this.name,
             wageMultiplier: this.baseWageMultiplier, // Save the base
@@ -159,6 +162,7 @@ export default class Player {
         player.weeklyIncome = data.weeklyIncome;
         player.weeklyExpenses = data.weeklyExpenses;
         player.weeklySanityChange = data.weeklySanityChange;
+        player.weeklyTurnEvents = data.weeklyTurnEvents ? [...data.weeklyTurnEvents] : [];
         player.isAI = data.isAI;
         player.name = data.name;
         player.baseWageMultiplier = data.wageMultiplier !== undefined ? data.wageMultiplier : 1.0;
@@ -212,10 +216,15 @@ export default class Player {
         }
     }
 
+    recordWeeklyTurnEvent(event: TurnEvent): void {
+        this.weeklyTurnEvents.push({ ...event });
+    }
+
     resetWeeklyStats(): void {
         this.weeklyIncome = 0;
         this.weeklyExpenses = 0;
         this.weeklySanityChange = 0;
+        this.weeklyTurnEvents = [];
         this.weeklyGraduations = [];
     }
 

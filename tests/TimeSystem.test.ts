@@ -1,17 +1,22 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import GameState from '../src/game/GameState';
 import TimeSystem from '../src/systems/TimeSystem';
+import EconomySystem from '../src/systems/EconomySystem';
 import EventBus from '../src/EventBus';
+import { RANDOM_EVENTS } from '../src/data/randomEvents';
 
 describe('TimeSystem', () => {
     let gameState: GameState;
     let timeSystem: TimeSystem;
+    let economySystem: EconomySystem;
 
     beforeEach(() => {
         vi.useFakeTimers();
         EventBus.clearAll();
         gameState = new GameState(2, false);
         timeSystem = new TimeSystem(gameState);
+        economySystem = new EconomySystem(gameState);
+        gameState.setEconomySystem(economySystem);
         gameState.setTimeSystem(timeSystem);
     });
 
@@ -123,5 +128,79 @@ describe('TimeSystem', () => {
         expect(gameState.pendingTurnSummary).not.toBeNull();
         expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
         expect(gameState.isEndingTurn).toBe(false);
+    });
+
+    it('includes in-week event sanity changes in the turn summary breakdown', () => {
+        const player = gameState.getCurrentPlayer();
+        const event = RANDOM_EVENTS.find((candidate) => candidate.id === 'local_shady_courier');
+        if (!event) throw new Error('Shady courier event not found');
+
+        player.location = 'Labor Sector' as any;
+        player.hunger = 40;
+        player.sanity = 25;
+        player.credits = 150;
+
+        gameState.eventManager.applyChoice(event, 1, gameState);
+
+        const summary = timeSystem.endTurn();
+
+        expect(summary.totals.sanityChange).toBe(-5);
+        expect(summary.events).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    label: 'Shady Fixer Courier Job',
+                    value: 5,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Cognitive Decline',
+                    value: -5,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Ambient Stress',
+                    value: -10,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Cycle Recovery',
+                    value: 5,
+                    unit: 'Sanity'
+                })
+            ])
+        );
+    });
+
+    it('includes shopping sanity changes in the turn summary breakdown', () => {
+        const player = gameState.getCurrentPlayer();
+        player.location = 'Sustenance Hub' as any;
+        player.credits = 200;
+        player.hunger = 20;
+        player.sanity = 30;
+
+        expect(economySystem.buyItem('Real-Meat Burger')).toBe(true);
+
+        const summary = timeSystem.endTurn();
+
+        expect(summary.totals.sanityChange).toBe(5);
+        expect(summary.events).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    label: 'Real-Meat Burger',
+                    value: 10,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Ambient Stress',
+                    value: -10,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Cycle Recovery',
+                    value: 5,
+                    unit: 'Sanity'
+                })
+            ])
+        );
     });
 });
