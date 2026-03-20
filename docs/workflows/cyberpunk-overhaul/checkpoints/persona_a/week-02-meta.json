@@ -1,0 +1,46 @@
+{
+  "exported_at": "2026-03-20T20:39:58.067Z",
+  "session_name": "phase11-safe-grinder",
+  "app_url": "http://127.0.0.1:5173/jones-vibes/",
+  "checkpoint_root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+  "checkpoint_label": "week-02",
+  "summary": {
+    "turn": 2,
+    "currentPlayerIndex": 0,
+    "gameOver": false,
+    "activeScreenId": "city",
+    "activeLocationDashboard": null,
+    "hasPendingTurnSummary": true,
+    "isAIThinking": false,
+    "playerCount": 2,
+    "currentPlayer": {
+      "id": 1,
+      "name": "Player 1",
+      "credits": 88,
+      "savings": 0,
+      "debt": 0,
+      "loan": 0,
+      "hunger": 20,
+      "sanity": 28,
+      "educationLevel": 0,
+      "careerLevel": 1,
+      "time": 24,
+      "location": "Hab-Pod 404",
+      "activeConditions": [
+        {
+          "id": "AD_FATIGUE",
+          "name": "Ad Fatigue",
+          "description": "Retinal ads are everywhere. Constant drain on sanity.",
+          "remainingDuration": 38,
+          "effects": [
+            {
+              "type": "SANITY_TICK",
+              "value": -0.5
+            }
+          ],
+          "icon": "👁️"
+        }
+      ]
+    }
+  }
+}

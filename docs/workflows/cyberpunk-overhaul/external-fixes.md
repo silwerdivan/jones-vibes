@@ -12,6 +12,7 @@ runner slices must know before continuing.
 - Summary: The turn summary now carries in-week sanity-affecting events into `pendingTurnSummary.events`, so the visible detail list can include random-event and shopping sanity changes instead of only end-of-turn passive modifiers.
 - Resolved date: 2026-03-20
 - Runner guidance: treat older Phase 11 notes that describe a correct `SANITY` total with missing sanity detail lines as historical evidence from the pre-fix build. On the live app, the Week 6 / Week 7 / Week 10 style omissions should no longer appear for sanity-affecting event choices or item purchases. Only reopen this if a fresh run shows the summary total and visible sanity breakdown diverging again.
+- Validation note (2026-03-20): Persona A fresh Week 2 contradicts the current handoff. The live summary showed `SANITY -10`, but `pendingTurnSummary.events` only listed `Ambient Stress -10` and `Cycle Recovery +5`, while the saved player state actually dropped from `50` to `28` sanity and added `Ad Fatigue`. Treat issue `#5` as only partially verified for browser-driven Phase 11 slices, especially when a week introduces a new sanity-affecting condition or event reward.
 
 ### 2026-03-19 - GitHub issue #4
 - Status: fixed out of band on `main`.
