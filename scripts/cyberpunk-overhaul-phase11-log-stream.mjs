@@ -123,8 +123,23 @@ function outputLooksSuspicious(output) {
   );
 }
 
+function isExplicitFallbackMessage(text) {
+  const normalized = compactWhitespace(text);
+
+  if (
+    /\bhistorical\b|\bnotes?\b|\bhandoff\b|\bguidance\b|\bexpectations\b/i.test(normalized) &&
+    !/\bfell back\b|\bfalling back\b|\bfallback to\b|\bswitched to\b|\bswitching to\b/i.test(normalized)
+  ) {
+    return false;
+  }
+
+  return /(?:\bfell back\b|\bfalling back\b|\bfallback to\b|\bswitched to\b|\bswitching to\b|\busing an alternative\b|\busing an alternate\b|\busing a backup\b)/i.test(
+    normalized
+  );
+}
+
 function messageCategory(text) {
-  if (/\bfallback\b|\bfall back\b|\bworkaround\b|\bswitched to\b|\busing an alternative\b/i.test(text)) {
+  if (isExplicitFallbackMessage(text)) {
     return 'fallback';
   }
 
@@ -433,16 +448,6 @@ rl.on('line', (line) => {
       return;
     }
 
-    if (commandType === 'checkpoint') {
-      emitEvent(baseEvent, true);
-      return;
-    }
-
-    if (commandType === 'browser_session_check') {
-      emitEvent(baseEvent, true);
-      return;
-    }
-
     if (exitCode !== 0 || suspicious) {
       if (isAgentBrowserCommand(command)) {
         const normalized = normalizeCommand(command);
@@ -478,7 +483,7 @@ rl.on('line', (line) => {
           ...baseEvent,
           type: exitCode !== 0 ? 'command_failure' : 'command_warning',
         },
-        false
+        commandType === 'checkpoint' || commandType === 'browser_session_check'
       );
       emitCompactLine(
         `[phase11-log] ${exitCode !== 0 ? 'failure' : 'warning'} exit=${exitCode} duration=${durationMs}ms ${commandSummary}`
@@ -502,6 +507,16 @@ rl.on('line', (line) => {
         );
       }
       lastFailedAgentBrowserCommand = null;
+    }
+
+    if (commandType === 'checkpoint') {
+      emitEvent(baseEvent, true);
+      return;
+    }
+
+    if (commandType === 'browser_session_check') {
+      emitEvent(baseEvent, true);
+      return;
     }
 
     if (commandType === 'agent_browser' || durationMs >= 2000) {

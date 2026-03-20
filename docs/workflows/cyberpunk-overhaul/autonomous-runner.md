@@ -98,7 +98,7 @@ The runner automatically keeps raw debug artifacts when a slice looks suspicious
 - `run-state.json` ends the slice with `needs_human = true`.
 - A tool command exits nonzero.
 - The same failing `agent-browser` command crosses `AUTONOMOUS_RETRY_THRESHOLD` retries. Default: `2`.
-- The stream parser detects a fallback strategy and marks `fallback_invoked`.
+- The stream parser detects an actual fallback strategy change and marks `fallback_invoked`.
 
 When debug escalation is off, the runner deletes the temporary raw event files after the slice and keeps only the compact artifacts above.
 
