@@ -4,7 +4,7 @@
 **Active Phase:** Phase 11: Gameplay Audit & MDA Deep-Dive
 
 ## Summary
-Phase 11 is active. This is a non-coding phase focused on gathering high-fidelity telemetry, decision-making logs, and qualitative "feel" data through extended play sessions using `agent-browser` and specialized Player Personas (Safe Grinder, High-Risk Scholar, Street Hustler, AI Control).
+Phase 11 is active. This phase is focused on gathering high-fidelity telemetry, decision-making logs, and qualitative "feel" data through extended play sessions using `agent-browser` and specialized Player Personas (Safe Grinder, High-Risk Scholar, Street Hustler, AI Control), while hardening the audit workflow so authoritative checkpoints survive browser-session loss.
 
 ## Objective
 Identify remaining balance wrinkles, broken math, and opportunities for systemic depth before committing to Phase 12 coding tasks.
@@ -18,6 +18,7 @@ Identify remaining balance wrinkles, broken math, and opportunities for systemic
 - [ ] Task 6: Synthesis & "Wrinkle" Report.
 
 ## Progress Notes
+- 2026-03-20: Added durable Phase 11 checkpoint infrastructure so authoritative slices no longer depend solely on `agent-browser` profile continuity. The workflow now has `workflow:phase11:checkpoint:status`, `workflow:phase11:checkpoint:export`, and `workflow:phase11:checkpoint:import` commands, a tracked checkpoint root at `docs/workflows/cyberpunk-overhaul/checkpoints/`, and runner/prompt guidance to export `jones_fastlane_save` after each authoritative week and restore from disk before replaying from onboarding when browser continuity fails.
 - 2026-03-20: Fresh-context Week 11 continuation is blocked on lost runtime continuity. Reopening `phase11-safe-grinder` at `http://127.0.0.1:5173/jones-vibes/` landed on fresh onboarding (`CYCLE 1`, `START THE RUN`) instead of the saved Week 10 turn summary, and both `localStorage` and `sessionStorage` evaluated empty before any interaction. A screenshot was saved to `tmp/agent-browser/phase11-week11-reset.png`; no non-authoritative replay clicks were taken. Phase 11 now needs a human restore-or-replay decision before Persona A can continue.
 - 2026-03-19: Persona A authoritative replay now reaches the Week 10 turn summary. Starting from the Week 9 checkpoint at `₡1016 / Debt ₡0 / Hunger 40% / Sanity 25%` with no active conditions, no opening event fired, but entering Labor Sector triggered `Shady Fixer Courier Job`; Safe Grinder again declined the risky `+₡300 / -4CH / -10 Sanity` branch, still fit `Work Shift x3`, returned home, and closed Week 10 at `₡1188 / Debt ₡0 / Hunger 60% / Sanity 20%`. The live build confirms the out-of-band summary fixes: the modal now labels the total as `SANITY` and reports the correct `-5` weekly total, although the visible line items still appear to omit the decline branch's likely `+5` sanity effect.
 - 2026-03-19: Fixed GitHub issue `#2` on the active audit branch. The turn summary shell no longer exposes the legacy `HAPPINESS` label or the stale `summary-happiness-total` id; the modal now uses the live `SANITY` label and `summary-sanity-total`, and a focused UI regression test covers the weekly sanity total render path.

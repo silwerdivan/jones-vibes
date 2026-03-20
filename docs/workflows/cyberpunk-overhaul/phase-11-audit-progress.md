@@ -35,6 +35,7 @@
 
 ### 3. Current Technical State
 - **Browser State:** The saved `phase11-safe-grinder` session file still exists, but the live app no longer rehydrates the authoritative Week 10 checkpoint. The latest attach landed on onboarding (`CYCLE 1`, `START THE RUN`) and both `localStorage` and `sessionStorage` were empty.
+- **Checkpoint Hardening:** Phase 11 now includes durable `jones_fastlane_save` export/import tooling under `docs/workflows/cyberpunk-overhaul/checkpoints/` so future authoritative weeks can recover from browser-session loss without replaying from onboarding.
 - **Identified Elements:** Labor Sector application succeeds when automation preserves an active element inside the card. In practice that meant focusing the inner `Apply` button and then clicking the parent `.action-card`; plain wrapper clicks left `careerLevel` unchanged.
 - **Shopping Automation:** Older Week 7 evidence used a focus workaround, but the out-of-band baseline handoff says visible `Buy` buttons should now be reliable. This slice did not reach shopping because continuity failed before gameplay resumed.
 - **Evidence:** reset-state screenshot saved at `tmp/agent-browser/phase11-week11-reset.png`; `document.body.innerText` captured before any clicks.

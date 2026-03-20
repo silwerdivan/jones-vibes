@@ -99,11 +99,26 @@ latest_persona_slice_file() {
   )
 }
 
+latest_persona_checkpoint_file() {
+  local checkpoint_root="$1"
+  local persona_id="$2"
+
+  if [[ ! -d "${ROOT_DIR}/${checkpoint_root}/${persona_id}" ]]; then
+    return 0
+  fi
+
+  (
+    cd "${ROOT_DIR}"
+    find "${checkpoint_root}/${persona_id}" -maxdepth 1 -type f -name '*-save.json' | sort | tail -n 1
+  )
+}
+
 append_ui_workaround_notes() {
   cat <<'EOF'
 - Labor Sector job applications: prefer the stable `[data-testid="action-card-jobs-..."]` or `[data-testid="action-card-btn-jobs-..."]` selectors when targeting a known job card, then verify the `CURRENT SHIFT` panel or persisted state changed before moving on.
 - Sustenance Hub purchases: prefer the stable `[data-testid="action-card-shopping-..."]` or `[data-testid="action-card-btn-shopping-..."]` selectors when targeting a known food card, then verify `credits`, `hunger`, or `sanity` changed before assuming the purchase worked.
 - If the session appears reset or onboarding reappears unexpectedly: capture a screenshot and run `agent-browser eval "document.body.innerText"` before clicking through anything.
+- If expected continuity is missing but a checkpoint file exists, prefer restoring that checkpoint with `npm run workflow:phase11:checkpoint:import` before replaying from onboarding.
 EOF
 }
 
@@ -322,6 +337,7 @@ persona_log="$(json_get current_persona.log_path)"
 session_name="$(json_get current_persona.agent_browser_session_name)"
 app_url="$(json_get runtime.app_url)"
 detail_log_root="$(json_get_or_default slice_policy.detail_log_root docs/workflows/cyberpunk-overhaul/phase-11-slices)"
+checkpoint_root="$(json_get_or_default checkpointing.root docs/workflows/cyberpunk-overhaul/checkpoints)"
 phase_progress_log="docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md"
 external_handoff_path="$(json_get_or_default runner.external_handoff_path "")"
 next_slice="$(json_get next_slice)"
@@ -332,6 +348,8 @@ persona_slice_dir="$(basename "${persona_log}" .md)"
 persona_slice_dir="${persona_slice_dir#audit-log-}"
 persona_slice_dir="${detail_log_root}/${persona_slice_dir}"
 latest_slice_file="$(latest_persona_slice_file "${detail_log_root}" "${persona_log}")"
+persona_checkpoint_dir="${checkpoint_root}/${persona_slug}"
+latest_checkpoint_file="$(latest_persona_checkpoint_file "${checkpoint_root}" "${persona_slug}")"
 exec_strategy="${CODEX_EXEC_STRATEGY:-$(json_get_or_default runner.codex_exec_strategy dangerous)}"
 
 slice_timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
@@ -367,6 +385,8 @@ export JONES_VIBES_APP_URL="${app_url}"
 - Active persona log: ${persona_log}
 - Canonical persona slice directory: ${persona_slice_dir}
 - Canonical latest slice file: ${latest_slice_file:-"(none yet)"}
+- Canonical checkpoint directory: ${persona_checkpoint_dir}
+- Latest checkpoint save file: ${latest_checkpoint_file:-"(none yet)"}
 - External baseline handoff: ${external_handoff_path:-"(none)"}
 - Last authoritative checkpoint: ${last_run_at} (${last_run_outcome})
 - Current checkpoint summary: ${last_run_summary}

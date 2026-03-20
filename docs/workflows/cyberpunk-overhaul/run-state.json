@@ -18,6 +18,12 @@
       "--no-sandbox"
     ]
   },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "",
+    "latest_metadata_path": "",
+    "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding."
+  },
   "slice_policy": {
     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
     "update_paths": [

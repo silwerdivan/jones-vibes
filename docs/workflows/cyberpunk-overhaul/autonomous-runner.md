@@ -8,6 +8,7 @@ This workflow can keep running with a fresh Codex context on every pass. Continu
 - `docs/workflows/cyberpunk-overhaul/external-fixes.md`
 - the active persona log
 - the Phase 11 per-slice detail logs under `docs/workflows/cyberpunk-overhaul/phase-11-slices/`
+- durable checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/`
 - persistent `agent-browser` session state
 
 The runner now keeps stdout compact by default and moves the higher-detail evidence into per-slice artifacts under `.codex-runtime/cyberpunk-overhaul/`.
@@ -44,17 +45,36 @@ Ensure the local Vite app is available:
 npm run workflow:phase11:ensure-dev
 ```
 
+Inspect the current browser/session checkpoint state:
+
+```bash
+npm run workflow:phase11:checkpoint:status
+```
+
+Export the active authoritative save to disk:
+
+```bash
+npm run workflow:phase11:checkpoint:export -- --label week-10
+```
+
+Restore the latest exported checkpoint into the named browser session:
+
+```bash
+npm run workflow:phase11:checkpoint:import
+```
+
 ## How It Works
 
 1. `workflow:phase11:ensure-dev` restores `node_modules` if missing and starts Vite at `http://127.0.0.1:5173/jones-vibes/` when needed.
 2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
-3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs.
-4. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, checkpoint summary, external baseline handoff path, expected next action, and trusted UI workaround notes.
-5. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
+3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs when the session profile remains healthy.
+4. Durable continuity now also lives in exported checkpoint JSON files under `docs/workflows/cyberpunk-overhaul/checkpoints/`. The browser session is a convenience layer, not the only recovery path.
+5. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, latest checkpoint save path, checkpoint summary, external baseline handoff path, expected next action, and trusted UI workaround notes.
+6. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
    - the terminal/log stream keeps short status, retry, fallback, failure, and usage lines instead of the full raw event firehose.
-6. The loop script rereads `run-state.json` after each slice and stops only when the workflow is `blocked`, `complete`, or the process is interrupted.
+7. The loop script rereads `run-state.json` after each slice and stops only when the workflow is `blocked`, `complete`, or the process is interrupted.
 
 ## Logging Model
 
@@ -135,8 +155,12 @@ This does not disable the compact live stream. It forces the slice to retain the
   The reusable fresh-context prompt for each `codex exec` call.
 - `docs/workflows/cyberpunk-overhaul/external-fixes.md`
   Out-of-band baseline changes from ad hoc fixes that the next audit slice must know about.
+- `docs/workflows/cyberpunk-overhaul/checkpoints/`
+  Durable exported `jones_fastlane_save` checkpoints for replay recovery.
 - `scripts/cyberpunk-overhaul-ensure-dev.sh`
   Keeps the local app reachable.
+- `scripts/cyberpunk-overhaul-phase11-checkpoint.mjs`
+  Exports, restores, and inspects Phase 11 checkpoint files.
 - `scripts/cyberpunk-overhaul-phase11-once.sh`
   Runs one fresh-context autonomous slice.
 - `scripts/cyberpunk-overhaul-phase11-loop.sh`

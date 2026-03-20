@@ -13,6 +13,9 @@
     "workflow:phase11:ensure-dev": "bash scripts/cyberpunk-overhaul-ensure-dev.sh",
     "workflow:phase11:once": "bash scripts/cyberpunk-overhaul-phase11-once.sh",
     "workflow:phase11:once:commit": "bash scripts/cyberpunk-overhaul-phase11-once.sh --commit",
+    "workflow:phase11:checkpoint:status": "node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs status",
+    "workflow:phase11:checkpoint:export": "node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs export",
+    "workflow:phase11:checkpoint:import": "node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs import",
     "workflow:phase11:loop": "bash scripts/cyberpunk-overhaul-phase11-loop.sh",
     "workflow:phase11:loop:commit": "bash scripts/cyberpunk-overhaul-phase11-loop.sh --commit"
   },
