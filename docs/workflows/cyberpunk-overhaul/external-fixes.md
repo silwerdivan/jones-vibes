@@ -18,6 +18,7 @@ runner slices must know before continuing.
 - Summary: Shared action cards now pass the actual clicked control into `UIManager`, so visible `Apply` and `Buy` buttons are direct reliable action targets and feedback no longer depends on `document.activeElement`.
 - Resolved date: 2026-03-19
 - Runner guidance: treat older Phase 11 notes that recommend focusing the inner button and then clicking the parent `.action-card` as historical evidence from the pre-fix build. On the live app, use the visible button or card `data-testid` directly and only reopen this if a fresh run shows job applications or purchases still failing without the old focus workaround.
+- Validation note (2026-03-20): Persona A fresh Week 1 still reproduced an automation wrinkle on the live app. A direct `agent-browser click` on `[data-testid="action-card-btn-jobs-level-1-sanitation-t3"]` returned success but left `CURRENT SHIFT` at `No active job yet.` until a DOM `btn.click()` retried the same control. Treat the issue as partially verified rather than fully closed for browser-driven Phase 11 slices, and always confirm the resulting job or purchase state before continuing.
 
 ### 2026-03-19 - GitHub issue #3
 - Status: closed as fixed out of band in commit `0bf6cec`.
