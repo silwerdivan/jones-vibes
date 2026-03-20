@@ -1,7 +1,7 @@
 # Phase 11: Gameplay Audit Progress Report
 
-## Date: 2026-03-19
-## Status: Task 1 Complete, Task 2 Actively Resumed
+## Date: 2026-03-20
+## Status: Task 1 Complete, Task 2 Blocked Pending Runtime Restore/Re-Replay Decision
 
 ### 1. Audit Infrastructure (Task 1 - COMPLETE)
 - **Tooling:** `agent-browser` configured and connected to `http://127.0.0.1:5173/jones-vibes/`.
@@ -16,7 +16,7 @@
 ### 2. Persona A: The Safe Grinder (Task 2 - IN_PROGRESS)
 - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Prioritizing low-risk survival and steady labor to test the "Poverty Trap" baseline.
-- **Canonical Slice Records:** `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-09.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-10.md`.
+- **Canonical Slice Records:** `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-09.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-10.md`, `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-11.md`.
 - **Authoritative Replay Timeline (Fresh 2026-03-19 Run):**
     - **Week 1 close re-verified:** `₡172`, `Debt ₡0`, `Bio-Deficit 20%`, `Sanity 45%`.
     - **Week 2 close re-verified:** `₡344`, `Debt ₡0`, `Bio-Deficit 40%`, `Sanity 40%`.
@@ -29,14 +29,16 @@
     - **Week 9 close completed:** `₡1016`, `Debt ₡0`, `Bio-Deficit 40%`, `Sanity 25%`.
     - **Week 10 close completed:** `₡1188`, `Debt ₡0`, `Bio-Deficit 60%`, `Sanity 20%`.
     - **Summary intent:** this file now keeps only the current checkpoint, the strongest cross-slice findings, and the next action. Detailed pathing, rationale, and week-specific wrinkles live in the per-slice records above.
+- **Current blocker:** a 2026-03-20 fresh-context slice could not resume Week 10 because the `phase11-safe-grinder` session reopened to fresh onboarding with empty browser storage. No authoritative Week 11 telemetry exists yet.
 
 
 
 ### 3. Current Technical State
-- **Browser State:** The `phase11-safe-grinder` session now holds the authoritative Persona A replay at the end of Week 10, paused on the turn summary immediately before `START NEXT WEEK`.
+- **Browser State:** The saved `phase11-safe-grinder` session file still exists, but the live app no longer rehydrates the authoritative Week 10 checkpoint. The latest attach landed on onboarding (`CYCLE 1`, `START THE RUN`) and both `localStorage` and `sessionStorage` were empty.
 - **Identified Elements:** Labor Sector application succeeds when automation preserves an active element inside the card. In practice that meant focusing the inner `Apply` button and then clicking the parent `.action-card`; plain wrapper clicks left `careerLevel` unchanged.
-- **Shopping Automation:** Sustenance Hub purchases now show a parallel quirk. Generic `BUY` clicks did not mutate player state during Week 7, but focusing the inner button before invoking the bound action-card click path successfully applied the purchase and preserved the replay.
-- **Next Action:** Resume from the saved Week 10 replay checkpoint, start Week 11, complete exactly one additional in-game week for Persona A, and log whether `60%` Hunger finally forces a food purchase or reduced-shift recovery even when the labor line itself remains event-light.
+- **Shopping Automation:** Older Week 7 evidence used a focus workaround, but the out-of-band baseline handoff says visible `Buy` buttons should now be reliable. This slice did not reach shopping because continuity failed before gameplay resumed.
+- **Evidence:** reset-state screenshot saved at `tmp/agent-browser/phase11-week11-reset.png`; `document.body.innerText` captured before any clicks.
+- **Next Action:** Human decision required: either restore the authoritative Week 10 checkpoint for `phase11-safe-grinder`, or explicitly authorize another replay from onboarding back to that checkpoint before retrying Week 11.
 
 
 ### 4. Observations & Notes
