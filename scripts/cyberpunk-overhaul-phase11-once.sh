@@ -87,7 +87,7 @@ verify_browser_continuity() {
       ;;
     missing_browser_save)
       echo "[phase11-once] browser save missing; restoring authoritative checkpoint ${latest_checkpoint}" | tee -a "${LOG_FILE}"
-      node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" import --save "${latest_checkpoint}" | tee -a "${LOG_FILE}"
+      node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" import --quiet --save "${latest_checkpoint}" | tee -a "${LOG_FILE}"
 
       after_status_json="$(checkpoint_status_json)"
       continuity_status="$(checkpoint_status_field "${after_status_json}" continuity_status)"

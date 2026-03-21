@@ -26,6 +26,15 @@ export function buildCheckpointPaths({ rootDir, personaId, label }) {
   };
 }
 
+export function buildLocalStorageImportExpression(storageKey, rawValue) {
+  return `(() => {
+      const raw = ${JSON.stringify(rawValue)};
+      localStorage.setItem(${JSON.stringify(storageKey)}, raw);
+      sessionStorage.clear();
+      return true;
+    })()`;
+}
+
 function summarizePlayer(player) {
   if (!player || typeof player !== 'object') {
     return null;

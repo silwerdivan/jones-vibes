@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { buildCheckpointPaths, sanitizeLabel, summarizeSaveState } from '../../scripts/lib/phase11-checkpoint-utils.mjs';
+import {
+  buildCheckpointPaths,
+  buildLocalStorageImportExpression,
+  sanitizeLabel,
+  summarizeSaveState,
+} from '../../scripts/lib/phase11-checkpoint-utils.mjs';
 
 describe('phase11 checkpoint utils', () => {
   it('normalizes checkpoint labels into stable filenames', () => {
@@ -67,5 +72,34 @@ describe('phase11 checkpoint utils', () => {
     expect(summary.currentPlayer?.credits).toBe(1188);
     expect(summary.currentPlayer?.hunger).toBe(60);
     expect(summary.currentPlayer?.sanity).toBe(20);
+  });
+
+  it('builds a browser import expression that preserves unicode save content', () => {
+    const storage = new Map<string, string>();
+    const expression = buildLocalStorageImportExpression(
+      'jones_fastlane_save',
+      '{"activeConditions":[{"icon":"🦵","name":"Sore Legs"}]}'
+    );
+
+    const result = Function(
+      'localStorage',
+      'sessionStorage',
+      `"use strict"; return ${expression};`
+    )(
+      {
+        setItem(key: string, value: string) {
+          storage.set(key, value);
+        },
+      },
+      {
+        clear() {
+          storage.set('__session_cleared__', 'true');
+        },
+      }
+    );
+
+    expect(result).toBe(true);
+    expect(storage.get('jones_fastlane_save')).toBe('{"activeConditions":[{"icon":"🦵","name":"Sore Legs"}]}');
+    expect(storage.get('__session_cleared__')).toBe('true');
   });
 });

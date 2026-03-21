@@ -3,16 +3,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { buildCheckpointPaths, summarizeSaveState } from './lib/phase11-checkpoint-utils.mjs';
+import {
+  buildCheckpointPaths,
+  buildLocalStorageImportExpression,
+  summarizeSaveState,
+} from './lib/phase11-checkpoint-utils.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DEFAULT_RUN_STATE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
 
 function usage() {
   console.log(`Usage:
-  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs status [--run-state <path>]
-  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs export --label <label> [--run-state <path>]
-  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs import [--save <path>] [--run-state <path>]
+  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs status [--run-state <path>] [--quiet]
+  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs export --label <label> [--run-state <path>] [--quiet]
+  node scripts/cyberpunk-overhaul-phase11-checkpoint.mjs import [--save <path>] [--run-state <path>] [--quiet]
 `);
 }
 
@@ -130,7 +134,15 @@ function deriveContext(runStatePath) {
   };
 }
 
-function exportCheckpoint(context, label) {
+function printResult(payload, quiet = false) {
+  if (quiet) {
+    return;
+  }
+
+  console.log(JSON.stringify(payload, null, 2));
+}
+
+function exportCheckpoint(context, label, options = {}) {
   const { sessionName, appUrl, browserArgs, personaId, checkpointRootAbs, runStatePath, checkpointRootRel } = context;
   if (!label) {
     throw new Error('Export requires --label <label>.');
@@ -166,15 +178,15 @@ function exportCheckpoint(context, label) {
     runState.checkpointing.last_exported_at = exportedAt;
   });
 
-  console.log(JSON.stringify({
+  printResult({
     action: 'export',
     save_path: path.relative(ROOT_DIR, paths.savePath),
     metadata_path: path.relative(ROOT_DIR, paths.metaPath),
     summary,
-  }, null, 2));
+  }, options.quiet);
 }
 
-function importCheckpoint(context, savePathArg) {
+function importCheckpoint(context, savePathArg, options = {}) {
   const { sessionName, appUrl, browserArgs, checkpointRootAbs, personaId, runStatePath, checkpointRootRel } = context;
   const defaultSavePath =
     (context.runState.checkpointing?.latest_save_path && path.resolve(ROOT_DIR, context.runState.checkpointing.latest_save_path)) ||
@@ -188,17 +200,11 @@ function importCheckpoint(context, savePathArg) {
   const rawSave = fs.readFileSync(savePath, 'utf8').trim();
   const parsedSave = JSON.parse(rawSave);
   const summary = summarizeSaveState(parsedSave);
-  const encodedSave = Buffer.from(rawSave, 'utf8').toString('base64');
 
   openApp(sessionName, appUrl, browserArgs);
   evalInSession(
     sessionName,
-    `(() => {
-      const raw = atob('${encodedSave}');
-      localStorage.setItem('jones_fastlane_save', raw);
-      sessionStorage.clear();
-      return true;
-    })()`,
+    buildLocalStorageImportExpression('jones_fastlane_save', rawSave),
     browserArgs
   );
   openApp(sessionName, appUrl, browserArgs);
@@ -217,14 +223,14 @@ function importCheckpoint(context, savePathArg) {
     runState.checkpointing.last_restored_save_path = path.relative(ROOT_DIR, savePath);
   });
 
-  console.log(JSON.stringify({
+  printResult({
     action: 'import',
     restored_save_path: path.relative(ROOT_DIR, savePath),
     summary,
-  }, null, 2));
+  }, options.quiet);
 }
 
-function statusCheckpoint(context) {
+function statusCheckpoint(context, options = {}) {
   const { sessionName, appUrl, browserArgs, checkpointRootAbs, personaId, runState } = context;
   openApp(sessionName, appUrl, browserArgs);
   const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
@@ -249,7 +255,7 @@ function statusCheckpoint(context) {
     continuityStatus = 'ok_no_checkpoint';
   }
 
-  console.log(JSON.stringify({
+  printResult({
     action: 'status',
     session_name: sessionName,
     continuity_status: continuityStatus,
@@ -259,7 +265,7 @@ function statusCheckpoint(context) {
     browser_summary: browserSummary,
     checkpoint_summary: checkpointSummary,
     matches_latest_checkpoint: matchesLatestCheckpoint,
-  }, null, 2));
+  }, options.quiet);
 }
 
 function main() {
@@ -273,6 +279,9 @@ function main() {
 
   const runStatePath = path.resolve(ROOT_DIR, args['run-state'] || DEFAULT_RUN_STATE);
   const context = deriveContext(runStatePath);
+  const options = {
+    quiet: !!args.quiet,
+  };
 
   if (!context.sessionName || !context.appUrl) {
     throw new Error('Run-state is missing current persona session name or app URL.');
@@ -280,13 +289,13 @@ function main() {
 
   switch (command) {
     case 'status':
-      statusCheckpoint(context);
+      statusCheckpoint(context, options);
       break;
     case 'export':
-      exportCheckpoint(context, args.label);
+      exportCheckpoint(context, args.label, options);
       break;
     case 'import':
-      importCheckpoint(context, args.save);
+      importCheckpoint(context, args.save, options);
       break;
     default:
       usage();
