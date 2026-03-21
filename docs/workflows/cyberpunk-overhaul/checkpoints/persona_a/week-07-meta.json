@@ -1,0 +1,47 @@
+{
+  "exported_at": "2026-03-21T21:32:57.934Z",
+  "session_name": "phase11-safe-grinder",
+  "app_url": "http://127.0.0.1:5173/jones-vibes/",
+  "checkpoint_root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+  "checkpoint_label": "week-07",
+  "export_method": "manual-live-session-eval",
+  "summary": {
+    "turn": 8,
+    "currentPlayerIndex": 0,
+    "gameOver": false,
+    "activeScreenId": "city",
+    "activeLocationDashboard": null,
+    "hasPendingTurnSummary": true,
+    "isAIThinking": false,
+    "playerCount": 2,
+    "currentPlayer": {
+      "id": 1,
+      "name": "Player 1",
+      "credits": 286,
+      "savings": 0,
+      "debt": 0,
+      "loan": 0,
+      "hunger": 40,
+      "sanity": 35,
+      "educationLevel": 0,
+      "careerLevel": 1,
+      "time": 24,
+      "location": "Hab-Pod 404",
+      "activeConditions": [
+        {
+          "id": "TRAUMA_REBOOT",
+          "name": "Trauma Reboot",
+          "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+          "remainingDuration": 312,
+          "effects": [
+            {
+              "type": "MAX_ENERGY",
+              "value": 0.8
+            }
+          ],
+          "icon": "🧠"
+        }
+      ]
+    }
+  }
+}
