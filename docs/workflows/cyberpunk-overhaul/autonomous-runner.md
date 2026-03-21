@@ -69,7 +69,7 @@ npm run workflow:phase11:checkpoint:import
 2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
 3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs when the session profile remains healthy.
 4. Durable continuity now also lives in exported checkpoint JSON files under `docs/workflows/cyberpunk-overhaul/checkpoints/`. The browser session is a convenience layer, not the only recovery path.
-5. The Codex prompt is intentionally small and tells the agent to read the workflow files locally, then appends a bounded `Runner Context` section with the canonical slice path, latest checkpoint save path, checkpoint summary, external baseline handoff path, expected next action, and trusted UI workaround notes.
+5. The Codex prompt is intentionally small and points the agent at one generated `startup-context.json` artifact inside the slice directory. That file carries the canonical slice paths, latest checkpoint handoff, compact brief findings, expected next action, and compact browser tactics so the repeated prompt stays small while the handoff stays explicit.
 6. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
@@ -97,6 +97,8 @@ Normal successful runs keep the operator-facing stream small:
   Filtered subset of state-oriented events such as browser/session checks, checkpoint reads, and status transitions.
 - `summary.json`
   Consolidated per-slice outcome, token usage, wall time, changed files, artifact paths, and debug status.
+- `startup-context.json`
+  Compact per-slice startup handoff with the canonical paths, checkpoint continuity result, latest authoritative state, and compact browser recipe notes. Read this before reopening larger workflow docs.
 - `changed-files.txt`
   Final changed-file list for the slice. Ephemeral browser profile/cache trees such as root-level `agent-browser-chrome-*` and `org.chromium.Chromium.*` directories are excluded so browser runtime noise does not masquerade as project output.
 - `final.diff`
@@ -156,6 +158,8 @@ This does not disable the compact live stream. It forces the slice to retain the
   Machine-readable handoff state for autonomous slices.
 - `docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md`
   The reusable fresh-context prompt for each `codex exec` call.
+- `.codex-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/startup-context.json`
+  Slice-local compact handoff artifact generated before Codex starts.
 - `docs/workflows/cyberpunk-overhaul/external-fixes.md`
   Out-of-band baseline changes from ad hoc fixes that the next audit slice must know about.
 - `docs/workflows/cyberpunk-overhaul/checkpoints/`
@@ -214,10 +218,11 @@ More durable option: run the loop under a `systemd --user` service with this rep
 After a blocked slice, read the artifacts in this order:
 
 1. Open the newest slice `summary.json` under `.codex-runtime/cyberpunk-overhaul/slices/` to see status, debug reasons, timings, changed files, and the exact artifact paths.
-2. Open `checkpoints.jsonl` to reconstruct the last known state transition and where the run stopped.
-3. If `summary.json` shows `debug.escalated = true`, open `debug/suspicious-commands.jsonl` first for the failing command chain, then `debug/raw-codex-events.jsonl` only if you need the full raw transcript.
-4. Compare `state/before/` and `state/after/` if you need to confirm what the slice changed in the bounded control surface.
-5. Use `final.diff` and `changed-files.txt` only after you understand the blocker; they are for code/doc output review, not for reconstructing the runtime failure.
+2. Open `startup-context.json` if you need the compact runner handoff that the slice started from.
+3. Open `checkpoints.jsonl` to reconstruct the last known state transition and where the run stopped.
+4. If `summary.json` shows `debug.escalated = true`, open `debug/suspicious-commands.jsonl` first for the failing command chain, then `debug/raw-codex-events.jsonl` only if you need the full raw transcript.
+5. Compare `state/before/` and `state/after/` if you need to confirm what the slice changed in the bounded control surface.
+6. Use `final.diff` and `changed-files.txt` only after you understand the blocker; they are for code/doc output review, not for reconstructing the runtime failure.
 
 ## Stop Conditions
 

@@ -224,80 +224,171 @@ latest_persona_checkpoint_file() {
   )
 }
 
-append_ui_workaround_notes() {
-  cat <<'EOF'
-- Labor Sector job applications: prefer the stable `[data-testid="action-card-jobs-..."]` or `[data-testid="action-card-btn-jobs-..."]` selectors when targeting a known job card, then verify the `CURRENT SHIFT` panel or persisted state changed before moving on.
-- Sustenance Hub purchases: prefer the stable `[data-testid="action-card-shopping-..."]` or `[data-testid="action-card-btn-shopping-..."]` selectors when targeting a known food card, then verify `credits`, `hunger`, or `sanity` changed before assuming the purchase worked.
-- If the session appears reset or onboarding reappears unexpectedly: capture a screenshot and run `agent-browser eval "document.body.innerText"` before clicking through anything.
-- If expected continuity is missing but a checkpoint file exists, prefer restoring that checkpoint with `npm run workflow:phase11:checkpoint:import` before replaying from onboarding.
-EOF
-}
-
-append_phase_brief_summary() {
-  node - "${BRIEF_FILE}" <<'NODE'
+write_startup_context_file() {
+  node - \
+    "${STARTUP_CONTEXT_FILE}" \
+    "${app_url}" \
+    "${phase_progress_log}" \
+    "${persona_name}" \
+    "${persona_slug}" \
+    "${persona_log}" \
+    "${persona_slice_dir}" \
+    "${latest_slice_file}" \
+    "${persona_checkpoint_dir}" \
+    "${latest_checkpoint_file}" \
+    "${external_handoff_path}" \
+    "${last_run_at}" \
+    "${last_run_outcome}" \
+    "${next_slice}" \
+    "${AGENT_BROWSER_SESSION_NAME}" \
+    "${CONTINUITY_FILE}" \
+    "${BRIEF_FILE}" \
+    "${BROWSER_RECIPES_FILE}" <<'NODE'
 const fs = require('fs');
+const path = require('path');
 
-const file = process.argv[2];
-if (!fs.existsSync(file)) {
-  process.exit(0);
+const [
+  outputPath,
+  appUrl,
+  progressPath,
+  personaName,
+  personaId,
+  personaLogPath,
+  personaSliceDir,
+  latestSliceFile,
+  checkpointDir,
+  latestCheckpointFile,
+  externalHandoffPath,
+  lastRunAt,
+  lastRunOutcome,
+  nextSlice,
+  sessionName,
+  continuityFile,
+  briefFile,
+  recipesFile,
+] = process.argv.slice(2);
+
+function readJson(filePath) {
+  if (!filePath || !fs.existsSync(filePath)) {
+    return null;
+  }
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-const latest = data.latest_authoritative_state || {};
-const slice = latest.latest_slice || {};
-const findings = Array.isArray(data.active_findings) ? data.active_findings.slice(0, 3) : [];
-
-console.log('\n### Structured Phase 11 Brief Summary (docs/workflows/cyberpunk-overhaul/phase-11-brief.json)');
-console.log(`- Persona: ${data.current_persona?.name || 'unknown'} (${data.current_persona?.id || 'unknown'})`);
-console.log(`- Status: ${data.status}`);
-console.log(`- Latest authoritative week: ${latest.week ?? 'unknown'}`);
-console.log(`- Latest checkpoint: ${data.checkpointing?.latest_save_path || '(none)'}`);
-console.log(`- Latest slice file: ${data.control_surface?.latest_slice_path || '(none)'}`);
-console.log(`- Next action: ${latest.next_slice || '(none)'}`);
-if (slice.telemetry) {
-  console.log(`- Latest end state: cash=${slice.telemetry.end_cash || '?'} debt=${slice.telemetry.end_debt || '?'} hunger=${slice.telemetry.end_hunger || '?'} sanity=${slice.telemetry.end_sanity || '?'} net_credits=${slice.telemetry.net_credits || '?'} net_sanity=${slice.telemetry.net_sanity || '?'}`);
-}
-for (const finding of findings) {
-  console.log(`- Finding: ${finding}`);
-}
-NODE
+function compactText(value, maxLength = 240) {
+  if (!value) {
+    return '';
+  }
+  const normalized = String(value).replace(/\s+/g, ' ').trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  return `${normalized.slice(0, maxLength - 1)}…`;
 }
 
-append_browser_recipe_summary() {
-  node - "${BROWSER_RECIPES_FILE}" <<'NODE'
-const fs = require('fs');
-
-const file = process.argv[2];
-if (!fs.existsSync(file)) {
-  process.exit(0);
-}
-
-const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-const recipes = data.recipes || {};
-
-console.log('\n### Structured Agent Browser Recipe Summary (docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json)');
-for (const rule of (data.global_rules || []).slice(0, 4)) {
-  console.log(`- Rule: ${rule}`);
-}
-
+const brief = readJson(briefFile) || {};
+const recipes = readJson(recipesFile) || {};
+const continuity = readJson(continuityFile) || {};
+const latest = brief.latest_authoritative_state || {};
+const latestSlice = latest.latest_slice || {};
 const recipeOrder = ['session_recovery', 'travel_city', 'apply_job', 'buy_food', 'work_shift', 'turn_summary_probe'];
+const compactRecipes = {};
+
 for (const key of recipeOrder) {
-  const recipe = recipes[key];
+  const recipe = recipes.recipes?.[key];
   if (!recipe) {
     continue;
   }
-  const parts = [];
-  if (Array.isArray(recipe.preferred_selectors) && recipe.preferred_selectors.length > 0) {
-    parts.push(`selectors=${recipe.preferred_selectors.slice(0, 2).join(' | ')}`);
-  }
-  if (Array.isArray(recipe.verification) && recipe.verification.length > 0) {
-    parts.push(`verify=${recipe.verification[0]}`);
-  }
-  if (Array.isArray(recipe.preferred_probe_fields) && recipe.preferred_probe_fields.length > 0) {
-    parts.push(`probe=${recipe.preferred_probe_fields.join(',')}`);
-  }
-  console.log(`- Recipe ${key}: ${recipe.goal}${parts.length ? `; ${parts.join('; ')}` : ''}`);
+
+  compactRecipes[key] = {
+    goal: compactText(recipe.goal, 160),
+    selectors: Array.isArray(recipe.preferred_selectors) ? recipe.preferred_selectors.slice(0, 2) : [],
+    verify: Array.isArray(recipe.verification) ? recipe.verification.slice(0, 1) : [],
+    probe: Array.isArray(recipe.preferred_probe_fields) ? recipe.preferred_probe_fields.slice(0, 6) : [],
+  };
 }
+
+const payload = {
+  generated_at: new Date().toISOString(),
+  runner_context_version: 2,
+  startup_policy: {
+    canonical_sources: [
+      'docs/workflows/cyberpunk-overhaul/run-state.json',
+      outputPath,
+    ],
+    read_more_only_when: [
+      'startup context is stale or ambiguous',
+      'a UI path fails',
+      'gameplay evidence contradicts the checkpoint handoff',
+    ],
+  },
+  paths: {
+    run_state: 'docs/workflows/cyberpunk-overhaul/run-state.json',
+    current_phase: 'docs/workflows/cyberpunk-overhaul/current-phase.md',
+    phase_progress: progressPath,
+    external_handoff: externalHandoffPath || '',
+    structured_phase_brief: 'docs/workflows/cyberpunk-overhaul/phase-11-brief.json',
+    structured_browser_recipes: 'docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json',
+    continuity: continuityFile,
+  },
+  persona: {
+    name: personaName,
+    id: personaId,
+    log_path: personaLogPath,
+    slice_dir: personaSliceDir,
+    latest_slice_file: latestSliceFile || latestSlice.path || '',
+    session_name: sessionName,
+  },
+  app: {
+    url: appUrl,
+    browser_args: brief.app?.browser_args || [],
+  },
+  checkpoint: {
+    directory: checkpointDir,
+    latest_save_file: latestCheckpointFile || brief.checkpointing?.latest_save_path || '',
+    last_authoritative_checkpoint: {
+      at: lastRunAt,
+      outcome: lastRunOutcome,
+      week: latest.week ?? null,
+    },
+    continuity: {
+      ok: Boolean(continuity.ok),
+      outcome: continuity.outcome || '',
+      restored: Boolean(continuity.restored),
+      latest_checkpoint_save_path: continuity.latest_checkpoint_save_path || latestCheckpointFile || '',
+    },
+  },
+  authoritative_state: {
+    next_action: nextSlice,
+    latest_week: latest.week ?? null,
+    latest_end_state: latestSlice.telemetry
+      ? {
+          cash: latestSlice.telemetry.end_cash || '',
+          debt: latestSlice.telemetry.end_debt || '',
+          hunger: latestSlice.telemetry.end_hunger || '',
+          sanity: latestSlice.telemetry.end_sanity || '',
+          net_credits: latestSlice.telemetry.net_credits || '',
+          net_sanity: latestSlice.telemetry.net_sanity || '',
+        }
+      : null,
+    active_findings: Array.isArray(brief.active_findings) ? brief.active_findings.slice(0, 3).map((entry) => compactText(entry, 200)) : [],
+    followups: Array.isArray(latestSlice.blockers_and_followups)
+      ? latestSlice.blockers_and_followups.slice(0, 3).map((entry) => compactText(entry, 200))
+      : [],
+  },
+  trusted_ui_workarounds: [
+    'Use stable action-card selectors first for jobs and shopping; verify state changed before assuming success.',
+    'If onboarding or a reset appears unexpectedly, capture a screenshot and run a short body-text probe before clicking through.',
+    'If live continuity is missing but a checkpoint file exists, restore it before replaying from onboarding.',
+  ],
+  browser_recipes: {
+    global_rules: Array.isArray(recipes.global_rules) ? recipes.global_rules.slice(0, 3).map((entry) => compactText(entry, 160)) : [],
+    compact_recipes: compactRecipes,
+  },
+};
+
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+fs.writeFileSync(outputPath, `${JSON.stringify(payload, null, 2)}\n`);
 NODE
 }
 
@@ -512,6 +603,7 @@ const summary = {
     summary: summaryFile,
     changed_files: path.join(sliceDir, 'changed-files.txt'),
     final_diff: path.join(sliceDir, 'final.diff'),
+    startup_context: path.join(sliceDir, 'startup-context.json'),
     raw_codex_events: '',
     suspicious_commands: '',
   },
@@ -600,6 +692,7 @@ const summary = {
     summary: summaryFile,
     changed_files: changedFilesPath,
     final_diff: finalDiffPath,
+    startup_context: path.join(sliceDir, 'startup-context.json'),
     raw_codex_events: debugPreserved === '1' ? rawTracePath : '',
     suspicious_commands: debugPreserved === '1' ? suspiciousPath : '',
   },
@@ -699,7 +792,6 @@ external_handoff_path="$(json_get_or_default runner.external_handoff_path "")"
 next_slice="$(json_get next_slice)"
 last_run_at="$(json_get_or_default last_run.at unknown)"
 last_run_outcome="$(json_get_or_default last_run.outcome unknown)"
-last_run_summary="$(json_get_or_default last_run.summary "No prior checkpoint summary recorded.")"
 persona_slice_dir="$(basename "${persona_log}" .md)"
 persona_slice_dir="${persona_slice_dir#audit-log-}"
 persona_slice_dir="${detail_log_root}/${persona_slice_dir}"
@@ -714,6 +806,7 @@ SLICE_DIR="${SLICE_ROOT_DIR}/${SLICE_ID}"
 DEBUG_DIR="${SLICE_DIR}/debug"
 SLICE_PROMPT_FILE="${SLICE_DIR}/prompt.md"
 SLICE_LAST_MESSAGE_FILE="${SLICE_DIR}/last-message.txt"
+STARTUP_CONTEXT_FILE="${SLICE_DIR}/startup-context.json"
 EVENT_LOG_FILE="${SLICE_DIR}/events.jsonl"
 CHECKPOINT_LOG_FILE="${SLICE_DIR}/checkpoints.jsonl"
 STREAM_SUMMARY_FILE="${SLICE_DIR}/stream-summary.json"
@@ -731,34 +824,22 @@ export AGENT_BROWSER_ARGS="${AGENT_BROWSER_ARGS:---no-sandbox}"
 export JONES_VIBES_APP_URL="${app_url}"
 
 verify_browser_continuity
+write_startup_context_file
 
 {
   cat "${PROMPT_TEMPLATE}"
   cat <<EOF
 
 ## Runner Context
+- Startup context file: ${STARTUP_CONTEXT_FILE}
+- Continuity artifact: ${CONTINUITY_FILE}
 - App URL: ${app_url}
 - Run-state path: docs/workflows/cyberpunk-overhaul/run-state.json
-- Phase progress rollup: ${phase_progress_log}
 - Active persona: ${persona_name}
-- Active persona log: ${persona_log}
-- Canonical persona slice directory: ${persona_slice_dir}
-- Canonical latest slice file: ${latest_slice_file:-"(none yet)"}
-- Canonical checkpoint directory: ${persona_checkpoint_dir}
 - Latest checkpoint save file: ${latest_checkpoint_file:-"(none yet)"}
-- External baseline handoff: ${external_handoff_path:-"(none)"}
-- Structured phase brief: docs/workflows/cyberpunk-overhaul/phase-11-brief.json
-- Structured browser recipes: docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json
-- Last authoritative checkpoint: ${last_run_at} (${last_run_outcome})
-- Current checkpoint summary: ${last_run_summary}
 - Expected next action: ${next_slice}
 - agent-browser session name: ${AGENT_BROWSER_SESSION_NAME}
-
-### Trusted UI Workarounds
 EOF
-  append_ui_workaround_notes
-  append_phase_brief_summary
-  append_browser_recipe_summary
 } >"${SLICE_PROMPT_FILE}"
 
 cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
