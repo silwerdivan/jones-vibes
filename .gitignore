@@ -27,3 +27,6 @@ yarn-error.log*
 # Build
 dist/
 .codex-runtime/
+
+# Phase 11 debug screenshots
+tmp/phase11-*.png
