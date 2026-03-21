@@ -126,6 +126,23 @@ append_ui_workaround_notes() {
 EOF
 }
 
+append_file_excerpt() {
+  local label="$1"
+  local rel_path="$2"
+  local max_lines="$3"
+  local abs_path="${ROOT_DIR}/${rel_path}"
+
+  if [[ ! -f "${abs_path}" ]]; then
+    return 0
+  fi
+
+  cat <<EOF
+
+### ${label} (${rel_path})
+EOF
+  sed -n "1,${max_lines}p" "${abs_path}"
+}
+
 snapshot_control_surface() {
   local phase="$1"
   local rel_path=""
@@ -402,6 +419,15 @@ export JONES_VIBES_APP_URL="${app_url}"
 ### Trusted UI Workarounds
 EOF
   append_ui_workaround_notes
+  append_file_excerpt "Compact Current Phase Excerpt" "docs/workflows/cyberpunk-overhaul/current-phase.md" 24
+  append_file_excerpt "Compact Audit Progress Excerpt" "${phase_progress_log}" 28
+  append_file_excerpt "Compact Persona Log Excerpt" "${persona_log}" 40
+  if [[ -n "${latest_slice_file}" ]]; then
+    append_file_excerpt "Compact Latest Slice Excerpt" "${latest_slice_file}" 48
+  fi
+  if [[ -n "${external_handoff_path}" && "${external_handoff_path}" != "(none)" ]]; then
+    append_file_excerpt "Compact External Handoff Excerpt" "${external_handoff_path}" 32
+  fi
 } >"${SLICE_PROMPT_FILE}"
 
 cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"

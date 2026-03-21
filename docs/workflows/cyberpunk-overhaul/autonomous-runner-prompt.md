@@ -4,21 +4,19 @@ Use the `cyberpunk-overhaul` skill for this run.
 
 This invocation is one fresh-context autonomous slice of the active Phase 11 workflow. Continuity must come from repository files, durable checkpoint exports, and persistent browser/app state, not from prior chat memory.
 
-The runner appends a `## Runner Context` section below with exact paths, checkpoint data, an external baseline handoff path, and trusted UI notes. Treat that section as canonical for this slice unless it directly conflicts with the bounded control surface in `run-state.json`.
+The runner appends a `## Runner Context` section below with exact paths, checkpoint data, compact workflow excerpts, an external baseline handoff path, and trusted UI notes. Treat that section as canonical for this slice unless it directly conflicts with the bounded control surface in `run-state.json`.
 
 ## Required startup reads
 1. Read `docs/workflows/cyberpunk-overhaul/run-state.json`.
-2. Read `docs/workflows/cyberpunk-overhaul/current-phase.md`.
-3. Read `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`.
-4. Read the exact active persona log path provided in `Runner Context`.
-5. Read the exact `Canonical latest slice file` from `Runner Context` if one is provided.
-6. Read the exact `External baseline handoff` path from `Runner Context` if one is provided.
+2. Use the compact workflow excerpts embedded in `Runner Context` as the default startup source for `current-phase.md`, `phase-11-audit-progress.md`, the active persona log, the latest canonical slice file, and the external baseline handoff.
+3. Read the full file for one of those paths only if the embedded excerpt is missing, stale, ambiguous, or insufficient for the decision you need to make.
+4. Before editing a workflow markdown file, read only the smallest relevant region you need rather than reopening the whole file.
 
 Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe alternate persona logs when `Runner Context` already supplies the path you need.
 
 ## Operating rules
 - Respect `run-state.json` as the bounded control surface for this run.
-- Prefer exact paths, checkpoint summary, and expected next action from `Runner Context` over reconstructing state from older slice files.
+- Prefer exact paths, checkpoint summary, compact workflow excerpts, and expected next action from `Runner Context` over reconstructing state from older slice files.
 - Treat checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/` as the authoritative recovery layer when a named browser session reopens without the expected save.
 - Treat the external baseline handoff as out-of-band context, not as new Phase 11 evidence. Only log it again if the live build contradicts that handoff.
 - Reuse the existing app and browser state from the environment. `AGENT_BROWSER_SESSION_NAME` is already set for the active persona.
