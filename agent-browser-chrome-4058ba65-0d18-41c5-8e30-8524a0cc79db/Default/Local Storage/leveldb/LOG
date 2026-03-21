@@ -1,0 +1,11 @@
+2026/03/21-21:26:13.578 639b Creating DB /home/silwerdivan/code/jones-vibes/agent-browser-chrome-4058ba65-0d18-41c5-8e30-8524a0cc79db/Default/Local Storage/leveldb since it was missing.
+2026/03/21-21:26:13.625 639b Reusing MANIFEST /home/silwerdivan/code/jones-vibes/agent-browser-chrome-4058ba65-0d18-41c5-8e30-8524a0cc79db/Default/Local Storage/leveldb/MANIFEST-000001
+2026/03/21-21:29:28.632 639d Level-0 table #5: started
+2026/03/21-21:29:28.646 639d Level-0 table #5: 13821 bytes OK
+2026/03/21-21:29:28.657 639d Delete type=0 #3
+2026/03/21-21:32:14.240 639d Level-0 table #7: started
+2026/03/21-21:32:14.259 639d Level-0 table #7: 16478 bytes OK
+2026/03/21-21:32:14.265 639d Delete type=0 #4
+2026/03/21-21:34:14.239 639d Level-0 table #9: started
+2026/03/21-21:34:14.244 639d Level-0 table #9: 13538 bytes OK
+2026/03/21-21:34:14.251 639d Delete type=0 #6
