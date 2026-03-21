@@ -3,9 +3,9 @@
 ## Audit Metadata
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
-- **Date:** 2026-03-20
-- **Session Duration:** 2 completed authoritative weeks
-- **Current Slice Status:** Week 2 completed from the fresh restart. The run is parked on the Week 2 summary with a durable checkpoint exported.
+- **Date:** 2026-03-21
+- **Session Duration:** 1 completed authoritative week in the restarted chain
+- **Current Slice Status:** Authoritative Week 1 redo completed. The restarted chain is re-anchored on a corrected Week 1 checkpoint and ready for Week 2 continuation.
 - **Archive:** Previous Persona A run archived under `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/`.
 
 ---
@@ -14,8 +14,8 @@
 
 | Week | Cash | Debt | Hunger | Sanity | Education | Time Efficiency | Action Taken | Rationale | Feel/Friction |
 |------|------|------|--------|--------|-----------|-----------------|--------------|-----------|---------------|
-| 1    | ₡4 | ₡0 | 20% | 50 | 0 | One 6CH shift covered burn with only ₡4 surplus | Declined Shady Fixer courier, secured `Sanitation-T3`, worked once, returned home, ended turn | Preserve sanity and avoid opening-week risk while locking reliable labor | Week 1 margin is extremely tight; direct `agent-browser click` on the visible `Apply` button no-op'd until a DOM `btn.click()` retried it |
-| 2    | ₡88 | ₡0 | 20% | 28 | 0 | Accepted a one-time `₡100` stimulus, bought one `₡20` safe food item, then fit one 6CH shift and the normal burn cycle | Accepted `Network Stimulus Drop`, chose the safe `Broken Auto-Chef` purchase, worked `Sanitation-T3`, returned home, ended turn | Trade privacy for solvency while staying on the safest labor route and avoiding food-risk gambling | The run became cash-positive, but the Week 2 summary under-reported sanity detail: the visible total said `SANITY -10` while the saved player actually fell from `50` to `28` with `Ad Fatigue` active |
+| 1    | ₡172 | ₡0 | 20% | 45 | 0 | Start-of-run travel/hire state left `22CH` at Labor Sector; three `6CH` shifts reduced that to `4CH`, which still cleanly fit the trip home and week close | Restarted from onboarding, secured `Sanitation-T3`, completed `Work Shift x3`, then returned to `Hab-Pod 404` and ended the turn | Re-established the first-principles Safe Grinder baseline before letting later weeks inherit any weaker interpretation | The poverty trap reads clearly here: `₡252` gross labor only turns into `₡172` net after burn, with no slack against hunger or sanity drift |
+| 2    |      |      |        |        |           |                 |              |           |               |
 | 3    |      |      |        |        |           |                 |              |           |               |
 | 4    |      |      |        |        |           |                 |              |           |               |
 | 5    |      |      |        |        |           |                 |              |           |               |
@@ -27,19 +27,18 @@
 
 ## Detailed Slice Records
 
-- [Week 1 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md): authoritative fresh-restart baseline from onboarding to the Week 1 summary, with checkpoint export at close.
-- [Week 2 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md): authoritative continuation from the Week 1 checkpoint through the `Ad Fatigue` branch, with checkpoint export at close.
+- [Week 1 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md): authoritative onboarding redo that restores the canonical `Sanitation-T3` plus `Work Shift x3` baseline and exports the corrected Week 1 checkpoint.
 
-Workflow note: the earlier Persona A run was archived so this file can act as the clean compact index for the restarted audit.
+Workflow note: the restarted audit now matches the earlier Persona A reference baseline (`Work Shift x3` while time and hunger allow). Future slices should only diverge when event pressure, hunger thresholds, or travel taxes make that deviation explicit.
 
 ## Blockers & Resolutions
 
 - 2026-03-20: Workflow restart authorized. The earlier Persona A run was archived and the active audit was reset to Week 1 from onboarding.
 - 2026-03-20: Durable checkpoint tooling is active for the restarted run. Export a checkpoint after every authoritative completed week.
-- 2026-03-20: Week 1 checkpoint export completed successfully at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-save.json`.
+- 2026-03-20: The first restarted Week 1 checkpoint export completed successfully but was later invalidated along with its underplayed one-shift slice.
 - 2026-03-20: Labor Sector job application still needs post-click state verification under automation. Direct `agent-browser click` on the visible `Apply` button reported success without changing `CURRENT SHIFT`; a DOM-level click on the same button did succeed.
-- 2026-03-20: Week 2 checkpoint export completed successfully at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json`.
-- 2026-03-20: Week 2 reopened the summary-detail audit risk. The visible report showed `SANITY -10`, but `pendingTurnSummary.events` only listed `Ambient Stress -10` and `Cycle Recovery +5`, while the saved player state fell to `28` sanity and carried a new `Ad Fatigue` condition. Treat GitHub issue `#5` as only partially validated on the live build.
+- 2026-03-21: Restarted Week 1 was invalidated after review. The slice ended after one `6CH` shift even though Persona A still had room for the established three-shift baseline, so the active control surface was reset to require a corrected Week 1 redo before any Week 2 continuation.
+- 2026-03-21: Corrected Week 1 redo completed and exported a fresh authoritative checkpoint at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-meta.json`.
 
 ---
 

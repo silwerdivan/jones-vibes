@@ -2,9 +2,9 @@
   "players": [
     {
       "id": 1,
-      "credits": 4,
+      "credits": 172,
       "savings": 0,
-      "sanity": 50,
+      "sanity": 45,
       "educationLevel": 0,
       "educationCredits": 0,
       "educationCreditsGoal": 0,
@@ -65,47 +65,52 @@
     {
       "text": "Player 1 returned to Hab-Pod 404.",
       "category": "info",
-      "timestamp": "10:00:56 PM"
+      "timestamp": "7:38:49 AM"
     },
     {
       "text": "Player 1 recovered 5 Sanity during cycle recovery.",
       "category": "success",
-      "timestamp": "10:00:56 PM"
+      "timestamp": "7:38:49 AM"
     },
     {
       "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
       "category": "warning",
-      "timestamp": "10:00:56 PM"
+      "timestamp": "7:38:49 AM"
     },
     {
       "text": "Player 1 paid weekly Burn Rate of ₡80.",
       "category": "expense",
-      "timestamp": "10:00:56 PM"
+      "timestamp": "7:38:49 AM"
     },
     {
       "text": "Player 1 relocated to Hab-Pod 404.",
       "category": "info",
-      "timestamp": "10:00:50 PM"
+      "timestamp": "7:38:39 AM"
     },
     {
       "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
       "category": "success",
-      "timestamp": "10:00:38 PM"
+      "timestamp": "7:38:13 AM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "7:38:07 AM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "7:37:55 AM"
     },
     {
       "text": "✅ Position Secured: Sanitation-T3. Productivity tier updated.",
       "category": "success",
-      "timestamp": "10:00:07 PM"
-    },
-    {
-      "text": "Event: Shady Fixer Courier Job - choice recorded.",
-      "category": "info",
-      "timestamp": "9:59:44 PM"
+      "timestamp": "7:37:23 AM"
     },
     {
       "text": "Player 1 relocated to Labor Sector.",
       "category": "info",
-      "timestamp": "9:59:38 PM"
+      "timestamp": "7:37:17 AM"
     }
   ],
   "isPlayer2AI": true,
@@ -115,16 +120,9 @@
     "week": 1,
     "events": [
       {
-        "type": "success",
-        "label": "Shady Fixer Courier Job",
-        "value": 5,
-        "unit": "Sanity",
-        "icon": "psychology"
-      },
-      {
         "type": "income",
         "label": "Yield: Cycles",
-        "value": 84,
+        "value": 252,
         "unit": "₡",
         "icon": "payments"
       },
@@ -151,8 +149,8 @@
       }
     ],
     "totals": {
-      "creditsChange": 4,
-      "sanityChange": 0
+      "creditsChange": 172,
+      "sanityChange": -5
     }
   },
   "activeScreenId": "city",
@@ -161,7 +159,5 @@
   "activeEvent": null,
   "activeGraduation": null,
   "isAIThinking": false,
-  "eventHistory": [
-    "local_shady_courier"
-  ]
+  "eventHistory": []
 }

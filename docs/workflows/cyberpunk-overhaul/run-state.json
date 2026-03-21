@@ -20,10 +20,10 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-meta.json",
     "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-20T20:39:58.067Z"
+    "last_exported_at": "2026-03-21T05:39:03.428Z"
   },
   "slice_policy": {
     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
@@ -36,11 +36,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the Week 2 summary/checkpoint in `phase11-safe-grinder`, complete exactly one authoritative Week 3 slice, write `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`, and export a durable checkpoint immediately after the week closes while checking whether `Ad Fatigue` still causes visible-summary sanity drift.",
+  "next_slice": "Resume Persona A from the authoritative Week 1 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, treat `Work Shift x3` as the default Safe Grinder baseline whenever time and hunger allow, and write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-02.md` before exporting the Week 2 checkpoint.",
   "last_run": {
-    "at": "2026-03-20",
-    "outcome": "phase11_persona_a_week_02_complete",
-    "summary": "Persona A resumed from the Week 1 checkpoint, accepted `Network Stimulus Drop`, bought the safe `Broken Auto-Chef` food option, worked one `Sanitation-T3` shift, closed Week 2 at ₡88 / Debt ₡0 / Hunger 20% / Sanity 28 with `Ad Fatigue` active, and exported the new authoritative checkpoint to docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json."
+    "at": "2026-03-21",
+    "outcome": "phase11_persona_a_week_01_redo_complete",
+    "summary": "Persona A was restarted from onboarding, re-established the deterministic `Sanitation-T3` plus `Work Shift x3` baseline, and closed authoritative Week 1 at `₡172 / Debt ₡0 / Hunger 20% / Sanity 45%` with a fresh checkpoint export for Week 2 continuation."
   },
   "runner": {
     "sleep_seconds": 5,

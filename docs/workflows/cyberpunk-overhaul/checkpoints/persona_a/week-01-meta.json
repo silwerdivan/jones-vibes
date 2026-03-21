@@ -1,5 +1,5 @@
 {
-  "exported_at": "2026-03-20T20:01:11.300Z",
+  "exported_at": "2026-03-21T05:39:03.428Z",
   "session_name": "phase11-safe-grinder",
   "app_url": "http://127.0.0.1:5173/jones-vibes/",
   "checkpoint_root": "docs/workflows/cyberpunk-overhaul/checkpoints",
@@ -16,12 +16,12 @@
     "currentPlayer": {
       "id": 1,
       "name": "Player 1",
-      "credits": 4,
+      "credits": 172,
       "savings": 0,
       "debt": 0,
       "loan": 0,
       "hunger": 20,
-      "sanity": 50,
+      "sanity": 45,
       "educationLevel": 0,
       "careerLevel": 1,
       "time": 24,
