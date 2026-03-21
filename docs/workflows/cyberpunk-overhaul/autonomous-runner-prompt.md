@@ -4,20 +4,19 @@ Use the `cyberpunk-overhaul` skill for this run.
 
 This invocation is one fresh-context autonomous slice of the active Phase 11 workflow. Continuity must come from repository files, durable checkpoint exports, and persistent browser/app state, not from prior chat memory.
 
-The runner appends a `## Runner Context` section below with exact paths, checkpoint data, compact workflow excerpts, structured brief data, structured browser recipes, an external baseline handoff path, and trusted UI notes. Treat that section as canonical for this slice unless it directly conflicts with the bounded control surface in `run-state.json`.
+The runner appends a `## Runner Context` section below with exact paths, checkpoint data, compact structured summaries, an external baseline handoff path, and trusted UI notes. Treat that section as canonical for this slice unless it directly conflicts with the bounded control surface in `run-state.json`.
 
 ## Required startup reads
 1. Read `docs/workflows/cyberpunk-overhaul/run-state.json`.
-2. Use the structured brief and structured browser recipes embedded in `Runner Context` as the default startup source for persona state, checkpoint state, next action, and common interaction tactics.
-3. Use the compact workflow excerpts embedded in `Runner Context` only when you need human-readable nuance that the structured brief does not already cover.
-4. Read the full file for one of those paths only if the embedded JSON or excerpt is missing, stale, ambiguous, or insufficient for the decision you need to make.
+2. Use the structured brief summary and browser recipe summary embedded in `Runner Context` as the default startup source for persona state, checkpoint state, next action, and common interaction tactics.
+3. Read the full JSON or markdown file for one of those paths only if the embedded summary is missing, stale, ambiguous, or insufficient for the decision you need to make.
 5. Before editing a workflow markdown file, read only the smallest relevant region you need rather than reopening the whole file.
 
 Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe alternate persona logs when `Runner Context` already supplies the path you need.
 
 ## Operating rules
 - Respect `run-state.json` as the bounded control surface for this run.
-- Prefer exact paths, checkpoint summary, structured brief data, structured browser recipes, compact workflow excerpts, and expected next action from `Runner Context` over reconstructing state from older slice files.
+- Prefer exact paths, checkpoint summary, structured brief summary, structured browser recipe summary, and expected next action from `Runner Context` over reconstructing state from older slice files.
 - Treat runner startup continuity verification as authoritative. The Phase 11 entrypoint now checks the named browser session against the latest checkpoint before Codex starts; if the session is missing its save, the runner restores it automatically, and if the live save disagrees with the checkpoint the runner should fail before gameplay begins.
 - Treat checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/` as the authoritative recovery layer when a named browser session reopens without the expected save.
 - Treat the external baseline handoff as out-of-band context, not as new Phase 11 evidence. Only log it again if the live build contradicts that handoff.

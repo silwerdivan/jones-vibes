@@ -229,37 +229,72 @@ append_ui_workaround_notes() {
 EOF
 }
 
-append_file_excerpt() {
-  local label="$1"
-  local rel_path="$2"
-  local max_lines="$3"
-  local abs_path="${ROOT_DIR}/${rel_path}"
+append_phase_brief_summary() {
+  node - "${BRIEF_FILE}" <<'NODE'
+const fs = require('fs');
 
-  if [[ ! -f "${abs_path}" ]]; then
-    return 0
-  fi
-
-  cat <<EOF
-
-### ${label} (${rel_path})
-EOF
-  sed -n "1,${max_lines}p" "${abs_path}"
+const file = process.argv[2];
+if (!fs.existsSync(file)) {
+  process.exit(0);
 }
 
-append_json_excerpt() {
-  local label="$1"
-  local rel_path="$2"
-  local abs_path="${ROOT_DIR}/${rel_path}"
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+const latest = data.latest_authoritative_state || {};
+const slice = latest.latest_slice || {};
+const findings = Array.isArray(data.active_findings) ? data.active_findings.slice(0, 3) : [];
 
-  if [[ ! -f "${abs_path}" ]]; then
-    return 0
-  fi
+console.log('\n### Structured Phase 11 Brief Summary (docs/workflows/cyberpunk-overhaul/phase-11-brief.json)');
+console.log(`- Persona: ${data.current_persona?.name || 'unknown'} (${data.current_persona?.id || 'unknown'})`);
+console.log(`- Status: ${data.status}`);
+console.log(`- Latest authoritative week: ${latest.week ?? 'unknown'}`);
+console.log(`- Latest checkpoint: ${data.checkpointing?.latest_save_path || '(none)'}`);
+console.log(`- Latest slice file: ${data.control_surface?.latest_slice_path || '(none)'}`);
+console.log(`- Next action: ${latest.next_slice || '(none)'}`);
+if (slice.telemetry) {
+  console.log(`- Latest end state: cash=${slice.telemetry.end_cash || '?'} debt=${slice.telemetry.end_debt || '?'} hunger=${slice.telemetry.end_hunger || '?'} sanity=${slice.telemetry.end_sanity || '?'} net_credits=${slice.telemetry.net_credits || '?'} net_sanity=${slice.telemetry.net_sanity || '?'}`);
+}
+for (const finding of findings) {
+  console.log(`- Finding: ${finding}`);
+}
+NODE
+}
 
-  cat <<EOF
+append_browser_recipe_summary() {
+  node - "${BROWSER_RECIPES_FILE}" <<'NODE'
+const fs = require('fs');
 
-### ${label} (${rel_path})
-EOF
-  cat "${abs_path}"
+const file = process.argv[2];
+if (!fs.existsSync(file)) {
+  process.exit(0);
+}
+
+const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+const recipes = data.recipes || {};
+
+console.log('\n### Structured Agent Browser Recipe Summary (docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json)');
+for (const rule of (data.global_rules || []).slice(0, 4)) {
+  console.log(`- Rule: ${rule}`);
+}
+
+const recipeOrder = ['session_recovery', 'travel_city', 'apply_job', 'buy_food', 'work_shift', 'turn_summary_probe'];
+for (const key of recipeOrder) {
+  const recipe = recipes[key];
+  if (!recipe) {
+    continue;
+  }
+  const parts = [];
+  if (Array.isArray(recipe.preferred_selectors) && recipe.preferred_selectors.length > 0) {
+    parts.push(`selectors=${recipe.preferred_selectors.slice(0, 2).join(' | ')}`);
+  }
+  if (Array.isArray(recipe.verification) && recipe.verification.length > 0) {
+    parts.push(`verify=${recipe.verification[0]}`);
+  }
+  if (Array.isArray(recipe.preferred_probe_fields) && recipe.preferred_probe_fields.length > 0) {
+    parts.push(`probe=${recipe.preferred_probe_fields.join(',')}`);
+  }
+  console.log(`- Recipe ${key}: ${recipe.goal}${parts.length ? `; ${parts.join('; ')}` : ''}`);
+}
+NODE
 }
 
 snapshot_control_surface() {
@@ -699,17 +734,8 @@ verify_browser_continuity
 ### Trusted UI Workarounds
 EOF
   append_ui_workaround_notes
-  append_json_excerpt "Structured Phase 11 Brief" "docs/workflows/cyberpunk-overhaul/phase-11-brief.json"
-  append_json_excerpt "Structured Agent Browser Recipes" "docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json"
-  append_file_excerpt "Compact Current Phase Excerpt" "docs/workflows/cyberpunk-overhaul/current-phase.md" 24
-  append_file_excerpt "Compact Audit Progress Excerpt" "${phase_progress_log}" 28
-  append_file_excerpt "Compact Persona Log Excerpt" "${persona_log}" 40
-  if [[ -n "${latest_slice_file}" ]]; then
-    append_file_excerpt "Compact Latest Slice Excerpt" "${latest_slice_file}" 48
-  fi
-  if [[ -n "${external_handoff_path}" && "${external_handoff_path}" != "(none)" ]]; then
-    append_file_excerpt "Compact External Handoff Excerpt" "${external_handoff_path}" 32
-  fi
+  append_phase_brief_summary
+  append_browser_recipe_summary
 } >"${SLICE_PROMPT_FILE}"
 
 cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
