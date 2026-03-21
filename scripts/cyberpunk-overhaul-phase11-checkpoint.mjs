@@ -67,21 +67,29 @@ function parseAgentBrowserOutput(output) {
   return trimmed[trimmed.length - 1];
 }
 
-function getBrowserArgs() {
+function getBrowserArgs(configuredArgs = []) {
   const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
-  return extraArgs ? ['--args', extraArgs] : [];
+  if (extraArgs) {
+    return ['--args', extraArgs];
+  }
+
+  if (Array.isArray(configuredArgs) && configuredArgs.length > 0) {
+    return ['--args', configuredArgs.join(' ')];
+  }
+
+  return [];
 }
 
-function runAgentBrowser(commandArgs) {
-  return execFileSync('agent-browser', [...getBrowserArgs(), ...commandArgs], {
+function runAgentBrowser(browserArgs, commandArgs) {
+  return execFileSync('agent-browser', [...getBrowserArgs(browserArgs), ...commandArgs], {
     cwd: ROOT_DIR,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 }
 
-function evalInSession(sessionName, expression) {
-  const output = runAgentBrowser(['--session-name', sessionName, 'eval', expression]);
+function evalInSession(sessionName, expression, browserArgs) {
+  const output = runAgentBrowser(browserArgs, ['--session-name', sessionName, 'eval', expression]);
   const payload = parseAgentBrowserOutput(output);
   if (!payload) {
     return null;
@@ -89,8 +97,8 @@ function evalInSession(sessionName, expression) {
   return JSON.parse(payload);
 }
 
-function openApp(sessionName, appUrl) {
-  runAgentBrowser(['--session-name', sessionName, 'open', appUrl]);
+function openApp(sessionName, appUrl, browserArgs) {
+  runAgentBrowser(browserArgs, ['--session-name', sessionName, 'open', appUrl]);
 }
 
 function latestCheckpointSavePath(personaDir) {
@@ -114,6 +122,7 @@ function deriveContext(runStatePath) {
     runState,
     runStatePath,
     appUrl: runState.runtime?.app_url,
+    browserArgs: Array.isArray(runState.runtime?.browser_args) ? runState.runtime.browser_args : [],
     sessionName: runState.current_persona?.agent_browser_session_name,
     personaId: runState.current_persona?.id || 'persona',
     checkpointRootAbs: path.resolve(ROOT_DIR, checkpointRoot),
@@ -122,13 +131,13 @@ function deriveContext(runStatePath) {
 }
 
 function exportCheckpoint(context, label) {
-  const { sessionName, appUrl, personaId, checkpointRootAbs, runStatePath, checkpointRootRel } = context;
+  const { sessionName, appUrl, browserArgs, personaId, checkpointRootAbs, runStatePath, checkpointRootRel } = context;
   if (!label) {
     throw new Error('Export requires --label <label>.');
   }
 
-  openApp(sessionName, appUrl);
-  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')");
+  openApp(sessionName, appUrl, browserArgs);
+  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
   if (!serializedSave) {
     throw new Error(`No jones_fastlane_save value found in session '${sessionName}'.`);
   }
@@ -166,7 +175,7 @@ function exportCheckpoint(context, label) {
 }
 
 function importCheckpoint(context, savePathArg) {
-  const { sessionName, appUrl, checkpointRootAbs, personaId, runStatePath, checkpointRootRel } = context;
+  const { sessionName, appUrl, browserArgs, checkpointRootAbs, personaId, runStatePath, checkpointRootRel } = context;
   const defaultSavePath =
     (context.runState.checkpointing?.latest_save_path && path.resolve(ROOT_DIR, context.runState.checkpointing.latest_save_path)) ||
     latestCheckpointSavePath(path.join(checkpointRootAbs, personaId));
@@ -181,7 +190,7 @@ function importCheckpoint(context, savePathArg) {
   const summary = summarizeSaveState(parsedSave);
   const encodedSave = Buffer.from(rawSave, 'utf8').toString('base64');
 
-  openApp(sessionName, appUrl);
+  openApp(sessionName, appUrl, browserArgs);
   evalInSession(
     sessionName,
     `(() => {
@@ -189,11 +198,12 @@ function importCheckpoint(context, savePathArg) {
       localStorage.setItem('jones_fastlane_save', raw);
       sessionStorage.clear();
       return true;
-    })()`
+    })()`,
+    browserArgs
   );
-  openApp(sessionName, appUrl);
+  openApp(sessionName, appUrl, browserArgs);
 
-  const restoredSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')");
+  const restoredSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
   if (!restoredSave) {
     throw new Error(`Checkpoint import wrote no jones_fastlane_save value into session '${sessionName}'.`);
   }
@@ -215,20 +225,40 @@ function importCheckpoint(context, savePathArg) {
 }
 
 function statusCheckpoint(context) {
-  const { sessionName, appUrl, checkpointRootAbs, personaId, runState } = context;
-  openApp(sessionName, appUrl);
-  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')");
-  const summary = serializedSave ? summarizeSaveState(JSON.parse(serializedSave)) : null;
+  const { sessionName, appUrl, browserArgs, checkpointRootAbs, personaId, runState } = context;
+  openApp(sessionName, appUrl, browserArgs);
+  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
+  const browserSummary = serializedSave ? summarizeSaveState(JSON.parse(serializedSave)) : null;
   const discoveredLatestSave = latestCheckpointSavePath(path.join(checkpointRootAbs, personaId));
   const latestSavePath = runState.checkpointing?.latest_save_path ||
     (discoveredLatestSave ? path.relative(ROOT_DIR, discoveredLatestSave) : '');
+  const resolvedLatestSavePath = latestSavePath ? path.resolve(ROOT_DIR, latestSavePath) : '';
+  const checkpointSummary = resolvedLatestSavePath && fs.existsSync(resolvedLatestSavePath)
+    ? summarizeSaveState(readJson(resolvedLatestSavePath))
+    : null;
+  const matchesLatestCheckpoint = browserSummary && checkpointSummary
+    ? JSON.stringify(browserSummary) === JSON.stringify(checkpointSummary)
+    : null;
+  let continuityStatus = 'ok';
+
+  if (!browserSummary) {
+    continuityStatus = latestSavePath ? 'missing_browser_save' : 'missing_browser_save_no_checkpoint';
+  } else if (checkpointSummary && matchesLatestCheckpoint === false) {
+    continuityStatus = 'mismatch';
+  } else if (!checkpointSummary) {
+    continuityStatus = 'ok_no_checkpoint';
+  }
 
   console.log(JSON.stringify({
     action: 'status',
     session_name: sessionName,
+    continuity_status: continuityStatus,
+    continuity_ok: continuityStatus === 'ok' || continuityStatus === 'ok_no_checkpoint',
     has_browser_save: !!serializedSave,
     latest_checkpoint_save_path: latestSavePath || '',
-    summary,
+    browser_summary: browserSummary,
+    checkpoint_summary: checkpointSummary,
+    matches_latest_checkpoint: matchesLatestCheckpoint,
   }, null, 2));
 }
 

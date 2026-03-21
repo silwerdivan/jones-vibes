@@ -27,6 +27,106 @@ worktree_is_dirty() {
   [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]
 }
 
+checkpoint_status_json() {
+  node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" status
+}
+
+checkpoint_status_field() {
+  local payload="$1"
+  local path="$2"
+
+  node - "${payload}" "${path}" <<'NODE'
+const payload = JSON.parse(process.argv[2]);
+const path = process.argv[3];
+
+let current = payload;
+for (const part of path.split('.')) {
+  if (!part) continue;
+  current = current?.[part];
+}
+
+if (current === undefined || current === null) {
+  process.exit(1);
+}
+
+if (typeof current === 'object') {
+  process.stdout.write(JSON.stringify(current));
+} else {
+  process.stdout.write(String(current));
+}
+NODE
+}
+
+verify_browser_continuity() {
+  local status_json=""
+  local after_status_json=""
+  local continuity_status=""
+  local latest_checkpoint=""
+  local checked_at=""
+  local outcome=""
+  local restored="0"
+  local ok="0"
+
+  status_json="$(checkpoint_status_json)"
+  continuity_status="$(checkpoint_status_field "${status_json}" continuity_status)"
+  latest_checkpoint="$(checkpoint_status_field "${status_json}" latest_checkpoint_save_path 2>/dev/null || true)"
+  checked_at="$(date -Iseconds)"
+  after_status_json="${status_json}"
+
+  echo "[phase11-once] continuity status=${continuity_status} checkpoint=${latest_checkpoint:-none}" | tee -a "${LOG_FILE}"
+
+  case "${continuity_status}" in
+    ok|ok_no_checkpoint)
+      outcome="live_continuity"
+      ok="1"
+      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+      return 0
+      ;;
+    missing_browser_save)
+      echo "[phase11-once] browser save missing; restoring authoritative checkpoint ${latest_checkpoint}" | tee -a "${LOG_FILE}"
+      node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" import --save "${latest_checkpoint}" | tee -a "${LOG_FILE}"
+
+      after_status_json="$(checkpoint_status_json)"
+      continuity_status="$(checkpoint_status_field "${after_status_json}" continuity_status)"
+      echo "[phase11-once] continuity status after restore=${continuity_status}" | tee -a "${LOG_FILE}"
+      if [[ "${continuity_status}" != "ok" ]]; then
+        outcome="restore_failed"
+        restored="1"
+        write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+        write_preflight_failure_summary "${outcome}"
+        echo "[phase11-once] continuity restore failed; refusing to continue" | tee -a "${LOG_FILE}" >&2
+        return 1
+      fi
+      outcome="auto_restore"
+      restored="1"
+      ok="1"
+      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+      return 0
+      ;;
+    missing_browser_save_no_checkpoint)
+      outcome="missing_browser_save_no_checkpoint"
+      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+      write_preflight_failure_summary "${outcome}"
+      echo "[phase11-once] browser save missing and no checkpoint exists; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+    mismatch)
+      outcome="mismatch_fail"
+      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+      write_preflight_failure_summary "${outcome}"
+      echo "[phase11-once] live browser save does not match the authoritative checkpoint; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+    *)
+      outcome="unknown_status"
+      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
+      write_preflight_failure_summary "${outcome}"
+      echo "[phase11-once] unknown continuity status '${continuity_status}'; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+  esac
+}
+
 json_get() {
   node - "$RUN_STATE" "$1" <<'NODE'
 const fs = require('fs');
@@ -198,6 +298,154 @@ write_changed_file_artifacts() {
   fi
 }
 
+write_continuity_artifact() {
+  local before_json="$1"
+  local after_json="$2"
+  local outcome="$3"
+  local restored="$4"
+  local ok="$5"
+  local checked_at="$6"
+
+  node - \
+    "${before_json}" \
+    "${after_json}" \
+    "${outcome}" \
+    "${restored}" \
+    "${ok}" \
+    "${checked_at}" \
+    "${CONTINUITY_FILE}" \
+    "${EVENT_LOG_FILE}" \
+    "${CHECKPOINT_LOG_FILE}" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const [
+  beforeJson,
+  afterJson,
+  outcome,
+  restored,
+  ok,
+  checkedAt,
+  continuityFile,
+  eventLogFile,
+  checkpointLogFile,
+] = process.argv.slice(2);
+
+const before = JSON.parse(beforeJson);
+const after = JSON.parse(afterJson);
+const payload = {
+  type: 'continuity_preflight',
+  checked_at: checkedAt,
+  outcome,
+  ok: ok === '1',
+  restored: restored === '1',
+  session_name: after.session_name || before.session_name || '',
+  latest_checkpoint_save_path: after.latest_checkpoint_save_path || before.latest_checkpoint_save_path || '',
+  before: before,
+  after: after,
+};
+
+for (const filePath of [continuityFile, eventLogFile, checkpointLogFile]) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+}
+
+fs.writeFileSync(continuityFile, `${JSON.stringify(payload, null, 2)}\n`);
+const line = `${JSON.stringify(payload)}\n`;
+fs.appendFileSync(eventLogFile, line);
+fs.appendFileSync(checkpointLogFile, line);
+NODE
+}
+
+write_preflight_failure_summary() {
+  local outcome="$1"
+
+  node - \
+    "${SUMMARY_FILE}" \
+    "${STREAM_SUMMARY_FILE}" \
+    "${SLICE_ID}" \
+    "${SLICE_DIR}" \
+    "${persona_name}" \
+    "${CONTINUITY_FILE}" \
+    "${outcome}" <<'NODE'
+const fs = require('fs');
+const path = require('path');
+
+const [
+  summaryFile,
+  streamSummaryFile,
+  sliceId,
+  sliceDir,
+  personaName,
+  continuityFile,
+  outcome,
+] = process.argv.slice(2);
+
+const continuity = JSON.parse(fs.readFileSync(continuityFile, 'utf8'));
+const startedAt = continuity.checked_at;
+
+const base = {
+  slice_id: sliceId,
+  persona: personaName,
+  started_at: startedAt,
+  ended_at: startedAt,
+  wall_time_ms: 0,
+  usage: {
+    input_tokens: 0,
+    cached_input_tokens: 0,
+    output_tokens: 0,
+  },
+  counts: {
+    commands_total: 0,
+    commands_failed: 0,
+    agent_browser_commands: 0,
+    startup_reads: 0,
+    git_diff_commands: 0,
+    checkpoints: 1,
+    retries: 0,
+    fallbacks: 0,
+  },
+  debug: {
+    escalated: true,
+    reasons: [`continuity_${outcome}`],
+    retry_threshold: 0,
+  },
+  timings: {
+    slowest_commands: [],
+  },
+  failure_candidates: [],
+  fallback_messages: [],
+  retry_messages: [],
+};
+
+const summary = {
+  ...base,
+  status: 'blocked',
+  needs_human: true,
+  codex_exit_code: -1,
+  worktree_dirty_at_start: false,
+  changed_files: [],
+  continuity,
+  artifacts: {
+    slice_dir: sliceDir,
+    prompt: path.join(sliceDir, 'prompt.md'),
+    last_message: path.join(sliceDir, 'last-message.txt'),
+    events: path.join(sliceDir, 'events.jsonl'),
+    checkpoints: path.join(sliceDir, 'checkpoints.jsonl'),
+    continuity: continuityFile,
+    summary: summaryFile,
+    changed_files: path.join(sliceDir, 'changed-files.txt'),
+    final_diff: path.join(sliceDir, 'final.diff'),
+    raw_codex_events: '',
+    suspicious_commands: '',
+  },
+  diff_bytes: 0,
+};
+
+fs.writeFileSync(streamSummaryFile, `${JSON.stringify(base, null, 2)}\n`);
+fs.writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`);
+NODE
+}
+
 write_slice_summary() {
   node - \
     "${STREAM_SUMMARY_FILE}" \
@@ -214,7 +462,8 @@ write_slice_summary() {
     "${DEBUG_DIR}/raw-codex-events.jsonl" \
     "${DEBUG_DIR}/suspicious-commands.jsonl" \
     "${CHANGED_FILES_FILE}" \
-    "${FINAL_DIFF_FILE}" <<'NODE'
+    "${FINAL_DIFF_FILE}" \
+    "${CONTINUITY_FILE}" <<'NODE'
 const fs = require('fs');
 const path = require('path');
 
@@ -234,9 +483,13 @@ const [
   suspiciousPath,
   changedFilesPath,
   finalDiffPath,
+  continuityFilePath,
 ] = process.argv.slice(2);
 
 const base = JSON.parse(fs.readFileSync(streamSummaryFile, 'utf8'));
+const continuity = fs.existsSync(continuityFilePath)
+  ? JSON.parse(fs.readFileSync(continuityFilePath, 'utf8'))
+  : null;
 const changedFiles = fs
   .readFileSync(changedFilesPath, 'utf8')
   .split('\n')
@@ -259,12 +512,14 @@ const summary = {
   codex_exit_code: Number(codexExit),
   worktree_dirty_at_start: preRunDirty === '1',
   changed_files: changedFiles,
+  continuity,
   artifacts: {
     slice_dir: sliceDir,
     prompt: path.join(sliceDir, 'prompt.md'),
     last_message: path.join(sliceDir, 'last-message.txt'),
     events: path.join(sliceDir, 'events.jsonl'),
     checkpoints: path.join(sliceDir, 'checkpoints.jsonl'),
+    continuity: continuityFilePath,
     summary: summaryFile,
     changed_files: changedFilesPath,
     final_diff: finalDiffPath,
@@ -385,6 +640,7 @@ EVENT_LOG_FILE="${SLICE_DIR}/events.jsonl"
 CHECKPOINT_LOG_FILE="${SLICE_DIR}/checkpoints.jsonl"
 STREAM_SUMMARY_FILE="${SLICE_DIR}/stream-summary.json"
 SUMMARY_FILE="${SLICE_DIR}/summary.json"
+CONTINUITY_FILE="${SLICE_DIR}/continuity.json"
 RAW_JSONL_TEMP="${SLICE_DIR}/raw-codex-events.tmp.jsonl"
 DEBUG_CANDIDATES_TEMP="${SLICE_DIR}/suspicious-commands.tmp.jsonl"
 CHANGED_FILES_FILE="${SLICE_DIR}/changed-files.txt"
@@ -395,6 +651,8 @@ mkdir -p "${SLICE_DIR}" "${DEBUG_DIR}"
 export AGENT_BROWSER_SESSION_NAME="${AGENT_BROWSER_SESSION_NAME:-${session_name}}"
 export AGENT_BROWSER_ARGS="${AGENT_BROWSER_ARGS:---no-sandbox}"
 export JONES_VIBES_APP_URL="${app_url}"
+
+verify_browser_continuity
 
 {
   cat "${PROMPT_TEMPLATE}"
