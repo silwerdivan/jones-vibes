@@ -318,6 +318,22 @@ write_changed_file_artifacts() {
   local untracked_changed=()
   local file=""
 
+  is_excluded_runtime_noise() {
+    local rel_path="$1"
+
+    case "${rel_path}" in
+      agent-browser-chrome-*|agent-browser-chrome-*/*)
+        return 0
+        ;;
+      org.chromium.Chromium.*|org.chromium.Chromium.*/*)
+        return 0
+        ;;
+      *)
+        return 1
+        ;;
+    esac
+  }
+
   while IFS= read -r file; do
     [[ -z "${file}" ]] && continue
     tracked_changed+=("${file}")
@@ -325,6 +341,9 @@ write_changed_file_artifacts() {
 
   while IFS= read -r file; do
     [[ -z "${file}" ]] && continue
+    if is_excluded_runtime_noise "${file}"; then
+      continue
+    fi
     untracked_changed+=("${file}")
   done < <(git -C "${ROOT_DIR}" ls-files --others --exclude-standard)
 

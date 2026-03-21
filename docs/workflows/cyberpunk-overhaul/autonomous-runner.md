@@ -98,9 +98,9 @@ Normal successful runs keep the operator-facing stream small:
 - `summary.json`
   Consolidated per-slice outcome, token usage, wall time, changed files, artifact paths, and debug status.
 - `changed-files.txt`
-  Final changed-file list for the slice.
+  Final changed-file list for the slice. Ephemeral browser profile/cache trees such as root-level `agent-browser-chrome-*` and `org.chromium.Chromium.*` directories are excluded so browser runtime noise does not masquerade as project output.
 - `final.diff`
-  One consolidated final diff artifact for tracked and untracked changes, instead of repeated live `diff --git` dumps.
+  One consolidated final diff artifact for tracked and untracked changes, instead of repeated live `diff --git` dumps. The same ephemeral browser profile/cache exclusions apply here.
 - `prompt.md`
   Exact prompt used for that slice.
 - `last-message.txt`
