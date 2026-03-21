@@ -49,6 +49,18 @@ Compete to achieve career success, education milestones, happiness, and wealth f
 
 ---
 
+## Workflow Shortcuts
+
+Use the short phase-11 aliases when you do not want to remember the full `workflow:phase11:*` names.
+
+- `npm run p11` shows the available phase-11 commands
+- `npm run p11:oncec` runs the same flow as `npm run workflow:phase11:once:commit`
+- `npm run wf -- oncec` uses the generic workflow launcher and is easier to extend later
+
+The canonical scripts still exist in [`package.json`](/home/silwerdivan/code/jones-vibes/package.json).
+
+---
+
 ## ✨ Credits
 
 - Inspired by *Jones in the Fast Lane* (Sierra On-Line, 1990)
