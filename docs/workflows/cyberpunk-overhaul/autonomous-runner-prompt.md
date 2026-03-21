@@ -40,6 +40,17 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
   - keep `phase-11-audit-progress.md` concise and synthesis-oriented rather than week-by-week exhaustive.
 - After every authoritative completed week, export the live `jones_fastlane_save` payload to a new checkpoint file with `npm run workflow:phase11:checkpoint:export -- --label week-NN` and update the workflow docs accordingly.
 
+## Token discipline
+- Keep normal successful slices compact. Preserve audit quality without repeatedly feeding bulky tool output back into one long Codex turn.
+- Save rich evidence to files, not to the live model context. Use workflow markdown files, checkpoints, screenshots, and runtime artifacts as the durable record.
+- Prefer targeted probes over broad dumps. For gameplay verification, request only the fields you need, such as `screen`, `credits`, `debt`, `hunger`, `sanity`, `time`, `current shift`, `hasPendingTurnSummary`, or a short action result.
+- Do not print full edited file contents after writing them. Report the updated path and a short summary of what changed.
+- Do not run broad `git diff` readbacks during a normal slice. Inspect diffs only when a change looks wrong, a blocker appears, or you need to debug an unexpected side effect.
+- Do not inventory the whole DOM or all `data-testid` nodes unless a selector failed. Use the known stable selectors from `Runner Context` first, then escalate only for the failing surface.
+- Do not use `document.body.innerText` dumps except when the trusted workaround says the session may have reset or the UI state is genuinely ambiguous. Even then, keep the returned text short and focused.
+- Keep checkpoint import/export verification concise. Confirm the restored or exported turn, player, and a few key stats instead of echoing the full save summary repeatedly.
+- If a slice becomes suspicious, blocked, or fallback-heavy, it is acceptable to switch to richer diagnostics for that branch. Preserve those details in artifacts, then return to compact probes once the issue is understood.
+
 ## Final output contract
 End the final response with exactly one of these tokens on its own line:
 - `AUTONOMOUS_SLICE_COMPLETE`

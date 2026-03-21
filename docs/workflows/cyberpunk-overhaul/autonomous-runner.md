@@ -73,7 +73,8 @@ npm run workflow:phase11:checkpoint:import
 6. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
-   - the terminal/log stream keeps short status, retry, fallback, failure, and usage lines instead of the full raw event firehose.
+   - the terminal/log stream keeps short status, retry, fallback, failure, and usage lines instead of the full raw event firehose,
+   - the prompt steers normal slices toward short state probes and path-based summaries, while large diffs, broad DOM dumps, and verbose readbacks are reserved for suspicious or blocked branches.
 7. The loop script rereads `run-state.json` after each slice and stops only when the workflow is `blocked`, `complete`, or the process is interrupted.
 
 ## Logging Model
@@ -108,6 +109,8 @@ Normal successful runs keep the operator-facing stream small:
   Snapshots of the bounded control-surface files listed in `run-state.json`.
 
 The structured logs live in the slice directory above, not in `docs/workflows/...`. The workflow docs remain the bounded control surface; the runtime directory is the execution evidence.
+
+Normal slices are expected to stay lean. The authoritative audit record still lives in the workflow docs, checkpoints, screenshots, and runtime artifacts, but the live model context should usually receive only concise state probes and short change summaries.
 
 ### Debug escalation
 
