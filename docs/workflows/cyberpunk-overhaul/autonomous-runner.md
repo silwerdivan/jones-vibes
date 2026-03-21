@@ -184,9 +184,9 @@ This does not disable the compact live stream. It forces the slice to retain the
   Always retain the raw slice debug artifacts under `debug/` even if the slice
   would normally stay in compact mode.
 - `AUTONOMOUS_GIT_COMMIT=1`
-  Auto-commit after a slice. The runner only does this when the worktree was
-  clean before the slice started; otherwise it skips the commit to avoid mixing
-  pre-existing edits into the automation commit.
+  Auto-commit after a slice. Phase 11 runners now refuse to start any slice or
+  loop iteration when the git worktree is already dirty, so automation commits
+  only ever happen from a clean-start run.
 - `DRY_RUN=1`
   Show the resolved prompt and runner configuration without launching Codex.
 - `AGENT_BROWSER_SESSION_NAME`
@@ -225,3 +225,6 @@ The loop exits when `run-state.json` reports:
 - `needs_human = true`
 
 It also exits on shell error or manual interruption.
+
+The runners also exit immediately if `git status --short` is non-empty before a
+new slice or loop iteration begins.

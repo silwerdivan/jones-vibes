@@ -14,9 +14,13 @@ Usage: bash scripts/cyberpunk-overhaul-phase11-loop.sh [--commit]
 
 Runs the active Phase 11 workflow continuously, but each iteration launches a
 brand-new `codex exec --ephemeral` process to guarantee fresh context.
-Pass --commit to let each iteration auto-commit its slice when the worktree was
-clean at the start of that slice.
+Refuses to start a new iteration if the git worktree is dirty.
+Pass --commit to let each clean-start iteration auto-commit its slice changes.
 EOF
+}
+
+worktree_is_dirty() {
+  [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]
 }
 
 json_get() {
@@ -82,6 +86,11 @@ max_iterations="${AUTONOMOUS_MAX_ITERATIONS:-0}"
 iteration=0
 
 while true; do
+  if worktree_is_dirty; then
+    echo "[phase11-loop] refusing to start iteration: git worktree is dirty" | tee -a "${LOG_FILE}" >&2
+    exit 1
+  fi
+
   status="$(json_get_or_default status unknown)"
   needs_human="$(json_get_or_default needs_human false)"
 

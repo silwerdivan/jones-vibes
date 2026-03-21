@@ -18,9 +18,13 @@ usage() {
 Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run] [--commit]
 
 Runs exactly one fresh-context Codex slice for the active Phase 11 workflow.
-Pass --commit to auto-commit slice changes when the worktree was clean before
-the run started.
+Refuses to start if the git worktree is dirty.
+Pass --commit to auto-commit slice changes after a clean-start slice finishes.
 EOF
+}
+
+worktree_is_dirty() {
+  [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]
 }
 
 json_get() {
@@ -325,8 +329,10 @@ if [[ "${needs_human}" == "true" ]]; then
 fi
 
 pre_run_dirty=0
-if [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]; then
+if worktree_is_dirty; then
   pre_run_dirty=1
+  echo "[phase11-once] refusing to start: git worktree is dirty" | tee -a "${LOG_FILE}" >&2
+  exit 1
 fi
 
 "${ENSURE_DEV}"
@@ -516,12 +522,7 @@ if [[ "${AUTO_COMMIT}" != "1" ]]; then
   exit "${codex_exit}"
 fi
 
-if [[ "${pre_run_dirty}" == "1" ]]; then
-  echo "[phase11-once] auto-commit skipped: worktree was dirty before the slice started" | tee -a "${LOG_FILE}"
-  exit "${codex_exit}"
-fi
-
-if [[ -z "$(git -C "${ROOT_DIR}" status --short)" ]]; then
+if ! worktree_is_dirty; then
   echo "[phase11-once] auto-commit skipped: slice produced no git changes" | tee -a "${LOG_FILE}"
   exit "${codex_exit}"
 fi
