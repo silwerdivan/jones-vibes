@@ -12,6 +12,9 @@ LOG_FILE="${RUNTIME_DIR}/autonomous-runner.log"
 LAST_MESSAGE_FILE="${RUNTIME_DIR}/last-codex-message.txt"
 PROMPT_FILE="${RUNTIME_DIR}/current-codex-prompt.md"
 SLICE_ROOT_DIR="${RUNTIME_DIR}/slices"
+BRIEF_SCRIPT="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-brief.mjs"
+BRIEF_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/phase-11-brief.json"
+BROWSER_RECIPES_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json"
 
 usage() {
   cat <<'EOF'
@@ -241,6 +244,22 @@ append_file_excerpt() {
 ### ${label} (${rel_path})
 EOF
   sed -n "1,${max_lines}p" "${abs_path}"
+}
+
+append_json_excerpt() {
+  local label="$1"
+  local rel_path="$2"
+  local abs_path="${ROOT_DIR}/${rel_path}"
+
+  if [[ ! -f "${abs_path}" ]]; then
+    return 0
+  fi
+
+  cat <<EOF
+
+### ${label} (${rel_path})
+EOF
+  cat "${abs_path}"
 }
 
 snapshot_control_surface() {
@@ -608,6 +627,7 @@ if worktree_is_dirty; then
 fi
 
 "${ENSURE_DEV}"
+node "${BRIEF_SCRIPT}"
 
 persona_name="$(json_get current_persona.name)"
 persona_slug="$(json_get_or_default current_persona.id persona)"
@@ -669,6 +689,8 @@ verify_browser_continuity
 - Canonical checkpoint directory: ${persona_checkpoint_dir}
 - Latest checkpoint save file: ${latest_checkpoint_file:-"(none yet)"}
 - External baseline handoff: ${external_handoff_path:-"(none)"}
+- Structured phase brief: docs/workflows/cyberpunk-overhaul/phase-11-brief.json
+- Structured browser recipes: docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json
 - Last authoritative checkpoint: ${last_run_at} (${last_run_outcome})
 - Current checkpoint summary: ${last_run_summary}
 - Expected next action: ${next_slice}
@@ -677,6 +699,8 @@ verify_browser_continuity
 ### Trusted UI Workarounds
 EOF
   append_ui_workaround_notes
+  append_json_excerpt "Structured Phase 11 Brief" "docs/workflows/cyberpunk-overhaul/phase-11-brief.json"
+  append_json_excerpt "Structured Agent Browser Recipes" "docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json"
   append_file_excerpt "Compact Current Phase Excerpt" "docs/workflows/cyberpunk-overhaul/current-phase.md" 24
   append_file_excerpt "Compact Audit Progress Excerpt" "${phase_progress_log}" 28
   append_file_excerpt "Compact Persona Log Excerpt" "${persona_log}" 40
