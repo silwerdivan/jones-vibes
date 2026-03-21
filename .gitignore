@@ -27,6 +27,11 @@ yarn-error.log*
 # Build
 dist/
 .codex-runtime/
+node-compile-cache/
+
+# Browser automation artifacts
+agent-browser-chrome-*/
+org.chromium.Chromium.*/
 
 # Phase 11 debug screenshots
 tmp/phase11-*.png
