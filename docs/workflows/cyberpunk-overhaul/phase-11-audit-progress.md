@@ -1,7 +1,7 @@
 # Phase 11: Gameplay Audit Progress Report
 
 ## Date: 2026-03-21
-## Status: Task 1 Complete, Task 2 Active (Week 3 Authoritative, Week 4 Next)
+## Status: Task 1 Complete, Task 2 Active (Week 4 Authoritative, Week 5 Next)
 
 ### 1. Audit Infrastructure (Task 1 - COMPLETE)
 - **Tooling:** `agent-browser` configured and connected to `http://127.0.0.1:5173/jones-vibes/`.
@@ -12,16 +12,16 @@
 ### 2. Persona A: The Safe Grinder (Task 2 - RESTARTED)
 - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Prioritize low-risk survival and steady labor to test the "Poverty Trap" baseline.
-- **Authoritative Progress:** Weeks 1-3 are now authoritative in the restarted chain, with Week 3 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md`.
+- **Authoritative Progress:** Weeks 1-4 are now authoritative in the restarted chain, with Week 4 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md`.
 - **Archive:** The previous Persona A run was moved to `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/` so the new run can proceed with a clean control surface.
-- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-meta.json`.
-- **Next authoritative target:** Continue Persona A into Week 4 from the Week 3 summary/checkpoint state and verify whether `₡448 / Hunger 60% / Sanity 15` forces food, extra rest, or another broken labor week before the baseline can stabilize again.
+- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-meta.json`.
+- **Next authoritative target:** Continue Persona A into Week 5 from the Week 4 summary/checkpoint state and verify whether `₡496 / Hunger 30% / Sanity 20 / Sore Legs 123h` can recover the third labor shift or whether Safe Grinder is now locked into a food-assisted two-shift route.
 
 ### 3. Current Technical State
-- **Browser State:** The authoritative surface is now the Week 3 summary modal at `₡448 / Debt ₡0 / Hunger 60% / Sanity 15`, with the live browser recovered from disk after another continuity failure.
-- **Checkpoint Hardening:** The export/import tooling successfully restored Week 2 from disk and is now re-anchored through `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-save.json`.
+- **Browser State:** The authoritative surface is now the Week 4 summary modal at `₡496 / Debt ₡0 / Hunger 30% / Sanity 20`, carrying `Sore Legs` forward into the next slice.
+- **Checkpoint Hardening:** The export/import tooling is now re-anchored through `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json`.
 - **Identified Elements:** City travel cards still need targeted DOM interaction because they are custom divs, and direct `agent-browser click` on the Labor Sector `Apply` button still needs state verification because the visible button reported success without mutating `CURRENT SHIFT`.
-- **Next Action:** Start Week 4 from the authoritative Week 3 summary state and log whether the `60%` hunger plus `15` sanity crash forces Safe Grinder into food spending, more recovery loss, or a deeper economic stall.
+- **Next Action:** Start Week 5 from the authoritative Week 4 summary state and log whether the burger-assisted recovery can regain a third shift before `Sore Legs` and ongoing sanity pressure re-break the route.
 
 ### 4. Observations & Notes
 - Phase 11 keeps a two-layer history model:
@@ -34,3 +34,5 @@
 - The Week 2 modal showed visible sanity lines summing to `0`, `pendingTurnSummary.totals.sanityChange` reported `-11`, and the exported checkpoint landed the player at `22` sanity. That contradiction is now one of the strongest live-balance or summary-integrity findings in the restarted run.
 - Week 3 converts that contradiction into a concrete progression break. `AD_FATIGUE` plus `Panic Attack on the Mag-Lev` forced Safe Grinder into `Crushing Burnout`, turning the expected three-shift week into a one-shift recovery scramble that netted only `+₡4`.
 - The Week 3 modal still fails basic sanity reconciliation. Its visible sanity lines sum to `+10`, `pendingTurnSummary.totals.sanityChange` reports `-7`, and the exported checkpoint lands the player at `15` sanity.
+- Week 4 proves the crash can be stabilized, but not cheaply. `Transit Strike` immediately turned into `Sore Legs`, Safe Grinder had to spend `₡40` on `Real-Meat Burger` to recover from `60%` hunger and `15` sanity, and the best resulting line was only `Work Shift x2` before the walk home.
+- The Week 4 modal still fails the same sanity reconciliation check. Its visible lines sum to `+5`, the checkpointed end state rises from `15` to `20` sanity, and `pendingTurnSummary.totals.sanityChange` still incorrectly reports `-7`.

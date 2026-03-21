@@ -20,10 +20,10 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-meta.json",
     "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-21T18:23:14.026Z",
+    "last_exported_at": "2026-03-21T19:01:03.214Z",
     "last_restored_at": "2026-03-21T18:19:03.618Z",
     "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
   },
@@ -38,11 +38,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the authoritative Week 3 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start Week 4 from `₡448 / Debt ₡0 / Hunger 60% / Sanity 15`, and verify whether Safe Grinder now has to buy food, spend more recovery time, or accept another broken labor week before the route stabilizes. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md` before exporting the Week 4 checkpoint.",
+  "next_slice": "Resume Persona A from the authoritative Week 4 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start Week 5 from `₡496 / Debt ₡0 / Hunger 30% / Sanity 20 / Sore Legs 123h`, and verify whether Safe Grinder can recover the third labor shift or is now locked into a food-assisted two-shift route under the travel tax. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md` before exporting the Week 5 checkpoint.",
   "last_run": {
     "at": "2026-03-21",
-    "outcome": "phase11_persona_a_week_03_complete",
-    "summary": "Persona A recovered from lost browser continuity by explicitly importing the authoritative Week 2 checkpoint, then hit `Panic Attack on the Mag-Lev` and `Crushing Burnout`, which broke the restored `Sanitation-T3` plus `Work Shift x3` baseline and collapsed Week 3 into a one-shift recovery week. The run closed authoritative Week 3 at `₡448 / Debt ₡0 / Hunger 60% / Sanity 15` with a fresh Week 3 checkpoint and another sanity-summary mismatch for Week 4 follow-up."
+    "outcome": "phase11_persona_a_week_04_complete",
+    "summary": "Persona A continued directly from the authoritative Week 3 live summary state, took the free `Transit Strike` walk, bought `Real-Meat Burger`, recovered enough for `Sanitation-T3` plus `Work Shift x2`, and closed authoritative Week 4 at `₡496 / Debt ₡0 / Hunger 30% / Sanity 20` with a fresh Week 4 checkpoint. The sanity-summary mismatch is still live: visible lines and the checkpoint show `+5`, but `pendingTurnSummary.totals.sanityChange` still reports `-7`."
   },
   "runner": {
     "sleep_seconds": 5,

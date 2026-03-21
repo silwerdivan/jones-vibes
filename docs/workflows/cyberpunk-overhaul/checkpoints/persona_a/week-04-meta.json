@@ -1,0 +1,46 @@
+{
+  "exported_at": "2026-03-21T19:01:03.214Z",
+  "session_name": "phase11-safe-grinder",
+  "app_url": "http://127.0.0.1:5173/jones-vibes/",
+  "checkpoint_root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+  "checkpoint_label": "week-04",
+  "summary": {
+    "turn": 4,
+    "currentPlayerIndex": 0,
+    "gameOver": false,
+    "activeScreenId": "city",
+    "activeLocationDashboard": null,
+    "hasPendingTurnSummary": true,
+    "isAIThinking": false,
+    "playerCount": 2,
+    "currentPlayer": {
+      "id": 1,
+      "name": "Player 1",
+      "credits": 496,
+      "savings": 0,
+      "debt": 0,
+      "loan": 0,
+      "hunger": 30,
+      "sanity": 20,
+      "educationLevel": 0,
+      "careerLevel": 1,
+      "time": 24,
+      "location": "Hab-Pod 404",
+      "activeConditions": [
+        {
+          "id": "SORE_LEGS",
+          "name": "Sore Legs",
+          "description": "Walking is painful. Travel time increased by 50%.",
+          "remainingDuration": 123,
+          "effects": [
+            {
+              "type": "TRAVEL_TIME_MODIFIER",
+              "value": 1.5
+            }
+          ],
+          "icon": "🦵"
+        }
+      ]
+    }
+  }
+}
