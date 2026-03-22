@@ -15,19 +15,113 @@ SLICE_ROOT_DIR="${RUNTIME_DIR}/slices"
 BRIEF_SCRIPT="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-brief.mjs"
 BRIEF_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/phase-11-brief.json"
 BROWSER_RECIPES_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json"
+ISSUE_LEDGER_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/slice-issue-ledger.md"
 
 usage() {
   cat <<'EOF'
-Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run] [--commit]
+Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run] [--commit] [--allow-pending-issues]
 
 Runs exactly one fresh-context Codex slice for the active Phase 11 workflow.
 Refuses to start if the git worktree is dirty.
+Refuses to start if a newer slice has not been triaged into the issue ledger yet,
+or if the active slice issue ledger still has unresolved follow-up items.
 Pass --commit to auto-commit slice changes after a clean-start slice finishes.
+Pass --allow-pending-issues to bypass the slice-issue gate intentionally.
 EOF
 }
 
 worktree_is_dirty() {
   [[ -n "$(git -C "${ROOT_DIR}" status --short)" ]]
+}
+
+enforce_issue_followup_gate() {
+  local latest_slice_file="$1"
+  local ledger_check_output=""
+  local check_status=0
+
+  if [[ ! -n "${latest_slice_file}" ]]; then
+    return 0
+  fi
+
+  if ! ledger_check_output="$(
+    node - "${ISSUE_LEDGER_FILE}" "${latest_slice_file}" <<'NODE'
+const fs = require('fs');
+
+const [ledgerPath, latestSlicePath] = process.argv.slice(2);
+
+if (!latestSlicePath || !fs.existsSync(latestSlicePath)) {
+  process.exit(0);
+}
+
+if (!fs.existsSync(ledgerPath)) {
+  console.log(`missing\t${latestSlicePath}`);
+  process.exit(2);
+}
+
+const ledgerStat = fs.statSync(ledgerPath);
+const sliceStat = fs.statSync(latestSlicePath);
+
+if (ledgerStat.mtimeMs < sliceStat.mtimeMs) {
+  console.log(`stale\t${latestSlicePath}`);
+  process.exit(3);
+}
+
+const unresolvedStatuses = new Set(['todo', 'in_progress', 'blocked']);
+const lines = fs.readFileSync(ledgerPath, 'utf8').split(/\r?\n/);
+const issues = [];
+
+for (const line of lines) {
+  if (!line.startsWith('|')) continue;
+  if (/^\|\s*ID\s*\|/.test(line) || /^\|\s*---/.test(line)) continue;
+  const cells = line.split('|').slice(1, -1).map((cell) => cell.trim());
+  if (cells.length < 8) continue;
+  issues.push({
+    id: cells[0],
+    status: cells[1],
+    title: cells[2].replace(/`/g, ''),
+  });
+}
+
+const unresolved = issues.filter((issue) => unresolvedStatuses.has(issue.status));
+if (unresolved.length === 0) {
+  process.exit(0);
+}
+
+const nextIssue = unresolved[0];
+console.log(`unresolved\t${nextIssue.id}\t${nextIssue.status}\t${nextIssue.title}`);
+process.exit(4);
+NODE
+  )"; then
+    check_status=$?
+  else
+    check_status=$?
+  fi
+
+  case "${check_status}" in
+    0)
+      return 0
+      ;;
+    2)
+      echo "[phase11-once] refusing to start: slice issue ledger is missing for latest slice ${latest_slice_file}" | tee -a "${LOG_FILE}" >&2
+      echo "[phase11-once] run npm run p11:issues:identify -- --source-slice ${latest_slice_file} first" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+    3)
+      echo "[phase11-once] refusing to start: slice issue ledger is older than latest slice ${latest_slice_file}" | tee -a "${LOG_FILE}" >&2
+      echo "[phase11-once] run npm run p11:issues:identify -- --source-slice ${latest_slice_file} first" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+    4)
+      IFS=$'\t' read -r issue_state next_issue_id next_issue_status next_issue_title <<<"${ledger_check_output}"
+      echo "[phase11-once] refusing to start: slice issue ledger still has unresolved follow-up issue ${next_issue_id} (${next_issue_status}) - ${next_issue_title}" | tee -a "${LOG_FILE}" >&2
+      echo "[phase11-once] run npm run p11:issues or npm run p11:issues:next before starting another slice" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+    *)
+      echo "[phase11-once] unable to evaluate slice issue ledger gate" | tee -a "${LOG_FILE}" >&2
+      return 1
+      ;;
+  esac
 }
 
 checkpoint_status_json() {
@@ -732,6 +826,7 @@ DRY_RUN="${DRY_RUN:-0}"
 AUTO_COMMIT="${AUTONOMOUS_GIT_COMMIT:-0}"
 RETRY_THRESHOLD="${AUTONOMOUS_RETRY_THRESHOLD:-2}"
 FORCE_VERBOSE="${AUTONOMOUS_FORCE_VERBOSE:-0}"
+ALLOW_PENDING_ISSUES=0
 
 while (($# > 0)); do
   case "${1}" in
@@ -744,6 +839,9 @@ while (($# > 0)); do
       ;;
     --commit)
       AUTO_COMMIT=1
+      ;;
+    --allow-pending-issues)
+      ALLOW_PENDING_ISSUES=1
       ;;
     *)
       echo "[phase11-once] unknown argument: ${1}" >&2
@@ -800,6 +898,12 @@ latest_slice_file="$(latest_persona_slice_file "${detail_log_root}" "${persona_l
 persona_checkpoint_dir="${checkpoint_root}/${persona_slug}"
 latest_checkpoint_file="$(latest_persona_checkpoint_file "${checkpoint_root}" "${persona_slug}")"
 exec_strategy="${CODEX_EXEC_STRATEGY:-$(json_get_or_default runner.codex_exec_strategy dangerous)}"
+
+if [[ "${ALLOW_PENDING_ISSUES}" != "1" ]]; then
+  enforce_issue_followup_gate "${latest_slice_file}"
+else
+  echo "[phase11-once] bypassing slice issue ledger gate because --allow-pending-issues was provided" | tee -a "${LOG_FILE}"
+fi
 
 slice_timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
 SLICE_ID="${slice_timestamp}-${persona_slug}"

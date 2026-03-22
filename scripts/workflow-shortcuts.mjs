@@ -25,8 +25,8 @@ function printHelp() {
     "Phase 11",
     "  npm run p11         Show this menu",
     "  npm run p11:dev     Ensure dev environment is ready",
-    "  npm run p11:once    Run one phase-11 slice",
-    "  npm run p11:oncec   Run one phase-11 slice and commit",
+    "  npm run p11:once    Run one phase-11 slice (blocks on pending slice issues)",
+    "  npm run p11:oncec   Run one phase-11 slice and commit (blocks on pending slice issues)",
     "  npm run p11:status  Show checkpoint status",
     "  npm run p11:export  Export the current checkpoint",
     "  npm run p11:import  Import a checkpoint",
@@ -49,6 +49,7 @@ function printHelp() {
     "",
     "Canonical script for once+commit",
     "  npm run workflow:phase11:once:commit",
+    "  bash scripts/cyberpunk-overhaul-phase11-once.sh --allow-pending-issues",
   ];
 
   console.log(lines.join("\n"));
