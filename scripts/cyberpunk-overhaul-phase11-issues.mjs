@@ -273,7 +273,11 @@ function detectIssues({ sourceSlice, sourceText, progressText, currentPhaseText,
       matches: () =>
         /Do not trust a successful click response by itself/i.test(recipesText) ||
         /still needs state verification/i.test(progressText),
-      fixed: () => /post-click state verification.*fixed/i.test(fixedContext),
+      fixed: () =>
+        /GitHub issue `#12`/i.test(fixedContext) ||
+        /action-verification policy/i.test(fixedContext) ||
+        /post-click verification guidance/i.test(fixedContext) ||
+        /post-click state verification.*fixed/i.test(fixedContext),
     },
     {
       key: 'false-live-continuity',

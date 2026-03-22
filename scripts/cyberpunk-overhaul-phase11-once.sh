@@ -397,7 +397,7 @@ for (const key of recipeOrder) {
     goal: compactText(recipe.goal, 160),
     selectors: Array.isArray(recipe.preferred_selectors) ? recipe.preferred_selectors.slice(0, 2) : [],
     actions: Array.isArray(recipe.preferred_actions) ? recipe.preferred_actions.slice(0, 3) : [],
-    verify: Array.isArray(recipe.verification) ? recipe.verification.slice(0, 1) : [],
+    verify: Array.isArray(recipe.verification) ? recipe.verification.slice(0, 3) : [],
     fallbacks: Array.isArray(recipe.fallbacks) ? recipe.fallbacks.slice(0, 2) : [],
     probe: Array.isArray(recipe.preferred_probe_fields) ? recipe.preferred_probe_fields.slice(0, 6) : [],
   };
@@ -415,6 +415,11 @@ const payload = {
       'startup context is stale or ambiguous',
       'a UI path fails',
       'gameplay evidence contradicts the checkpoint handoff',
+    ],
+    action_verification_policy: [
+      'Do not trust click success by itself for gameplay actions.',
+      'Capture the minimum relevant before/after state for the action you are taking.',
+      'Treat missing intended state mutation as an action failure and use the recipe fallback before continuing.',
     ],
   },
   paths: {
@@ -475,6 +480,7 @@ const payload = {
     'Use stable action-card selectors first for jobs and shopping; verify state changed before assuming success.',
     'If onboarding or a reset appears unexpectedly, capture a screenshot and run a short body-text probe before clicking through.',
     'If live continuity is missing but a checkpoint file exists, restore it before replaying from onboarding.',
+    'For travel, apply, shopping, and work-shift clicks, compare the relevant before/after state instead of trusting the click response alone.',
   ],
   browser_recipes: {
     global_rules: Array.isArray(recipes.global_rules) ? recipes.global_rules.slice(0, 3).map((entry) => compactText(entry, 160)) : [],

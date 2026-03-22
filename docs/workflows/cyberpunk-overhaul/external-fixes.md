@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #12
+- Status: fixed on `main`.
+- Summary: The Phase 11 runner startup handoff now preserves stronger post-click verification guidance instead of truncating recipes down to one verification line. `startup-context.json` now carries an explicit action-verification policy plus multiple verification lines for risky actions, and the runner prompt treats click success as non-authoritative until the intended game-state mutation is confirmed.
+- Resolved date: 2026-03-22
+- Runner guidance: treat older Phase 11 notes that imply a successful click response is enough to continue as historical pre-fix evidence from the compact handoff layer. On the live runner, compare the minimum relevant before/after fields for travel, Labor `Apply`, shopping, and `Work Shift`, and use the bounded recipe fallback if the state did not change as expected.
+
 ### 2026-03-22 - GitHub issue #11
 - Status: fixed out of band on `main`.
 - Summary: City travel automation now uses semantic button controls instead of custom clickable divs. `CityScreen` exposes stable `city-travel-card-*` selectors and location metadata, so the canonical browser recipe can target direct button clicks for travel without broad text scans or DOM-only evaluation.

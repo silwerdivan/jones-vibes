@@ -5,6 +5,7 @@
   "global_rules": [
     "Prefer targeted eval probes that return compact JSON over document-wide text dumps.",
     "Prefer stable data-testid selectors first; verify the resulting game state after any job application or purchase.",
+    "Do not trust a successful click response by itself; confirm the intended before/after gameplay mutation for travel, apply, shopping, and work-shift actions.",
     "If continuity is missing, capture one screenshot, confirm the reset state, and restore the latest checkpoint before replaying from onboarding.",
     "Treat broad DOM inventories and full-page text dumps as debug-only fallbacks."
   ],
@@ -37,7 +38,8 @@
       ],
       "verification": [
         "Check the active location label or dashboard title.",
-        "Check player time after travel when the destination should cost time."
+        "Check player time after travel when the destination should cost time.",
+        "Treat a successful click response without location or time change as a failed travel attempt."
       ]
     },
     "apply_job": {
@@ -68,7 +70,8 @@
       ],
       "verification": [
         "Confirm credits changed by the expected amount.",
-        "Confirm hunger or sanity moved in the expected direction."
+        "Confirm hunger or sanity moved in the expected direction.",
+        "Treat a successful click response without the expected stat deltas as a failed purchase attempt."
       ]
     },
     "work_shift": {
@@ -80,7 +83,8 @@
       "verification": [
         "Credits increase by the shift yield.",
         "Time drops by the expected shift cost.",
-        "Any forced event or summary modal is detected immediately."
+        "Any forced event or summary modal is detected immediately.",
+        "Treat a successful click response without the expected credits, time, or modal change as a failed shift attempt."
       ]
     },
     "turn_summary_probe": {

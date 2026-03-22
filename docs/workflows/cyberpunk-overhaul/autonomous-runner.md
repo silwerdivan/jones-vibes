@@ -69,7 +69,7 @@ npm run workflow:phase11:checkpoint:import
 2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
 3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs when the session profile remains healthy.
 4. Durable continuity now also lives in exported checkpoint JSON files under `docs/workflows/cyberpunk-overhaul/checkpoints/`. The browser session is a convenience layer, not the only recovery path.
-5. The Codex prompt is intentionally small and points the agent at one generated `startup-context.json` artifact inside the slice directory. That file carries the canonical slice paths, latest checkpoint handoff, compact brief findings, expected next action, and compact browser tactics so the repeated prompt stays small while the handoff stays explicit.
+5. The Codex prompt is intentionally small and points the agent at one generated `startup-context.json` artifact inside the slice directory. That file carries the canonical slice paths, latest checkpoint handoff, compact brief findings, expected next action, compact browser tactics, and the runner's action-verification policy so the repeated prompt stays small while the handoff stays explicit.
 6. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
@@ -98,7 +98,7 @@ Normal successful runs keep the operator-facing stream small:
 - `summary.json`
   Consolidated per-slice outcome, token usage, wall time, changed files, artifact paths, and debug status.
 - `startup-context.json`
-  Compact per-slice startup handoff with the canonical paths, checkpoint continuity result, latest authoritative state, and compact browser recipe notes. Read this before reopening larger workflow docs.
+  Compact per-slice startup handoff with the canonical paths, checkpoint continuity result, latest authoritative state, and compact browser recipe notes. The generated handoff now preserves multiple verification lines per risky action and states explicitly that click success is not authoritative without matching game-state mutation. Read this before reopening larger workflow docs.
 - `changed-files.txt`
   Final changed-file list for the slice. Ephemeral browser profile/cache trees such as root-level `agent-browser-chrome-*` and `org.chromium.Chromium.*` directories are excluded so browser runtime noise does not masquerade as project output.
 - `final.diff`

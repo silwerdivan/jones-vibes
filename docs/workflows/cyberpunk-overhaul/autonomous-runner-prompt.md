@@ -26,6 +26,8 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 - Use the trusted UI workaround notes from `startup-context.json` first. Read `docs/workflows/cyberpunk-overhaul/agent-browser-learnings.md` only if a listed UI path fails, the notes are missing, or you need a new automation pattern that is not already covered.
 - Do not spend a startup command on `agent-browser --help` or other CLI-surface probes during a normal slice; the runner has already established the browser tool path.
 - Avoid source-code spelunking during startup unless gameplay state is ambiguous, a UI path fails, or a new mechanic must be verified.
+- Do not treat a successful `agent-browser click` response as authoritative evidence that gameplay changed. For travel, job application, shopping, and work-shift actions, check the minimum relevant before/after state fields immediately after the action.
+- If the intended state mutation does not appear, treat the action as failed, apply the bounded fallback from `startup-context.json`, and only continue once the game state confirms success.
 - Complete exactly one bounded slice. The default bound is one completed in-game week for the active persona. Stop earlier only for a meaningful blocker or a clearly high-signal audit event that should be logged immediately.
 - Update `run-state.json` before exiting. Refresh `next_slice` and `last_run`. Set `status = "blocked"` with `needs_human = true` for blockers or required human decisions. Set `status = "complete"` only if the persona or phase target is finished.
 - Update the relevant workflow markdown files in the same run.
