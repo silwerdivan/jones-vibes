@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #9
+- Status: fixed out of band on `main`.
+- Summary: The Phase 11 continuity probe now checks whether onboarding is visibly active before trusting browser state. Fresh reset sessions no longer count as `live_continuity` just because the app URL is open and `window.__JONES_FASTLANE_SESSION__` exposes a default `GameState`; `workflow:phase11:checkpoint:status` reports onboarding explicitly, and `workflow:phase11:once` auto-restores the latest checkpoint instead.
+- Resolved date: 2026-03-22
+- Runner guidance: treat older Phase 11 notes that describe a startup artifact claiming `live_continuity` while the named browser session is visibly back on onboarding as historical evidence from the pre-fix build. On the live app, visible onboarding should force checkpoint recovery instead of a false continuity pass. Only reopen this if a fresh slice still reports `live_continuity` while `WELCOME_TO_FASTLANE` / `START THE RUN` is visibly active.
+
 ### 2026-03-22 - GitHub issue #7
 - Status: fixed out of band on `main`.
 - Summary: Week-start global event selection now skips events that collapse to a single valid choice after requirement filtering, so automatic openers preserve at least one real branch decision before manual play begins.

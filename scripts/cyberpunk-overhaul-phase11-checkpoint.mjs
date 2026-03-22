@@ -10,6 +10,7 @@ import {
 } from './lib/phase11-checkpoint-utils.mjs';
 import {
   buildCheckpointSessionProbeExpression,
+  determineContinuityStatus,
   isAppSessionSnapshot,
   selectAuthoritativeBrowserState,
 } from './lib/phase11-checkpoint-session-utils.mjs';
@@ -302,15 +303,13 @@ function statusCheckpoint(context, options = {}) {
   const matchesLatestCheckpoint = browserSummary && checkpointSummary
     ? JSON.stringify(browserSummary) === JSON.stringify(checkpointSummary)
     : null;
-  let continuityStatus = 'ok';
-
-  if (!browserSummary) {
-    continuityStatus = latestSavePath ? 'missing_browser_save' : 'missing_browser_save_no_checkpoint';
-  } else if (checkpointSummary && matchesLatestCheckpoint === false) {
-    continuityStatus = 'mismatch';
-  } else if (!checkpointSummary) {
-    continuityStatus = 'ok_no_checkpoint';
-  }
+  const continuityStatus = determineContinuityStatus({
+    snapshot,
+    browserSummary,
+    checkpointSummary,
+    latestSavePath,
+    matchesLatestCheckpoint,
+  });
 
   printResult({
     action: 'status',
@@ -318,6 +317,8 @@ function statusCheckpoint(context, options = {}) {
     continuity_status: continuityStatus,
     continuity_ok: continuityStatus === 'ok' || continuityStatus === 'ok_no_checkpoint',
     has_browser_save: !!browserSummary,
+    onboarding_visible: !!snapshot?.onboardingVisible,
+    has_persisted_browser_save: !!snapshot?.hasPersistedState,
     has_live_browser_bridge: !!snapshot?.hasBridge,
     browser_state_source: authoritativeBrowserState?.source || null,
     latest_checkpoint_save_path: latestSavePath || '',

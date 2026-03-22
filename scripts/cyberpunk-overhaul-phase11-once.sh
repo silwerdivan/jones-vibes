@@ -85,9 +85,11 @@ verify_browser_continuity() {
       write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
       return 0
       ;;
-    missing_browser_save|mismatch)
+    missing_browser_save|mismatch|onboarding_visible)
       if [[ "${continuity_status}" == "missing_browser_save" ]]; then
         echo "[phase11-once] browser save missing; restoring authoritative checkpoint ${latest_checkpoint}" | tee -a "${LOG_FILE}"
+      elif [[ "${continuity_status}" == "onboarding_visible" ]]; then
+        echo "[phase11-once] onboarding is still visible; treating session as reset and restoring authoritative checkpoint ${latest_checkpoint}" | tee -a "${LOG_FILE}"
       else
         echo "[phase11-once] live browser save mismatches authoritative checkpoint; restoring ${latest_checkpoint}" | tee -a "${LOG_FILE}"
       fi
@@ -110,18 +112,15 @@ verify_browser_continuity() {
       write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
       return 0
       ;;
-    missing_browser_save_no_checkpoint)
-      outcome="missing_browser_save_no_checkpoint"
+    missing_browser_save_no_checkpoint|onboarding_visible_no_checkpoint)
+      outcome="${continuity_status}"
       write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
       write_preflight_failure_summary "${outcome}"
-      echo "[phase11-once] browser save missing and no checkpoint exists; refusing to continue" | tee -a "${LOG_FILE}" >&2
-      return 1
-      ;;
-    mismatch)
-      outcome="mismatch_fail"
-      write_continuity_artifact "${status_json}" "${after_status_json}" "${outcome}" "${restored}" "${ok}" "${checked_at}"
-      write_preflight_failure_summary "${outcome}"
-      echo "[phase11-once] live browser save does not match the authoritative checkpoint; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      if [[ "${continuity_status}" == "onboarding_visible_no_checkpoint" ]]; then
+        echo "[phase11-once] onboarding is visible and no checkpoint exists; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      else
+        echo "[phase11-once] browser save missing and no checkpoint exists; refusing to continue" | tee -a "${LOG_FILE}" >&2
+      fi
       return 1
       ;;
     *)
