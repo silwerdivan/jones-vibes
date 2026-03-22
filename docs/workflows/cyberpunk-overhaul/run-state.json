@@ -20,12 +20,12 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`, which now prefers `window.__JONES_FASTLANE_SESSION__` and falls back to `localStorage.jones_fastlane_save` only when no live bridge is present. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-21T21:32:57.934Z",
-    "last_restored_at": "2026-03-21T20:09:17.994Z",
-    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json"
+    "last_exported_at": "2026-03-22T04:32:15.434Z",
+    "last_restored_at": "2026-03-22T04:25:51.541Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json"
   },
   "slice_policy": {
     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
@@ -38,11 +38,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the authoritative Week 7 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 7 summary anchor `₡286 / Debt ₡0 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`, confirm whether the AI handoff remains stable, and verify whether any deterministic labor route survives while `TRAUMA_REBOOT` is active. Treat GitHub issues #6, #7, and #8 as fixed baseline behavior: a burnout-triggered end turn should now show a visible `Emergency Trauma Team` sanity row with a reconciled sanity total, an automatic global week opener should only fire when at least two valid branches remain after requirement filtering, and `workflow:phase11:checkpoint:status` / `workflow:phase11:checkpoint:export` should report `browser_state_source: live_session` whenever the live browser page is already authoritative. Only flag any of those bugs again if a fresh Week 8 run still diverges on the live build. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md` before exporting the Week 8 checkpoint.",
+  "next_slice": "Resume Persona A from the authoritative Week 8 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 8 summary anchor `₡458 / Debt ₡0 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`, and verify whether the restored `Sanitation-T3` plus `Work Shift x3` route still survives from the harsher hunger floor. Treat GitHub issues #7 and #8 as fixed baseline behavior unless a fresh Week 9 run again shows a one-choice week opener after requirement filtering or `workflow:phase11:checkpoint:status` / `workflow:phase11:checkpoint:export` stop reporting `browser_state_source: live_session` while the live browser page is already authoritative. Also keep logging whether runner continuity still falsely reports `live_continuity` when the named session actually reopens on onboarding.",
   "last_run": {
-    "at": "2026-03-21",
-    "outcome": "phase11_persona_a_week_07_complete",
-    "summary": "Persona A resumed directly from the authoritative Week 6 summary state at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15 / Sore Legs 6h`, kept stable manual control after the AI handoff, then immediately hit the forced `PANIC ATTACK ON THE MAG-LEV` opener. The only available branch triggered burnout, charged an emergency `₡250` medical fee, forfeited the full cycle, and closed authoritative Week 7 at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35` with `TRAUMA_REBOOT (312h)`. The Week 7 checkpoint had to be rewritten directly from the live session because the helper export path still read a stale shadow save."
+    "at": "2026-03-22",
+    "outcome": "phase11_persona_a_week_08_complete",
+    "summary": "Persona A's named browser session reopened on onboarding despite the startup continuity artifact claiming `live_continuity`, so the slice recovered by importing the authoritative Week 7 checkpoint. From the restored Week 7 summary anchor at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`, the live Week 8 build returned direct manual control, did not reproduce the old one-choice opener, and still supported the deterministic `Sanitation-T3` plus `Work Shift x3` route under `TRAUMA_REBOOT`. The authoritative Week 8 summary closed at `₡458 / Debt ₡0 / Hunger 60% / Sanity 25` with `TRAUMA_REBOOT (266h)`, and the exported checkpoint correctly reported `browser_state_source: live_session`."
   },
   "runner": {
     "sleep_seconds": 5,

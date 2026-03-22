@@ -1,7 +1,7 @@
 # Phase 11: Gameplay Audit Progress Report
 
 ## Date: 2026-03-22
-## Status: Task 1 Complete, Task 2 Active (Week 7 Authoritative, Week 8 Next)
+## Status: Task 1 Complete, Task 2 Active (Week 8 Authoritative, Week 9 Next)
 
 ### 1. Audit Infrastructure (Task 1 - COMPLETE)
 - **Tooling:** `agent-browser` configured and connected to `http://127.0.0.1:5173/jones-vibes/`.
@@ -12,17 +12,17 @@
 ### 2. Persona A: The Safe Grinder (Task 2 - RESTARTED)
 - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Prioritize low-risk survival and steady labor to test the "Poverty Trap" baseline.
-- **Authoritative Progress:** Weeks 1-7 are now authoritative in the restarted chain, with Week 7 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`.
+- **Authoritative Progress:** Weeks 1-8 are now authoritative in the restarted chain, with Week 8 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md`.
 - **Archive:** The previous Persona A run was moved to `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/` so the new run can proceed with a clean control surface.
-- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json`.
-- **Next authoritative target:** Continue Persona A into Week 8 from the Week 7 summary/checkpoint state and verify whether `TRAUMA_REBOOT (312h)` leaves any rebuild path now that GitHub issues `#7` and `#8` are baseline behavior on the live audit surface.
+- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json`.
+- **Next authoritative target:** Continue Persona A into Week 9 from the Week 8 summary/checkpoint state and verify whether the restored `Work Shift x3` route still survives from the harsher `60%` hunger floor while `TRAUMA_REBOOT` continues ticking down.
 
 ### 3. Current Technical State
-- **Browser State:** The authoritative surface is now the Week 7 summary modal at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35`, carrying `TRAUMA_REBOOT (312h)` forward into the next slice.
-- **Checkpoint Hardening:** The authoritative recovery layer remains `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json`, and GitHub issue `#8` now hardens the helper path by preferring `window.__JONES_FASTLANE_SESSION__` live state over storage. Week 7's stale-shadow export is historical evidence from the pre-fix helper.
+- **Browser State:** The authoritative surface is now the Week 8 summary modal at `₡458 / Debt ₡0 / Hunger 60% / Sanity 25`, carrying `TRAUMA_REBOOT (266h)` forward into the next slice.
+- **Checkpoint Hardening:** The authoritative recovery layer is now `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json`. GitHub issue `#8` remains fixed for helper exports, but the runner/browser continuity layer still needs skepticism because this slice reopened the named session on onboarding even while the startup artifact claimed `live_continuity`.
 - **Week-Start Pacing Baseline:** GitHub issue `#7` is now fixed on `main`; automatic global week openers must leave at least two valid branches after requirement filtering, so the old one-choice `Panic Attack on the Mag-Lev` opener should be treated as historical pre-fix evidence unless it reproduces again on the live build.
 - **Identified Elements:** City travel cards still need targeted DOM interaction because they are custom divs, and direct `agent-browser click` on the Labor Sector `Apply` button still needs state verification because the visible button reported success without mutating `CURRENT SHIFT`.
-- **Next Action:** Start Week 8 from the authoritative Week 7 summary state, confirm whether the AI handoff stays stable again, and measure whether Safe Grinder can recover any deterministic labor route while `TRAUMA_REBOOT` is active. Reopen issue `#7` only if the live build still auto-fires a one-choice week-start global event, and reopen issue `#8` only if `workflow:phase11:checkpoint:status` or `workflow:phase11:checkpoint:export` stops reporting `browser_state_source: live_session` while the page is already on the live summary.
+- **Next Action:** Start Week 9 from the authoritative Week 8 summary state, test whether `Work Shift x3` remains viable from `₡458 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`, and keep treating issue `#7` as fixed unless a one-choice opener reappears on the live build. Treat issue `#8` as fixed unless helper `status` or `export` stops reporting `browser_state_source: live_session` while the page is already authoritative.
 
 ### 4. Observations & Notes
 - Phase 11 keeps a two-layer history model:
@@ -42,3 +42,6 @@
 - Week 7 immediately breaks that restored route again. The handoff itself stayed stable, but `PANIC ATTACK ON THE MAG-LEV` forced a one-choice burnout branch before any labor action, charged `₡250`, and replaced `Sore Legs` with `TRAUMA_REBOOT (312h)`.
 - Week 7 also exposes a stronger summary-integrity mismatch than the recent clean weeks. The visible sanity lines total `-25`, `pendingTurnSummary.totals.sanityChange` reports `+20`, and the end state lands at `35` sanity because the burnout recovery is applied without a visible summary row.
 - The checkpoint helper reliability issue is now fixed on `main` as GitHub issue `#8`. The Week 7 stale-shadow export remains valuable evidence because it showed the old helper was reloading the app and trusting storage instead of the active page state.
+- Week 8 shows that `TRAUMA_REBOOT` alone does not kill Safe Grinder's deterministic labor line. Once the live build hands control back without the old forced opener, Persona A can still complete `Work Shift x3` and net `+₡172` for the week.
+- Week 8 also confirms the recent live fixes are holding on the main gameplay path. The old one-choice opener regression did not recur, and the closing summary reconciled cleanly at visible `-10` sanity, modal `-10` sanity, and end-state `25` sanity.
+- Browser continuity is still less trustworthy than checkpoint recovery. This slice's startup artifact reported `live_continuity`, but the actual named session reopened on onboarding and needed an explicit Week 7 checkpoint import before play.
