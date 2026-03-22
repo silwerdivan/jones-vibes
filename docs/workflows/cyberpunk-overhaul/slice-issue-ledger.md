@@ -9,13 +9,13 @@
 
 | ID | Status | Title | Type | Evidence | GitHub | Commit | Prompt |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | todo | Labor Sector `Apply` click can report success without mutating `CURRENT SHIFT` | automation | `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`, `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`, `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` |  |  | `Prompt 1` |
+| 1 | done | Labor Sector `Apply` click can report success without mutating `CURRENT SHIFT` | automation | `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`, `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`, `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` | `#10` | `219a96b` | `Prompt 1` |
 | 2 | todo | City travel still depends on brittle DOM-only interaction with custom location cards | automation | `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md`, `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` |  |  | `Prompt 2` |
 | 3 | todo | Runner actions still need stronger post-click state verification guardrails | workflow | `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json`, `docs/workflows/cyberpunk-overhaul/autonomous-runner.md`, `docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md` |  |  | `Prompt 3` |
 
 ## Next Issue
 
-- **Default next item:** `1`
+- **Default next item:** `2`
 - **Reason:** It is the first unresolved issue in the current batch and should be handled next.
 
 ## Prompt 1
