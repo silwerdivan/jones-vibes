@@ -39,9 +39,9 @@
 ## High-Signal Findings
 - The restored Week 6 throughput did not carry into Week 7. A single forced opener can still erase the entire labor line before any manual recovery route is available.
 - The week introduces a new summary-integrity failure mode. The visible sanity line items total `-25`, but `pendingTurnSummary.totals.sanityChange` reports `+20` because the hidden burnout recovery is applied to the end state without appearing as its own summary event.
-- The checkpoint helper remained unsafe for this slice. `workflow:phase11:checkpoint:status` and `workflow:phase11:checkpoint:export` continued reading a stale pre-Week-6 shadow save, so the authoritative Week 7 checkpoint had to be rewritten from the live session payload instead.
+- The checkpoint helper remained unsafe for this slice. `workflow:phase11:checkpoint:status` and `workflow:phase11:checkpoint:export` continued reading a stale pre-Week-6 shadow save, so the authoritative Week 7 checkpoint had to be rewritten from the live session payload instead. GitHub issue `#8` fixes that workflow bug after this slice; preserve this note as historical pre-fix evidence.
 
 ## Blockers / Follow-Ups
-- **Checkpoint Export:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json` was corrected manually from live session state after the helper exported stale data.
+- **Checkpoint Export:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json` was corrected manually from live session state after the helper exported stale data. Future slices should treat that manual correction as complete and rely on the post-issue-`#8` helper baseline unless the live build diverges again.
 - **Evidence:** Week 7 summary screenshot at `tmp/phase11-evidence/persona-a-week07-summary.png`.
 - **Next Slice:** Resume from the authoritative Week 7 summary/checkpoint at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`, verify whether Week 8 returns manual control cleanly again, and measure whether Safe Grinder can rebuild any stable labor route while trauma recovery is active.

@@ -8,6 +8,11 @@ import {
   buildLocalStorageImportExpression,
   summarizeSaveState,
 } from './lib/phase11-checkpoint-utils.mjs';
+import {
+  buildCheckpointSessionProbeExpression,
+  isAppSessionSnapshot,
+  selectAuthoritativeBrowserState,
+} from './lib/phase11-checkpoint-session-utils.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DEFAULT_RUN_STATE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
@@ -89,6 +94,7 @@ function runAgentBrowser(browserArgs, commandArgs) {
     cwd: ROOT_DIR,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
+    maxBuffer: 10 * 1024 * 1024,
   });
 }
 
@@ -103,6 +109,51 @@ function evalInSession(sessionName, expression, browserArgs) {
 
 function openApp(sessionName, appUrl, browserArgs) {
   runAgentBrowser(browserArgs, ['--session-name', sessionName, 'open', appUrl]);
+  runAgentBrowser(browserArgs, ['--session-name', sessionName, 'wait', '--load', 'networkidle']);
+}
+
+function tryEvalInSession(sessionName, expression, browserArgs) {
+  try {
+    return evalInSession(sessionName, expression, browserArgs);
+  } catch {
+    return null;
+  }
+}
+
+function decodeSessionSnapshot(snapshot) {
+  if (typeof snapshot !== 'string') {
+    return snapshot;
+  }
+
+  try {
+    return JSON.parse(snapshot);
+  } catch {
+    return null;
+  }
+}
+
+function readBrowserSessionState(context, options = {}) {
+  const { sessionName, appUrl, browserArgs } = context;
+  const ensureApp = options.ensureApp !== false;
+  let snapshot = decodeSessionSnapshot(tryEvalInSession(
+    sessionName,
+    buildCheckpointSessionProbeExpression(),
+    browserArgs
+  ));
+
+  if ((!snapshot || !isAppSessionSnapshot(snapshot, appUrl)) && ensureApp) {
+    openApp(sessionName, appUrl, browserArgs);
+    snapshot = decodeSessionSnapshot(tryEvalInSession(
+      sessionName,
+      buildCheckpointSessionProbeExpression(),
+      browserArgs
+    ));
+  }
+
+  return {
+    snapshot,
+    authoritativeBrowserState: selectAuthoritativeBrowserState(snapshot),
+  };
 }
 
 function latestCheckpointSavePath(personaDir) {
@@ -148,13 +199,12 @@ function exportCheckpoint(context, label, options = {}) {
     throw new Error('Export requires --label <label>.');
   }
 
-  openApp(sessionName, appUrl, browserArgs);
-  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
-  if (!serializedSave) {
-    throw new Error(`No jones_fastlane_save value found in session '${sessionName}'.`);
+  const { authoritativeBrowserState } = readBrowserSessionState(context, { ensureApp: true });
+  if (!authoritativeBrowserState) {
+    throw new Error(`No live session state or jones_fastlane_save value found in session '${sessionName}'.`);
   }
 
-  const saveState = JSON.parse(serializedSave);
+  const saveState = authoritativeBrowserState.state;
   const summary = summarizeSaveState(saveState);
   const paths = buildCheckpointPaths({ rootDir: checkpointRootAbs, personaId, label });
   const exportedAt = new Date().toISOString();
@@ -167,6 +217,7 @@ function exportCheckpoint(context, label, options = {}) {
     app_url: appUrl,
     checkpoint_root: checkpointRootRel,
     checkpoint_label: paths.label,
+    browser_state_source: authoritativeBrowserState.source,
     summary,
   });
 
@@ -182,6 +233,7 @@ function exportCheckpoint(context, label, options = {}) {
     action: 'export',
     save_path: path.relative(ROOT_DIR, paths.savePath),
     metadata_path: path.relative(ROOT_DIR, paths.metaPath),
+    browser_state_source: authoritativeBrowserState.source,
     summary,
   }, options.quiet);
 }
@@ -231,10 +283,15 @@ function importCheckpoint(context, savePathArg, options = {}) {
 }
 
 function statusCheckpoint(context, options = {}) {
-  const { sessionName, appUrl, browserArgs, checkpointRootAbs, personaId, runState } = context;
-  openApp(sessionName, appUrl, browserArgs);
-  const serializedSave = evalInSession(sessionName, "localStorage.getItem('jones_fastlane_save')", browserArgs);
-  const browserSummary = serializedSave ? summarizeSaveState(JSON.parse(serializedSave)) : null;
+  const { sessionName, checkpointRootAbs, personaId, runState } = context;
+  const { snapshot, authoritativeBrowserState } = readBrowserSessionState(context, { ensureApp: true });
+  const browserSummary = authoritativeBrowserState
+    ? summarizeSaveState(authoritativeBrowserState.state)
+    : null;
+  const liveBrowserSummary = snapshot?.liveState ? summarizeSaveState(snapshot.liveState) : null;
+  const persistedBrowserSummary = snapshot?.persistedState
+    ? summarizeSaveState(snapshot.persistedState)
+    : null;
   const discoveredLatestSave = latestCheckpointSavePath(path.join(checkpointRootAbs, personaId));
   const latestSavePath = runState.checkpointing?.latest_save_path ||
     (discoveredLatestSave ? path.relative(ROOT_DIR, discoveredLatestSave) : '');
@@ -260,9 +317,13 @@ function statusCheckpoint(context, options = {}) {
     session_name: sessionName,
     continuity_status: continuityStatus,
     continuity_ok: continuityStatus === 'ok' || continuityStatus === 'ok_no_checkpoint',
-    has_browser_save: !!serializedSave,
+    has_browser_save: !!browserSummary,
+    has_live_browser_bridge: !!snapshot?.hasBridge,
+    browser_state_source: authoritativeBrowserState?.source || null,
     latest_checkpoint_save_path: latestSavePath || '',
     browser_summary: browserSummary,
+    live_browser_summary: liveBrowserSummary,
+    persisted_browser_summary: persistedBrowserSummary,
     checkpoint_summary: checkpointSummary,
     matches_latest_checkpoint: matchesLatestCheckpoint,
   }, options.quiet);

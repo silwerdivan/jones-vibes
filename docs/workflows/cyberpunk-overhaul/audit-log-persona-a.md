@@ -5,7 +5,7 @@
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
 - **Date:** 2026-03-21
 - **Session Duration:** 7 completed authoritative weeks in the restarted chain
-- **Current Slice Status:** Authoritative Week 7 completed. The restarted chain now has a corrected Week 7 checkpoint and a live Week 7 summary modal ready for Week 8 continuation from `₡286 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`.
+- **Current Slice Status:** Authoritative Week 7 completed. The restarted chain now has a corrected Week 7 checkpoint, the checkpoint helper baseline fixed under GitHub issue `#8`, and a live Week 7 summary modal ready for Week 8 continuation from `₡286 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`.
 - **Archive:** Previous Persona A run archived under `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/`.
 
 ---
@@ -61,6 +61,7 @@ Workflow note: the restarted audit re-established the old Persona A reference ba
 - 2026-03-21: Week 7 shows the stable handoff was not enough to preserve the reopened labor route. `PANIC ATTACK ON THE MAG-LEV` forced a one-choice burnout branch before any manual route recovery, charged `₡250`, and replaced `Sore Legs` with `TRAUMA_REBOOT (312h)`.
 - 2026-03-21: The Week 7 summary introduced a new reconciliation failure. Its visible sanity lines total `-25`, `pendingTurnSummary.totals.sanityChange` reports `+20`, and the end state lands at `35` sanity because the burnout recovery is not represented as its own summary event.
 - 2026-03-21: The checkpoint helper remained stale during Week 7. `workflow:phase11:checkpoint:status` and `workflow:phase11:checkpoint:export` both read a shadow pre-Week-6 save even while the live browser session showed the correct Week 7 summary, so the authoritative Week 7 checkpoint had to be rewritten directly from the live `jones_fastlane_save` payload.
+- 2026-03-22: GitHub issue `#8` fixed the Phase 11 checkpoint helper. `status` and `export` now inspect the existing browser page before any navigation, prefer `window.__JONES_FASTLANE_SESSION__` live state, and record `browser_state_source: live_session` when the live page is authoritative. Treat the Week 7 stale-shadow incident as pre-fix evidence only.
 
 ---
 

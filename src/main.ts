@@ -7,6 +7,7 @@ import EconomySystem from './systems/EconomySystem.js';
 import TimeSystem from './systems/TimeSystem.js';
 import EventBus, { UI_EVENTS } from './EventBus.js';
 import { PersistenceService } from './services/PersistenceService.js';
+import { installLiveSessionBridge } from './services/LiveSessionBridge.js';
 import EulaModal from './ui/components/EulaModal.js';
 
 /**
@@ -63,6 +64,7 @@ function main() {
   new EventNotificationManager();
   const inputManager = new InputManager(gameController);
   inputManager.initialize();
+  installLiveSessionBridge(gameState);
 
   // PHASE 5: Persistence Logic
   console.log('PHASE 5: Setting up Persistence...');
