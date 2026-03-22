@@ -52,6 +52,34 @@ describe('EventManager', () => {
         expect(publishSpy).toHaveBeenCalledWith('randomEventTriggered', expect.any(Object));
     });
 
+    it('should skip week-start global events that collapse to a single valid choice', () => {
+        const publishSpy = vi.spyOn(EventBus, 'publish');
+        const panicEvent = RANDOM_EVENTS.find(e => e.id === 'global_maglev_panic');
+        if (!panicEvent) throw new Error('Panic event not found');
+
+        player.sanity = 50;
+        player.inventory = [];
+        (eventManager as any).events = [panicEvent];
+
+        eventManager.checkTriggers('Global', gameState);
+
+        expect(publishSpy).not.toHaveBeenCalledWith('randomEventTriggered', expect.any(Object));
+    });
+
+    it('should still allow a week-start global event when multiple choices remain valid', () => {
+        const publishSpy = vi.spyOn(EventBus, 'publish');
+        const panicEvent = RANDOM_EVENTS.find(e => e.id === 'global_maglev_panic');
+        if (!panicEvent) throw new Error('Panic event not found');
+
+        player.sanity = 65;
+        player.inventory = [];
+        (eventManager as any).events = [panicEvent];
+
+        eventManager.checkTriggers('Global', gameState);
+
+        expect(publishSpy).toHaveBeenCalledWith('randomEventTriggered', expect.any(Object));
+    });
+
     it('should obey Local trigger chance (30%)', () => {
         const publishSpy = vi.spyOn(EventBus, 'publish');
         // Set location so some local events are available

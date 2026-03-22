@@ -1,6 +1,6 @@
 # Phase 11: Gameplay Audit Progress Report
 
-## Date: 2026-03-21
+## Date: 2026-03-22
 ## Status: Task 1 Complete, Task 2 Active (Week 7 Authoritative, Week 8 Next)
 
 ### 1. Audit Infrastructure (Task 1 - COMPLETE)
@@ -15,13 +15,14 @@
 - **Authoritative Progress:** Weeks 1-7 are now authoritative in the restarted chain, with Week 7 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md`.
 - **Archive:** The previous Persona A run was moved to `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/` so the new run can proceed with a clean control surface.
 - **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json`.
-- **Next authoritative target:** Continue Persona A into Week 8 from the Week 7 summary/checkpoint state and verify whether `TRAUMA_REBOOT (312h)` leaves any rebuild path after the forced-panic collapse.
+- **Next authoritative target:** Continue Persona A into Week 8 from the Week 7 summary/checkpoint state and verify whether `TRAUMA_REBOOT (312h)` leaves any rebuild path now that GitHub issue `#7` has removed one-choice week-start global openers from the live baseline.
 
 ### 3. Current Technical State
 - **Browser State:** The authoritative surface is now the Week 7 summary modal at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35`, carrying `TRAUMA_REBOOT (312h)` forward into the next slice.
 - **Checkpoint Hardening:** The authoritative recovery layer is now `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json`, but the helper export path is still reading a stale shadow save and required manual correction for Week 7.
+- **Week-Start Pacing Baseline:** GitHub issue `#7` is now fixed on `main`; automatic global week openers must leave at least two valid branches after requirement filtering, so the old one-choice `Panic Attack on the Mag-Lev` opener should be treated as historical pre-fix evidence unless it reproduces again on the live build.
 - **Identified Elements:** City travel cards still need targeted DOM interaction because they are custom divs, and direct `agent-browser click` on the Labor Sector `Apply` button still needs state verification because the visible button reported success without mutating `CURRENT SHIFT`.
-- **Next Action:** Start Week 8 from the authoritative Week 7 summary state, confirm whether the AI handoff stays stable again, and measure whether Safe Grinder can recover any deterministic labor route while `TRAUMA_REBOOT` is active.
+- **Next Action:** Start Week 8 from the authoritative Week 7 summary state, confirm whether the AI handoff stays stable again, and measure whether Safe Grinder can recover any deterministic labor route while `TRAUMA_REBOOT` is active. Reopen issue `#7` only if the live build still auto-fires a one-choice week-start global event.
 
 ### 4. Observations & Notes
 - Phase 11 keeps a two-layer history model:

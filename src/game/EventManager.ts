@@ -38,7 +38,16 @@ export class EventManager {
             // Check cooldown: not in last 3 events (shortened from 5 for testing with small deck)
             if (this.eventHistory.slice(-3).includes(event.id)) return false;
 
-            return this.evaluatePrerequisites(event, currentPlayer, gameState, context);
+            if (!this.evaluatePrerequisites(event, currentPlayer, gameState, context)) return false;
+
+            const validChoices = this.getValidChoices(event, currentPlayer);
+            if (validChoices.length === 0) return false;
+
+            if (triggerType === 'Global' && context.allowForcedOpener !== true && validChoices.length < 2) {
+                return false;
+            }
+
+            return true;
         });
 
         if (availableEvents.length > 0) {
@@ -74,12 +83,8 @@ export class EventManager {
         return true;
     }
 
-    private triggerEvent(event: RandomEvent, gameState: GameState): void {
-        this.eventHistory.push(event.id);
-        
-        // Filter choices by requirements
-        const player = gameState.getCurrentPlayer();
-        const validChoices = event.choices.filter(choice => {
+    private getValidChoices(event: RandomEvent, player: Player) {
+        return event.choices.filter(choice => {
             if (!choice.requirement) return true;
             const req = choice.requirement;
             switch (req.type) {
@@ -101,6 +106,14 @@ export class EventManager {
                     return true;
             }
         });
+    }
+
+    private triggerEvent(event: RandomEvent, gameState: GameState): void {
+        this.eventHistory.push(event.id);
+        
+        // Filter choices by requirements
+        const player = gameState.getCurrentPlayer();
+        const validChoices = this.getValidChoices(event, player);
 
         // Use a specialized event for random events
         EventBus.publish('randomEventTriggered', {

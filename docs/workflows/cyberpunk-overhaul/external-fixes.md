@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #7
+- Status: fixed out of band on `main`.
+- Summary: Week-start global event selection now skips events that collapse to a single valid choice after requirement filtering, so automatic openers preserve at least one real branch decision before manual play begins.
+- Resolved date: 2026-03-22
+- Runner guidance: treat older Phase 11 notes that describe a one-choice week opener, especially the Week 7 `Panic Attack on the Mag-Lev` collapse, as historical evidence from the pre-fix build. On the live app, an automatic global opener should only appear when at least two branches remain valid. Only reopen this if a fresh slice still starts on a single-option global event.
+
 ### 2026-03-22 - GitHub issue #6
 - Status: fixed out of band on `main` in commit `376f9fe`.
 - Summary: Burnout recovery now records a visible `Emergency Trauma Team` sanity row, and turn summaries finalize after the 24-hour condition tick so late end-turn sanity changes reconcile with `pendingTurnSummary.totals.sanityChange`.
