@@ -302,14 +302,16 @@ for (const key of recipeOrder) {
   compactRecipes[key] = {
     goal: compactText(recipe.goal, 160),
     selectors: Array.isArray(recipe.preferred_selectors) ? recipe.preferred_selectors.slice(0, 2) : [],
+    actions: Array.isArray(recipe.preferred_actions) ? recipe.preferred_actions.slice(0, 3) : [],
     verify: Array.isArray(recipe.verification) ? recipe.verification.slice(0, 1) : [],
+    fallbacks: Array.isArray(recipe.fallbacks) ? recipe.fallbacks.slice(0, 2) : [],
     probe: Array.isArray(recipe.preferred_probe_fields) ? recipe.preferred_probe_fields.slice(0, 6) : [],
   };
 }
 
 const payload = {
   generated_at: new Date().toISOString(),
-  runner_context_version: 2,
+  runner_context_version: 3,
   startup_policy: {
     canonical_sources: [
       'docs/workflows/cyberpunk-overhaul/run-state.json',

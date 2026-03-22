@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #10
+- Status: fixed out of band on `main`.
+- Summary: Phase 11 Labor Sector job-application automation now treats the first `Apply` action as an offscreen-pointer risk instead of a fully reliable raw click. The canonical browser recipe now requires `scrollintoview` before direct `agent-browser click`, immediate state verification against `CURRENT SHIFT` or persisted `careerLevel`, and a bounded retry before any DOM-eval escalation.
+- Resolved date: 2026-03-22
+- Runner guidance: treat the 2026-03-20 Week 1 note about `[data-testid="action-card-btn-jobs-level-1-sanitation-t3"]` reporting success without mutating state as historical pre-fix evidence from the old recipe contract. On the live app, Labor `Apply` automation should scroll the target into view, click it directly, and confirm that `CURRENT SHIFT` or `careerLevel` changed before continuing. Only reopen this if a fresh slice still fails after the scroll-and-verify sequence.
+
 ### 2026-03-22 - GitHub issue #9
 - Status: fixed out of band on `main`.
 - Summary: The Phase 11 continuity probe now checks whether onboarding is visibly active before trusting browser state. Fresh reset sessions no longer count as `live_continuity` just because the app URL is open and `window.__JONES_FASTLANE_SESSION__` exposes a default `GameState`; `workflow:phase11:checkpoint:status` reports onboarding explicitly, and `workflow:phase11:once` auto-restores the latest checkpoint instead.
@@ -36,7 +42,7 @@ runner slices must know before continuing.
 - Summary: Shared action cards now pass the actual clicked control into `UIManager`, so visible `Apply` and `Buy` buttons are direct reliable action targets and feedback no longer depends on `document.activeElement`.
 - Resolved date: 2026-03-19
 - Runner guidance: treat older Phase 11 notes that recommend focusing the inner button and then clicking the parent `.action-card` as historical evidence from the pre-fix build. On the live app, use the visible button or card `data-testid` directly and only reopen this if a fresh run shows job applications or purchases still failing without the old focus workaround.
-- Validation note (2026-03-20): Persona A fresh Week 1 still reproduced an automation wrinkle on the live app. A direct `agent-browser click` on `[data-testid="action-card-btn-jobs-level-1-sanitation-t3"]` returned success but left `CURRENT SHIFT` at `No active job yet.` until a DOM `btn.click()` retried the same control. Treat the issue as partially verified rather than fully closed for browser-driven Phase 11 slices, and always confirm the resulting job or purchase state before continuing.
+- Historical note (2026-03-20): Persona A fresh Week 1 still reproduced an automation wrinkle on the live app. A direct `agent-browser click` on `[data-testid="action-card-btn-jobs-level-1-sanitation-t3"]` returned success but left `CURRENT SHIFT` at `No active job yet.` until a DOM `btn.click()` retried the same control. GitHub issue `#10` supersedes that caveat with the current scroll-and-verify baseline for Labor job application.
 
 ### 2026-03-19 - GitHub issue #3
 - Status: closed as fixed out of band in commit `0bf6cec`.

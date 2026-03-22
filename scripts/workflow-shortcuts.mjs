@@ -9,6 +9,11 @@ const phase11Aliases = {
   status: "workflow:phase11:checkpoint:status",
   export: "workflow:phase11:checkpoint:export",
   import: "workflow:phase11:checkpoint:import",
+  issues: "workflow:phase11:issues",
+  "issues-identify": "workflow:phase11:issues:identify",
+  "issues-next": "workflow:phase11:issues:next",
+  "issues-complete": "workflow:phase11:issues:complete",
+  "issues-init": "workflow:phase11:issues:init",
   loop: "workflow:phase11:loop",
   loopc: "workflow:phase11:loop:commit",
 };
@@ -25,6 +30,11 @@ function printHelp() {
     "  npm run p11:status  Show checkpoint status",
     "  npm run p11:export  Export the current checkpoint",
     "  npm run p11:import  Import a checkpoint",
+    "  npm run p11:issues  Show slice issue ledger status",
+    "  npm run p11:issues:identify [-- --source-slice <path>]  Build the ledger from slice evidence",
+    "  npm run p11:issues:next  Print the next unresolved issue prompt",
+    "  npm run p11:issues:complete -- --id <id> [--github #N] [--commit HASH]",
+    "  npm run p11:issues:init -- --source-slice <path>",
     "  npm run p11:loop    Run the loop runner",
     "  npm run p11:loopc   Run the loop runner and commit",
     "",
@@ -32,6 +42,9 @@ function printHelp() {
     "  npm run wf -- once",
     "  npm run wf -- oncec",
     "  npm run wf -- status",
+    "  npm run wf -- issues",
+    "  npm run wf -- issues-identify",
+    "  npm run wf -- issues-next",
     "  npm run wf -- loopc",
     "",
     "Canonical script for once+commit",
@@ -49,6 +62,7 @@ if (!arg || arg === "--help" || arg === "help" || arg === "--phase11-help") {
 }
 
 const targetScript = phase11Aliases[arg];
+const forwardArgs = process.argv.slice(3);
 
 if (!targetScript) {
   console.error(`Unknown workflow shortcut: ${arg}`);
@@ -57,7 +71,12 @@ if (!targetScript) {
   process.exit(1);
 }
 
-const result = spawnSync("npm", ["run", targetScript], {
+const npmArgs = ["run", targetScript];
+if (forwardArgs.length > 0) {
+  npmArgs.push("--", ...forwardArgs);
+}
+
+const result = spawnSync("npm", npmArgs, {
   stdio: "inherit",
   shell: process.platform === "win32",
 });
