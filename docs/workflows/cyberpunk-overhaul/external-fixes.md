@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #6
+- Status: fixed out of band on `main` in commit `376f9fe`.
+- Summary: Burnout recovery now records a visible `Emergency Trauma Team` sanity row, and turn summaries finalize after the 24-hour condition tick so late end-turn sanity changes reconcile with `pendingTurnSummary.totals.sanityChange`.
+- Resolved date: 2026-03-22
+- Runner guidance: treat older Phase 11 notes that describe burnout weeks with visible sanity lines that do not match the reported sanity total as historical evidence from the pre-fix build. On the live app, a burnout-triggered end turn should now show the recovery line item and a reconciled sanity total. Only reopen this if a fresh run still shows divergence between the visible sanity rows, the reported total, and the checkpointed end state.
+
 ### 2026-03-20 - GitHub issue #5
 - Status: fixed out of band on `main`.
 - Summary: The turn summary now carries in-week sanity-affecting events into `pendingTurnSummary.events`, so the visible detail list can include random-event and shopping sanity changes instead of only end-of-turn passive modifiers.
