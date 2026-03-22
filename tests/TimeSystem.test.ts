@@ -128,6 +128,26 @@ describe('TimeSystem', () => {
         expect(gameState.pendingTurnSummary).not.toBeNull();
         expect(player.hasCondition('TRAUMA_REBOOT')).toBe(true);
         expect(gameState.isEndingTurn).toBe(false);
+        expect(gameState.pendingTurnSummary?.totals.sanityChange).toBe(35);
+        expect(gameState.pendingTurnSummary?.events).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({
+                    label: 'Ambient Stress',
+                    value: -10,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Cycle Recovery',
+                    value: 5,
+                    unit: 'Sanity'
+                }),
+                expect.objectContaining({
+                    label: 'Emergency Trauma Team',
+                    value: 40,
+                    unit: 'Sanity'
+                })
+            ])
+        );
     });
 
     it('includes in-week event sanity changes in the turn summary breakdown', () => {

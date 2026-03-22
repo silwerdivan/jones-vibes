@@ -22,6 +22,7 @@ class TimeSystem {
     endTurn(): TurnSummary {
         this.gameState.isEndingTurn = true;
         const currentPlayer = this.gameState.getCurrentPlayer();
+        const initialWeeklyEventCount = currentPlayer.weeklyTurnEvents.length;
         const summary: TurnSummary = {
             player: currentPlayer.id,
             playerName: this._getPlayerName(currentPlayer),
@@ -225,19 +226,24 @@ class TimeSystem {
             });
         }
 
-        // 7. Calculate totals from tracked stats
-        summary.totals.creditsChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
-        summary.totals.sanityChange = currentPlayer.weeklySanityChange;
-
-        // Reset weekly stats for the next week
-        currentPlayer.resetWeeklyStats();
-        
         // 7. Reset time for the next turn, accounting for any deficit
         const timeDeficit = currentPlayer.timeDeficit;
         currentPlayer.setTime(24 - timeDeficit);
         
         // Tick conditions for the 24 hours that pass between turns (rest/sleep)
         this.gameState.eventManager.tickConditions(currentPlayer, 24);
+
+        const lateWeeklyEvents = currentPlayer.weeklyTurnEvents.slice(initialWeeklyEventCount);
+        if (lateWeeklyEvents.length > 0) {
+            summary.events.push(...lateWeeklyEvents);
+        }
+
+        // 8. Calculate totals from tracked stats after all end-turn effects resolve.
+        summary.totals.creditsChange = currentPlayer.weeklyIncome - currentPlayer.weeklyExpenses;
+        summary.totals.sanityChange = currentPlayer.weeklySanityChange;
+
+        // Reset weekly stats for the next week
+        currentPlayer.resetWeeklyStats();
 
         // Decay hustle heat
         if (currentPlayer.hustleHeat) {
@@ -256,7 +262,7 @@ class TimeSystem {
             currentPlayer.timeDeficit = 0;
         }
 
-        // 8. Reset location to Home
+        // 9. Reset location to Home
         currentPlayer.setLocation("Hab-Pod 404");
         this.gameState.activeLocationDashboard = null;
         this.gameState.activeChoiceContext = null;

@@ -384,6 +384,13 @@ class GameState {
 
         player.setTime(0);
         player.updateSanity(40);
+        player.recordWeeklyTurnEvent({
+            type: 'success',
+            label: 'Emergency Trauma Team',
+            value: 40,
+            unit: 'Sanity',
+            icon: 'medical_services'
+        });
 
         const medicalFee = 250;        // Forced deduction even if it goes slightly negative or just takes what's left?
         // Let's use spendCredits which currently doesn't allow negative, 
