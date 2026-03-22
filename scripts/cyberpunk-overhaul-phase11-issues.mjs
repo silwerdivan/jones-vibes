@@ -247,7 +247,13 @@ function detectIssues({ sourceSlice, sourceText, progressText, currentPhaseText,
         /City travel cards still need targeted DOM interaction/i.test(progressText) ||
         /city location cards are custom divs/i.test(progressText) ||
         /Move between city locations/i.test(recipesText),
-      fixed: () => /city travel.*fixed/i.test(fixedContext),
+      fixed: () =>
+        /GitHub issue `#11`/i.test(fixedContext) &&
+        (
+          /city travel automation now uses semantic button controls/i.test(fixedContext) ||
+          /travel to the named city button/i.test(fixedContext) ||
+          /city-travel-card-/i.test(fixedContext)
+        ),
     },
     {
       key: 'post-click-state-verification',

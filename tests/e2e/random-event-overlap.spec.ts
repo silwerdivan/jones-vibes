@@ -89,7 +89,7 @@ test.describe('Cognitive Re-Ed / Random Event Overlap Glitch', () => {
 
   test('should NOT overwrite the Random Event modal with the Location Dashboard', async ({ page }) => {
     // 1. Find the Cognitive Re-Ed bento card
-    const collegeCard = page.locator('.bento-card', { hasText: 'Cognitive Re-Ed' });
+    const collegeCard = page.locator('[data-testid="city-travel-card-cognitive-re-ed"]');
     await expect(collegeCard).toBeVisible();
 
     // 2. Click to travel to Cognitive Re-Ed

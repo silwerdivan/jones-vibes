@@ -7,6 +7,12 @@ runner slices must know before continuing.
 
 ## Active Handoff
 
+### 2026-03-22 - GitHub issue #11
+- Status: fixed out of band on `main`.
+- Summary: City travel automation now uses semantic button controls instead of custom clickable divs. `CityScreen` exposes stable `city-travel-card-*` selectors and location metadata, so the canonical browser recipe can target direct button clicks for travel without broad text scans or DOM-only evaluation.
+- Resolved date: 2026-03-22
+- Runner guidance: treat older Phase 11 notes that recommend full DOM reads, snapshot text scans, or targeted `element.click()` evaluation for city travel as historical pre-fix evidence from the old city-card surface. On the live app, click the named `city-travel-card-*` button directly, then verify the active location label or dashboard title and any expected time change. Only reopen this if a fresh slice still cannot travel through the visible button control.
+
 ### 2026-03-22 - GitHub issue #10
 - Status: fixed out of band on `main`.
 - Summary: Phase 11 Labor Sector job-application automation now treats the first `Apply` action as an offscreen-pointer risk instead of a fully reliable raw click. The canonical browser recipe now requires `scrollintoview` before direct `agent-browser click`, immediate state verification against `CURRENT SHIFT` or persisted `careerLevel`, and a bounded retry before any DOM-eval escalation.

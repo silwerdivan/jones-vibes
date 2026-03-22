@@ -26,8 +26,14 @@
     "travel_city": {
       "goal": "Move between city locations.",
       "preferred_selectors": [
-        "Use known location-card or city-card text targets only when the surface is stable.",
-        "Use targeted DOM eval to click a specific location card when plain click-by-text is unreliable."
+        "[data-testid=\"city-travel-card-labor-sector\"]",
+        "[data-testid=\"city-travel-card-sustenance-hub\"]",
+        "[data-testid=\"city-travel-card-ripperdoc-clinic\"]"
+      ],
+      "preferred_actions": [
+        "Click the named city button by its `data-testid` first; city travel cards are now semantic `<button>` controls rather than custom clickable divs.",
+        "Use the location-specific `city-travel-card-*` selector instead of broad text scans or full DOM dumps whenever the destination is known.",
+        "Only fall back to targeted DOM evaluation if the expected `city-travel-card-*` control is absent or the post-click state verification fails."
       ],
       "verification": [
         "Check the active location label or dashboard title.",

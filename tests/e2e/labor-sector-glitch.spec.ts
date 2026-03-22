@@ -77,7 +77,7 @@ test.describe('Labor Sector mobile rebuild', () => {
   });
 
   test('uses segmented jobs and hustles panels with a top-right close button', async ({ page }) => {
-    const laborSectorCard = page.locator('.bento-card', { hasText: 'Labor Sector' });
+    const laborSectorCard = page.locator('[data-testid="city-travel-card-labor-sector"]');
     await laborSectorCard.click();
 
     const modalOverlay = page.locator('#choice-modal-overlay');
@@ -110,7 +110,7 @@ test.describe('Labor Sector mobile rebuild', () => {
   });
 
   test('does not reopen after working a shift and closing the modal', async ({ page }) => {
-    await page.locator('.bento-card', { hasText: 'Labor Sector' }).click();
+    await page.locator('[data-testid="city-travel-card-labor-sector"]').click();
 
     const modalOverlay = page.locator('#choice-modal-overlay');
     await expect(modalOverlay).not.toHaveClass(/hidden/, { timeout: 5000 });
@@ -133,7 +133,7 @@ test.describe('Labor Sector mobile rebuild', () => {
 
     await page.goto('/');
 
-    await page.locator('.bento-card', { hasText: 'Labor Sector' }).click();
+    await page.locator('[data-testid="city-travel-card-labor-sector"]').click();
 
     await expect(page.locator('#choice-modal-title')).toHaveText('Broken Auto-Chef', { timeout: 5000 });
     await page.locator('button', { hasText: 'Risk it:' }).click();

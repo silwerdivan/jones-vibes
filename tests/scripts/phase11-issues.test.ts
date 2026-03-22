@@ -151,11 +151,11 @@ Prompt body 2
 
     const created = fs.readFileSync(ledgerPath, 'utf8');
     expect(output).toContain('Identified');
-    expect(created).toContain('City travel still depends on brittle DOM-only interaction with custom location cards');
+    expect(created).not.toContain('City travel still depends on brittle DOM-only interaction with custom location cards');
     expect(created).not.toContain('Labor Sector `Apply` click can report success without mutating `CURRENT SHIFT`');
     expect(created).not.toContain('Runner actions still need stronger post-click state verification guardrails');
     expect(created).not.toContain('False `live_continuity` report on onboarding reset');
-    expect(created).toContain('- **Default next item:** `1`');
-    expect(created).toContain('| 1 | todo | City travel still depends on brittle DOM-only interaction with custom location cards');
+    expect(created).toContain('- **Default next item:** none');
+    expect(created).toContain('- **Reason:** no unresolved issues were identified from the current slice evidence');
   });
 });

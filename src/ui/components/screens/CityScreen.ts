@@ -10,6 +10,14 @@ export interface BentoCardConfig {
     onClick: () => void;
 }
 
+function slugifyLocationName(location: LocationName): string {
+    return location
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .replace(/-{2,}/g, '-');
+}
+
 export default class CityScreen extends BaseComponent<GameState> {
     private bentoGrid: HTMLElement;
     private locationHint: HTMLElement;
@@ -81,12 +89,23 @@ export default class CityScreen extends BaseComponent<GameState> {
         });
     }
 
-    private createBentoCard(config: BentoCardConfig): HTMLElement {
+    private createBentoCard(config: BentoCardConfig): HTMLButtonElement {
         const { location, isActive, onClick } = config;
-        
-        const card = document.createElement('div');
+        const automationKey = slugifyLocationName(location);
+        const card = document.createElement('button');
+        card.type = 'button';
         card.className = `bento-card ${isActive ? 'active' : ''}`;
-        
+        card.dataset.testid = `city-travel-card-${automationKey}`;
+        card.setAttribute('data-testid', `city-travel-card-${automationKey}`);
+        card.setAttribute('data-location', location);
+        card.setAttribute(
+            'aria-label',
+            isActive ? `Open ${location} dashboard` : `Travel to ${location}`
+        );
+        if (isActive) {
+            card.setAttribute('aria-current', 'location');
+        }
+
         const iconSvg = this.getLocationIcon(location);
         const summary = this.getLocationSummary(location);
 

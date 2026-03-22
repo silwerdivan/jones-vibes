@@ -81,7 +81,7 @@ test.describe('Turn Summary Endless Loop Glitch', () => {
 
   test('should not show the turn summary modal again after advancing turn', async ({ page }) => {
     // 1. Player clicks on Hab-Pod 404
-    const homeCard = page.locator('.bento-card', { hasText: 'Hab-Pod 404' });
+    const homeCard = page.locator('[data-testid="city-travel-card-hab-pod-404"]');
     await expect(homeCard).toBeVisible();
     await homeCard.click();
 

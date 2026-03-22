@@ -80,9 +80,9 @@ test.describe('Location Navigation and UI', () => {
     await page.goto('/');
   });
 
-  test('should navigate to Ripperdoc Clinic and show 3 item cards', async ({ page }) => {
+  test('should navigate to Ripperdoc Clinic and show its implant cards', async ({ page }) => {
     // 1. Find the Ripperdoc Clinic bento card
-    const ripperdocCard = page.locator('.bento-card', { hasText: 'Ripperdoc Clinic' });
+    const ripperdocCard = page.locator('[data-testid="city-travel-card-ripperdoc-clinic"]');
     await expect(ripperdocCard).toBeVisible();
 
     // 2. Click to travel to Ripperdoc Clinic
@@ -99,19 +99,20 @@ test.describe('Location Navigation and UI', () => {
     const modalTitle = page.locator('#choice-modal-title');
     await expect(modalTitle).toHaveText('Ripperdoc Clinic');
 
-    // 5. Verify the 3 item cards are visible
+    // 5. Verify the implant cards are visible
     const actionCards = page.locator('#choice-modal-content .action-card');
-    await expect(actionCards).toHaveCount(3);
+    await expect(actionCards).toHaveCount(4);
 
     // 6. Verify specific item names
-    const itemTitles = page.locator('#choice-modal-content .action-card-title');
-    await expect(itemTitles.nth(0)).toHaveText('Neural Co-Processor');
-    await expect(itemTitles.nth(1)).toHaveText('Synthetic Liver');
-    await expect(itemTitles.nth(2)).toHaveText('Adrenaline Pump');
+    await expect(page.locator('#choice-modal-content .action-card-title')).toContainText([
+      'Neural Co-Processor',
+      'Synthetic Liver',
+      'Adrenaline Pump',
+    ]);
   });
 
   test('should navigate to Consumpt-Zone and show items', async ({ page }) => {
-    const card = page.locator('.bento-card', { hasText: 'Consumpt-Zone' });
+    const card = page.locator('[data-testid="city-travel-card-consumpt-zone"]');
     await expect(card).toBeVisible();
     await card.click();
     

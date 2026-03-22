@@ -60,6 +60,21 @@ describe('CityScreen', () => {
             expect(cards.length).toBe(LOCATIONS.length);
         });
 
+        it('should render location cards as automation-safe buttons with stable test ids', () => {
+            cityScreen.mount(container);
+            cityScreen.render(gameState);
+
+            const laborCard = cityScreen.getBentoGrid().querySelector(
+                '[data-testid="city-travel-card-labor-sector"]'
+            ) as HTMLButtonElement | null;
+
+            expect(laborCard).not.toBeNull();
+            expect(laborCard?.tagName).toBe('BUTTON');
+            expect(laborCard?.type).toBe('button');
+            expect(laborCard?.dataset.location).toBe('Labor Sector');
+            expect(laborCard?.getAttribute('aria-label')).toBe('Travel to Labor Sector');
+        });
+
         it('should mark current location as active', () => {
             gameState.getCurrentPlayer().location = 'Hab-Pod 404';
             cityScreen.mount(container);
@@ -114,9 +129,8 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            const cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
-            const bankCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Cred-Debt Ctr'
+            const bankCard = cityScreen.getBentoGrid().querySelector(
+                '[data-testid="city-travel-card-cred-debt-ctr"]'
             );
 
             bankCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
@@ -132,14 +146,26 @@ describe('CityScreen', () => {
             cityScreen.mount(container);
             cityScreen.render(gameState);
 
-            const cards = cityScreen.getBentoGrid().querySelectorAll('.bento-card');
-            const bankCard = Array.from(cards).find(card => 
-                card.querySelector('.bento-card-title')?.textContent === 'Cred-Debt Ctr'
+            const bankCard = cityScreen.getBentoGrid().querySelector(
+                '[data-testid="city-travel-card-cred-debt-ctr"]'
             );
 
             bankCard?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
             expect(mockPublish).toHaveBeenCalledWith('showLocationDashboard', 'Cred-Debt Ctr');
+        });
+
+        it('should mark the current location with aria-current and dashboard label', () => {
+            gameState.getCurrentPlayer().location = 'Cred-Debt Ctr';
+            cityScreen.mount(container);
+            cityScreen.render(gameState);
+
+            const bankCard = cityScreen.getBentoGrid().querySelector(
+                '[data-testid="city-travel-card-cred-debt-ctr"]'
+            );
+
+            expect(bankCard?.getAttribute('aria-current')).toBe('location');
+            expect(bankCard?.getAttribute('aria-label')).toBe('Open Cred-Debt Ctr dashboard');
         });
     });
 
