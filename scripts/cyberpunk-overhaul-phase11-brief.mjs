@@ -11,6 +11,13 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
+function readOptionalJson(filePath) {
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+  return readJson(filePath);
+}
+
 function readText(filePath) {
   return fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "";
 }
@@ -122,7 +129,7 @@ const personaLogPath = runState.current_persona?.log_path || "";
 const latestSlicePath = latestSliceFile(detailRoot, personaLogPath);
 const latestSlice = parseLatestSlice(latestSlicePath);
 
-const brief = {
+const nextBrief = {
   workflow: runState.workflow,
   phase: runState.phase,
   generated_at: new Date().toISOString(),
@@ -169,4 +176,20 @@ const brief = {
   ],
 };
 
-fs.writeFileSync(outputPath, `${JSON.stringify(brief, null, 2)}\n`);
+const previousBrief = readOptionalJson(outputPath);
+
+if (previousBrief) {
+  const { generated_at: _previousGeneratedAt, ...previousComparable } = previousBrief;
+  const { generated_at: _nextGeneratedAt, ...nextComparable } = nextBrief;
+
+  if (JSON.stringify(previousComparable) === JSON.stringify(nextComparable)) {
+    nextBrief.generated_at = previousBrief.generated_at;
+  }
+}
+
+const nextSerialized = `${JSON.stringify(nextBrief, null, 2)}\n`;
+const previousSerialized = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, "utf8") : null;
+
+if (previousSerialized !== nextSerialized) {
+  fs.writeFileSync(outputPath, nextSerialized);
+}

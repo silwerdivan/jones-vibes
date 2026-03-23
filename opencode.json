@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": ["./opencode-agents.md"],
   "agent": {
     "Architect": {
       "prompt": "{file:./docs/SYSTEM-ARCHITECT.md}"
