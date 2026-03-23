@@ -1,0 +1,178 @@
+# AGENTS.md
+
+This file contains instructions for AI agents working in this repository.
+
+## Project Overview
+
+**Jones in the Fast Lane** is a cyberpunk-themed life management game built with TypeScript and Vite. Players manage time, credits, sanity, and education across various sectors of a dystopian city.
+
+## Build Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Type-check and build for production
+npm run preview      # Preview production build
+npm run test         # Run all tests (vitest)
+npm run test:watch  # Run tests in watch mode
+npm run test:e2e    # Run Playwright E2E tests
+```
+
+### Running Single Tests
+
+```bash
+# Run a specific test file
+npx vitest run tests/GameState.test.ts
+
+# Run tests matching a pattern
+npx vitest run --testNamePattern "should serialize"
+
+# Run with coverage
+npx vitest run --coverage
+
+# Run specific E2E test
+npx playwright test tests/e2e/onboarding.spec.ts
+```
+
+## Code Style
+
+### TypeScript Configuration
+
+The project uses strict TypeScript (`strict: true`). Key settings in `tsconfig.json`:
+- No unused locals or parameters
+- No fallthrough cases in switch
+- ESNext target with bundler module resolution
+
+### File Organization
+
+- **Source code**: `src/` - Game logic, UI components, systems
+- **Tests**: `tests/` - Unit tests (`.test.ts`), E2E specs (`.spec.ts`)
+- **Data**: `src/data/` - Game data (jobs, items, locations, events, etc.)
+
+### Imports
+
+- Use `.js` extensions in imports for ESNext compatibility:
+  ```typescript
+  import BaseComponent from '../../BaseComponent.js';
+  import EventBus, { STATE_EVENTS } from '../../../EventBus.js';
+  ```
+- Group imports: external packages first, then internal modules
+- Use `import type` for type-only imports when appropriate
+- Use relative imports (no path aliases currently configured)
+
+### Naming Conventions
+
+| Element | Convention | Example |
+|---------|-----------|---------|
+| Classes | PascalCase | `class GameState` |
+| Interfaces | PascalCase | `interface PlayerState` |
+| Types | PascalCase | `type ConditionEffectType` |
+| Enums | PascalCase (members UPPER_SNAKE) | `STATE_EVENTS.CREDITS_CHANGED` |
+| Variables | camelCase | `currentPlayer`, `gameOver` |
+| Private members | Prefixed `_` | `_economySystem`, `_checkAutoEndTurn()` |
+| Constants | UPPER_SNAKE_CASE | `PERF_THRESHOLD`, `MAX_ENERGY` |
+| Files | kebab-case | `game-state.ts`, `event-bus.ts` |
+| Data files | kebab-case | `jobs.ts`, `hustles.ts` |
+
+### Functions and Methods
+
+- Use `function` keyword for class methods (not arrow on prototype)
+- Private methods prefixed with `_`
+- Public methods without prefix
+- Use `async/await` for asynchronous operations
+- Return `boolean` for predicate methods (e.g., `workShift(): boolean`)
+
+### Type Annotations
+
+- Always annotate function parameters and return types
+- Use interfaces for data shapes, types for unions
+- Prefer explicit types over `any`
+- Use `as const` for enum-like objects:
+  ```typescript
+  export const STATE_EVENTS = {
+    CREDITS_CHANGED: 'STATE_CREDITS_CHANGED',
+  } as const;
+  ```
+
+### Error Handling
+
+- Return `false` from methods on failure, `true` on success
+- Log messages via `gameState.addLogMessage(message, category)` where category is `'error'`, `'warning'`, `'info'`, `'success'`
+- Throw `Error` only for unrecoverable states (e.g., constructor validation)
+- Use `console.warn` for performance warnings, `console.log` for debug info
+
+### UI Components
+
+- Extend `BaseComponent<T>` for UI components
+- Use `data-testid` attributes for E2E test selectors
+- Components use DOM manipulation (no framework)
+- Subscribe to `EventBus` events in constructor, unsubscribe in `unsubscribeAll()`
+- Implement `_render(state: T): void` abstract method
+
+### State Management
+
+- `EventBus` for pub/sub communication
+- Use `STATE_EVENTS.*` for granular state changes (e.g., `CREDITS_CHANGED`)
+- Use `'stateChanged'` for full re-renders
+- Serialize state via `toJSON()` method
+- Deserialize via `static fromJSON(data: T): T`
+
+### Testing Conventions
+
+- Use `describe`, `it`, `expect` from `vitest`
+- Use `beforeEach` to reset state and clear EventBus:
+  ```typescript
+  beforeEach(() => {
+      EventBus.clearAll();
+      // reset state
+  });
+  ```
+- Test file naming: `*.test.ts` for unit tests, `*.spec.ts` for E2E
+- Group related tests in `describe` blocks
+- E2E tests use Playwright with `data-testid` selectors
+
+### Game Data Patterns
+
+- Data in `src/data/` is exported as constants (`JOBS`, `HUSTLES`, `ITEMS`, etc.)
+- Use `find()`, `filter()` on data arrays for lookups
+- Location names are string constants from `LocationName` type
+
+## Common Patterns
+
+### AI Action Handling
+
+```typescript
+processAITurn(): void {
+    const aiAction = this.aiController.takeTurn(this, currentPlayer);
+    this.handleAIAction(aiAction);
+}
+
+handleAIAction(aiAction: AIAction): void {
+    if (!aiAction || !aiAction.action) {
+        // end turn
+        return;
+    }
+    switch (aiAction.action) {
+        case 'travel': /* ... */ break;
+        default: console.warn(`Unknown AI action: ${aiAction.action}`);
+    }
+}
+```
+
+### State Subscription
+
+```typescript
+this.subscribe(STATE_EVENTS.CREDITS_CHANGED, ({ gameState }: { gameState: GameState }) => {
+    this.render(gameState);
+});
+```
+
+### Player Action Guard
+
+```typescript
+workShift(isAIAction: boolean = false): boolean {
+    if (this.isAIThinking && !isAIAction) {
+        return false;
+    }
+    // ... implementation
+}
+```
