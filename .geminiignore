@@ -11,4 +11,3 @@
 .serena
 .gemini
 *.log
-!**/.codex-runtime/**/startup-context.json
