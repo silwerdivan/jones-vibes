@@ -50,6 +50,12 @@ This log tracks technical patterns, selector strategies, and "gotchas" discovere
     - **Correct**: `agent-browser open http://localhost:5174/jones-vibes/`.
 - **Ref Quotation**: Using `@e1` in some shells (like PowerShell or Bash) without quotes can lead to "Missing arguments" or "Invalid ref" errors because `@` is a special character.
     - **Best Practice**: Always wrap refs in quotes: `agent-browser click "@e1"`.
+- **Incorrect Flag Placement (Token Tax)**: Using `--no-sandbox` as a direct flag (instead of via `--args`) or putting it after `eval` will cause errors that bloat history.
+    - **Error**: `agent-browser --session-name phase11 eval "..." --no-sandbox` (Result: `SyntaxError: Unexpected identifier 'no'`)
+    - **Error**: `agent-browser --no-sandbox eval "..."` (Result: `Unknown command: --no-sandbox`)
+    - **Correct Syntax**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
+    - **Correct Example**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
+    - **Linux Rule**: Always use `--args "--no-sandbox"` on Linux to avoid permission errors.
 
 ### Efficient Session Recovery
 - **Snapshot Scoping**: If the UI is crowded, use `agent-browser snapshot -i -C` but be prepared for many refs. If you know the area, use `agent-browser snapshot -s ".city-grid"`.

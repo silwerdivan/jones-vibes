@@ -21,7 +21,14 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 - Treat checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/` as the authoritative recovery layer when a named browser session reopens without the expected save.
 - Treat the external baseline handoff as out-of-band context, not as new Phase 11 evidence. Only log it again if the live build contradicts that handoff.
 - Reuse the existing app and browser state from the environment. `AGENT_BROWSER_SESSION_NAME` is already set for the active persona.
-- On Linux, keep using `agent-browser` with the `--no-sandbox` configuration.
+- **Linux Correct Syntax**: On Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option *after* the command.
+    - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
+    - **Correct**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
+    - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
+- **Tool Reliability**: To prevent "Tool Limping" (repeated failures that bloat history):
+    - **Consolidate State Probes**: Instead of multiple `eval` calls, use one batched check: `agent-browser eval "({ credits: ..., hunger: ... })"`.
+    - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
+    - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
 - If the browser session continuity is missing but `startup-context.json` points to a latest checkpoint save file, restore that checkpoint with `npm run workflow:phase11:checkpoint:import` before resorting to a replay-from-onboarding decision.
 - Use the trusted UI workaround notes from `startup-context.json` first. Read `docs/workflows/cyberpunk-overhaul/agent-browser-learnings.md` only if a listed UI path fails, the notes are missing, or you need a new automation pattern that is not already covered.
 - Do not spend a startup command on `agent-browser --help` or other CLI-surface probes during a normal slice; the runner has already established the browser tool path.
