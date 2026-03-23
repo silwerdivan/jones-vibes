@@ -972,11 +972,9 @@ case "${AGENT_EXEC}" in
     ;;
   opencode)
     codex_args=(
-      opencode
-      exec
-      --json
-      -C "${ROOT_DIR}"
-      -o "${SLICE_LAST_MESSAGE_FILE}"
+      bash
+      -c
+      "opencode run --project '${ROOT_DIR}' <&0 2>&1"
     )
     ;;
   *)
