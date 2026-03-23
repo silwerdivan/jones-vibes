@@ -43,7 +43,7 @@ enforce_issue_followup_gate() {
     return 0
   fi
 
-  if ! ledger_check_output="$(
+  if ledger_check_output="$(
     node - "${ISSUE_LEDGER_FILE}" "${latest_slice_file}" <<'NODE'
 const fs = require('fs');
 
