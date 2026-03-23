@@ -978,6 +978,14 @@ case "${AGENT_EXEC}" in
       -- "${ROOT_DIR}" "${SLICE_PROMPT_FILE}"
     )
     ;;
+  gemini)
+    codex_args=(
+      gemini
+      --approval-mode=yolo
+      --output-format stream-json
+      -p ""
+    )
+    ;;
   *)
     echo "[phase11-once] unknown AGENT_EXEC: ${AGENT_EXEC}" >&2
     exit 1
@@ -1030,6 +1038,18 @@ tee_exit=0
 set +e
 if [[ "${AGENT_EXEC}" == "codex" ]]; then
   "${codex_args[@]}" - <"${SLICE_PROMPT_FILE}" \
+    | node "${LOG_STREAM_HELPER}" \
+        --slice-id "${SLICE_ID}" \
+        --persona "${persona_name}" \
+        --retry-threshold "${RETRY_THRESHOLD}" \
+        --event-log "${EVENT_LOG_FILE}" \
+        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
+        --summary "${STREAM_SUMMARY_FILE}" \
+        --raw-jsonl "${RAW_JSONL_TEMP}" \
+        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
+    | tee -a "${LOG_FILE}"
+elif [[ "${AGENT_EXEC}" == "gemini" ]]; then
+  "${codex_args[@]}" <"${SLICE_PROMPT_FILE}" \
     | node "${LOG_STREAM_HELPER}" \
         --slice-id "${SLICE_ID}" \
         --persona "${persona_name}" \

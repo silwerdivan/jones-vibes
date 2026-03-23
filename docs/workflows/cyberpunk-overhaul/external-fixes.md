@@ -67,3 +67,9 @@ runner slices must know before continuing.
 - Summary: The turn summary now uses the `SANITY` label and the live `summary-sanity-total` element instead of the legacy `HAPPINESS` label and stale happiness-era total id.
 - Resolved date: 2026-03-19
 - Runner guidance: treat older Phase 11 notes that mention `HAPPINESS 0` in the turn summary as historical evidence from the pre-fix build. Only raise this again if the live app regresses.
+
+### 2026-03-23 - GitHub issue #13
+- Status: FIXED.
+- Summary: The "START NEXT WEEK" button and turn advancement logic are now idempotent and "save-safe". The UI now validates that a `pendingTurnSummary` belongs to the `currentPlayerIndex` before showing the modal or allowing an advancement. Stale summaries on restore are automatically cleared, and AI summaries on restore trigger an auto-advance.
+- Resolved date: 2026-03-23
+- Runner guidance: The manual `eval` workaround for "START NEXT WEEK" is no longer required. The game now safely handles restored sessions at turn transitions. If a summary modal appears, it is safe to click the button; if the state was already advanced, the modal will either not appear or will safely clear without skipping the next player's turn.

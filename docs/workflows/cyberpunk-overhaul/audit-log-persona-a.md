@@ -95,3 +95,9 @@ Workflow note: the restarted audit re-established the old Persona A reference ba
 - **Key Broken Math / Probability Frustrations:** Pending fresh run.
 - **Thematic Hit/Miss:** Pending fresh run.
 - **Phase 12 Recommendations:** Pending fresh run.
+
+### Week 9 (2026-03-23)
+- **Status:** COMPLETED (Burnout occurred)
+- **State:** ₡380 / Hunger 80% / Sanity 45
+- **Conditions:** TRAUMA_REBOOT (duration refreshed)
+- **Key Finding:** The "Safe Grinder" route (3x shifts, no food) is non-viable under Trauma Reboot if starting with 60% hunger and 25 sanity. Hit exactly 0 sanity at end of turn (Ambient -10, Exhaustion -15).

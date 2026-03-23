@@ -20,11 +20,11 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`, which now prefers `window.__JONES_FASTLANE_SESSION__` and falls back to `localStorage.jones_fastlane_save` only when no live bridge is present. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-22T04:32:15.434Z",
-    "last_restored_at": "2026-03-23T08:58:53.341Z",
+    "last_exported_at": "2026-03-23T12:50:25.722Z",
+    "last_restored_at": "2026-03-23T12:47:17.310Z",
     "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json"
   },
   "slice_policy": {
@@ -38,7 +38,7 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Resume Persona A from the authoritative Week 8 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 8 summary anchor `₡458 / Debt ₡0 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`, and verify whether the restored `Sanitation-T3` plus `Work Shift x3` route still survives from the harsher hunger floor. Treat GitHub issues #7, #8, and #9 as fixed baseline behavior unless a fresh Week 9 run again shows a one-choice week opener after requirement filtering, `workflow:phase11:checkpoint:status` / `workflow:phase11:checkpoint:export` stop reporting `browser_state_source: live_session` while the live browser page is already authoritative, or visible onboarding is still misclassified as `live_continuity` instead of forcing checkpoint recovery.",
+  "next_slice": "Resume Persona A from the authoritative Week 9 checkpoint. Player starts Week 10 at ₡380 / Hunger 80% / Sanity 45 with TRAUMA_REBOOT active. Objective: Survival. Since hunger is at 80% (exhaustion protocol limit for trauma), Player MUST consume food this turn or face game over (energy drain failure). Travel to Sustenance Hub, buy Real-Meat Burger x2 (if possible) or whatever food is available. Credits ₡380 is enough for food.",
   "last_run": {
     "at": "2026-03-22",
     "outcome": "phase11_persona_a_week_08_complete",

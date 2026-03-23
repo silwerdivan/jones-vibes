@@ -123,3 +123,114 @@ test.describe('Turn Summary Endless Loop Glitch', () => {
     // Not strictly necessary, the main issue is the modal popping up again.
   });
 });
+
+test.describe('Issue #13: Turn-Skipping Bug (Stale Summary on Restore)', () => {
+  const createBasePlayer = (id: number, name: string, isAI: boolean) => ({
+    id,
+    credits: 1000,
+    savings: 0,
+    sanity: 50,
+    educationLevel: 0,
+    educationCredits: 0,
+    educationCreditsGoal: 0,
+    careerLevel: 0,
+    time: 24,
+    location: 'Hab-Pod 404',
+    hasCar: false,
+    loan: 0,
+    inventory: [],
+    hunger: 0,
+    timeDeficit: 0,
+    weeklyIncome: 0,
+    weeklyExpenses: 0,
+    weeklySanityChange: 0,
+    weeklyTurnEvents: [],
+    isAI,
+    name,
+    wageMultiplier: 1.0,
+    activeConditions: [],
+    burnRate: 150,
+    debt: 0,
+    hustleHeat: {}
+  });
+
+  test('should clear stale summary and resume AI turn without skipping', async ({ page }) => {
+    await page.addInitScript((players) => {
+      const state = {
+        players,
+        currentPlayerIndex: 1, // AI's turn
+        turn: 1,
+        gameOver: false,
+        winnerId: null,
+        log: [],
+        isPlayer2AI: true,
+        // Summary for P1 (player: 1), but we are at index 1 (AI)
+        pendingTurnSummary: {
+          player: 1,
+          playerName: 'P1 HUMAN',
+          week: 1,
+          events: [],
+          totals: { creditsChange: 0, sanityChange: 0 }
+        },
+        activeScreenId: 'city',
+        activeLocationDashboard: null,
+        activeChoiceContext: null,
+        activeEvent: null,
+        activeGraduation: null,
+        isAIThinking: false,
+        eventHistory: []
+      };
+      window.localStorage.setItem('jones_fastlane_save', JSON.stringify(state));
+    }, [createBasePlayer(1, 'P1 HUMAN', false), createBasePlayer(2, 'P2 AI', true)]);
+
+    await page.goto('/');
+
+    // The summary modal should NOT be visible because it's stale (player 1 summary, but index 1)
+    const summaryModal = page.locator('#turn-summary-modal');
+    await expect(summaryModal).toHaveClass(/hidden/);
+
+    // AI should finish and it should be P1 turn (Turn 2)
+    await expect(page.locator('[data-week]')).toContainText('2', { timeout: 20000 });
+    const orbP1 = page.locator('#orb-p1');
+    await expect(orbP1).toHaveClass(/active/);
+  });
+
+  test('should auto-advance on restore if it is an AI summary for the current AI player', async ({ page }) => {
+    await page.addInitScript((players) => {
+      const state = {
+        players,
+        currentPlayerIndex: 1, // AI's turn
+        turn: 1,
+        gameOver: false,
+        winnerId: null,
+        log: [],
+        isPlayer2AI: true,
+        // Summary for P2 (player: 2), and we are at index 1 (AI)
+        pendingTurnSummary: {
+          player: 2,
+          playerName: 'P2 AI',
+          week: 1,
+          events: [],
+          totals: { creditsChange: 0, sanityChange: 0 }
+        },
+        activeScreenId: 'city',
+        activeLocationDashboard: null,
+        activeChoiceContext: null,
+        activeEvent: null,
+        activeGraduation: null,
+        isAIThinking: false,
+        eventHistory: []
+      };
+      window.localStorage.setItem('jones_fastlane_save', JSON.stringify(state));
+    }, [createBasePlayer(1, 'P1', false), createBasePlayer(2, 'P2 AI', true)]);
+
+    await page.goto('/');
+
+    const summaryModal = page.locator('#turn-summary-modal');
+    await expect(summaryModal).toHaveClass(/hidden/);
+
+    await expect(page.locator('[data-week]')).toContainText('2', { timeout: 20000 });
+    const orbP1 = page.locator('#orb-p1');
+    await expect(orbP1).toHaveClass(/active/);
+  });
+});

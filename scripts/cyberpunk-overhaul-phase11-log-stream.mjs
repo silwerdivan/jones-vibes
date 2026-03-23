@@ -220,6 +220,7 @@ const openCommands = new Map();
 const failedCommandCounts = new Map();
 let lastFailedAgentBrowserCommand = null;
 let lastEventMs = 0;
+let assistantMessageAccumulator = '';
 
 function rememberSlowCommand(entry) {
   summary.timings.slowest_commands.push(entry);
@@ -269,7 +270,181 @@ function classifyCommand(command) {
   return 'command';
 }
 
+function handleAgentMessage(ts, text) {
+  const category = messageCategory(text);
+  if (!category) {
+    return;
+  }
+
+  const payload = {
+    ts,
+    type: category,
+    text: truncate(text, 1000),
+  };
+  const checkpoint = category === 'checkpoint' || category === 'status';
+  emitEvent(payload, checkpoint);
+
+  if (category === 'fallback') {
+    summary.counts.fallbacks += 1;
+    summary.fallback_messages.push(payload.text);
+    addDebugReason('fallback_invoked');
+    emitCompactLine(`[phase11-log] fallback: ${truncate(compactWhitespace(text), 180)}`);
+  } else if (category === 'retry') {
+    summary.counts.retries += 1;
+    summary.retry_messages.push(payload.text);
+    emitCompactLine(`[phase11-log] retry: ${truncate(compactWhitespace(text), 180)}`);
+  } else if (category === 'status') {
+    emitCompactLine(`[phase11-log] status: ${truncate(compactWhitespace(text), 180)}`);
+  }
+}
+
+function flushAssistantMessage(ts) {
+  if (!assistantMessageAccumulator) {
+    return;
+  }
+  handleAgentMessage(ts, assistantMessageAccumulator);
+  assistantMessageAccumulator = '';
+}
+
+function handleCommandCompletion(ts, nowMs, id, commandOverride, exitCode, output) {
+  const started = openCommands.get(id);
+  openCommands.delete(id);
+
+  const durationMs = started ? Math.max(0, nowMs - started.startedAtMs) : 0;
+  const command = commandOverride || started?.command || '';
+  const outputExcerpt = excerptOutput(output);
+  const commandType = classifyCommand(command);
+  const commandSummary = summarizeCommand(command);
+  const suspicious = outputLooksSuspicious(output);
+
+  summary.counts.commands_total += 1;
+  if (commandType === 'startup_read') {
+    summary.counts.startup_reads += 1;
+  }
+  if (commandType === 'git_diff') {
+    summary.counts.git_diff_commands += 1;
+  }
+  if (isAgentBrowserCommand(command)) {
+    summary.counts.agent_browser_commands += 1;
+  }
+  if (exitCode !== 0) {
+    summary.counts.commands_failed += 1;
+    addDebugReason('nonzero_tool_exit');
+  }
+
+  rememberSlowCommand({
+    command: commandSummary,
+    duration_ms: durationMs,
+    exit_code: exitCode,
+  });
+
+  const baseEvent = {
+    ts,
+    type: commandType,
+    command_type: commandType,
+    command: commandSummary,
+    exit_code: exitCode,
+    duration_ms: durationMs,
+    output_excerpt:
+      exitCode !== 0 || commandType === 'checkpoint' || commandType === 'browser_session_check' || suspicious
+        ? outputExcerpt
+        : '',
+  };
+
+  if (commandType === 'startup_read') {
+    baseEvent.target = readTargetFromCommand(command);
+    emitEvent(baseEvent);
+    return;
+  }
+
+  if (commandType === 'git_diff') {
+    baseEvent.output_bytes = output.length;
+    baseEvent.output_suppressed = true;
+    emitEvent(baseEvent);
+    return;
+  }
+
+  if (exitCode !== 0 || suspicious) {
+    if (isAgentBrowserCommand(command)) {
+      const normalized = normalizeCommand(command);
+      const failureCount = (failedCommandCounts.get(normalized) || 0) + 1;
+      failedCommandCounts.set(normalized, failureCount);
+      lastFailedAgentBrowserCommand = {
+        normalized_command: normalized,
+        command_summary: commandSummary,
+      };
+      if (failureCount >= retryThreshold) {
+        addDebugReason('repeated_retry_threshold_exceeded');
+      }
+    }
+
+    const failurePayload = {
+      ts,
+      type: exitCode !== 0 ? 'command_failure' : 'command_warning',
+      command,
+      command_summary: commandSummary,
+      exit_code: exitCode,
+      duration_ms: durationMs,
+      aggregated_output: output,
+    };
+    writeJsonLine(debugCandidateStream, failurePayload);
+    summary.failure_candidates.push({
+      command: commandSummary,
+      exit_code: exitCode,
+      duration_ms: durationMs,
+      output_excerpt: outputExcerpt,
+    });
+    emitEvent(
+      {
+        ...baseEvent,
+        type: exitCode !== 0 ? 'command_failure' : 'command_warning',
+      },
+      commandType === 'checkpoint' || commandType === 'browser_session_check'
+    );
+    emitCompactLine(
+      `[phase11-log] ${exitCode !== 0 ? 'failure' : 'warning'} exit=${exitCode} duration=${durationMs}ms ${commandSummary}`
+    );
+    return;
+  }
+
+  if (isAgentBrowserCommand(command) && lastFailedAgentBrowserCommand) {
+    const normalized = normalizeCommand(command);
+    if (normalized !== lastFailedAgentBrowserCommand.normalized_command) {
+      summary.counts.fallbacks += 1;
+      addDebugReason('fallback_invoked');
+      emitEvent({
+        ts,
+        type: 'fallback',
+        from_command: lastFailedAgentBrowserCommand.command_summary,
+        to_command: commandSummary,
+      });
+      emitCompactLine(
+        `[phase11-log] fallback: ${lastFailedAgentBrowserCommand.command_summary} -> ${commandSummary}`
+      );
+    }
+    lastFailedAgentBrowserCommand = null;
+  }
+
+  if (commandType === 'checkpoint') {
+    emitEvent(baseEvent, true);
+    return;
+  }
+
+  if (commandType === 'browser_session_check') {
+    emitEvent(baseEvent, true);
+    return;
+  }
+
+  if (commandType === 'agent_browser' || durationMs >= 2000) {
+    emitEvent(baseEvent);
+  }
+}
+
 function finalize() {
+  const nowMs = Date.now();
+  const ts = new Date(nowMs).toISOString();
+  flushAssistantMessage(ts);
+
   if (summary.started_at && summary.ended_at) {
     summary.wall_time_ms = Math.max(0, lastEventMs - Date.parse(summary.started_at));
   }
@@ -308,6 +483,66 @@ rl.on('line', (line) => {
   }
   summary.ended_at = ts;
 
+  // Handle Gemini init
+  if (event.type === 'init') {
+    emitEvent({
+      ts,
+      type: 'thread_started',
+      thread_id: event.session_id,
+    });
+    return;
+  }
+
+  // Handle Gemini message (assistant chunks)
+  if (event.type === 'message' && event.role === 'assistant') {
+    assistantMessageAccumulator += (event.content || '');
+    return;
+  }
+
+  // Gemini tool_use or result flushes the accumulated assistant message
+  if (event.type === 'tool_use' || event.type === 'result') {
+    flushAssistantMessage(ts);
+  }
+
+  if (event.type === 'tool_use') {
+    let command = event.tool_name;
+    if (event.tool_name === 'run_shell_command' && event.parameters?.command) {
+      command = event.parameters.command;
+    } else if (event.parameters) {
+      command = `${event.tool_name}(${JSON.stringify(event.parameters)})`;
+    }
+
+    openCommands.set(event.tool_id, {
+      startedAtMs: nowMs,
+      command: command,
+    });
+    return;
+  }
+
+  if (event.type === 'tool_result') {
+    handleCommandCompletion(ts, nowMs, event.tool_id, null, event.status === 'success' ? 0 : 1, event.output || '');
+    return;
+  }
+
+  if (event.type === 'result') {
+    const usage = event.stats || {};
+    summary.usage = {
+      input_tokens: usage.input_tokens || 0,
+      cached_input_tokens: usage.cached || 0,
+      output_tokens: usage.output_tokens || 0,
+    };
+    emitEvent({
+      ts,
+      type: 'turn_completed',
+      usage: summary.usage,
+    });
+    emitCompactLine(
+      `[phase11-log] usage input=${summary.usage.input_tokens} cached=${summary.usage.cached_input_tokens} output=${summary.usage.output_tokens}`
+    );
+    return;
+  }
+
+  // Original Codex event handling
   if (event.type === 'thread.started') {
     emitEvent({
       ts,
@@ -358,170 +593,12 @@ rl.on('line', (line) => {
   }
 
   if (event.type === 'item.completed' && item.type === 'agent_message') {
-    const text = (item.text || '').trim();
-    const category = messageCategory(text);
-    if (!category) {
-      return;
-    }
-
-    const payload = {
-      ts,
-      type: category,
-      text: truncate(text, 1000),
-    };
-    const checkpoint = category === 'checkpoint' || category === 'status';
-    emitEvent(payload, checkpoint);
-
-    if (category === 'fallback') {
-      summary.counts.fallbacks += 1;
-      summary.fallback_messages.push(payload.text);
-      addDebugReason('fallback_invoked');
-      emitCompactLine(`[phase11-log] fallback: ${truncate(compactWhitespace(text), 180)}`);
-    } else if (category === 'retry') {
-      summary.counts.retries += 1;
-      summary.retry_messages.push(payload.text);
-      emitCompactLine(`[phase11-log] retry: ${truncate(compactWhitespace(text), 180)}`);
-    } else if (category === 'status') {
-      emitCompactLine(`[phase11-log] status: ${truncate(compactWhitespace(text), 180)}`);
-    }
-
+    handleAgentMessage(ts, item.text || '');
     return;
   }
 
   if (event.type === 'item.completed' && item.type === 'command_execution') {
-    const started = openCommands.get(item.id);
-    openCommands.delete(item.id);
-
-    const durationMs = started ? Math.max(0, nowMs - started.startedAtMs) : 0;
-    const command = item.command || started?.command || '';
-    const exitCode = item.exit_code ?? 0;
-    const output = item.aggregated_output || '';
-    const outputExcerpt = excerptOutput(output);
-    const commandType = classifyCommand(command);
-    const commandSummary = summarizeCommand(command);
-    const suspicious = outputLooksSuspicious(output);
-
-    summary.counts.commands_total += 1;
-    if (commandType === 'startup_read') {
-      summary.counts.startup_reads += 1;
-    }
-    if (commandType === 'git_diff') {
-      summary.counts.git_diff_commands += 1;
-    }
-    if (isAgentBrowserCommand(command)) {
-      summary.counts.agent_browser_commands += 1;
-    }
-    if (exitCode !== 0) {
-      summary.counts.commands_failed += 1;
-      addDebugReason('nonzero_tool_exit');
-    }
-
-    rememberSlowCommand({
-      command: commandSummary,
-      duration_ms: durationMs,
-      exit_code: exitCode,
-    });
-
-    const baseEvent = {
-      ts,
-      type: commandType,
-      command_type: commandType,
-      command: commandSummary,
-      exit_code: exitCode,
-      duration_ms: durationMs,
-      output_excerpt:
-        exitCode !== 0 || commandType === 'checkpoint' || commandType === 'browser_session_check' || suspicious
-          ? outputExcerpt
-          : '',
-    };
-
-    if (commandType === 'startup_read') {
-      baseEvent.target = readTargetFromCommand(command);
-      emitEvent(baseEvent);
-      return;
-    }
-
-    if (commandType === 'git_diff') {
-      baseEvent.output_bytes = output.length;
-      baseEvent.output_suppressed = true;
-      emitEvent(baseEvent);
-      return;
-    }
-
-    if (exitCode !== 0 || suspicious) {
-      if (isAgentBrowserCommand(command)) {
-        const normalized = normalizeCommand(command);
-        const failureCount = (failedCommandCounts.get(normalized) || 0) + 1;
-        failedCommandCounts.set(normalized, failureCount);
-        lastFailedAgentBrowserCommand = {
-          normalized_command: normalized,
-          command_summary: commandSummary,
-        };
-        if (failureCount >= retryThreshold) {
-          addDebugReason('repeated_retry_threshold_exceeded');
-        }
-      }
-
-      const failurePayload = {
-        ts,
-        type: exitCode !== 0 ? 'command_failure' : 'command_warning',
-        command,
-        command_summary: commandSummary,
-        exit_code: exitCode,
-        duration_ms: durationMs,
-        aggregated_output: output,
-      };
-      writeJsonLine(debugCandidateStream, failurePayload);
-      summary.failure_candidates.push({
-        command: commandSummary,
-        exit_code: exitCode,
-        duration_ms: durationMs,
-        output_excerpt: outputExcerpt,
-      });
-      emitEvent(
-        {
-          ...baseEvent,
-          type: exitCode !== 0 ? 'command_failure' : 'command_warning',
-        },
-        commandType === 'checkpoint' || commandType === 'browser_session_check'
-      );
-      emitCompactLine(
-        `[phase11-log] ${exitCode !== 0 ? 'failure' : 'warning'} exit=${exitCode} duration=${durationMs}ms ${commandSummary}`
-      );
-      return;
-    }
-
-    if (isAgentBrowserCommand(command) && lastFailedAgentBrowserCommand) {
-      const normalized = normalizeCommand(command);
-      if (normalized !== lastFailedAgentBrowserCommand.normalized_command) {
-        summary.counts.fallbacks += 1;
-        addDebugReason('fallback_invoked');
-        emitEvent({
-          ts,
-          type: 'fallback',
-          from_command: lastFailedAgentBrowserCommand.command_summary,
-          to_command: commandSummary,
-        });
-        emitCompactLine(
-          `[phase11-log] fallback: ${lastFailedAgentBrowserCommand.command_summary} -> ${commandSummary}`
-        );
-      }
-      lastFailedAgentBrowserCommand = null;
-    }
-
-    if (commandType === 'checkpoint') {
-      emitEvent(baseEvent, true);
-      return;
-    }
-
-    if (commandType === 'browser_session_check') {
-      emitEvent(baseEvent, true);
-      return;
-    }
-
-    if (commandType === 'agent_browser' || durationMs >= 2000) {
-      emitEvent(baseEvent);
-    }
+    handleCommandCompletion(ts, nowMs, item.id, item.command, item.exit_code ?? 0, item.aggregated_output || '');
   }
 });
 

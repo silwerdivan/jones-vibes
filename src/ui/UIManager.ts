@@ -224,8 +224,22 @@ class UIManager {
 
             if (gameState.pendingTurnSummary && !this.isSummaryShown) {
                 const currentPlayer = gameState.getCurrentPlayer();
+                // Check if the summary belongs to the current player.
+                // If not, it's a stale summary (e.g., from a restored save).
+                if (gameState.pendingTurnSummary.player !== gameState.currentPlayerIndex + 1) {
+                    console.warn('[UIManager] Stale pendingTurnSummary detected. Clearing.');
+                    gameState.pendingTurnSummary = null;
+                    return;
+                }
+
                 if (!currentPlayer.isAI) {
                     this.showTurnSummary(gameState.pendingTurnSummary);
+                } else {
+                    // Stored AI summary: auto-advance
+                    console.log('[UIManager] Restored AI turn summary detected. Auto-advancing.');
+                    setTimeout(() => {
+                        EventBus.publish(UI_EVENTS.ADVANCE_TURN);
+                    }, 500);
                 }
             }
         });

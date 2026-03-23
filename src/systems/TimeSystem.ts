@@ -295,6 +295,22 @@ class TimeSystem {
     }
 
     advanceTurn(): void {
+        // Idempotency check: only advance if we have a summary and it belongs to the current player.
+        // If we have no summary, we might have already advanced.
+        if (!this.gameState.pendingTurnSummary) {
+            console.warn('[TimeSystem] advanceTurn ignored: No pending summary found.');
+            return;
+        }
+
+        // Check if the summary actually belongs to the current player.
+        // If not, we have already advanced the index but the summary was not cleared (e.g., restored state).
+        if (this.gameState.pendingTurnSummary.player !== this.gameState.currentPlayerIndex + 1) {
+            console.warn(`[TimeSystem] advanceTurn ignored: summary player (${this.gameState.pendingTurnSummary.player}) does not match current player index (${this.gameState.currentPlayerIndex + 1}). Clearing stale summary.`);
+            this.gameState.pendingTurnSummary = null;
+            EventBus.publish('stateChanged', this.gameState);
+            return;
+        }
+
         // Clear pending summary as we are moving to next turn
         this.gameState.pendingTurnSummary = null;
 
