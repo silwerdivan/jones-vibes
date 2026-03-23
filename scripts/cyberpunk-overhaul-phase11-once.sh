@@ -972,13 +972,10 @@ case "${AGENT_EXEC}" in
     ;;
   opencode)
     codex_args=(
-      opencode
-      run
-      --dir "${ROOT_DIR}"
-      --file "${SLICE_PROMPT_FILE}"
-      --format json
-      --command
-      "Execute the instructions in the attached file."
+      bash
+      -c
+      'opencode run --dir "${@:1:1}" --format json "$(cat "${@:2:1}")"'
+      -- "${ROOT_DIR}" "${SLICE_PROMPT_FILE}"
     )
     ;;
   *)
