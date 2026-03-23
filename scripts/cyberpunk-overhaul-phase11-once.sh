@@ -974,7 +974,7 @@ case "${AGENT_EXEC}" in
     codex_args=(
       bash
       -c
-      "opencode run --project '${ROOT_DIR}' --file '${SLICE_PROMPT_FILE}'"
+      "opencode run '' --project '${ROOT_DIR}' --file '${SLICE_PROMPT_FILE}'"
     )
     ;;
   *)
