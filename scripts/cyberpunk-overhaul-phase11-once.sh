@@ -974,7 +974,7 @@ case "${AGENT_EXEC}" in
     codex_args=(
       opencode
       run
-      --project "${ROOT_DIR}"
+      --dir "${ROOT_DIR}"
       --file "${SLICE_PROMPT_FILE}"
       --format json
     )
