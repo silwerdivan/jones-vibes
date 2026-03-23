@@ -972,9 +972,11 @@ case "${AGENT_EXEC}" in
     ;;
   opencode)
     codex_args=(
-      bash
-      -c
-      "opencode run '' --project '${ROOT_DIR}' --file '${SLICE_PROMPT_FILE}'"
+      opencode
+      run
+      --project "${ROOT_DIR}"
+      --file "${SLICE_PROMPT_FILE}"
+      --format json
     )
     ;;
   *)
@@ -983,19 +985,21 @@ case "${AGENT_EXEC}" in
     ;;
 esac
 
-case "${exec_strategy}" in
-  dangerous)
-    codex_args+=(--dangerously-bypass-approvals-and-sandbox)
-    ;;
-  full-auto)
-    codex_args+=(--full-auto)
-    ;;
-  *)
-    ;;
-esac
+if [[ "${AGENT_EXEC}" == "codex" ]]; then
+  case "${exec_strategy}" in
+    dangerous)
+      codex_args+=(--dangerously-bypass-approvals-and-sandbox)
+      ;;
+    full-auto)
+      codex_args+=(--full-auto)
+      ;;
+    *)
+      ;;
+  esac
 
-if [[ -n "${CODEX_MODEL:-}" ]]; then
-  codex_args+=(-m "${CODEX_MODEL}")
+  if [[ -n "${CODEX_MODEL:-}" ]]; then
+    codex_args+=(-m "${CODEX_MODEL}")
+  fi
 fi
 
 {
@@ -1025,17 +1029,31 @@ parser_exit=0
 tee_exit=0
 
 set +e
-"${codex_args[@]}" - <"${SLICE_PROMPT_FILE}" \
-  | node "${LOG_STREAM_HELPER}" \
-      --slice-id "${SLICE_ID}" \
-      --persona "${persona_name}" \
-      --retry-threshold "${RETRY_THRESHOLD}" \
-      --event-log "${EVENT_LOG_FILE}" \
-      --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
-      --summary "${STREAM_SUMMARY_FILE}" \
-      --raw-jsonl "${RAW_JSONL_TEMP}" \
-      --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
-  | tee -a "${LOG_FILE}"
+if [[ "${AGENT_EXEC}" == "codex" ]]; then
+  "${codex_args[@]}" - <"${SLICE_PROMPT_FILE}" \
+    | node "${LOG_STREAM_HELPER}" \
+        --slice-id "${SLICE_ID}" \
+        --persona "${persona_name}" \
+        --retry-threshold "${RETRY_THRESHOLD}" \
+        --event-log "${EVENT_LOG_FILE}" \
+        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
+        --summary "${STREAM_SUMMARY_FILE}" \
+        --raw-jsonl "${RAW_JSONL_TEMP}" \
+        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
+    | tee -a "${LOG_FILE}"
+else
+  "${codex_args[@]}" \
+    | node "${LOG_STREAM_HELPER}" \
+        --slice-id "${SLICE_ID}" \
+        --persona "${persona_name}" \
+        --retry-threshold "${RETRY_THRESHOLD}" \
+        --event-log "${EVENT_LOG_FILE}" \
+        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
+        --summary "${STREAM_SUMMARY_FILE}" \
+        --raw-jsonl "${RAW_JSONL_TEMP}" \
+        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
+    | tee -a "${LOG_FILE}"
+fi
 pipeline_status=("${PIPESTATUS[@]}")
 set -e
 
