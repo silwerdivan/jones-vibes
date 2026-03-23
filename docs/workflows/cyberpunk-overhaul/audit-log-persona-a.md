@@ -3,9 +3,9 @@
 ## Audit Metadata
 - **Persona:** Persona A: The Safe Grinder
 - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
-- **Date:** 2026-03-22
-- **Session Duration:** 8 completed authoritative weeks in the restarted chain
-- **Current Slice Status:** Authoritative Week 8 completed. The restarted chain now has a fresh Week 8 checkpoint, the deterministic `Sanitation-T3` plus `Work Shift x3` route is proven live again under `TRAUMA_REBOOT`, and the next continuation point is the Week 8 summary anchor `₡458 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`.
+- **Date:** 2026-03-23
+- **Session Duration:** 10 completed authoritative weeks in the restarted chain
+- **Current Slice Status:** Authoritative Week 10 completed. Survival objective met by purchasing food at Hab-Pod 404 to avoid lethal travel costs while at 80% hunger under TRAUMA_REBOOT. Transitioned to Week 11 at `₡428 / Hunger 50% / Sanity 50 / Trauma Reboot 242h`.
 - **Archive:** Previous Persona A run archived under `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/`.
 
 ---
@@ -22,8 +22,8 @@
 | 6    | ₡616 | ₡0 | 20% | 15 | 0 | `Sore Legs` had fallen to `54h`, reducing each city trip to `3CH`; combined with the safe `BROKEN AUTO-CHEF` food branch, that exactly reopened `Hab-Pod 404 -> Labor Sector -> Work Shift x3 -> home` | Continued from the live Week 5 summary, chose the safe `BROKEN AUTO-CHEF` protein bar, completed `Sanitation-T3` three times, and returned home on the last travel window | Verify whether the travel-taxed two-shift ceiling was permanent or only a temporary duration problem; Week 6 shows it was temporary once the condition nearly expired | The route feels solvent again, but not comfortable: Safe Grinder restores the full labor line only by landing on precise travel math, and the week still closes with a real `-5` sanity drift despite a strong `+₡152` net |
 | 7    | ₡286 | ₡0 | 40% | 35 | 0 | The restored `Sore Legs (6h)` route never became playable because the week opened with a forced panic event, then burnout forfeited the full cycle before any travel or labor action could occur | Continued from the live Week 6 summary, took the only `PANIC ATTACK ON THE MAG-LEV` branch, absorbed the emergency trauma-team fee, and stopped at the resulting Week 7 summary | Verify whether the stable handoff from Week 6 actually preserves the reopened three-shift line once the travel tax is almost gone; it does not when a mandatory opener can zero out the week before any recovery action exists | The run feels violently non-deterministic again: the handoff itself is fair, but one unavoidable event deletes `₡330` of value, swaps a nearly expired travel penalty for `TRAUMA_REBOOT`, and the summary hides the burnout recovery that makes the end-state sanity look deceptively healthy |
 | 8    | ₡458 | ₡0 | 60% | 25 | 0 | Restoring the Week 7 checkpoint reopened the full `22CH` labor window again; three `6CH` shifts reduced it to `4CH`, which still fit the trip home even under `TRAUMA_REBOOT` | Imported the Week 7 checkpoint after the named session reopened on onboarding, advanced the summary, completed `Sanitation-T3` `Work Shift x3`, then closed from `Hab-Pod 404` | Verify whether the live fix for the forced one-choice opener actually restores any deterministic rebuild path while trauma recovery is active; it does, as long as the week opens to manual control | The week feels austere but legible again: `TRAUMA_REBOOT` keeps pressure on the run, yet the route is once more deterministic and the summary math finally agrees with the visible penalties |
-| 9    |      |      |        |        |           |                 |              |           |               |
-| 10   |      |      |        |        |           |                 |              |           |               |
+| 9    | ₡380 | ₡0 | 80% | 45 | 0 | `TRAUMA_REBOOT` active. Survival week. Ended with burnout but recovered to 45 sanity. | Survived Week 9, but hunger rose to 80% and sanity collapsed to burnout before trauma rebooted the turn. | Hunger and Sanity pressure compounded under trauma, forcing a survival-only strategy for the following week. | The run is in a critical survival phase where every CH of travel tax is potentially lethal. |
+| 10   | ₡428 | ₡0 | 50% | 50 | 0 | Survival prioritized. Buying food at `Hab-Pod 404` saved the run from lethal travel tax. Worked 2 shifts. | Restored W9 checkpoint after failed travel; bought food locally, worked 2 shifts, returned home. | Validated that local shopping is necessary when at 80% hunger with `TRAUMA_REBOOT`. | Stability restored, but the trauma-reboot ceiling still limits total throughput to two shifts. |
 
 ## Detailed Slice Records
 
@@ -35,6 +35,8 @@
 - [Week 6 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md): authoritative continuation from the live Week 5 summary state that absorbs `BROKEN AUTO-CHEF`, restores the full `Work Shift x3` route once `Sore Legs` drops to `54h`, and exports the Week 6 checkpoint at `₡616 / Hunger 20% / Sanity 15`.
 - [Week 7 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md): authoritative continuation from the Week 6 anchor that proves the pre-fix forced opener can still zero out the whole week, replace `Sore Legs` with `TRAUMA_REBOOT`, and require a corrected Week 7 checkpoint at `₡286 / Hunger 40% / Sanity 35`.
 - [Week 8 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md): authoritative continuation from the restored Week 7 checkpoint that confirms the live build no longer repeats the one-choice opener, restores `Work Shift x3` even under `TRAUMA_REBOOT`, and closes at `₡458 / Hunger 60% / Sanity 25`.
+- [Week 9 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-09.md): authoritative continuation that survives trauma reboot but hits a critical hunger wall (80%) and sanity collapse, requiring recovery in Week 10.
+- [Week 10 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-10.md): authoritative survival slice that uses local Hab-Pod shopping to bypass lethal travel costs, restores stability to `₡428 / Hunger 50% / Sanity 50`.
 
 Workflow note: the restarted audit re-established the old Persona A reference baseline, then reached the first clean break point. Future slices should treat `Work Shift x3` as conditional rather than guaranteed once hidden sanity pressure and hunger thresholds start compounding.
 
@@ -68,15 +70,16 @@ Workflow note: the restarted audit re-established the old Persona A reference ba
 - 2026-03-22: GitHub issue `#9` fixed the false continuity classification. Phase 11 startup now checks whether onboarding is visibly active before trusting the live session bridge, so a fresh reset session should report `onboarding_visible` and auto-restore the latest checkpoint instead of claiming `live_continuity`. Treat the Week 8 startup artifact as pre-fix evidence only.
 - 2026-03-22: Authoritative Week 8 completed and exported a fresh checkpoint at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json`.
 - 2026-03-22: Week 8 confirms the fixed gameplay baseline is holding on the live branch. The week reopened to manual control without a one-choice opener, `Sanitation-T3` still supported `Work Shift x3` under `TRAUMA_REBOOT`, and the closing summary reconciled cleanly at `-10` sanity.
+- 2026-03-23: Week 10 authoritative slice completed. Discovered that travel tax is lethal when at 80% hunger with `TRAUMA_REBOOT`. Resolved by buying food at Hab-Pod 404. Exported Week 10 checkpoint.
 
 ---
 
 ## Milestone Vibe Checks
 
 ### Week 10: [Vibe Summary]
-- **Snowballing vs. Stagnation:**
-- **Decision Space:**
-- **Pacing:**
+- **Snowballing vs. Stagnation:** Stagnation. Trauma Reboot and high burn rate keep credits flat.
+- **Decision Space:** Narrow. Survival dictates almost every CH.
+- **Pacing:** Slow. 2 shifts per week is the maximum safe throughput.
 
 ### Week 25: [Vibe Summary]
 - **Snowballing vs. Stagnation:**
