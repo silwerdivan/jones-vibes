@@ -957,14 +957,33 @@ cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
 
 snapshot_control_surface before
 
-codex_args=(
-  codex
-  exec
-  --ephemeral
-  --json
-  -C "${ROOT_DIR}"
-  -o "${SLICE_LAST_MESSAGE_FILE}"
-)
+AGENT_EXEC="${AGENT_EXEC:-codex}"
+
+case "${AGENT_EXEC}" in
+  codex)
+    codex_args=(
+      codex
+      exec
+      --ephemeral
+      --json
+      -C "${ROOT_DIR}"
+      -o "${SLICE_LAST_MESSAGE_FILE}"
+    )
+    ;;
+  opencode)
+    codex_args=(
+      opencode
+      exec
+      --json
+      -C "${ROOT_DIR}"
+      -o "${SLICE_LAST_MESSAGE_FILE}"
+    )
+    ;;
+  *)
+    echo "[phase11-once] unknown AGENT_EXEC: ${AGENT_EXEC}" >&2
+    exit 1
+    ;;
+esac
 
 case "${exec_strategy}" in
   dangerous)
@@ -988,6 +1007,7 @@ fi
   echo "[phase11-once] app_url=${app_url}"
   echo "[phase11-once] session_name=${AGENT_BROWSER_SESSION_NAME}"
   echo "[phase11-once] exec_strategy=${exec_strategy}"
+  echo "[phase11-once] agent_exec=${AGENT_EXEC}"
   echo "[phase11-once] auto_commit=${AUTO_COMMIT}"
   echo "[phase11-once] force_verbose=${FORCE_VERBOSE}"
   echo "[phase11-once] slice_id=${SLICE_ID}"

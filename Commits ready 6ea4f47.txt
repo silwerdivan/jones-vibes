@@ -1,0 +1,3 @@
+- Commits ready: 6ea4f47 (gate logic fix) and the uncommitted note file removed — worktree is clean
+- Bug to fix: runner needs Codex rate-limit detection and/or opencode fallback before the next session
+- Files to touch: scripts/cyberpunk-overhaul-phase11-once.sh, possibly scripts/cyberpunk-overhaul-phase11-brief.mjs
