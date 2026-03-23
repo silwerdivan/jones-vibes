@@ -24,7 +24,7 @@
     "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`, which now prefers `window.__JONES_FASTLANE_SESSION__` and falls back to `localStorage.jones_fastlane_save` only when no live bridge is present. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
     "last_exported_at": "2026-03-22T04:32:15.434Z",
-    "last_restored_at": "2026-03-23T03:05:10.127Z",
+    "last_restored_at": "2026-03-23T08:58:53.341Z",
     "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json"
   },
   "slice_policy": {
