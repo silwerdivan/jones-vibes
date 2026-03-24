@@ -38,6 +38,7 @@ export abstract class Modal {
     }
     this.overlay?.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-active');
     EventBus.publish('modalShown', { modalId: this.overlay?.id });
   }
 
@@ -46,6 +47,13 @@ export abstract class Modal {
 
     this.overlay?.classList.add('hidden');
     document.body.style.overflow = '';
+    
+    // Check if any other modals are still visible before removing the class
+    const visibleModals = document.querySelectorAll('.modal-overlay:not(.hidden), #choice-modal-overlay:not(.hidden), #player-stats-modal-overlay:not(.hidden), #intel-terminal-overlay:not(.hidden)');
+    if (visibleModals.length === 0) {
+      document.body.classList.remove('modal-active');
+    }
+    
     EventBus.publish('modalHidden', { modalId: this.overlay?.id });
   }
 

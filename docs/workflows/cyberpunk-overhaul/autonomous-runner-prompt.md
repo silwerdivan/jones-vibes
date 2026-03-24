@@ -30,7 +30,11 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
-- If the browser session continuity is missing but `startup-context.json` points to a latest checkpoint save file, restore that checkpoint with `npm run workflow:phase11:checkpoint:import` before resorting to a replay-from-onboarding decision.
+- **Fair Play & Integrity**:
+    - **Prohibit Rewinding**: Explicitly forbid using `checkpoint:import` to undo gameplay failures (Burnout, Debt-Trap, Arrest). These must be logged as "Audit Results" and the slice should exit.
+    - **Modal Verification**: ALWAYS verify "Modal Context" (e.g., check for `.modal-overlay` or `.location-modal`) before attempting background actions. If a modal is open, background actions are strictly forbidden.
+    - **State-Proxy Enforcement**: Use the state-proxy `get` command after EVERY action to verify that the internal state changed as expected (e.g., did Credits actually go down?). If not, the action failed; do not hallucinate success.
+- If the browser session continuity is missing but `startup-context.json` points to a latest checkpoint save file, restore that checkpoint with `npm run workflow:phase11:checkpoint:import -- --quiet` before resorting to a replay-from-onboarding decision.
 - Use the trusted UI workaround notes from `startup-context.json` first. Read `docs/workflows/cyberpunk-overhaul/agent-browser-learnings.md` only if a listed UI path fails, the notes are missing, or you need a new automation pattern that is not already covered.
 - Do not spend a startup command on `agent-browser --help` or other CLI-surface probes during a normal slice; the runner has already established the browser tool path.
 - Avoid source-code spelunking during startup unless gameplay state is ambiguous, a UI path fails, or a new mechanic must be verified.
@@ -50,7 +54,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 - Do not run broad `git diff` readbacks during a normal slice. Inspect diffs only when a change looks wrong, a blocker appears, or you need to debug an unexpected side effect.
 - Do not inventory the whole DOM or all `data-testid` nodes unless a selector failed. Use the stable selectors from `startup-context.json` first, then escalate only for the failing surface.
 - Do not use `document.body.innerText` dumps except when the trusted workaround says the session may have reset or the UI state is genuinely ambiguous. Even then, keep the returned text short and focused.
-- Keep checkpoint import/export verification concise. Confirm the restored or exported turn, player, and a few key stats instead of echoing the full save summary repeatedly.
+- Keep checkpoint import/export verification concise. Use the `--quiet` flag with `npm run workflow:phase11:checkpoint:import` and `export` to get a compact summary instead of echoing the full save summary.
 - Avoid narration-heavy progress updates during the slice. Emit short stage changes or blockers only when they materially change the plan.
 - If a slice becomes suspicious, blocked, or fallback-heavy, it is acceptable to switch to richer diagnostics for that branch. Preserve those details in artifacts, then return to compact probes once the issue is understood.
 

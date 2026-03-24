@@ -3092,3 +3092,29 @@ body {
         font-size: 8px;
     }
 }
+
+/* --- AUTOMATION FRIENDLY GUARDRAILS (PHASE 11) --- */
+/* Disable background interaction and blur when modals or loading are active */
+body.modal-active .hud,
+body.modal-active .news-ticker,
+body.modal-active .screen-manager,
+body.loading-active .hud,
+body.loading-active .news-ticker,
+body.loading-active .screen-manager {
+    pointer-events: none !important;
+    user-select: none !important;
+    filter: blur(4px) brightness(0.7);
+    transition: filter 0.3s ease, opacity 0.3s ease;
+    opacity: 0.5;
+}
+
+/* Ensure active modals themselves remain fully interactive */
+#choice-modal-overlay,
+#player-stats-modal-overlay,
+#intel-terminal-overlay,
+.modal-overlay,
+#loading-overlay,
+#graduation-modal,
+#turn-summary-modal {
+    pointer-events: auto !important;
+}

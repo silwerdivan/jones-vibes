@@ -58,13 +58,21 @@
   - Mandatory `sleep 1` or "Wait for Selector" logic in the skill to prevent "Element not found" retries.
   - **Recipe Enforcement:** Force the agent to check `agent-browser-recipes.json` before trying a new selector.
 
+### Phase 6: Gameplay & Automation Guardrails (NEW)
+- **Rule**: Implement "Fair Play" and "Spatial Context" rules to prevent hallucination and cheating.
+- **Implementation**:
+    - **Prohibit Rewinding**: Explicitly forbid `checkpoint:import` to undo gameplay failures.
+    - **Modal-Aware CSS**: Added `body.modal-active` to blur and disable the background, preventing the agent from clicking "through the wall" when a modal is open.
+    - **State-Proxy Enforcement**: Mandatory `state-proxy get` after every action to verify the result.
+
 ---
 
 ## 3. Pending Investigations (Further Interrogation Needed)
 
 ### A. The `--no-sandbox` Flag Mystery
 - **Investigation:** Why does the agent keep putting this flag in positions that break the parser? Is there a discrepancy between the CLI documentation and the model's training? 
-- **Goal:** Resolve the syntax errors that lead to expensive retries.
+- **Status**: COMPLETE.
+- **Outcome**: Documented the "Incorrect Flag Placement" pattern in `agent-browser-learnings.md`. The model was treating `--no-sandbox` as a direct CLI flag rather than a browser launch argument. The `autonomous-runner-prompt.md` now explicitly mandates the correct Linux syntax: `agent-browser <command> [args] --args "--no-sandbox"`.
 
 ### B. "State-Aware" Tool Proxy
 - **Investigation**: Can we build a tiny helper tool that "remembers" the game state, so the LLM only has to ask for *changes* rather than re-reading the whole world every turn?
@@ -73,6 +81,8 @@
 
 ### C. Checkpoint Import Redundancy
 - **Investigation:** Is the `npm run workflow:phase11:checkpoint:import` command returning too much output when called by the agent?
+- **Status**: COMPLETE.
+- **Outcome**: Modified `scripts/cyberpunk-overhaul-phase11-checkpoint.mjs` to include a `--quiet` flag. It now returns a single-line summary (Label + Turn + Status) instead of a massive JSON payload, drastically reducing history noise during session recovery.
 
 ---
 

@@ -188,6 +188,18 @@ function deriveContext(runStatePath) {
 
 function printResult(payload, quiet = false) {
   if (quiet) {
+    if (payload.action === 'import') {
+      const label = path.basename(payload.restored_save_path, '-save.json');
+      const turn = payload.summary?.turn ?? 'unknown';
+      process.stdout.write(`Import: ${label} (Turn: ${turn}) - Success\n`);
+    } else if (payload.action === 'export') {
+      const label = path.basename(payload.save_path, '-save.json');
+      const turn = payload.summary?.turn ?? 'unknown';
+      process.stdout.write(`Export: ${label} (Turn: ${turn}) - Success\n`);
+    } else if (payload.action === 'status') {
+      const turn = payload.browser_summary?.turn ?? 'unknown';
+      process.stdout.write(`Status: ${payload.continuity_status} (Turn: ${turn}) - ${payload.continuity_ok ? 'OK' : 'FAIL'}\n`);
+    }
     return;
   }
 

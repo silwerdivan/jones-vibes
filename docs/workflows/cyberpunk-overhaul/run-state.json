@@ -20,12 +20,12 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-10-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-10-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/test-quiet-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/test-quiet-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`, which now prefers `window.__JONES_FASTLANE_SESSION__` and falls back to `localStorage.jones_fastlane_save` only when no live bridge is present. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-23T16:00:00.000Z",
-    "last_restored_at": "2026-03-23T14:31:55.682Z",
-    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-save.json"
+    "last_exported_at": "2026-03-24T03:34:45.616Z",
+    "last_restored_at": "2026-03-24T03:35:16.768Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/test-quiet-save.json"
   },
   "slice_policy": {
     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
