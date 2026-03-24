@@ -60,23 +60,49 @@ function runEval(expression) {
 function getFullState() {
   const expression = `(() => {
     const raw = localStorage.getItem('jones_fastlane_save');
-    if (!raw) return null;
-    const state = JSON.parse(raw);
-    const p = state.players[state.currentPlayerIndex] || {};
+    const state = raw ? JSON.parse(raw) : null;
+    const p = (state && state.players) ? state.players[state.currentPlayerIndex] : {};
+    
     return {
-      turn: state.turn,
-      activeScreenId: state.activeScreenId,
-      activeChoiceContext: state.activeChoiceContext,
-      credits: p.credits,
-      savings: p.savings,
-      sanity: p.sanity,
-      hunger: p.hunger,
-      location: p.location,
-      time: p.time,
-      debt: p.debt,
+      turn: state ? state.turn : null,
+      gameOver: state ? !!state.gameOver : false,
+      activeScreenId: state ? state.activeScreenId : null,
+      activeLocationDashboard: state ? state.activeLocationDashboard : null,
+      activeChoiceContext: state ? state.activeChoiceContext : null,
+      activeEvent: state ? state.activeEvent : null,
+      activeGraduation: state ? state.activeGraduation : null,
+      isAIThinking: state ? !!state.isAIThinking : false,
+      hasPendingTurnSummary: state ? !!state.pendingTurnSummary : false,
+      
+      // Player stats
+      credits: p.credits ?? null,
+      savings: p.savings ?? null,
+      sanity: p.sanity ?? null,
+      hunger: p.hunger ?? null,
+      location: p.location ?? null,
+      time: p.time ?? null,
+      debt: p.debt ?? null,
+      loan: p.loan ?? null,
+      educationLevel: p.educationLevel ?? 0,
+      careerLevel: p.careerLevel ?? 0,
+      hasCar: !!p.hasCar,
+      inventoryCount: (p.inventory || []).length,
       activeConditions: (p.activeConditions || []).map(c => c.name),
-      isAIThinking: !!state.isAIThinking,
-      hasPendingTurnSummary: !!state.pendingTurnSummary
+      
+      // UI / Modal state
+      modalActive: document.body.classList.contains('modal-active') && (
+        (!!document.querySelector('.modal-overlay:not(.hidden)') && document.querySelector('.modal-overlay:not(.hidden)').offsetParent !== null) ||
+        (!!document.querySelector('#choice-modal-overlay:not(.hidden)') && document.querySelector('#choice-modal-overlay:not(.hidden)').offsetParent !== null) ||
+        (!!document.querySelector('#player-stats-modal-overlay:not(.hidden)') && document.querySelector('#player-stats-modal-overlay:not(.hidden)').offsetParent !== null) ||
+        (!!document.querySelector('#intel-terminal-overlay:not(.hidden)') && document.querySelector('#intel-terminal-overlay:not(.hidden)').offsetParent !== null) ||
+        (!!document.querySelector('#turn-summary-modal:not(.hidden)') && document.querySelector('#turn-summary-modal:not(.hidden)').offsetParent !== null) ||
+        (!!document.querySelector('#graduation-modal:not(.hidden)') && document.querySelector('#graduation-modal:not(.hidden)').offsetParent !== null)
+      ),
+      locationModalOpen: (!!document.querySelector('.location-modal:not(.hidden)') && document.querySelector('.location-modal:not(.hidden)').offsetParent !== null) ||
+                        (!!document.querySelector('.location-dashboard:not(.hidden)') && document.querySelector('.location-dashboard:not(.hidden)').offsetParent !== null),
+      onboardingVisible: (!!document.querySelector('.onboarding-screen') && document.querySelector('.onboarding-screen').offsetParent !== null) || (!!document.querySelector('.eula-container') && document.querySelector('.eula-container').offsetParent !== null),
+      eulaVisible: (!!document.querySelector('.eula-modal-overlay') && document.querySelector('.eula-modal-overlay').offsetParent !== null) || (!!document.querySelector('.eula-container') && document.querySelector('.eula-container').offsetParent !== null),
+      hudVisible: !!document.querySelector('.hud') && document.querySelector('.hud').offsetParent !== null
     };
   })()`;
   return runEval(expression);
@@ -123,20 +149,31 @@ if (command === 'get') {
   fs.mkdirSync(RUNTIME_DIR, { recursive: true });
   fs.writeFileSync(CACHE_FILE, JSON.stringify(newState, null, 2));
 
+  const summary = `Location: ${newState.location} | Turn: ${newState.turn} | Credits: ${newState.credits} | Hunger: ${newState.hunger} | Sanity: ${newState.sanity} | Time: ${newState.time}CH`;
+  console.log(`Screen: ${newState.activeScreenId}${newState.activeChoiceContext ? ' | Choice: ' + JSON.stringify(newState.activeChoiceContext) : ''}`);
+  console.log(summary);
+  console.log(`Education: ${newState.educationLevel} | Career: ${newState.careerLevel}`);
+  if (newState.savings > 0 || newState.debt > 0 || newState.loan > 0) {
+    console.log(`Savings: ${newState.savings} | Debt: ${newState.debt} | Loan: ${newState.loan}`);
+  }
+
   if (!diff) {
     console.log('State: UNCHANGED');
-    console.log(`Location: ${newState.location} | Turn: ${newState.turn} | Credits: ${newState.credits} | Hunger: ${newState.hunger} | Sanity: ${newState.sanity}`);
   } else {
     console.log('State: CHANGED');
     for (const key in diff) {
       console.log(`  ${key}: ${JSON.stringify(diff[key].from)} -> ${JSON.stringify(diff[key].to)}`);
     }
-    console.log('---');
-    console.log(`Location: ${newState.location} | Turn: ${newState.turn} | Credits: ${newState.credits} | Hunger: ${newState.hunger} | Sanity: ${newState.sanity}`);
   }
   
   if (newState.isAIThinking) console.log('!! AI is thinking');
   if (newState.hasPendingTurnSummary) console.log('!! Pending turn summary visible');
+  if (newState.modalActive) console.log('!! Modal active');
+  if (newState.locationModalOpen) console.log('!! Location modal open');
+  if (newState.onboardingVisible) console.log('!! Onboarding screen visible');
+  if (newState.eulaVisible) console.log('!! EULA modal visible');
+  if (newState.gameOver) console.log('!! GAME OVER');
+  if (newState.activeEvent) console.log(`!! Active Event: ${newState.activeEvent.title || 'Unknown'}`);
   
 } else if (command === 'reset') {
   if (fs.existsSync(CACHE_FILE)) {

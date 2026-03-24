@@ -1,30 +1,27 @@
 # Phase 11: Gameplay Audit Progress Report
 
-## Date: 2026-03-23
-## Status: Task 1 Complete, Task 2 Active (Week 10 Authoritative, Week 11 Next)
+## Date: 2026-03-24
+## Status: Task 1 Complete, Task 2 Active (Week 1 Complete, Week 2 Next)
 
 ### 1. Audit Infrastructure (Task 1 - COMPLETE)
 - **Tooling:** `agent-browser` configured and connected to `http://127.0.0.1:5173/jones-vibes/`.
 - **Checkpointing:** Durable `jones_fastlane_save` export/import tooling is active under `docs/workflows/cyberpunk-overhaul/checkpoints/`.
+- **Token Efficiency (Phase 3):** Turn consolidation via `scripts/lib/state-proxy.mjs` is verified and operational.
 
 ### 2. Persona A: The Safe Grinder (Task 2 - IN PROGRESS)
 - **Log:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
 - **Strategy:** Low-risk survival and steady labor.
-- **Authoritative Progress:** Weeks 1-10 completed. Week 10 detail in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona_a/week-10.md`.
-- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-10-save.json` (Turn 11, Player 1).
-- **Next authoritative target:** Continue Persona A into Week 11. Objective: Maintain stability under `TRAUMA_REBOOT`. Expect 2-shift ceiling and continue using local Hab-Pod 404 shopping to avoid lethal travel tax.
+- **Authoritative Progress:** Week 1 completed. Detail in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona_a/week-01.md`.
+- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-01-complete-save.json` (Turn 2, Player 1).
+- **Next authoritative target:** Advance Persona A into Week 2. Objective: Accumulate 500₡ for Education Level 1 while managing the "Transit Strike" (SORE_LEGS) condition.
 
 ### 3. Current Technical State
-- **Browser State:** Turn 11, Player 1 (Safe Grinder) starting at `Hab-Pod 404`. Stats: `₡428 / Hunger 50% / Sanity 50 / Trauma Reboot 242h`.
-- **Critical Discovery (Week 10):** Travel tax (2CH) is lethal when hunger is at 80% with `TRAUMA_REBOOT` active (which reduces max energy/hunger capacity). Survival was achieved by purchasing food locally at Hab-Pod 404, which shares the Sustenance Hub inventory but avoids the travel cost.
-- **Gameplay Baseline:** `Sanitation-T3` shifts are limited to 2 per week due to `TRAUMA_REBOOT` time/energy constraints and the need to prioritize survival actions (shopping) and return trips.
-- **Summary Integrity:** Week 10 summary reconciled cleanly. Visible lines summed to `+5` sanity and `+₡48` net credits, matching the end-state `50` sanity and `428` credits.
-- **Next Action:** Resume Week 11 from the authoritative Week 10 checkpoint. Maintain the "Local Food + 2x Shifts" loop until `TRAUMA_REBOOT` expires.
+- **Browser State:** Turn 2, Player 1 (Safe Grinder) starting at `Hab-Pod 404`. Stats: `₡88 / Hunger 20 / Sanity 45`.
+- **Critical Discovery (Week 1):** `agent-browser click` reported success but failed to trigger state mutation on several key buttons ("WORK SHIFT", "START NEXT WEEK"). Fallback to direct JS `click()` via `eval` was required for reliability.
+- **Gameplay Baseline:** `Sanitation-T3` (Level 1) is the starting job tier. Base pay: 14₡/CH.
+- **Summary Integrity:** Week 1 summary reconciled cleanly. Net credits after 80₡ burn rate: 88₡.
+- **Next Action:** Resume Week 2 from the authoritative Week 1 checkpoint.
 
 ### 4. Observations & Notes
-- **Audit Event: BURNOUT FAILURE (Turn 11)**: Persona A hit 0 Sanity and 0 Hunger. Under new Phase 6 "Fair Play" rules, this is a Hard Exit. No checkpoint restoration or localStorage manipulation was attempted to undo the failure. The slice is terminated.
-- Week 9 ended with a burnout/trauma reboot, leaving Persona A in a critical "survival-only" state at the start of Week 10.
-- Initial Week 10 attempt resulted in "Energy Drain" death during travel to Sustenance Hub, proving that travel costs are a major risk factor for recovery.
-- Restoration of the Week 9 checkpoint and shifting to local Hab-Pod shopping successfully bypassed the death state and restored stability.
-- Persona A is currently netting `+₡48` per week after burn rate and food costs, which is low but solvent.
-- AI Opponent (Persona B) appears to have hit zero sanity ("Burnout Detected") and is struggling with debt.
+- **Infrastructure Reset:** All prior Phase 11 artifacts from the 2026-03-23 run were cleared. The environment is now on a fresh, verified audit baseline.
+- **Turn Consolidation:** `state-proxy` now correctly detects hidden modals and UI visibility, drastically reducing the number of turns needed for state verification.
