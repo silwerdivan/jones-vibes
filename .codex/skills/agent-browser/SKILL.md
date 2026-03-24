@@ -7,39 +7,44 @@ description: Browser automation with the agent-browser CLI for opening sites, in
 
 Use this skill to drive websites with the `agent-browser` CLI.
 
-On Linux, always invoke `agent-browser` with `--args "--no-sandbox"`.
+**IMPORTANT: Linux Syntax Rule**
+On Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option **AFTER** the command.
+- **Correct**: `agent-browser <command> --args "--no-sandbox"`
+- **Incorrect**: `agent-browser --no-sandbox <command>`
 
 Read [references/authentication.md](references/authentication.md) when the task involves login state, persistent sessions, cookies, or saved credentials.
 
 ## Check Availability
 
 1. Confirm the CLI exists before planning around it:
-   - `agent-browser --args "--no-sandbox" --help`
-   - or `npx agent-browser --args "--no-sandbox" --help`
+   - `agent-browser help --args "--no-sandbox"`
 2. If the CLI is missing, say so and stop before inventing browser results.
 3. If Chrome or Chromium is not installed for the tool, suggest `agent-browser install`.
 
-## Core Workflow
+## Core Workflow (Phase 5 Hygiene)
 
-Follow this loop:
+Follow this loop to prevent "Tool Limping":
 
-1. Open the target page.
-2. Wait for the page or route transition to settle.
-3. Snapshot interactive elements.
-4. Use the returned `@e...` references for clicks, fills, selects, and checks.
-5. Re-run `snapshot -i` after any page transition or meaningful DOM change.
+1. **Wait then Act**: ALWAYS use `wait <selector>` or `sleep 1` before interaction commands.
+2. **Recipe Priority**: Check `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` for stable selectors.
+3. **No Blind Probing**: If an action fails, do NOT dump the full DOM. Fall back to a known stable state check.
+4. Open the target page.
+5. Wait for the page or route transition to settle.
+6. Snapshot interactive elements (`snapshot -i`).
+7. Use the returned `@e...` references for clicks, fills, selects, and checks.
+8. Re-run `snapshot -i` after any page transition or meaningful DOM change.
 
 Example:
 
 ```bash
-agent-browser --args "--no-sandbox" open https://example.com/login
-agent-browser --args "--no-sandbox" wait --load networkidle
-agent-browser --args "--no-sandbox" snapshot -i
-agent-browser --args "--no-sandbox" fill @e1 "user@example.com"
-agent-browser --args "--no-sandbox" fill @e2 "password123"
-agent-browser --args "--no-sandbox" click @e3
-agent-browser --args "--no-sandbox" wait --load networkidle
-agent-browser --args "--no-sandbox" snapshot -i
+agent-browser open https://example.com/login --args "--no-sandbox"
+agent-browser wait --load networkidle --args "--no-sandbox"
+agent-browser snapshot -i --args "--no-sandbox"
+agent-browser fill @e1 "user@example.com" --args "--no-sandbox"
+agent-browser fill @e2 "password123" --args "--no-sandbox"
+agent-browser click @e3 --args "--no-sandbox"
+agent-browser wait --load networkidle --args "--no-sandbox"
+agent-browser snapshot -i --args "--no-sandbox"
 ```
 
 ## Preferred Command Patterns
@@ -47,22 +52,19 @@ agent-browser --args "--no-sandbox" snapshot -i
 Use separate commands when you need to inspect output before continuing. Use chained commands only when no intermediate parsing is required.
 
 ```bash
-agent-browser --args "--no-sandbox" open https://example.com && agent-browser --args "--no-sandbox" wait --load networkidle && agent-browser --args "--no-sandbox" screenshot page.png
+agent-browser open https://example.com --args "--no-sandbox" && agent-browser wait --load networkidle --args "--no-sandbox" && agent-browser screenshot page.png --args "--no-sandbox"
 ```
 
 Prefer these commands:
 
-- `agent-browser --args "--no-sandbox" open <url>` to navigate.
-- `agent-browser --args "--no-sandbox" snapshot -i` to discover actionable elements.
-- `agent-browser --args "--no-sandbox" click @e1` to activate an element from a snapshot.
-- `agent-browser --args "--no-sandbox" fill @e2 "text"` to replace field contents.
-- `agent-browser --args "--no-sandbox" type @e2 "text"` to append or type without clearing.
-- `agent-browser --args "--no-sandbox" select @e3 "Option"` for dropdowns.
-- `agent-browser --args "--no-sandbox" check @e4` for checkboxes.
-- `agent-browser --args "--no-sandbox" wait --load networkidle` after navigation-heavy actions.
-- `agent-browser --args "--no-sandbox" wait --text "..."` or `agent-browser --args "--no-sandbox" wait <selector>` for content-specific waits.
-- `agent-browser --args "--no-sandbox" get text @e1`, `agent-browser --args "--no-sandbox" get url`, and `agent-browser --args "--no-sandbox" get title` for verification.
-- `agent-browser --args "--no-sandbox" screenshot path.png` for visual evidence.
+- `agent-browser open <url> --args "--no-sandbox"` to navigate.
+- `agent-browser snapshot -i --args "--no-sandbox"` to discover actionable elements.
+- `agent-browser click @e1 --args "--no-sandbox"` to activate an element from a snapshot.
+- `agent-browser fill @e2 "text" --args "--no-sandbox"` to replace field contents.
+- `agent-browser type @e2 "text" --args "--no-sandbox"` to append or type without clearing.
+- `agent-browser wait --load networkidle --args "--no-sandbox"` after navigation-heavy actions.
+- `agent-browser wait <selector> --args "--no-sandbox"` for content-specific waits.
+- `agent-browser screenshot path.png --args "--no-sandbox"` for visual evidence.
 
 ## Operating Rules
 

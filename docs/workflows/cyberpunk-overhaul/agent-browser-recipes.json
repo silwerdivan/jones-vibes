@@ -3,6 +3,9 @@
   "updated_at": "2026-03-22",
   "app_url": "http://127.0.0.1:5173/jones-vibes/",
   "global_rules": [
+    "PRE-FLIGHT CHECKLIST: 1. Use State Proxy first. 2. Check Recipes for selectors. 3. Use Linux-safe flags (--args '--no-sandbox'). 4. WAIT before ACT.",
+    "Strict Flags First: On Linux, use `agent-browser <cmd> --session-name <name> --args '--no-sandbox'`.",
+    "Wait then Act: ALWAYS use `wait <selector>` or `sleep 1` before `click`, `type`, or `scrollintoview`.",
     "Prefer targeted eval probes that return compact JSON over document-wide text dumps.",
     "Prefer stable data-testid selectors first; verify the resulting game state after any job application or purchase.",
     "Do not trust a successful click response by itself; confirm the intended before/after gameplay mutation for travel, apply, shopping, and work-shift actions.",
@@ -49,8 +52,10 @@
         "[data-testid=\"action-card-jobs-level-1-sanitation-t3\"]"
       ],
       "preferred_actions": [
-        "Call `agent-browser scrollintoview` on the targeted job button before any direct click so the pointer action lands on an in-viewport control.",
-        "Click the button selector first once it is in view; only fall back to the card selector if the button is absent.",
+        "Use `agent-browser wait '[data-testid=\"action-card-btn-jobs-level-1-sanitation-t3\"]'` before interaction.",
+        "Call `agent-browser scrollintoview` on the targeted job button before any direct click.",
+        "Wait 1s after scroll: `sleep 1`.",
+        "Click the button selector first once it is in view.",
         "Immediately verify CURRENT SHIFT or persisted `careerLevel` before continuing the slice."
       ],
       "verification": [
@@ -59,7 +64,7 @@
       ],
       "fallbacks": [
         "Re-query the specific job card and button only, not the whole DOM.",
-        "If the first direct click reports success without state change, re-run `scrollintoview`, click once more, and verify `careerLevel` or CURRENT SHIFT again before escalating to targeted DOM evaluation."
+        "If the first direct click reports success without state change, re-run `scrollintoview`, click once more, and verify `careerLevel` or CURRENT SHIFT again."
       ]
     },
     "buy_food": {
@@ -67,6 +72,10 @@
       "preferred_selectors": [
         "[data-testid=\"action-card-btn-shopping-sustenance-hub-real-meat-burger\"]",
         "[data-testid=\"action-card-shopping-sustenance-hub-real-meat-burger\"]"
+      ],
+      "preferred_actions": [
+        "Use `agent-browser wait '[data-testid=\"action-card-btn-shopping-sustenance-hub-real-meat-burger\"]'`.",
+        "Click the button. Wait 1s: `sleep 1`."
       ],
       "verification": [
         "Confirm credits changed by the expected amount.",
@@ -77,7 +86,9 @@
     "work_shift": {
       "goal": "Execute a labor shift once the current job is active.",
       "preferred_actions": [
-        "Find the visible WORK SHIFT control only after the Labor Sector dashboard is confirmed active.",
+        "Use `agent-browser wait '[data-testid=\"labor-sector-dashboard\"]'`.",
+        "Find the visible WORK SHIFT control.",
+        "Wait 1s after click: `sleep 1`.",
         "After each shift, re-check credits, time, hunger, sanity, and whether a turn summary or event modal interrupted the route."
       ],
       "verification": [

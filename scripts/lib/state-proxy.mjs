@@ -27,17 +27,18 @@ function getBrowserSession() {
 function runEval(expression) {
   const session = getBrowserSession();
   const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
-  const browserArgs = extraArgs ? ['--args', extraArgs] : (process.platform === 'linux' ? ['--args', '--no-sandbox'] : []);
+  const browserArgs = extraArgs ? [`--args=${extraArgs}`] : (process.platform === 'linux' ? ['--args=--no-sandbox'] : []);
   
   // Use batch mode with --json for robust UTF-8 and multi-line support
   const batchCommands = [['eval', expression]];
-  const commandArgs = ['--session-name', session, '--json', 'batch'];
+  const commandArgs = ['--session-name', session, '--json'];
   
   try {
-    const output = execFileSync('agent-browser', [...browserArgs, ...commandArgs], {
+    // Command FIRST, then options
+    const output = execFileSync('agent-browser', ['batch', ...commandArgs, ...browserArgs], {
       input: JSON.stringify(batchCommands),
       encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'ignore'], // Ignore stderr to avoid warnings
+      stdio: ['pipe', 'pipe', 'pipe'], // Capture stderr for debugging
       maxBuffer: 20 * 1024 * 1024,
     });
     
@@ -50,6 +51,7 @@ function runEval(expression) {
     
     return firstResult.result?.result ?? null;
   } catch (error) {
+    if (error.stderr) console.error(`Stderr: ${error.stderr}`);
     console.error(`Error: agent-browser eval failed: ${error.message}`);
     process.exit(1);
   }

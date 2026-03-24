@@ -58,6 +58,16 @@ For generic commands that may produce large output (e.g., `cat`, `grep`, `find`,
 - **Automatic Truncation**: It defaults to 2000 characters.
 - **Full Dump**: Use `--full-dump` flag if you explicitly need the entire output for editing or deep analysis.
 
+### Tool Hygiene & Reliability (Phase 5)
+To eliminate "Tool Limping" and history bloat:
+- **Strict Flags First (agent-browser)**: On Linux, you MUST pass `--no-sandbox` via the `--args` option *after* the command.
+    - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
+    - **Example**: `agent-browser eval "..." --session-name phase11 --args "--no-sandbox"`
+- **Wait then Act**: ALWAYS use `wait <selector>` or `sleep 1` before interaction commands (`click`, `type`, `scrollintoview`) in browser recipes to prevent "Element not found" retries.
+- **Recipe Priority**: Check `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` BEFORE attempting a new selector.
+- **No Blind Probing**: If a selector fails, do NOT dump the full DOM. Fall back to a known stable state check (e.g., location or credits) or capture a screenshot.
+- **Batched Probes**: Consolidate multiple state checks into ONE `eval` call: `agent-browser eval "({ credits: ..., hunger: ... })"`.
+
 For batching, use:
 - `mcp__context-mode__ctx_batch_execute(commands, queries)` — run multiple commands + search in ONE call
 - `mcp__context-mode__ctx_execute(language: "shell", code: "...")` — run in sandbox, only stdout enters context

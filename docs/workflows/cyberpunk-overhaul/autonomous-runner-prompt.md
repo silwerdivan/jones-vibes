@@ -25,7 +25,13 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
     - **Correct**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
     - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
-- **Tool Reliability**: To prevent "Tool Limping" (repeated failures that bloat history):
+- **Tool Reliability (Phase 5)**: To eliminate "Tool Limping" (repeated failures that bloat history):
+    - **Strict Flags First**: On Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option *after* the command.
+        - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
+        - **Example**: `agent-browser eval "..." --session-name phase11 --args "--no-sandbox"`
+    - **Wait then Act**: ALWAYS use `wait <selector>` or `sleep 1` before interaction commands (`click`, `type`, `scrollintoview`) in browser recipes to prevent "Element not found" retries.
+    - **Recipe Priority**: Check `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` BEFORE attempting a new selector.
+    - **No Blind Probing**: If a selector fails, do NOT dump the full DOM. Fall back to a known stable state check (e.g., location or credits) or capture a screenshot.
     - **Use State Proxy**: For general game state checks (Credits, Hunger, Location, Turn, etc.), ALWAYS prefer `node scripts/lib/state-proxy.mjs get`. It returns only changes and a compact summary, minimizing history bloat.
     - **Use Truncated Shell**: For shell commands that might produce large output (e.g., `cat`, `grep`, `find`, `agent-browser`, or complex `node` scripts), ALWAYS use `node scripts/lib/run-truncated.mjs <command>`. It defaults to 2000 characters. Use `--full-dump` ONLY if you explicitly need the entire output for editing.
     - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.

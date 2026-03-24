@@ -89,7 +89,9 @@ function runAgentBrowser(browserArgs, commandArgs, input = null) {
     options.input = input;
   }
 
-  return execFileSync('agent-browser', [...getBrowserArgs(browserArgs), ...commandArgs], options);
+  // Command FIRST, then options
+  const [command, ...args] = commandArgs;
+  return execFileSync('agent-browser', [command, ...args, ...getBrowserArgs(browserArgs)], options);
 }
 
 function evalInSession(sessionName, expression, browserArgs) {
