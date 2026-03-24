@@ -3,9 +3,11 @@
   "updated_at": "2026-03-22",
   "app_url": "http://127.0.0.1:5173/jones-vibes/",
   "global_rules": [
-    "PRE-FLIGHT CHECKLIST: 1. Use State Proxy first. 2. Check Recipes for selectors. 3. Use Linux-safe flags (--args '--no-sandbox'). 4. WAIT before ACT.",
+    "PRE-FLIGHT CHECKLIST: 1. Modal Check (body.modal-active). 2. Use State Proxy. 3. Check Recipes. 4. WAIT before ACT.",
+    "Modal Check: FORBIDDEN to interact if `document.body.classList.contains('modal-active')` or `.modal-overlay` is visible.",
     "Strict Flags First: On Linux, use `agent-browser <cmd> --session-name <name> --args '--no-sandbox'`.",
     "Wait then Act: ALWAYS use `wait <selector>` or `sleep 1` before `click`, `type`, or `scrollintoview`.",
+    "State-Proxy Verification: Call `node scripts/lib/state-proxy.mjs get` after EVERY action to verify mutation.",
     "Prefer targeted eval probes that return compact JSON over document-wide text dumps.",
     "Prefer stable data-testid selectors first; verify the resulting game state after any job application or purchase.",
     "Do not trust a successful click response by itself; confirm the intended before/after gameplay mutation for travel, apply, shopping, and work-shift actions.",
@@ -29,6 +31,9 @@
     },
     "travel_city": {
       "goal": "Move between city locations.",
+      "pre_conditions": [
+        "Modal Check: `!document.body.classList.contains('modal-active')`"
+      ],
       "preferred_selectors": [
         "[data-testid=\"city-travel-card-labor-sector\"]",
         "[data-testid=\"city-travel-card-sustenance-hub\"]",
@@ -40,6 +45,7 @@
         "Only fall back to targeted DOM evaluation if the expected `city-travel-card-*` control is absent or the post-click state verification fails."
       ],
       "verification": [
+        "Run `node scripts/lib/state-proxy.mjs get`.",
         "Check the active location label or dashboard title.",
         "Check player time after travel when the destination should cost time.",
         "Treat a successful click response without location or time change as a failed travel attempt."
@@ -47,6 +53,9 @@
     },
     "apply_job": {
       "goal": "Secure a labor shift job such as Sanitation-T3.",
+      "pre_conditions": [
+        "Modal Check: `!document.body.classList.contains('modal-active')`"
+      ],
       "preferred_selectors": [
         "[data-testid=\"action-card-btn-jobs-level-1-sanitation-t3\"]",
         "[data-testid=\"action-card-jobs-level-1-sanitation-t3\"]"
@@ -59,6 +68,7 @@
         "Immediately verify CURRENT SHIFT or persisted `careerLevel` before continuing the slice."
       ],
       "verification": [
+        "Run `node scripts/lib/state-proxy.mjs get`.",
         "Check CURRENT SHIFT or the persisted game state for the selected job id.",
         "Treat a successful click response without state mutation as a failed apply attempt."
       ],
@@ -69,6 +79,9 @@
     },
     "buy_food": {
       "goal": "Buy food in Sustenance Hub.",
+      "pre_conditions": [
+        "Modal Check: `!document.body.classList.contains('modal-active')`"
+      ],
       "preferred_selectors": [
         "[data-testid=\"action-card-btn-shopping-sustenance-hub-real-meat-burger\"]",
         "[data-testid=\"action-card-shopping-sustenance-hub-real-meat-burger\"]"
@@ -78,6 +91,7 @@
         "Click the button. Wait 1s: `sleep 1`."
       ],
       "verification": [
+        "Run `node scripts/lib/state-proxy.mjs get`.",
         "Confirm credits changed by the expected amount.",
         "Confirm hunger or sanity moved in the expected direction.",
         "Treat a successful click response without the expected stat deltas as a failed purchase attempt."
@@ -85,6 +99,9 @@
     },
     "work_shift": {
       "goal": "Execute a labor shift once the current job is active.",
+      "pre_conditions": [
+        "Modal Check: `!document.body.classList.contains('modal-active')`"
+      ],
       "preferred_actions": [
         "Use `agent-browser wait '[data-testid=\"labor-sector-dashboard\"]'`.",
         "Find the visible WORK SHIFT control.",
@@ -92,6 +109,7 @@
         "After each shift, re-check credits, time, hunger, sanity, and whether a turn summary or event modal interrupted the route."
       ],
       "verification": [
+        "Run `node scripts/lib/state-proxy.mjs get`.",
         "Credits increase by the shift yield.",
         "Time drops by the expected shift cost.",
         "Any forced event or summary modal is detected immediately.",

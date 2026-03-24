@@ -38,7 +38,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
 - **Fair Play & Integrity**:
-    - **Prohibit Rewinding**: Explicitly forbid using `checkpoint:import` to undo gameplay failures (Burnout, Debt-Trap, Arrest). These must be logged as "Audit Results" and the slice should exit.
+    - **Prohibit Rewinding**: Explicitly forbid using `checkpoint:import` or `localStorage` manipulation to undo gameplay failures (Burnout, Arrest, Debt-Trap). These must be logged as "Audit Events" and the slice should exit.
     - **Modal Verification**: ALWAYS verify "Modal Context" (e.g., check for `.modal-overlay` or `.location-modal`) before attempting background actions. If a modal is open, background actions are strictly forbidden.
     - **State-Proxy Enforcement**: Use the state-proxy `get` command after EVERY action to verify that the internal state changed as expected (e.g., did Credits actually go down?). If not, the action failed; do not hallucinate success.
 - If the browser session continuity is missing but `startup-context.json` points to a latest checkpoint save file, restore that checkpoint with `npm run workflow:phase11:checkpoint:import -- --quiet` before resorting to a replay-from-onboarding decision.

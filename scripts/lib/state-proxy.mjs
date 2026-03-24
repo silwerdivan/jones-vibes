@@ -66,6 +66,7 @@ function getFullState() {
     return {
       turn: state.turn,
       activeScreenId: state.activeScreenId,
+      activeChoiceContext: state.activeChoiceContext,
       credits: p.credits,
       savings: p.savings,
       sanity: p.sanity,

@@ -22,6 +22,7 @@
 - **Next Action:** Resume Week 11 from the authoritative Week 10 checkpoint. Maintain the "Local Food + 2x Shifts" loop until `TRAUMA_REBOOT` expires.
 
 ### 4. Observations & Notes
+- **Audit Event: BURNOUT FAILURE (Turn 11)**: Persona A hit 0 Sanity and 0 Hunger. Under new Phase 6 "Fair Play" rules, this is a Hard Exit. No checkpoint restoration or localStorage manipulation was attempted to undo the failure. The slice is terminated.
 - Week 9 ended with a burnout/trauma reboot, leaving Persona A in a critical "survival-only" state at the start of Week 10.
 - Initial Week 10 attempt resulted in "Energy Drain" death during travel to Sustenance Hub, proving that travel costs are a major risk factor for recovery.
 - Restoration of the Week 9 checkpoint and shifting to local Hab-Pod shopping successfully bypassed the death state and restored stability.

@@ -26,6 +26,9 @@ This repository uses Codex for iterative game design and implementation, not jus
 - Prefer updating `docs/workflows/cyberpunk-overhaul/current-phase.md`, `docs/workflows/cyberpunk-overhaul/overhaul-history.md`, and per-phase plan or retro docs over creating new orchestration prompts.
 - Keep implementation incremental. By default, complete one clearly scoped task at a time unless the user asks for a broader batch.
 - Before code edits, research affected files with fast search and then update related tests in the same pass.
+- **Fair Play & Anti-Rewind**: Explicitly FORBID the use of `checkpoint:import` or `localStorage` manipulation to undo gameplay failures (Burnout, Arrest, Debt-Trap). These must be logged as "Audit Events" and the slice should exit.
+- **Modal-Awareness**: Mandatory check for `body.modal-active` or `.modal-overlay` before any city-level interaction. The agent MUST NOT attempt background actions while a modal is open.
+- **State-Proxy Verification**: Mandatory `state-proxy get` call at the end of every high-impact recipe (Job Apply, Shopping, Travel) to verify internal state mutation before the tool returns "Success."
 
 # context-mode — MANDATORY routing rules
 

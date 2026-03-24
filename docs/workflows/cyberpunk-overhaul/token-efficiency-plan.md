@@ -63,12 +63,12 @@
   - Mandatory `sleep 1` or "Wait for Selector" logic in the skill to prevent "Element not found" retries.
   - **Recipe Enforcement:** Force the agent to check `agent-browser-recipes.json` before trying a new selector.
 
-### Phase 6: Gameplay & Automation Guardrails (NEW)
+### Phase 6: Gameplay & Automation Guardrails (COMPLETE)
 - **Rule**: Implement "Fair Play" and "Spatial Context" rules to prevent hallucination and cheating.
 - **Implementation**:
-    - **Prohibit Rewinding**: Explicitly forbid `checkpoint:import` to undo gameplay failures.
-    - **Modal-Aware CSS**: Added `body.modal-active` to blur and disable the background, preventing the agent from clicking "through the wall" when a modal is open.
-    - **State-Proxy Enforcement**: Mandatory `state-proxy get` after every action to verify the result.
+    - **Prohibit Rewinding**: Explicitly forbid `checkpoint:import` or `localStorage` manipulation to undo gameplay failures.
+    - **Modal-Awareness**: Mandatory check for `body.modal-active` or `.modal-overlay` before interactions.
+    - **State-Proxy Enforcement**: Mandatory `state-proxy get` after every high-impact action to verify mutation.
 
 ---
 
