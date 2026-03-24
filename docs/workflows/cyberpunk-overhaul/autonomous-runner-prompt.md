@@ -26,7 +26,8 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Correct**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
     - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
 - **Tool Reliability**: To prevent "Tool Limping" (repeated failures that bloat history):
-    - **Consolidate State Probes**: Instead of multiple `eval` calls, use one batched check: `agent-browser eval "({ credits: ..., hunger: ... })"`.
+    - **Use State Proxy**: For general game state checks (Credits, Hunger, Location, Turn, etc.), ALWAYS prefer `node scripts/lib/state-proxy.mjs get`. It returns only changes and a compact summary, minimizing history bloat.
+    - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
 - If the browser session continuity is missing but `startup-context.json` points to a latest checkpoint save file, restore that checkpoint with `npm run workflow:phase11:checkpoint:import` before resorting to a replay-from-onboarding decision.

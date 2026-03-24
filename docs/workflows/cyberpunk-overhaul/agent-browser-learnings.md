@@ -62,3 +62,21 @@ This log tracks technical patterns, selector strategies, and "gotchas" discovere
 - **Verify before Action**: If a session seems "reset" (e.g., showing a "START" button when you expect a dashboard), use `agent-browser screenshot` and `agent-browser eval "document.body.innerText"` immediately to confirm the visual state before clicking anything that might overwrite progress.
 - **Modal Blocking**: If `agent-browser` returns a **Connection Error (OS error 10060)** or fails to navigate/click, check for an unclosed modal. In this project, active modals (like Agent Smith or Sustenance Hub) often block the global event loop or prevent interaction with the background City Hub, leading to timeouts that look like network failures.
     - **Fix**: Always click the "close" or "X" button (@e6 usually) before attempting to change locations.
+
+## 5. "State-Aware" Tool Proxy (Phase 11 Optimization)
+
+### The "Payload Bloat" Problem
+- **Problem**: Repeatedly calling `agent-browser eval "localStorage.getItem('save')"` returns ~56KB of JSON every time, bloating session history and wasting tokens.
+- **Solution**: Use the lightweight `scripts/lib/state-proxy.mjs` helper.
+
+### Usage
+- **Command**: `node scripts/lib/state-proxy.mjs get`
+- **Behavior**: 
+    - Fetches only the essential gameplay fields (Credits, Hunger, Sanity, Location, Turn, etc.).
+    - Compares current state with the last known state (cached in `.codex-runtime/cyberpunk-overhaul/last-state-proxy.json`).
+    - Returns **only the changes** (diffs) plus a compact summary of the current status.
+- **Benefit**: Reduces the returned payload from ~150k tokens to <200 tokens per turn.
+
+### Best Practice
+- Use `node scripts/lib/state-proxy.mjs get` at the start of every slice and after any major action (Travel, Work, Buy) to verify the outcome without re-reading the whole world.
+- Use `node scripts/lib/state-proxy.mjs reset` if you need to clear the cache and force a full diff on the next `get`.
