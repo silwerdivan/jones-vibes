@@ -56,7 +56,7 @@
   - Explicitly set `process.stdin.setEncoding('utf8')` and file stream encodings to `utf8` in `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`.
   - Refactored `scripts/cyberpunk-overhaul-phase11-checkpoint.mjs` to use `agent-browser batch` mode with `stdin` to pass large save states safely without CLI argument mangling.
 
-### Phase 5: Tool Hygiene & Reliability (NEW)
+### Phase 5: Tool Hygiene & Reliability (COMPLETE)
 - **Rule:** Force the agent to use a single, verified command format for `agent-browser`.
 - **Implementation:** 
   - Strict "flags first" policy.
