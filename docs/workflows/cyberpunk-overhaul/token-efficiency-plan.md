@@ -42,8 +42,9 @@
 - **Rule:** Never `eval` a full object if you only need one field.
 - **Implementation:** Use `eval("JSON.parse(...).field")` instead of returning the whole save.
 
-### Phase 2: Tool Result Truncation
+### Phase 2: Tool Result Truncation (COMPLETE)
 - **Rule:** The runner should automatically truncate tool results over 2000 chars unless "Full Dump" is explicitly requested.
+- **Implementation:** Added `scripts/lib/run-truncated.mjs`. Mandated in `AGENTS.md` and `autonomous-runner-prompt.md`.
 
 ### Phase 3: Turn Consolidation
 - **Rule:** Batch state-checks. Perform Location, Credits, Hunger, and Sanity checks in **one** `eval` call.

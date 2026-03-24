@@ -27,6 +27,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
 - **Tool Reliability**: To prevent "Tool Limping" (repeated failures that bloat history):
     - **Use State Proxy**: For general game state checks (Credits, Hunger, Location, Turn, etc.), ALWAYS prefer `node scripts/lib/state-proxy.mjs get`. It returns only changes and a compact summary, minimizing history bloat.
+    - **Use Truncated Shell**: For shell commands that might produce large output (e.g., `cat`, `grep`, `find`, `agent-browser`, or complex `node` scripts), ALWAYS use `node scripts/lib/run-truncated.mjs <command>`. It defaults to 2000 characters. Use `--full-dump` ONLY if you explicitly need the entire output for editing.
     - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.

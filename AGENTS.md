@@ -51,9 +51,14 @@ Instead use:
 
 ## REDIRECTED tools — use sandbox equivalents
 
-### Shell (>20 lines output)
+### Shell (>20 lines or >2000 chars output)
 Shell is ONLY for: `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`, and other short-output commands.
-For everything else, use:
+For generic commands that may produce large output (e.g., `cat`, `grep`, `find`, `agent-browser`, `node scripts/...`):
+- **ALWAYS use**: `node scripts/lib/run-truncated.mjs <command>`
+- **Automatic Truncation**: It defaults to 2000 characters.
+- **Full Dump**: Use `--full-dump` flag if you explicitly need the entire output for editing or deep analysis.
+
+For batching, use:
 - `mcp__context-mode__ctx_batch_execute(commands, queries)` — run multiple commands + search in ONE call
 - `mcp__context-mode__ctx_execute(language: "shell", code: "...")` — run in sandbox, only stdout enters context
 
