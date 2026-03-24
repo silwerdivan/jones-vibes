@@ -64,19 +64,6 @@ function updateRunState(runStatePath, mutate) {
   writeJson(runStatePath, runState);
 }
 
-function parseAgentBrowserOutput(output) {
-  const trimmed = output
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (trimmed.length === 0) {
-    return '';
-  }
-
-  return trimmed[trimmed.length - 1];
-}
-
 function getBrowserArgs(configuredArgs = []) {
   const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
   if (extraArgs) {
@@ -90,22 +77,40 @@ function getBrowserArgs(configuredArgs = []) {
   return [];
 }
 
-function runAgentBrowser(browserArgs, commandArgs) {
-  return execFileSync('agent-browser', [...getBrowserArgs(browserArgs), ...commandArgs], {
+function runAgentBrowser(browserArgs, commandArgs, input = null) {
+  const options = {
     cwd: ROOT_DIR,
     encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-    maxBuffer: 10 * 1024 * 1024,
-  });
+    stdio: [input ? 'pipe' : 'ignore', 'pipe', 'ignore'], // Ignore stderr to avoid warnings in stdout
+    maxBuffer: 20 * 1024 * 1024,
+  };
+
+  if (input) {
+    options.input = input;
+  }
+
+  return execFileSync('agent-browser', [...getBrowserArgs(browserArgs), ...commandArgs], options);
 }
 
 function evalInSession(sessionName, expression, browserArgs) {
-  const output = runAgentBrowser(browserArgs, ['--session-name', sessionName, 'eval', expression]);
-  const payload = parseAgentBrowserOutput(output);
-  if (!payload) {
+  // Use batch mode with --json to ensure safe UTF-8 passing via stdin and clean output parsing
+  const batchCommands = [['eval', expression]];
+  const output = runAgentBrowser(browserArgs, ['--session-name', sessionName, '--json', 'batch'], JSON.stringify(batchCommands));
+  
+  try {
+    const batchResults = JSON.parse(output);
+    const firstResult = batchResults[0];
+    
+    if (!firstResult || !firstResult.success) {
+      throw new Error(firstResult?.error || 'Unknown evaluation error in batch');
+    }
+    
+    // Result structure: { command, error, success, result: { origin, result } }
+    return firstResult.result?.result ?? null;
+  } catch (error) {
+    console.error(`[phase11-checkpoint] eval failure: ${error.message}`);
     return null;
   }
-  return JSON.parse(payload);
 }
 
 function openApp(sessionName, appUrl, browserArgs) {

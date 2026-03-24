@@ -177,10 +177,10 @@ for (const filePath of [eventLogPath, checkpointLogPath, summaryPath, rawJsonlPa
   ensureParent(filePath);
 }
 
-const eventStream = fs.createWriteStream(eventLogPath);
-const checkpointStream = fs.createWriteStream(checkpointLogPath);
-const rawStream = fs.createWriteStream(rawJsonlPath);
-const debugCandidateStream = fs.createWriteStream(debugCandidatesPath);
+const eventStream = fs.createWriteStream(eventLogPath, { encoding: 'utf8' });
+const checkpointStream = fs.createWriteStream(checkpointLogPath, { encoding: 'utf8' });
+const rawStream = fs.createWriteStream(rawJsonlPath, { encoding: 'utf8' });
+const debugCandidateStream = fs.createWriteStream(debugCandidatesPath, { encoding: 'utf8' });
 
 const summary = {
   slice_id: sliceId,
@@ -451,6 +451,9 @@ function finalize() {
 
   fs.writeFileSync(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);
 }
+
+// Set input encoding to UTF-8
+process.stdin.setEncoding('utf8');
 
 const rl = readline.createInterface({
   input: process.stdin,

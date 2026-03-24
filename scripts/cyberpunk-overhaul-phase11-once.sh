@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+# Ensure clean UTF-8 encoding in pipes
+export LC_ALL=C.UTF-8
+export LANG=C.UTF-8
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUNTIME_DIR="${ROOT_DIR}/.codex-runtime/cyberpunk-overhaul"
 RUN_STATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/run-state.json"

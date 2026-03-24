@@ -49,8 +49,12 @@
 ### Phase 3: Turn Consolidation
 - **Rule:** Batch state-checks. Perform Location, Credits, Hunger, and Sanity checks in **one** `eval` call.
 
-### Phase 4: Encoding Sanitization
+### Phase 4: Encoding Sanitization (COMPLETE)
 - **Rule:** Fix the bridge between the browser and the CLI to handle UTF-8 symbols correctly.
+- **Implementation:**
+  - Enforced `LC_ALL=C.UTF-8` and `LANG=C.UTF-8` in `scripts/cyberpunk-overhaul-phase11-once.sh`.
+  - Explicitly set `process.stdin.setEncoding('utf8')` and file stream encodings to `utf8` in `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`.
+  - Refactored `scripts/cyberpunk-overhaul-phase11-checkpoint.mjs` to use `agent-browser batch` mode with `stdin` to pass large save states safely without CLI argument mangling.
 
 ### Phase 5: Tool Hygiene & Reliability (NEW)
 - **Rule:** Force the agent to use a single, verified command format for `agent-browser`.

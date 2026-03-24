@@ -1,4 +1,6 @@
-import { execSync } from 'node:child_process';
+#!/usr/bin/env node
+
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,55 +9,48 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const RUNTIME_DIR = path.join(ROOT_DIR, '.codex-runtime/cyberpunk-overhaul');
 const CACHE_FILE = path.join(RUNTIME_DIR, 'last-state-proxy.json');
+const RUN_STATE_FILE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
 
 function getBrowserSession() {
-  return process.env.AGENT_BROWSER_SESSION_NAME || 'cyberpunk-audit';
-}
-
-function parseAgentBrowserOutput(output) {
-  const lines = output
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-
-  if (lines.length === 0) {
-    return '';
+  if (process.env.AGENT_BROWSER_SESSION_NAME) {
+    return process.env.AGENT_BROWSER_SESSION_NAME;
   }
-
-  // The last line is usually the eval result
-  return lines[lines.length - 1];
+  
+  try {
+    const runState = JSON.parse(fs.readFileSync(RUN_STATE_FILE, 'utf8'));
+    return runState.current_persona?.agent_browser_session_name || 'cyberpunk-audit';
+  } catch (e) {
+    return 'cyberpunk-audit';
+  }
 }
 
 function runEval(expression) {
   const session = getBrowserSession();
   const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
-  const argsPart = extraArgs ? `--args "${extraArgs}"` : (process.platform === 'linux' ? '--args "--no-sandbox"' : '');
-  const command = `agent-browser eval ${JSON.stringify(expression)} --session-name ${session} ${argsPart}`;
+  const browserArgs = extraArgs ? ['--args', extraArgs] : (process.platform === 'linux' ? ['--args', '--no-sandbox'] : []);
   
-  let payload = '';
+  // Use batch mode with --json for robust UTF-8 and multi-line support
+  const batchCommands = [['eval', expression]];
+  const commandArgs = ['--session-name', session, '--json', 'batch'];
+  
   try {
-    const output = execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-    payload = parseAgentBrowserOutput(output);
-    if (!payload) {
-      console.error('Error: agent-browser eval returned empty result.');
-      process.exit(1);
-    }
-    return JSON.parse(payload);
-  } catch (error) {
-    if (payload) {
-      try {
-        return JSON.parse(payload);
-      } catch (e) {
-        console.error('Error: Failed to parse agent-browser output as JSON.');
-        console.error('Raw output:', payload);
-        process.exit(1);
-      }
+    const output = execFileSync('agent-browser', [...browserArgs, ...commandArgs], {
+      input: JSON.stringify(batchCommands),
+      encoding: 'utf8',
+      stdio: ['pipe', 'pipe', 'ignore'], // Ignore stderr to avoid warnings
+      maxBuffer: 20 * 1024 * 1024,
+    });
+    
+    const batchResults = JSON.parse(output);
+    const firstResult = batchResults[0];
+    
+    if (!firstResult || !firstResult.success) {
+      throw new Error(firstResult?.error || 'Unknown evaluation error in batch');
     }
     
-    console.error('Error: agent-browser command failed.');
-    console.error('Command:', command);
-    console.error('Message:', error.message);
-    if (error.stderr) console.error('Stderr:', error.stderr);
+    return firstResult.result?.result ?? null;
+  } catch (error) {
+    console.error(`Error: agent-browser eval failed: ${error.message}`);
     process.exit(1);
   }
 }
@@ -85,9 +80,9 @@ function getFullState() {
 }
 
 function getDiff(oldState, newState) {
-  const diff = {};
   if (!oldState) return null;
   
+  const diff = {};
   let hasChanges = false;
   for (const key in newState) {
     if (JSON.stringify(oldState[key]) !== JSON.stringify(newState[key])) {
@@ -131,7 +126,7 @@ if (command === 'get') {
   } else {
     console.log('State: CHANGED');
     for (const key in diff) {
-      console.log(`  ${key}: ${diff[key].from} -> ${diff[key].to}`);
+      console.log(`  ${key}: ${JSON.stringify(diff[key].from)} -> ${JSON.stringify(diff[key].to)}`);
     }
     console.log('---');
     console.log(`Location: ${newState.location} | Turn: ${newState.turn} | Credits: ${newState.credits} | Hunger: ${newState.hunger} | Sanity: ${newState.sanity}`);
