@@ -36,6 +36,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Use Truncated Shell**: For shell commands that might produce large output (e.g., `cat`, `grep`, `find`, `agent-browser`, or complex `node` scripts), ALWAYS use `node scripts/lib/run-truncated.mjs <command>`. It defaults to 2000 characters. Use `--full-dump` ONLY if you explicitly need the entire output for editing.
     - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
+    - **Turn Consolidation**: Mandate turn consolidation for "Check -> Act -> Verify" loops. Use parallel tool execution or combined shell commands (e.g., `agent-browser eval "..." && node scripts/lib/state-proxy.mjs get`) to minimize the total number of turns per gameplay action.
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
 - **Fair Play & Integrity**:
     - **Prohibit Rewinding**: Explicitly forbid using `checkpoint:import` or `localStorage` manipulation to undo gameplay failures (Burnout, Arrest, Debt-Trap). These must be logged as "Audit Events" and the slice should exit.

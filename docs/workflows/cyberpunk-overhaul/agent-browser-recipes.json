@@ -8,6 +8,7 @@
     "Strict Flags First: On Linux, use `agent-browser <cmd> --session-name <name> --args '--no-sandbox'`.",
     "Wait then Act: ALWAYS use `wait <selector>` or `sleep 1` before `click`, `type`, or `scrollintoview`.",
     "State-Proxy Verification: Call `node scripts/lib/state-proxy.mjs get` after EVERY action to verify mutation.",
+    "BATCHED PROBES: Mandate that a single `agent-browser eval` call captures all 4 core metrics (Credits, Hunger, Sanity, Location) and any specific local selectors (e.g., job availability) in one pass to minimize turns.",
     "Prefer targeted eval probes that return compact JSON over document-wide text dumps.",
     "Prefer stable data-testid selectors first; verify the resulting game state after any job application or purchase.",
     "Do not trust a successful click response by itself; confirm the intended before/after gameplay mutation for travel, apply, shopping, and work-shift actions.",
@@ -118,6 +119,7 @@
     },
     "turn_summary_probe": {
       "goal": "Capture the authoritative end-of-week state with minimal context cost.",
+      "mandate": "A single `agent-browser eval` call SHOULD capture all 4 core metrics (Credits, Hunger, Sanity, Location) and any specific local selectors (e.g., job availability) in one pass.",
       "preferred_probe_fields": [
         "turn",
         "hasPendingTurnSummary",
