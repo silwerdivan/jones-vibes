@@ -56,6 +56,23 @@ try {
     }
   }
 } catch (error) {
+  const stderr = error.stderr || '';
+  const stdout = error.stdout || '';
+  const message = error.message || '';
+  const combined = `${message}\n${stdout}\n${stderr}`;
+
+  // Check for "History Leaks" / syntax errors that should trigger Fail-Fast
+  if (
+    combined.includes('SyntaxError: Unexpected identifier') ||
+    combined.includes('Unknown command:') ||
+    combined.includes('Connection Error (OS error 10060)') ||
+    combined.includes('failed to launch browser')
+  ) {
+    const failFastMsg = `\n[FATAL] agent-browser encountered a syntax or environment error: ${message}\n${stderr}\n[FAIL-FAST] ABORTING TO PREVENT HISTORY BLOAT. Emit AUTONOMOUS_BLOCKED immediately.\n`;
+    process.stderr.write(failFastMsg);
+    process.exit(101); // Special exit code for fatal environment/syntax errors
+  }
+
   // If command failed, still truncate the output but exit with same code
   if (error.stdout) {
     if (fullDump || error.stdout.length <= maxChars) {

@@ -158,6 +158,30 @@ if (typeof current === 'object') {
 NODE
 }
 
+check_browser_health() {
+  local session_name="${1:-}"
+  echo "[phase11-once] performing browser health preflight..." | tee -a "${LOG_FILE}"
+  
+  # Ensure the basic tool is reachable and doesn't crash on startup
+  if ! node "${ROOT_DIR}/scripts/agent-browser.mjs" --version >/dev/null 2>&1; then
+    echo "[phase11-once] [FATAL] browser health preflight failed! check your AGENT_BROWSER_ARGS or installation." | tee -a "${LOG_FILE}" >&2
+    exit 101
+  fi
+
+  # Perform a no-op probe to verify session accessibility if a session name is provided
+  if [[ -n "${session_name}" ]]; then
+    if ! node "${ROOT_DIR}/scripts/agent-browser.mjs" --session-name "${session_name}" eval "1" >/dev/null 2>&1; then
+      # If this fails, it might be a session error, but we'll let verify_browser_continuity handle the recovery
+      # unless it was a syntax error caught by run-truncated.
+      local exit_code=$?
+      if [[ "${exit_code}" == "101" ]]; then
+        echo "[phase11-once] [FATAL] browser session preflight failed with syntax/environment error!" | tee -a "${LOG_FILE}" >&2
+        exit 101
+      fi
+    fi
+  fi
+}
+
 verify_browser_continuity() {
   local status_json=""
   local after_status_json=""
@@ -938,6 +962,7 @@ export AGENT_BROWSER_SESSION_NAME="${AGENT_BROWSER_SESSION_NAME:-${session_name}
 export AGENT_BROWSER_ARGS="${AGENT_BROWSER_ARGS:---no-sandbox}"
 export JONES_VIBES_APP_URL="${app_url}"
 
+check_browser_health "${AGENT_BROWSER_SESSION_NAME}"
 verify_browser_continuity
 write_startup_context_file
 

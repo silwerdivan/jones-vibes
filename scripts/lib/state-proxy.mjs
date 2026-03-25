@@ -5,6 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { runAgentBrowserBatch } from './agent-browser-wrapper.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const RUNTIME_DIR = path.join(ROOT_DIR, '.codex-runtime/cyberpunk-overhaul');
@@ -26,23 +28,11 @@ function getBrowserSession() {
 
 function runEval(expression) {
   const session = getBrowserSession();
-  const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
-  const browserArgs = extraArgs ? [`--args=${extraArgs}`] : (process.platform === 'linux' ? ['--args=--no-sandbox'] : []);
-  
-  // Use batch mode with --json for robust UTF-8 and multi-line support
-  const batchCommands = [['eval', expression]];
-  const commandArgs = ['--session-name', session, '--json'];
   
   try {
-    // Command FIRST, then options
-    const output = execFileSync('agent-browser', ['batch', ...commandArgs, ...browserArgs], {
-      input: JSON.stringify(batchCommands),
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'pipe'], // Capture stderr for debugging
-      maxBuffer: 20 * 1024 * 1024,
+    const batchResults = runAgentBrowserBatch([['eval', expression]], {
+      sessionName: session,
     });
-    
-    const batchResults = JSON.parse(output);
     const firstResult = batchResults[0];
     
     if (!firstResult || !firstResult.success) {

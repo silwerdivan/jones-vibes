@@ -1,0 +1,538 @@
+{
+  "players": [
+    {
+      "id": 1,
+      "credits": 345,
+      "savings": 0,
+      "sanity": 27,
+      "educationLevel": 0,
+      "educationCredits": 0,
+      "educationCreditsGoal": 0,
+      "careerLevel": 1,
+      "time": 22,
+      "location": "Hab-Pod 404",
+      "hasCar": false,
+      "loan": 0,
+      "inventory": [],
+      "hunger": 40,
+      "timeDeficit": 0,
+      "weeklyIncome": 0,
+      "weeklyExpenses": 0,
+      "weeklySanityChange": -5,
+      "weeklyTurnEvents": [
+        {
+          "type": "warning",
+          "label": "Tetanus-Grade Laceration",
+          "value": -5,
+          "unit": "Sanity",
+          "icon": "psychology"
+        }
+      ],
+      "isAI": false,
+      "name": "Player 1",
+      "wageMultiplier": 1,
+      "activeConditions": [],
+      "burnRate": 80,
+      "debt": 0,
+      "hustleHeat": {
+        "scrap-metal": 0
+      }
+    },
+    {
+      "id": 2,
+      "credits": 0,
+      "savings": 0,
+      "sanity": 38,
+      "educationLevel": 0,
+      "educationCredits": 0,
+      "educationCreditsGoal": 0,
+      "careerLevel": 1,
+      "time": 24,
+      "location": "Hab-Pod 404",
+      "hasCar": false,
+      "loan": 0,
+      "inventory": [
+        {
+          "name": "Thermal-Regulator",
+          "cost": 400,
+          "sanityBoost": 10,
+          "type": "asset",
+          "icon": "fridge",
+          "benefit": "Bio-Deficit Rate -50%",
+          "location": "Consumpt-Zone",
+          "maintenanceCost": 25
+        }
+      ],
+      "hunger": 30,
+      "timeDeficit": 0,
+      "weeklyIncome": 0,
+      "weeklyExpenses": 0,
+      "weeklySanityChange": 0,
+      "weeklyTurnEvents": [],
+      "isAI": true,
+      "name": "AI Opponent",
+      "wageMultiplier": 1,
+      "activeConditions": [
+        {
+          "id": "SUBSCRIPTION_DEFAULT",
+          "name": "Subscription Default",
+          "description": "Unpaid bills. Retinal warnings and limited service access. Sanity drain and reduced wages.",
+          "remainingDuration": 144,
+          "effects": [
+            {
+              "type": "SANITY_TICK",
+              "value": -0.5
+            },
+            {
+              "type": "WAGE_MULTIPLIER",
+              "value": 0.8
+            }
+          ],
+          "icon": "🚫"
+        }
+      ],
+      "burnRate": 80,
+      "debt": 89,
+      "hustleHeat": {}
+    }
+  ],
+  "currentPlayerIndex": 0,
+  "turn": 3,
+  "gameOver": false,
+  "winnerId": null,
+  "log": [
+    {
+      "text": "AI Opponent returned to Hab-Pod 404.",
+      "category": "info",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
+      "category": "success",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
+      "category": "warning",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
+      "category": "danger",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent charged ₡8 in subscription-debt interest.",
+      "category": "warning",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent failed to cover full Burn Rate. Paid ₡24, ₡81 added to debt.",
+      "category": "warning",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent bypasses cycle action.",
+      "category": "info",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:19 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:18 PM"
+    },
+    {
+      "text": "AI Opponent bought Thermal-Regulator! Sanity increased by 10.",
+      "category": "success",
+      "timestamp": "10:47:18 PM"
+    },
+    {
+      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Thermal-Regulator\"}",
+      "category": "info",
+      "timestamp": "10:47:18 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:18 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:17 PM"
+    },
+    {
+      "text": "AI Opponent relocated to Consumpt-Zone.",
+      "category": "info",
+      "timestamp": "10:47:17 PM"
+    },
+    {
+      "text": "AI Protocol: travel | Params: {\"destination\":\"Consumpt-Zone\"}",
+      "category": "info",
+      "timestamp": "10:47:17 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:17 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:16 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:47:16 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:47:16 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:16 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:15 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:47:15 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:47:15 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:15 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:14 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:47:14 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:47:14 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:14 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:47:13 PM"
+    },
+    {
+      "text": "AI Opponent relocated to Labor Sector.",
+      "category": "info",
+      "timestamp": "10:47:13 PM"
+    },
+    {
+      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
+      "category": "info",
+      "timestamp": "10:47:13 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:47:13 PM"
+    },
+    {
+      "text": "Event: Tetanus-Grade Laceration - choice recorded.",
+      "category": "info",
+      "timestamp": "10:47:02 PM"
+    },
+    {
+      "text": "Player 1 returned to Hab-Pod 404.",
+      "category": "info",
+      "timestamp": "10:46:43 PM"
+    },
+    {
+      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
+      "category": "success",
+      "timestamp": "10:46:43 PM"
+    },
+    {
+      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
+      "category": "warning",
+      "timestamp": "10:46:43 PM"
+    },
+    {
+      "text": "Player 1 paid weekly Burn Rate of ₡80.",
+      "category": "expense",
+      "timestamp": "10:46:43 PM"
+    },
+    {
+      "text": "Cycle time exhausted. Turn finalization initiated.",
+      "category": "warning",
+      "timestamp": "10:46:43 PM"
+    },
+    {
+      "text": "Hustle consequence triggered!",
+      "category": "warning",
+      "timestamp": "10:46:42 PM"
+    },
+    {
+      "text": "Hustle Completed: Scrap Metal. Yield: ₡85. Stress: -8 Sanity.",
+      "category": "success",
+      "timestamp": "10:46:42 PM"
+    },
+    {
+      "text": "Player 1 insufficient cycle time for Sanitation-T3 shift.",
+      "category": "error",
+      "timestamp": "10:46:19 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:28:01 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:28:00 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:27:59 PM"
+    },
+    {
+      "text": "Player 1 relocated to Labor Sector.",
+      "category": "info",
+      "timestamp": "10:27:53 PM"
+    },
+    {
+      "text": "AI Opponent returned to Hab-Pod 404.",
+      "category": "info",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
+      "category": "success",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
+      "category": "warning",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "AI Opponent paid weekly Burn Rate of ₡80.",
+      "category": "expense",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "AI Opponent bypasses cycle action.",
+      "category": "info",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:40 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:27:39 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:27:39 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:27:39 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:39 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:27:38 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:27:38 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:27:38 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:38 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:27:37 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:27:37 PM"
+    },
+    {
+      "text": "AI Protocol: workShift",
+      "category": "info",
+      "timestamp": "10:27:37 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:37 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:27:36 PM"
+    },
+    {
+      "text": "✅ Position Secured: Sanitation-T3. Productivity tier updated.",
+      "category": "success",
+      "timestamp": "10:27:36 PM"
+    },
+    {
+      "text": "AI Protocol: applyForJob | Params: {\"jobLevel\":1}",
+      "category": "info",
+      "timestamp": "10:27:36 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:36 PM"
+    },
+    {
+      "text": "AI Opponent optimizing next sequence...",
+      "category": "info",
+      "timestamp": "10:27:35 PM"
+    },
+    {
+      "text": "AI Opponent relocated to Labor Sector.",
+      "category": "info",
+      "timestamp": "10:27:35 PM"
+    },
+    {
+      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
+      "category": "info",
+      "timestamp": "10:27:35 PM"
+    },
+    {
+      "text": "🤔 AI Opponent is calculating optimal protocols...",
+      "category": "info",
+      "timestamp": "10:27:35 PM"
+    },
+    {
+      "text": "Player 1 returned to Hab-Pod 404.",
+      "category": "info",
+      "timestamp": "10:27:28 PM"
+    },
+    {
+      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
+      "category": "success",
+      "timestamp": "10:27:28 PM"
+    },
+    {
+      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
+      "category": "warning",
+      "timestamp": "10:27:28 PM"
+    },
+    {
+      "text": "Player 1 paid weekly Burn Rate of ₡80.",
+      "category": "expense",
+      "timestamp": "10:27:28 PM"
+    },
+    {
+      "text": "Player 1 relocated to Hab-Pod 404.",
+      "category": "info",
+      "timestamp": "10:27:21 PM"
+    },
+    {
+      "text": "Player 1 insufficient cycle time for Sanitation-T3 shift.",
+      "category": "error",
+      "timestamp": "10:26:54 PM"
+    },
+    {
+      "text": "Player 1 relocated to Labor Sector.",
+      "category": "info",
+      "timestamp": "10:26:45 PM"
+    },
+    {
+      "text": "Player 1 relocated to Cognitive Re-Ed.",
+      "category": "info",
+      "timestamp": "10:26:28 PM"
+    },
+    {
+      "text": "Player 1 relocated to Sustenance Hub.",
+      "category": "info",
+      "timestamp": "10:26:20 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:25:04 PM"
+    },
+    {
+      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
+      "category": "success",
+      "timestamp": "10:24:58 PM"
+    },
+    {
+      "text": "✅ Position Secured: Sanitation-T3. Productivity tier updated.",
+      "category": "success",
+      "timestamp": "10:24:30 PM"
+    },
+    {
+      "text": "Player 1 relocated to Labor Sector.",
+      "category": "info",
+      "timestamp": "10:21:52 PM"
+    }
+  ],
+  "isPlayer2AI": true,
+  "pendingTurnSummary": null,
+  "activeScreenId": "city",
+  "activeLocationDashboard": null,
+  "activeChoiceContext": null,
+  "activeEvent": null,
+  "activeGraduation": null,
+  "isAIThinking": false,
+  "eventHistory": [
+    "local_shady_courier",
+    "global_transit_strike",
+    "scrap-cut"
+  ]
+}

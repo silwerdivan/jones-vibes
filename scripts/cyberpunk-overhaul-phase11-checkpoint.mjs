@@ -15,6 +15,8 @@ import {
   selectAuthoritativeBrowserState,
 } from './lib/phase11-checkpoint-session-utils.mjs';
 
+import { runAgentBrowser, runAgentBrowserBatch } from './agent-browser-wrapper.mjs';
+
 const ROOT_DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DEFAULT_RUN_STATE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
 
@@ -64,50 +66,18 @@ function updateRunState(runStatePath, mutate) {
   writeJson(runStatePath, runState);
 }
 
-function getBrowserArgs(configuredArgs = []) {
-  const extraArgs = (process.env.AGENT_BROWSER_ARGS || '').trim();
-  if (extraArgs) {
-    return ['--args', extraArgs];
-  }
-
-  if (Array.isArray(configuredArgs) && configuredArgs.length > 0) {
-    return ['--args', configuredArgs.join(' ')];
-  }
-
-  return [];
-}
-
-function runAgentBrowser(browserArgs, commandArgs, input = null) {
-  const options = {
-    cwd: ROOT_DIR,
-    encoding: 'utf8',
-    stdio: [input ? 'pipe' : 'ignore', 'pipe', 'ignore'], // Ignore stderr to avoid warnings in stdout
-    maxBuffer: 20 * 1024 * 1024,
-  };
-
-  if (input) {
-    options.input = input;
-  }
-
-  // Command FIRST, then options
-  const [command, ...args] = commandArgs;
-  return execFileSync('agent-browser', [command, ...args, ...getBrowserArgs(browserArgs)], options);
-}
-
 function evalInSession(sessionName, expression, browserArgs) {
-  // Use batch mode with --json to ensure safe UTF-8 passing via stdin and clean output parsing
-  const batchCommands = [['eval', expression]];
-  const output = runAgentBrowser(browserArgs, ['--session-name', sessionName, '--json', 'batch'], JSON.stringify(batchCommands));
-  
   try {
-    const batchResults = JSON.parse(output);
+    const batchResults = runAgentBrowserBatch([['eval', expression]], {
+      sessionName,
+      extraArgs: Array.isArray(browserArgs) ? browserArgs.join(' ') : browserArgs,
+    });
     const firstResult = batchResults[0];
     
     if (!firstResult || !firstResult.success) {
       throw new Error(firstResult?.error || 'Unknown evaluation error in batch');
     }
     
-    // Result structure: { command, error, success, result: { origin, result } }
     return firstResult.result?.result ?? null;
   } catch (error) {
     console.error(`[phase11-checkpoint] eval failure: ${error.message}`);
@@ -116,8 +86,9 @@ function evalInSession(sessionName, expression, browserArgs) {
 }
 
 function openApp(sessionName, appUrl, browserArgs) {
-  runAgentBrowser(browserArgs, ['--session-name', sessionName, 'open', appUrl]);
-  runAgentBrowser(browserArgs, ['--session-name', sessionName, 'wait', '--load', 'networkidle']);
+  const extraArgs = Array.isArray(browserArgs) ? browserArgs.join(' ') : browserArgs;
+  runAgentBrowser('open', [appUrl], { sessionName, extraArgs });
+  runAgentBrowser('wait', ['--load', 'networkidle'], { sessionName, extraArgs });
 }
 
 function tryEvalInSession(sessionName, expression, browserArgs) {

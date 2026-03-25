@@ -21,15 +21,17 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 - Treat checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/` as the authoritative recovery layer when a named browser session reopens without the expected save.
 - Treat the external baseline handoff as out-of-band context, not as new Phase 11 evidence. Only log it again if the live build contradicts that handoff.
 - Reuse the existing app and browser state from the environment. `AGENT_BROWSER_SESSION_NAME` is already set for the active persona.
-- **Linux Correct Syntax**: On Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option *after* the command.
-    - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
-    - **Correct**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
-    - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
-- **Tool Reliability (Phase 5)**: To eliminate "Tool Limping" (repeated failures that bloat history):
-    - **Strict Flags First**: On Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option *after* the command.
+    - **Authoritative Wrapper**: In this project, ALWAYS prefer using the centralized wrapper: `node scripts/agent-browser.mjs <subcommand> [args...]`. This script automatically handles:
+        - Correct Linux `--no-sandbox` syntax (using `--args "--no-sandbox"` correctly).
+        - Correct session management.
+        - **Fail-Fast**: If it detects syntax errors or environment failures, it prints `[FAIL-FAST]` and exits with code `101`. If you see this exit code, IMMEDIATELY emit `AUTONOMOUS_BLOCKED` and stop.
+    - **Linux Correct Syntax**: If you MUST use the raw CLI, on Linux, `agent-browser` requires `--no-sandbox` to be passed via the `--args` option *after* the command.
         - **Template**: `agent-browser <command> [args] --session-name <name> --args "--no-sandbox"`
-        - **Example**: `agent-browser eval "..." --session-name phase11 --args "--no-sandbox"`
-    - **Wait then Act**: ALWAYS use `wait <selector>` or `sleep 1` before interaction commands (`click`, `type`, `scrollintoview`) in browser recipes to prevent "Element not found" retries.
+        - **Correct**: `agent-browser eval "window.localStorage.getItem('save')" --session-name phase11 --args "--no-sandbox"`
+        - **Incorrect**: `agent-browser --no-sandbox ...` or `agent-browser eval "..." --no-sandbox` (this will cause syntax errors).
+    - **Tool Reliability (Phase 5)**: To eliminate "Tool Limping" (repeated failures that bloat history):
+        - **Fail-Fast Enforcement**: If `node scripts/agent-browser.mjs` or `node scripts/lib/run-truncated.mjs` exits with code `101`, the environment is broken or your syntax is invalid. DO NOT RETRY. Emit `AUTONOMOUS_BLOCKED` immediately.
+        - **Wait then Act**: ALWAYS use `wait <selector>` or `sleep 1` before interaction commands (`click`, `type`, `scrollintoview`) in browser recipes to prevent "Element not found" retries.
     - **Recipe Priority**: Check `docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json` BEFORE attempting a new selector.
     - **No Blind Probing**: If a selector fails, do NOT dump the full DOM. Fall back to a known stable state check (e.g., location or credits) or capture a screenshot.
     - **Use State Proxy**: For general game state checks (Credits, Hunger, Location, Turn, etc.), ALWAYS prefer `node scripts/lib/state-proxy.mjs get`. It returns only changes and a compact summary, minimizing history bloat.
