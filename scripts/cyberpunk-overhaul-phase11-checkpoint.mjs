@@ -15,7 +15,7 @@ import {
   selectAuthoritativeBrowserState,
 } from './lib/phase11-checkpoint-session-utils.mjs';
 
-import { runAgentBrowser, runAgentBrowserBatch } from './agent-browser-wrapper.mjs';
+import { runAgentBrowser, runAgentBrowserBatch } from './lib/agent-browser-wrapper.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const DEFAULT_RUN_STATE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
