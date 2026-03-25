@@ -21,5 +21,5 @@
 ## Implementation Plan
 1. **Optimize System Prompt**: [DONE] Review and condense `autonomous-runner-prompt.md`. Added authoritative wrapper instructions and consolidated syntax rules to prevent hallucinated Linux flags.
 2. **Enhance `state-proxy.mjs` for Delta-Only Output**: [DONE] `state-proxy.mjs` already caches state and returns only changed fields (`State: CHANGED` with from/to deltas), minimizing history bloat.
-3. **Implement Turn Consolidation (Context Compression)**: [PENDING] Add a new command to the runner or a prompt instruction that allows the agent to issue a `MILESTONE_SUMMARY`.
+3. **Implement Turn Consolidation (Context Compression)**: [DONE] Added `scripts/lib/milestone-summary.mjs` and updated the log-stream to recognize it. Added explicit "Context Management" instructions to the runner prompt to encourage breaking long slices at milestones.
 4. **Tool Failure Truncation & Fail-Fast**: [DONE] Implemented `scripts/lib/agent-browser-wrapper.mjs` and updated `run-truncated.mjs` to detect fatal syntax/environment errors. These now trigger a `[FAIL-FAST]` abort (exit code 101) to prevent the LLM from "limping" through a broken environment and bloating the context history.

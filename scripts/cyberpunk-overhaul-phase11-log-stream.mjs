@@ -258,6 +258,9 @@ function classifyCommand(command) {
   if (isGitDiffCommand(command)) {
     return 'git_diff';
   }
+  if (/\bmilestone-summary\.mjs\b/.test(command)) {
+    return 'milestone';
+  }
   if (isBrowserSessionVerificationCommand(command)) {
     return 'browser_session_check';
   }
@@ -346,7 +349,7 @@ function handleCommandCompletion(ts, nowMs, id, commandOverride, exitCode, outpu
     exit_code: exitCode,
     duration_ms: durationMs,
     output_excerpt:
-      exitCode !== 0 || commandType === 'checkpoint' || commandType === 'browser_session_check' || suspicious
+      exitCode !== 0 || commandType === 'checkpoint' || commandType === 'milestone' || commandType === 'browser_session_check' || suspicious
         ? outputExcerpt
         : '',
   };
@@ -399,7 +402,7 @@ function handleCommandCompletion(ts, nowMs, id, commandOverride, exitCode, outpu
         ...baseEvent,
         type: exitCode !== 0 ? 'command_failure' : 'command_warning',
       },
-      commandType === 'checkpoint' || commandType === 'browser_session_check'
+      commandType === 'checkpoint' || commandType === 'milestone' || commandType === 'browser_session_check'
     );
     emitCompactLine(
       `[phase11-log] ${exitCode !== 0 ? 'failure' : 'warning'} exit=${exitCode} duration=${durationMs}ms ${commandSummary}`
@@ -425,8 +428,11 @@ function handleCommandCompletion(ts, nowMs, id, commandOverride, exitCode, outpu
     lastFailedAgentBrowserCommand = null;
   }
 
-  if (commandType === 'checkpoint') {
+  if (commandType === 'checkpoint' || commandType === 'milestone') {
     emitEvent(baseEvent, true);
+    if (commandType === 'milestone') {
+      emitCompactLine(`[phase11-log] milestone: ${commandSummary}`);
+    }
     return;
   }
 

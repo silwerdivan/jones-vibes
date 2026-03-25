@@ -39,6 +39,9 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
     - **Consolidate State Probes**: If you need a field not covered by the proxy, use ONE batched `eval` call: `agent-browser eval "({ ... })"`. Never return full objects or the entire `jones_fastlane_save` string.
     - **Wait for Render**: After a `click` or `travel` action, wait for the UI to settle before the next probe (e.g., `agent-browser click "..." && sleep 1`).
     - **Turn Consolidation**: Mandate turn consolidation for "Check -> Act -> Verify" loops. Use parallel tool execution or combined shell commands (e.g., `agent-browser eval "..." && node scripts/lib/state-proxy.mjs get`) to minimize the total number of turns per gameplay action.
+    - **Milestone Summary (Context Management)**: To prevent context bloat and "Baseline Tax" inflation, you should logically break long weeks into 2-3 slices if the turn count exceeds 8-10.
+        - **Action**: After completing a major sub-goal (e.g., finished a work shift, successfully handled a random event, or completed shopping), call `node scripts/lib/milestone-summary.mjs "<summary>"`.
+        - **Exit Strategy**: If you have reached a milestone and the current history is getting long, emit `AUTONOMOUS_SLICE_COMPLETE` immediately after the milestone tool call. The runner will start a fresh-context slice to continue the week.
     - **No JSON Dumps**: Never return full objects. Parse and return only the specific fields you need.
 - **Fair Play & Integrity**:
     - **Prohibit Rewinding**: Explicitly forbid using `checkpoint:import` or `localStorage` manipulation to undo gameplay failures (Burnout, Arrest, Debt-Trap). These must be logged as "Audit Events" and the slice should exit.
