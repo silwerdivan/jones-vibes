@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const MAX_CHARS_DEFAULT = 2000;
 
 function usage() {
-  console.log('Usage: node scripts/lib/run-truncated.mjs [--full-dump] [--max-chars N] <command...>');
+  console.log('Usage: node scripts/lib/run-truncated.mjs [--full-dump] [--max-chars N] <executable> [args...]');
   console.log('');
   console.log('Automatically truncates stdout and stderr to a safe limit to prevent history bloat.');
+  console.log('Inherits stdin to support interactive commands or piped input (like agent-browser batch).');
   console.log('');
   console.log('Options:');
   console.log('  --full-dump     Disable truncation and return everything.');
@@ -16,7 +17,7 @@ function usage() {
 }
 
 const args = process.argv.slice(2);
-if (args.length === 0 || args[0] === '--help') {
+if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
   usage();
 }
 
@@ -30,7 +31,7 @@ for (let i = 0; i < args.length; i++) {
   } else if (args[i] === '--max-chars' && i + 1 < args.length) {
     maxChars = parseInt(args[i + 1], 10);
     i++;
-  } else {
+  } else if (!args[i].startsWith('--')) {
     commandArgs = args.slice(i);
     break;
   }
@@ -40,10 +41,16 @@ if (commandArgs.length === 0) {
   usage();
 }
 
-const command = commandArgs.join(' ');
+const executable = commandArgs[0];
+const remainingArgs = commandArgs.slice(1);
 
 try {
-  const stdout = execSync(command, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  // Use execFileSync to correctly handle arguments and inherit stdin
+  const stdout = execFileSync(executable, remainingArgs, {
+    encoding: 'utf8',
+    stdio: ['inherit', 'pipe', 'pipe'],
+    maxBuffer: 100 * 1024 * 1024, // High limit, we truncate manually
+  });
   
   if (fullDump) {
     process.stdout.write(stdout);
@@ -98,3 +105,4 @@ try {
   
   process.exit(error.status || 1);
 }
+

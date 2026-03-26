@@ -1,4 +1,10 @@
 import { execFileSync } from 'node:child_process';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT_DIR = path.resolve(__dirname, '../..');
+const RUN_TRUNCATED = path.join(ROOT_DIR, 'scripts/lib/run-truncated.mjs');
 
 /**
  * Centralized agent-browser command construction to prevent "hallucinated" syntax.
@@ -38,6 +44,10 @@ export function getAgentBrowserArgs(options = {}) {
 
 /**
  * Runs agent-browser with the given subcommand and options.
+ * This is now wrapped in run-truncated.mjs to ensure:
+ * 1. Output truncation to prevent context bloat.
+ * 2. Fail-Fast on syntax/environment errors.
+ * 3. Consistent execution environment.
  */
 export function runAgentBrowser(subcommand, subcommandArgs = [], options = {}) {
   const browserArgs = getAgentBrowserArgs(options);
@@ -54,10 +64,14 @@ export function runAgentBrowser(subcommand, subcommandArgs = [], options = {}) {
     execOptions.input = options.input;
   }
 
+  // Always use the truncation wrapper to fulfill the project mandate
+  const wrapperArgs = [RUN_TRUNCATED, '--full-dump', 'agent-browser', ...fullArgs];
+
   try {
-    return execFileSync('agent-browser', fullArgs, execOptions);
+    return execFileSync('node', wrapperArgs, execOptions);
   } catch (error) {
-    // Check for "History Leaks" / syntax errors that should trigger Fail-Fast
+    // Fail-Fast logic is now also handled in run-truncated.mjs,
+    // but we keep it here for redundancy and to handle non-spawn errors.
     const stderr = error.stderr || '';
     const stdout = error.stdout || '';
     const message = error.message || '';
@@ -77,6 +91,7 @@ export function runAgentBrowser(subcommand, subcommandArgs = [], options = {}) {
     throw error;
   }
 }
+
 
 /**
  * Runs a batch of commands and parses the JSON result.

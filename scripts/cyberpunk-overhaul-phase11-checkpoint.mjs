@@ -67,22 +67,18 @@ function updateRunState(runStatePath, mutate) {
 }
 
 function evalInSession(sessionName, expression, browserArgs) {
-  try {
-    const batchResults = runAgentBrowserBatch([['eval', expression]], {
-      sessionName,
-      extraArgs: Array.isArray(browserArgs) ? browserArgs.join(' ') : browserArgs,
-    });
-    const firstResult = batchResults[0];
-    
-    if (!firstResult || !firstResult.success) {
-      throw new Error(firstResult?.error || 'Unknown evaluation error in batch');
-    }
-    
-    return firstResult.result?.result ?? null;
-  } catch (error) {
-    console.error(`[phase11-checkpoint] eval failure: ${error.message}`);
-    return null;
+  const batchResults = runAgentBrowserBatch([['eval', expression]], {
+    sessionName,
+    extraArgs: Array.isArray(browserArgs) ? browserArgs.join(' ') : browserArgs,
+  });
+  const firstResult = batchResults[0];
+  
+  if (!firstResult || !firstResult.success) {
+    const errorMsg = firstResult?.error || 'Unknown evaluation error in batch';
+    throw new Error(errorMsg);
   }
+  
+  return firstResult.result?.result ?? null;
 }
 
 function openApp(sessionName, appUrl, browserArgs) {

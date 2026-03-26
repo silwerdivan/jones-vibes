@@ -23,7 +23,9 @@
     "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json",
     "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-24T20:47:43.935Z"
+    "last_exported_at": "2026-03-24T20:47:43.935Z",
+    "last_restored_at": "2026-03-25T20:15:13.933Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
   },
   "slice_policy": {
     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",

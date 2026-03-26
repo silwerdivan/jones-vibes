@@ -129,7 +129,7 @@ NODE
 }
 
 checkpoint_status_json() {
-  node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" status
+  node "${ROOT_DIR}/scripts/lib/run-truncated.mjs" --full-dump node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" status
 }
 
 checkpoint_status_field() {
@@ -163,14 +163,14 @@ check_browser_health() {
   echo "[phase11-once] performing browser health preflight..." | tee -a "${LOG_FILE}"
   
   # Ensure the basic tool is reachable and doesn't crash on startup
-  if ! node "${ROOT_DIR}/scripts/agent-browser.mjs" --version >/dev/null 2>&1; then
+  if ! node "${ROOT_DIR}/scripts/lib/run-truncated.mjs" node "${ROOT_DIR}/scripts/agent-browser.mjs" --version >/dev/null 2>&1; then
     echo "[phase11-once] [FATAL] browser health preflight failed! check your AGENT_BROWSER_ARGS or installation." | tee -a "${LOG_FILE}" >&2
     exit 101
   fi
 
   # Perform a no-op probe to verify session accessibility if a session name is provided
   if [[ -n "${session_name}" ]]; then
-    if ! node "${ROOT_DIR}/scripts/agent-browser.mjs" --session-name "${session_name}" eval "1" >/dev/null 2>&1; then
+    if ! node "${ROOT_DIR}/scripts/lib/run-truncated.mjs" node "${ROOT_DIR}/scripts/agent-browser.mjs" --session-name "${session_name}" eval "1" >/dev/null 2>&1; then
       # If this fails, it might be a session error, but we'll let verify_browser_continuity handle the recovery
       # unless it was a syntax error caught by run-truncated.
       local exit_code=$?
@@ -215,7 +215,7 @@ verify_browser_continuity() {
       else
         echo "[phase11-once] live browser save mismatches authoritative checkpoint; restoring ${latest_checkpoint}" | tee -a "${LOG_FILE}"
       fi
-      node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" import --quiet --save "${latest_checkpoint}" | tee -a "${LOG_FILE}"
+      node "${ROOT_DIR}/scripts/lib/run-truncated.mjs" node "${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-checkpoint.mjs" import --quiet --save "${latest_checkpoint}" | tee -a "${LOG_FILE}"
 
       after_status_json="$(checkpoint_status_json)"
       continuity_status="$(checkpoint_status_field "${after_status_json}" continuity_status)"
@@ -911,7 +911,7 @@ if worktree_is_dirty; then
 fi
 
 "${ENSURE_DEV}"
-node "${BRIEF_SCRIPT}"
+node "${ROOT_DIR}/scripts/lib/run-truncated.mjs" node "${BRIEF_SCRIPT}"
 
 persona_name="$(json_get current_persona.name)"
 persona_slug="$(json_get_or_default current_persona.id persona)"
