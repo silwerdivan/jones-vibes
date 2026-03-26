@@ -1,7 +1,7 @@
 {
   "workflow": "cyberpunk-overhaul",
   "phase": 11,
-  "generated_at": "2026-03-25T19:16:38.805Z",
+  "generated_at": "2026-03-26T08:47:43.637Z",
   "status": "in_progress",
   "needs_human": false,
   "current_task": "task_2_persona_a_safe_grinder",
@@ -23,8 +23,8 @@
     "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
     "last_exported_at": "2026-03-24T20:47:43.935Z",
-    "last_restored_at": "",
-    "last_restored_save_path": ""
+    "last_restored_at": "2026-03-25T20:15:13.933Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
   },
   "control_surface": {
     "run_state_path": "docs/workflows/cyberpunk-overhaul/run-state.json",

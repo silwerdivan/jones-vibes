@@ -20,11 +20,11 @@
   },
   "checkpointing": {
     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json",
-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-meta.json",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-03-meta.json",
     "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
-    "last_exported_at": "2026-03-24T20:47:43.935Z",
-    "last_restored_at": "2026-03-25T20:15:13.933Z",
+    "last_exported_at": "2026-03-26T08:55:23.263Z",
+    "last_restored_at": "2026-03-26T08:47:50.651Z",
     "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
   },
   "slice_policy": {
@@ -38,11 +38,11 @@
     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
   },
-  "next_slice": "Advance Persona A through Week 3 from the week-02 checkpoint. Objective: push toward 500 Credits for Education Level 1 while protecting the reduced sanity buffer after the Week 2 laceration event.",
+  "next_slice": "Advance Persona A through Week 4 from the week-03 checkpoint. Objective: recover from the Week 3 upkeep hit (`433 Credits / Hunger 60 / Sanity 17`) and decide whether to stabilize with sustenance first or rebuild above 500 Credits for Education Level 1.",
   "last_run": {
-    "at": "2026-03-24T20:47:43.935Z",
-    "outcome": "Week 2 complete from live continuity. Final authoritative state: Turn 3, Hab-Pod 404, 345 Credits, Hunger 40, Sanity 27 after Scrap Metal triggered Tetanus-Grade Laceration.",
-    "slice_id": "20260324-persona_a-week-02"
+    "at": "2026-03-26T08:55:23.263Z",
+    "outcome": "Week 3 complete from the restored week-02 checkpoint. Two verified Sanitation-T3 work shifts lifted Persona A to 513 Credits mid-week, but week-end upkeep settled the authoritative Turn 4 handoff at Hab-Pod 404 with 433 Credits, Hunger 60, and Sanity 17.",
+    "slice_id": "20260326-persona_a-week-03"
   },
   "runner": {
     "sleep_seconds": 5,
