@@ -11,7 +11,7 @@ Move legacy documentation and temporary logs to `docs-archive/`.
 - [ ] **Phase Activity Logs**
     - [x] Move `2. cyberpunk-designer-overhaul-phase-1-activity.md`
     - [x] Move `2. cyberpunk-designer-overhaul-phase-2-activity.md`
-    - [ ] Move `2. cyberpunk-designer-overhaul-phase-5-activity.md`
+    - [x] Move `2. cyberpunk-designer-overhaul-phase-5-activity.md`
     - [ ] Move `2. cyberpunk-designer-overhaul-phase-6-activity.md`
     - [ ] Move `3. cyberpunk-designer-overhaul-phase-3-activity.md`
     - [ ] Move `3. cyberpunk-designer-overhaul-phase-4-activity.md`
