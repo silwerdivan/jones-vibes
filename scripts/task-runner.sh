@@ -23,6 +23,12 @@ if [ ! -f "$PLAN_FILE" ]; then
     exit 1
 fi
 
+# Ensure working directory is clean
+if [[ -n $(git status --porcelain) ]]; then
+    echo "Error: Working directory is not clean. Please commit or stash changes before running."
+    exit 1
+fi
+
 run_gemini_turn() {
     echo "=================================================================="
     echo "Checking for remaining tasks in $PLAN_FILE..."
@@ -48,8 +54,8 @@ Follow these steps strictly:
 7. Stop. Do not proceed to the next task in the plan. Do not ask for user confirmation, just execute and commit."
 
     # Execute the Gemini CLI
-    # Add flags (like --headless) if you are running this without a UI
-    gemini --yolo "$PROMPT"
+    # Use --prompt to trigger headless mode
+    gemini --yolo --prompt "$PROMPT"
     
     # Check exit status of Gemini to prevent infinite loops on failure
     if [ $? -ne 0 ]; then
