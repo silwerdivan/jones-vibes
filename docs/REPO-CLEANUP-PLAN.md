@@ -5,9 +5,9 @@ This plan follows the requirements set out in `docs/PRD-REPO-CLEANUP.md`.
 ## Phase 1: Archive Root Level Noise
 Move legacy documentation and temporary logs to `docs-archive/`.
 
-- [ ] **Designer Inputs**
+- [x] **Designer Inputs**
     - [x] Move `0. designer-1-input.md`
-    - [ ] Move `0. designer-2-input.md`
+    - [x] Move `0. designer-2-input.md`
 - [ ] **Phase Activity Logs**
     - [ ] Move `2. cyberpunk-designer-overhaul-phase-1-activity.md`
     - [ ] Move `2. cyberpunk-designer-overhaul-phase-2-activity.md`
