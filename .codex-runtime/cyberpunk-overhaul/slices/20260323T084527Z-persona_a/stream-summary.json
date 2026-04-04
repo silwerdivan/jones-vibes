@@ -1,0 +1,33 @@
+{
+  "slice_id": "20260323T084527Z-persona_a",
+  "persona": "The Safe Grinder",
+  "started_at": "",
+  "ended_at": "",
+  "wall_time_ms": 0,
+  "usage": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "output_tokens": 0
+  },
+  "counts": {
+    "commands_total": 0,
+    "commands_failed": 0,
+    "agent_browser_commands": 0,
+    "startup_reads": 0,
+    "git_diff_commands": 0,
+    "checkpoints": 0,
+    "retries": 0,
+    "fallbacks": 0
+  },
+  "debug": {
+    "escalated": false,
+    "reasons": [],
+    "retry_threshold": 2
+  },
+  "timings": {
+    "slowest_commands": []
+  },
+  "failure_candidates": [],
+  "fallback_messages": [],
+  "retry_messages": []
+}

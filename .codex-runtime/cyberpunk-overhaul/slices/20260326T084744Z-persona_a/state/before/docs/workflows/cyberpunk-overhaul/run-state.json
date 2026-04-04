@@ -1,0 +1,56 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-meta.json",
+    "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+    "last_exported_at": "2026-03-24T20:47:43.935Z",
+    "last_restored_at": "2026-03-26T08:47:50.651Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+      "docs/workflows/cyberpunk-overhaul/external-fixes.md"
+    ],
+    "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+    "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+  },
+  "next_slice": "Advance Persona A through Week 3 from the week-02 checkpoint. Objective: push toward 500 Credits for Education Level 1 while protecting the reduced sanity buffer after the Week 2 laceration event.",
+  "last_run": {
+    "at": "2026-03-24T20:47:43.935Z",
+    "outcome": "Week 2 complete from live continuity. Final authoritative state: Turn 3, Hab-Pod 404, 345 Credits, Hunger 40, Sanity 27 after Scrap Metal triggered Tetanus-Grade Laceration.",
+    "slice_id": "20260324-persona_a-week-02"
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

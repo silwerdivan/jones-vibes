@@ -1,0 +1,1825 @@
+diff --git a/docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md b/docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md
+index fdac4c9..521efd0 100644
+--- a/docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md
++++ b/docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md
+@@ -4,8 +4,8 @@
+ - **Persona:** Persona A: The Safe Grinder
+ - **Strategy:** Low-tier stability, avoid risks/debt, prioritize survival and steady labor.
+ - **Date:** 2026-03-21
+-- **Session Duration:** 5 completed authoritative weeks in the restarted chain
+-- **Current Slice Status:** Authoritative Week 5 completed. The restarted chain now has a fresh Week 5 checkpoint and a live Week 5 summary modal ready for Week 6 continuation from `₡464 / Hunger 20% / Sanity 20 / Sore Legs 54h`.
++- **Session Duration:** 6 completed authoritative weeks in the restarted chain
++- **Current Slice Status:** Authoritative Week 6 completed. The restarted chain now has a fresh Week 6 checkpoint and a live Week 6 summary modal ready for Week 7 continuation from `₡616 / Hunger 20% / Sanity 15 / Sore Legs 6h`.
+ - **Archive:** Previous Persona A run archived under `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/`.
+ 
+ ---
+@@ -19,7 +19,7 @@
+ | 3    | ₡448 | ₡0 | 60% | 15 | 0 | The week opened with a nominal `24CH`, but `Panic Attack on the Mag-Lev` plus the `Crushing Burnout` rest branch burned most of it, leaving room for only one `6CH` shift before the return home | Imported the Week 2 checkpoint, suffered the forced panic event, chose the Safe Grinder rest branch on burnout, worked `Sanitation-T3` once, and closed from `Hab-Pod 404` | Test whether `AD_FATIGUE` was enough to finally break the restored `Work Shift x3` baseline; it was, and the rational branch shifted from throughput to damage control | The run now feels brutally brittle: the week produced only `+₡4` net while hunger rose to `60%`, and the summary modal still hid large chunks of the real sanity loss even when it showed a visible `+40` burnout recovery |
+ | 4    | ₡496 | ₡0 | 30% | 20 | 0 | `Transit Strike` plus `Sore Legs` and a food detour still fit only two `6CH` shifts before the walk home, even though buying `Real-Meat Burger` rescued the week from the prior crash state's hunger/sanity floor | Continued from the live Week 3 summary, chose the free walk branch on `Transit Strike`, bought `Real-Meat Burger`, worked `Sanitation-T3` twice, then closed from `Hab-Pod 404` | Test whether `₡448 / Hunger 60% / Sanity 15` forces pure damage control or whether targeted food spending can restore a productive line; it restored some throughput, but not the old three-shift baseline | The run feels less doomed than Week 3 but more expensive than Weeks 1-2: `₡40` of food was the price of getting back to solvency, and the summary still contradicts its own sanity math even when the visible lines match the checkpoint |
+ | 5    | ₡464 | ₡0 | 20% | 20 | 0 | The live summary handoff first routed through the AI opponent and only returned manual control after upkeep had already degraded Persona A to `₡416 / Hunger 50% / Sanity 15`; from there, `Sore Legs` still left room for only `Sustenance Hub -> Work Shift x2 -> home`, with `3CH` spare after the return trip | Restored the Week 4 checkpoint, advanced through the AI handoff, bought `Real-Meat Burger`, worked `Sanitation-T3` twice, then ended the week from `Hab-Pod 404` | Verify whether the Week 4 burger recovery could regain the lost third shift once the run started from a healthier checkpoint; it could not, because the AI handoff and travel tax reopened the week in a much weaker state before any manual action | The route feels stable but not recovered: the same `₡40` food purchase is now the price of maintaining a merely solvent two-shift loop, though the summary finally reconciled its own sanity math instead of contradicting the checkpoint |
+-| 6    |      |      |        |        |           |                 |              |           |               |
++| 6    | ₡616 | ₡0 | 20% | 15 | 0 | `Sore Legs` had fallen to `54h`, reducing each city trip to `3CH`; combined with the safe `BROKEN AUTO-CHEF` food branch, that exactly reopened `Hab-Pod 404 -> Labor Sector -> Work Shift x3 -> home` | Continued from the live Week 5 summary, chose the safe `BROKEN AUTO-CHEF` protein bar, completed `Sanitation-T3` three times, and returned home on the last travel window | Verify whether the travel-taxed two-shift ceiling was permanent or only a temporary duration problem; Week 6 shows it was temporary once the condition nearly expired | The route feels solvent again, but not comfortable: Safe Grinder restores the full labor line only by landing on precise travel math, and the week still closes with a real `-5` sanity drift despite a strong `+₡152` net |
+ | 7    |      |      |        |        |           |                 |              |           |               |
+ | 8    |      |      |        |        |           |                 |              |           |               |
+ | 9    |      |      |        |        |           |                 |              |           |               |
+@@ -32,6 +32,7 @@
+ - [Week 3 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-03.md): authoritative continuation from the restored Week 2 checkpoint that proves `AD_FATIGUE` can collapse Safe Grinder into `Panic Attack` plus `Crushing Burnout`, forcing a one-shift week and exporting the Week 3 checkpoint at `₡448 / Hunger 60% / Sanity 15`.
+ - [Week 4 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md): authoritative continuation from the live Week 3 summary state that converts the crash into a food-assisted two-shift recovery week, exports the Week 4 checkpoint at `₡496 / Hunger 30% / Sanity 20`, and carries `Sore Legs` into Week 5.
+ - [Week 5 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md): authoritative continuation from the restored Week 4 checkpoint that survives the AI handoff degradation, confirms the `Real-Meat Burger` plus `Work Shift x2` route is still the ceiling under `Sore Legs`, and exports the Week 5 checkpoint at `₡464 / Hunger 20% / Sanity 20`.
++- [Week 6 detail](docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md): authoritative continuation from the live Week 5 summary state that absorbs `BROKEN AUTO-CHEF`, restores the full `Work Shift x3` route once `Sore Legs` drops to `54h`, and exports the Week 6 checkpoint at `₡616 / Hunger 20% / Sanity 15`.
+ 
+ Workflow note: the restarted audit re-established the old Persona A reference baseline, then reached the first clean break point. Future slices should treat `Work Shift x3` as conditional rather than guaranteed once hidden sanity pressure and hunger thresholds start compounding.
+ 
+@@ -52,6 +53,10 @@ Workflow note: the restarted audit re-established the old Persona A reference ba
+ - 2026-03-21: Week 3 strengthened the summary-integrity finding instead of resolving it. The visible sanity lines summed to `+10`, `pendingTurnSummary.totals.sanityChange` reported `-7`, and the exported checkpoint landed at `15` sanity after `Panic Attack on the Mag-Lev` plus `Crushing Burnout`.
+ - 2026-03-21: Authoritative Week 4 completed and exported a fresh checkpoint at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-meta.json`.
+ - 2026-03-21: Week 4 confirmed the live sanity-summary bug is still active even after the external fix handoff. The visible lines sum to `+5` (`Real-Meat Burger +10`, `Ambient Stress -10`, `Cycle Recovery +5`), the checkpoint lands at `20` sanity from a `15` start, but `pendingTurnSummary.totals.sanityChange` still reports `-7`.
++- 2026-03-21: Authoritative Week 5 completed and exported a fresh checkpoint at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-meta.json`.
++- 2026-03-21: Week 5 finally reconciled the live sanity summary. The visible event lines summed to `+5`, `pendingTurnSummary.totals.sanityChange` also reported `+5`, and the exported checkpoint landed at `20` sanity after the AI-handoff degradation reopened the week at `15`.
++- 2026-03-21: Authoritative Week 6 completed and exported a fresh checkpoint at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json`.
++- 2026-03-21: Week 6 confirms the two-shift cap was duration-bound rather than permanent. Once `Sore Legs` dropped to `54h`, travel fell to `3CH`, `BROKEN AUTO-CHEF` provided a cheaper safe food refill than `Real-Meat Burger`, and Safe Grinder restored `Work Shift x3` while the summary again reconciled the real `-5` sanity week.
+ 
+ ---
+ 
+diff --git a/docs/workflows/cyberpunk-overhaul/current-phase.md b/docs/workflows/cyberpunk-overhaul/current-phase.md
+index 61a53d8..41522d6 100644
+--- a/docs/workflows/cyberpunk-overhaul/current-phase.md
++++ b/docs/workflows/cyberpunk-overhaul/current-phase.md
+@@ -18,6 +18,7 @@ Identify remaining balance wrinkles, broken math, and opportunities for systemic
+ - [ ] Task 6: Synthesis & "Wrinkle" Report.
+ 
+ ## Progress Notes
++- 2026-03-21: Persona A Week 6 is now authoritative. The named browser session resumed directly from the Week 5 summary modal, and this time the AI handoff returned manual control at the same practical baseline as the checkpoint anchor: `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`. Entering Labor Sector triggered `BROKEN AUTO-CHEF`; Safe Grinder took the safe `₡20` protein-bar branch, restored hunger to `0%`, completed `Sanitation-T3` three times, and closed the authoritative Week 6 summary at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15` with a fresh Week 6 checkpoint. This confirms the earlier two-shift cap was caused by the remaining travel-tax duration rather than a permanent route limit, and the Week 6 summary again reconciles cleanly at `-5` sanity.
+ - 2026-03-21: Persona A Week 5 is now authoritative. The named browser session reopened without continuity again, so the slice restored `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json` before play. Advancing the Week 4 summary correctly handed control through the AI opponent, but the playable Safe Grinder baseline returned harsher than the checkpoint anchor at `₡416 / Debt ₡0 / Hunger 50% / Sanity 15 / Sore Legs 99h`. Safe Grinder again spent `₡40` on `Real-Meat Burger`, worked `Sanitation-T3` twice, and closed the authoritative Week 5 summary at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20` with a fresh Week 5 checkpoint. This confirms the travel-taxed route is still capped at two labor shifts while `Sore Legs` persists, but the Week 5 summary also marks the first clean sanity reconciliation in the restarted chain: the visible lines, modal total, and exported checkpoint all agree on `+5`.
+ - 2026-03-21: Persona A Week 4 is now authoritative. The named browser session reopened directly on the Week 3 summary state this time, so no checkpoint import was needed before play. Week 4 immediately rolled `Transit Strike`, which applied `Sore Legs`; Safe Grinder then spent `₡40` on `Real-Meat Burger`, recovered enough to fit `Sanitation-T3` plus `Work Shift x2`, and closed at `₡496 / Debt ₡0 / Hunger 30% / Sanity 20`. The exported Week 4 checkpoint confirms the summary-integrity issue is still live even after the out-of-band fix handoff: the visible sanity lines sum to `+5`, the persisted end state also reflects `+5`, but `pendingTurnSummary.totals.sanityChange` still reports `-7`.
+ - 2026-03-21: Persona A Week 3 is now authoritative. Browser continuity reopened at onboarding with no live save again, so the run was recovered by explicitly importing `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json` before play. `AD_FATIGUE` immediately combined with `Panic Attack on the Mag-Lev` and `Crushing Burnout` to break the restored `Sanitation-T3` plus `Work Shift x3` baseline, forcing a one-shift week that closed at `₡448 / Debt ₡0 / Hunger 60% / Sanity 15`. The exported Week 3 checkpoint also confirms the summary-integrity issue is still live: visible sanity lines sum to `+10`, but the reported total is `-7` and the persisted close state lands at `15` sanity.
+diff --git a/docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md b/docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md
+index e2bd490..823dadc 100644
+--- a/docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md
++++ b/docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md
+@@ -1,7 +1,7 @@
+ # Phase 11: Gameplay Audit Progress Report
+ 
+ ## Date: 2026-03-21
+-## Status: Task 1 Complete, Task 2 Active (Week 5 Authoritative, Week 6 Next)
++## Status: Task 1 Complete, Task 2 Active (Week 6 Authoritative, Week 7 Next)
+ 
+ ### 1. Audit Infrastructure (Task 1 - COMPLETE)
+ - **Tooling:** `agent-browser` configured and connected to `http://127.0.0.1:5173/jones-vibes/`.
+@@ -12,16 +12,16 @@
+ ### 2. Persona A: The Safe Grinder (Task 2 - RESTARTED)
+ - **Log Initialized:** `docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md`.
+ - **Strategy:** Prioritize low-risk survival and steady labor to test the "Poverty Trap" baseline.
+-- **Authoritative Progress:** Weeks 1-5 are now authoritative in the restarted chain, with Week 5 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md`.
++- **Authoritative Progress:** Weeks 1-6 are now authoritative in the restarted chain, with Week 6 recorded in `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md`.
+ - **Archive:** The previous Persona A run was moved to `docs/workflows/cyberpunk-overhaul/archives/phase-11-restarts/2026-03-20-persona-a-restart/` so the new run can proceed with a clean control surface.
+-- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-meta.json`.
+-- **Next authoritative target:** Continue Persona A into Week 6 from the Week 5 summary/checkpoint state and verify whether the route changes once `Sore Legs` falls to `54h` or whether Safe Grinder remains capped at a burger-assisted two-shift line.
++- **Latest Checkpoint:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json`.
++- **Next authoritative target:** Continue Persona A into Week 7 from the Week 6 summary/checkpoint state and verify whether the nearly expired `Sore Legs (6h)` condition preserves the restored three-shift line without needing another food event.
+ 
+ ### 3. Current Technical State
+-- **Browser State:** The authoritative surface is now the Week 5 summary modal at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20`, carrying `Sore Legs (54h)` forward into the next slice.
+-- **Checkpoint Hardening:** The export/import tooling is now re-anchored through `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json`.
++- **Browser State:** The authoritative surface is now the Week 6 summary modal at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15`, carrying `Sore Legs (6h)` forward into the next slice.
++- **Checkpoint Hardening:** The export/import tooling is now re-anchored through `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json`.
+ - **Identified Elements:** City travel cards still need targeted DOM interaction because they are custom divs, and direct `agent-browser click` on the Labor Sector `Apply` button still needs state verification because the visible button reported success without mutating `CURRENT SHIFT`.
+-- **Next Action:** Start Week 6 from the authoritative Week 5 summary state, account for the AI handoff before manual control returns, and check whether the shorter remaining `Sore Legs` duration finally reopens a third labor shift.
++- **Next Action:** Start Week 7 from the authoritative Week 6 summary state, confirm whether the AI handoff stays stable, and verify whether `Sore Legs (6h)` still preserves the restored `Work Shift x3` route once the condition is almost gone.
+ 
+ ### 4. Observations & Notes
+ - Phase 11 keeps a two-layer history model:
+@@ -37,3 +37,4 @@
+ - Week 4 proves the crash can be stabilized, but not cheaply. `Transit Strike` immediately turned into `Sore Legs`, Safe Grinder had to spend `₡40` on `Real-Meat Burger` to recover from `60%` hunger and `15` sanity, and the best resulting line was only `Work Shift x2` before the walk home.
+ - The Week 4 modal still fails the same sanity reconciliation check. Its visible lines sum to `+5`, the checkpointed end state rises from `15` to `20` sanity, and `pendingTurnSummary.totals.sanityChange` still incorrectly reports `-7`.
+ - Week 5 clarifies two more wrinkles. First, the summary-to-playable handoff is harsher than the checkpoint alone suggests because the AI transition returns Persona A to manual control at `₡416 / Hunger 50% / Sanity 15` before any new decisions. Second, the route still caps out at `Real-Meat Burger + Work Shift x2`, but the Week 5 modal finally reconciles cleanly: visible sanity lines sum to `+5`, `pendingTurnSummary.totals.sanityChange` also reports `+5`, and the exported checkpoint lands at `20` sanity.
++- Week 6 resolves the throughput question. Once `Sore Legs` falls to `54h`, travel drops to `3CH`, `BROKEN AUTO-CHEF` can replace the burger detour with a cheaper safe food branch, and Safe Grinder cleanly restores `Work Shift x3`, closing at `₡616 / Hunger 20% / Sanity 15` with a reconciled `-5` sanity summary.
+diff --git a/docs/workflows/cyberpunk-overhaul/phase-11-brief.json b/docs/workflows/cyberpunk-overhaul/phase-11-brief.json
+index d1268e0..8b131fe 100644
+--- a/docs/workflows/cyberpunk-overhaul/phase-11-brief.json
++++ b/docs/workflows/cyberpunk-overhaul/phase-11-brief.json
+@@ -1,7 +1,7 @@
+ {
+   "workflow": "cyberpunk-overhaul",
+   "phase": 11,
+-  "generated_at": "2026-03-21T19:25:09.907Z",
++  "generated_at": "2026-03-21T20:09:13.801Z",
+   "status": "in_progress",
+   "needs_human": false,
+   "current_task": "task_2_persona_a_safe_grinder",
+@@ -19,63 +19,63 @@
+   },
+   "checkpointing": {
+     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json",
+-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-meta.json",
++    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json",
++    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-meta.json",
+     "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+-    "last_exported_at": "2026-03-21T19:01:03.214Z",
+-    "last_restored_at": "2026-03-21T18:19:03.618Z",
+-    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-02-save.json"
++    "last_exported_at": "2026-03-21T19:33:41.154Z",
++    "last_restored_at": "2026-03-21T19:29:24.411Z",
++    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json"
+   },
+   "control_surface": {
+     "run_state_path": "docs/workflows/cyberpunk-overhaul/run-state.json",
+     "progress_path": "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+     "current_phase_path": "docs/workflows/cyberpunk-overhaul/current-phase.md",
+-    "latest_slice_path": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md"
++    "latest_slice_path": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md"
+   },
+   "latest_authoritative_state": {
+-    "week": 4,
+-    "checkpoint_summary": "Persona A continued directly from the authoritative Week 3 live summary state, took the free `Transit Strike` walk, bought `Real-Meat Burger`, recovered enough for `Sanitation-T3` plus `Work Shift x2`, and closed authoritative Week 4 at `₡496 / Debt ₡0 / Hunger 30% / Sanity 20` with a fresh Week 4 checkpoint. The sanity-summary mismatch is still live: visible lines and the checkpoint show `+5`, but `pendingTurnSummary.totals.sanityChange` still reports `-7`.",
+-    "next_slice": "Resume Persona A from the authoritative Week 4 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start Week 5 from `₡496 / Debt ₡0 / Hunger 30% / Sanity 20 / Sore Legs 123h`, and verify whether Safe Grinder can recover the third labor shift or is now locked into a food-assisted two-shift route under the travel tax. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md` before exporting the Week 5 checkpoint.",
++    "week": 5,
++    "checkpoint_summary": "Persona A restored the Week 4 checkpoint after browser continuity failed, advanced through the AI handoff, and regained manual control at a harsher Week 5 baseline of `₡416 / Debt ₡0 / Hunger 50% / Sanity 15 / Sore Legs 99h`. Safe Grinder again spent `₡40` on `Real-Meat Burger`, completed `Sanitation-T3` plus `Work Shift x2`, and closed authoritative Week 5 at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20` with a fresh Week 5 checkpoint. The travel-taxed route is still capped at two labor shifts, but the Week 5 summary finally reconciled its sanity lines, modal total, and checkpointed end state at `+5`.",
++    "next_slice": "Resume Persona A from the authoritative Week 5 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 5 summary anchor `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`, account for the AI handoff before manual control returns, and verify whether the shorter remaining travel tax finally reopens a third labor shift or whether Safe Grinder is still locked into the burger-assisted two-shift route. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md` before exporting the Week 6 checkpoint.",
+     "latest_slice": {
+-      "path": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-04.md",
+-      "week": 4,
++      "path": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-05.md",
++      "week": 5,
+       "start_state": {
+-        "checkpoint": "Reused the live `phase11-safe-grinder` Week 3 summary state after verifying `localStorage.jones_fastlane_save` already matched the authoritative Week 3 close and did not need a fresh import.",
+-        "cash": "₡448",
+-        "debt": "₡0",
+-        "hunger": "60%",
+-        "sanity": "15",
++        "checkpoint": "The named browser session reopened without `jones_fastlane_save`, so the slice first restored `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json` into `phase11-safe-grinder` and resumed from the authoritative Week 4 summary modal.",
++        "cash": "",
++        "debt": "",
++        "hunger": "",
++        "sanity": "",
+         "education": "0",
+-        "conditions": "none at slice start"
++        "conditions": "Sore Legs (99h remaining)` once manual control returned"
+       },
+       "telemetry": {
+-        "end_cash": "₡496",
++        "end_cash": "₡464",
+         "end_debt": "₡0",
+-        "end_hunger": "30%",
++        "end_hunger": "20%",
+         "end_sanity": "20",
+         "education": "0",
+-        "time_efficiency": "The week reopened with the normal `24CH`, but the walk-tax event plus the food detour still collapsed the old `Work Shift x3` baseline into a two-shift line that could only just fit the return home.",
++        "time_efficiency": "The burger route still only fit `Sustenance Hub -> Labor Sector -> Work Shift x2 -> Hab-Pod 404` under `Sore Legs`; after the return trip, only `3CH` remained, so the old three-shift baseline never reopened.",
+         "net_credits": "+₡48",
+         "net_sanity": ""
+       },
+       "high_signal_findings": [
+-        "Week 4 shows the Week 3 collapse is recoverable, but not for free. Safe Grinder did not need an extra rest branch, yet the route only stabilized after spending `₡40` on food before labor.",
+-        "The baseline has shifted from deterministic `Work Shift x3` to a more expensive two-shift recovery line whenever low sanity and hunger are already compounding. Safe Grinder stayed solvent, but the margin now depends on discretionary food spend rather than pure labor throughput.",
+-        "The live summary-integrity issue is still open after the external handoff fix. The visible Week 4 sanity lines show `Real-Meat Burger +10`, `Ambient Stress -10`, and `Cycle Recovery +5`, which sum to `+5` and match the checkpointed `15 -> 20` end state, while `pendingTurnSummary.totals.sanityChange` still reports `-7`.",
+-        "`Transit Strike` now carries forward as `Sore Legs` in the exported checkpoint (`123h` remaining), so Week 5 starts healthier than Week 4 did but still under an explicit travel-time tax."
++        "Week 5 confirms Safe Grinder is still locked into a food-assisted two-shift route while `Sore Legs` remains active. The run stabilized, but only after paying `₡40` up front and accepting that the travel-taxed week could not support a third `Sanitation-T3` shift.",
++        "The summary-to-playable handoff is harsher than the Week 4 checkpoint alone implies. Although the authoritative Week 4 close was `₡496 / Hunger 30% / Sanity 20`, the actual manual Week 5 start after the AI handoff reopened at `₡416 / Hunger 50% / Sanity 15`.",
++        "Unlike Weeks 2-4, the Week 5 summary reconciled cleanly. The visible lines showed `Real-Meat Burger +10`, `Ambient Stress -10`, and `Cycle Recovery +5`, the modal total reported `SANITY +5`, and the exported checkpoint matched the `15 -> 20` close.",
++        "`Sanitation-T3` remained effectively reusable even though the save probe still reported `currentJob: null` before entering the Labor Sector. The live dashboard showed `HIRED` plus a working `WORK SHIFT` control without needing a fresh application."
+       ],
+       "blockers_and_followups": [
+-        "**Checkpoint Export:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-meta.json`.",
+-        "**Evidence:** Week 4 summary screenshot captured at `tmp/phase11-evidence/persona-a-week4-summary.png`.",
+-        "**Next Slice:** Resume Week 5 from `₡496 / Debt ₡0 / Hunger 30% / Sanity 20` with `Sore Legs (123h)` and verify whether the run can recover the third labor shift or whether Safe Grinder is now locked into a costlier two-shift stabilization pattern."
++        "**Checkpoint Export:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-meta.json`.",
++        "**Evidence:** Session reset screenshot at `tmp/phase11-evidence/persona-a-week5-session-reset.png` and Week 5 summary screenshot at `tmp/phase11-evidence/persona-a-week5-summary.png`.",
++        "**Next Slice:** Resume from the authoritative Week 5 summary/checkpoint at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`, then verify whether throughput changes once the travel penalty is closer to expiring or whether the route remains capped at two labor shifts."
+       ]
+     }
+   },
+   "active_findings": [
+-    "Week 4 shows the Week 3 collapse is recoverable, but not for free. Safe Grinder did not need an extra rest branch, yet the route only stabilized after spending `₡40` on food before labor.",
+-    "The baseline has shifted from deterministic `Work Shift x3` to a more expensive two-shift recovery line whenever low sanity and hunger are already compounding. Safe Grinder stayed solvent, but the margin now depends on discretionary food spend rather than pure labor throughput.",
+-    "The live summary-integrity issue is still open after the external handoff fix. The visible Week 4 sanity lines show `Real-Meat Burger +10`, `Ambient Stress -10`, and `Cycle Recovery +5`, which sum to `+5` and match the checkpointed `15 -> 20` end state, while `pendingTurnSummary.totals.sanityChange` still reports `-7`.",
+-    "`Transit Strike` now carries forward as `Sore Legs` in the exported checkpoint (`123h` remaining), so Week 5 starts healthier than Week 4 did but still under an explicit travel-time tax."
++    "Week 5 confirms Safe Grinder is still locked into a food-assisted two-shift route while `Sore Legs` remains active. The run stabilized, but only after paying `₡40` up front and accepting that the travel-taxed week could not support a third `Sanitation-T3` shift.",
++    "The summary-to-playable handoff is harsher than the Week 4 checkpoint alone implies. Although the authoritative Week 4 close was `₡496 / Hunger 30% / Sanity 20`, the actual manual Week 5 start after the AI handoff reopened at `₡416 / Hunger 50% / Sanity 15`.",
++    "Unlike Weeks 2-4, the Week 5 summary reconciled cleanly. The visible lines showed `Real-Meat Burger +10`, `Ambient Stress -10`, and `Cycle Recovery +5`, the modal total reported `SANITY +5`, and the exported checkpoint matched the `15 -> 20` close.",
++    "`Sanitation-T3` remained effectively reusable even though the save probe still reported `currentJob: null` before entering the Labor Sector. The live dashboard showed `HIRED` plus a working `WORK SHIFT` control without needing a fresh application."
+   ],
+   "action_constraints": [
+     "Advance exactly one completed in-game week unless a blocker or unusually high-signal audit event stops the slice earlier.",
+diff --git a/docs/workflows/cyberpunk-overhaul/run-state.json b/docs/workflows/cyberpunk-overhaul/run-state.json
+index 60e349f..0ee86c1 100644
+--- a/docs/workflows/cyberpunk-overhaul/run-state.json
++++ b/docs/workflows/cyberpunk-overhaul/run-state.json
+@@ -20,12 +20,12 @@
+   },
+   "checkpointing": {
+     "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+-    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json",
+-    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-meta.json",
++    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json",
++    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json",
+     "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+-    "last_exported_at": "2026-03-21T19:33:41.154Z",
+-    "last_restored_at": "2026-03-21T19:29:24.411Z",
+-    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-04-save.json"
++    "last_exported_at": "2026-03-21T20:18:41.069Z",
++    "last_restored_at": "2026-03-21T20:09:17.994Z",
++    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json"
+   },
+   "slice_policy": {
+     "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+@@ -38,11 +38,11 @@
+     "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+     "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+   },
+-  "next_slice": "Resume Persona A from the authoritative Week 5 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 5 summary anchor `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`, account for the AI handoff before manual control returns, and verify whether the shorter remaining travel tax finally reopens a third labor shift or whether Safe Grinder is still locked into the burger-assisted two-shift route. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md` before exporting the Week 6 checkpoint.",
++  "next_slice": "Resume Persona A from the authoritative Week 6 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 6 summary anchor `₡616 / Debt ₡0 / Hunger 20% / Sanity 15 / Sore Legs 6h`, confirm whether the AI handoff remains stable, and verify whether the restored `Work Shift x3` route holds once `Sore Legs` is almost gone. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md` before exporting the Week 7 checkpoint.",
+   "last_run": {
+     "at": "2026-03-21",
+-    "outcome": "phase11_persona_a_week_05_complete",
+-    "summary": "Persona A restored the Week 4 checkpoint after browser continuity failed, advanced through the AI handoff, and regained manual control at a harsher Week 5 baseline of `₡416 / Debt ₡0 / Hunger 50% / Sanity 15 / Sore Legs 99h`. Safe Grinder again spent `₡40` on `Real-Meat Burger`, completed `Sanitation-T3` plus `Work Shift x2`, and closed authoritative Week 5 at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20` with a fresh Week 5 checkpoint. The travel-taxed route is still capped at two labor shifts, but the Week 5 summary finally reconciled its sanity lines, modal total, and checkpointed end state at `+5`."
++    "outcome": "phase11_persona_a_week_06_complete",
++    "summary": "Persona A resumed directly from the authoritative Week 5 summary state at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`, kept the same baseline after the AI handoff, and hit `BROKEN AUTO-CHEF` on entry to Labor Sector. Safe Grinder paid `₡20` for the safe protein-bar branch, restored the full `Sanitation-T3` plus `Work Shift x3` line, and closed authoritative Week 6 at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15` with a fresh Week 6 checkpoint. The earlier two-shift cap was duration-bound rather than permanent, and the Week 6 summary again reconciled correctly at `-5` sanity."
+   },
+   "runner": {
+     "sleep_seconds": 5,
+diff --git a/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json
+new file mode 100644
+index 0000000..f1e10bf
+--- /dev/null
++++ b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json
+@@ -0,0 +1,46 @@
++{
++  "exported_at": "2026-03-21T20:18:41.069Z",
++  "session_name": "phase11-safe-grinder",
++  "app_url": "http://127.0.0.1:5173/jones-vibes/",
++  "checkpoint_root": "docs/workflows/cyberpunk-overhaul/checkpoints",
++  "checkpoint_label": "week-06",
++  "summary": {
++    "turn": 7,
++    "currentPlayerIndex": 0,
++    "gameOver": false,
++    "activeScreenId": "city",
++    "activeLocationDashboard": null,
++    "hasPendingTurnSummary": true,
++    "isAIThinking": false,
++    "playerCount": 2,
++    "currentPlayer": {
++      "id": 1,
++      "name": "Player 1",
++      "credits": 616,
++      "savings": 0,
++      "debt": 0,
++      "loan": 0,
++      "hunger": 20,
++      "sanity": 15,
++      "educationLevel": 0,
++      "careerLevel": 1,
++      "time": 24,
++      "location": "Hab-Pod 404",
++      "activeConditions": [
++        {
++          "id": "SORE_LEGS",
++          "name": "Sore Legs",
++          "description": "Walking is painful. Travel time increased by 50%.",
++          "remainingDuration": 6,
++          "effects": [
++            {
++              "type": "TRAVEL_TIME_MODIFIER",
++              "value": 1.5
++            }
++          ],
++          "icon": "ð¦µ"
++        }
++      ]
++    }
++  }
++}
+diff --git a/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json
+new file mode 100644
+index 0000000..8352af2
+--- /dev/null
++++ b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json
+@@ -0,0 +1,1473 @@
++{
++  "players": [
++    {
++      "id": 1,
++      "credits": 616,
++      "savings": 0,
++      "sanity": 15,
++      "educationLevel": 0,
++      "educationCredits": 0,
++      "educationCreditsGoal": 0,
++      "careerLevel": 1,
++      "time": 24,
++      "location": "Hab-Pod 404",
++      "hasCar": false,
++      "loan": 0,
++      "inventory": [],
++      "hunger": 20,
++      "timeDeficit": 0,
++      "weeklyIncome": 0,
++      "weeklyExpenses": 0,
++      "weeklySanityChange": 0,
++      "weeklyTurnEvents": [],
++      "isAI": false,
++      "name": "Player 1",
++      "wageMultiplier": 1,
++      "activeConditions": [
++        {
++          "id": "SORE_LEGS",
++          "name": "Sore Legs",
++          "description": "Walking is painful. Travel time increased by 50%.",
++          "remainingDuration": 6,
++          "effects": [
++            {
++              "type": "TRAVEL_TIME_MODIFIER",
++              "value": 1.5
++            }
++          ],
++          "icon": "ð¦µ"
++        }
++      ],
++      "burnRate": 80,
++      "debt": 0,
++      "hustleHeat": {}
++    },
++    {
++      "id": 2,
++      "credits": 0,
++      "savings": 0,
++      "sanity": 40,
++      "educationLevel": 0,
++      "educationCredits": 0,
++      "educationCreditsGoal": 0,
++      "careerLevel": 1,
++      "time": 0,
++      "location": "Hab-Pod 404",
++      "hasCar": false,
++      "loan": 0,
++      "inventory": [
++        {
++          "name": "Thermal-Regulator",
++          "cost": 400,
++          "sanityBoost": 10,
++          "type": "asset",
++          "icon": "fridge",
++          "benefit": "Bio-Deficit Rate -50%",
++          "location": "Consumpt-Zone",
++          "maintenanceCost": 25
++        },
++        {
++          "name": "Filtered-Respirator",
++          "cost": 150,
++          "sanityBoost": 0,
++          "type": "asset",
++          "icon": "masks",
++          "benefit": "Scrap Metal Risk -50%",
++          "location": "Consumpt-Zone",
++          "maintenanceCost": 10
++        }
++      ],
++      "hunger": 30,
++      "timeDeficit": 0,
++      "weeklyIncome": 0,
++      "weeklyExpenses": 86,
++      "weeklySanityChange": 33,
++      "weeklyTurnEvents": [],
++      "isAI": true,
++      "name": "AI Opponent",
++      "wageMultiplier": 1,
++      "activeConditions": [
++        {
++          "id": "SUBSCRIPTION_DEFAULT",
++          "name": "Subscription Default",
++          "description": "Unpaid bills. Retinal warnings and limited service access. Sanity drain and reduced wages.",
++          "remainingDuration": 144,
++          "effects": [
++            {
++              "type": "SANITY_TICK",
++              "value": -0.5
++            },
++            {
++              "type": "WAGE_MULTIPLIER",
++              "value": 0.8
++            }
++          ],
++          "icon": "🚫"
++        },
++        {
++          "id": "TRAUMA_REBOOT",
++          "name": "Trauma Reboot",
++          "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
++          "remainingDuration": 312,
++          "effects": [
++            {
++              "type": "MAX_ENERGY",
++              "value": 0.8
++            }
++          ],
++          "icon": "🧠"
++        }
++      ],
++      "burnRate": 80,
++      "debt": 436,
++      "hustleHeat": {}
++    }
++  ],
++  "currentPlayerIndex": 0,
++  "turn": 7,
++  "gameOver": false,
++  "winnerId": null,
++  "log": [
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "10:14:07 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "10:14:07 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "10:14:07 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of ₡80.",
++      "category": "expense",
++      "timestamp": "10:14:07 PM"
++    },
++    {
++      "text": "Cycle time exhausted. Turn finalization initiated.",
++      "category": "warning",
++      "timestamp": "10:14:07 PM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "10:14:06 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
++      "category": "success",
++      "timestamp": "10:13:26 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
++      "category": "success",
++      "timestamp": "10:13:13 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
++      "category": "success",
++      "timestamp": "10:12:56 PM"
++    },
++    {
++      "text": "Event: Broken Auto-Chef - choice recorded.",
++      "category": "info",
++      "timestamp": "10:12:29 PM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "10:12:09 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "🚑 Forced Reboot complete. Medical fee: ₡86. Remaining cycle time forfeited.",
++      "category": "warning",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "⚠️ BURNOUT DETECTED: AI Opponent's Sanity has collapsed. Emergency Trauma Team dispatched.",
++      "category": "error",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
++      "category": "danger",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent charged ₡40 in subscription-debt interest.",
++      "category": "warning",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent paid weekly Burn Rate of ₡115.",
++      "category": "expense",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent sequence failure.",
++      "category": "warning",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent already owns Filtered-Respirator.",
++      "category": "warning",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Filtered-Respirator\"}",
++      "category": "info",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:48 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "10:10:47 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Consumpt-Zone.",
++      "category": "info",
++      "timestamp": "10:10:47 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Consumpt-Zone\"}",
++      "category": "info",
++      "timestamp": "10:10:47 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:47 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "10:10:46 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "10:10:46 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "10:10:46 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:46 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "10:10:45 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "10:10:45 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "10:10:45 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:45 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "10:10:44 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "10:10:44 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "10:10:44 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:44 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "10:10:43 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "10:10:43 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "10:10:43 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "10:10:43 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:33:23 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "9:33:23 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "9:33:23 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of ₡80.",
++      "category": "expense",
++      "timestamp": "9:33:23 PM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:33:13 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
++      "category": "success",
++      "timestamp": "9:32:58 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡84.",
++      "category": "success",
++      "timestamp": "9:32:50 PM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "9:32:39 PM"
++    },
++    {
++      "text": "Player 1 bought Real-Meat Burger! Sanity increased by 10.",
++      "category": "success",
++      "timestamp": "9:32:29 PM"
++    },
++    {
++      "text": "Player 1 relocated to Sustenance Hub.",
++      "category": "info",
++      "timestamp": "9:32:02 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
++      "category": "danger",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent charged ₡36 in subscription-debt interest.",
++      "category": "warning",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent failed to cover full Burn Rate. Paid ₡0, ₡115 added to debt.",
++      "category": "warning",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent bypasses cycle action.",
++      "category": "info",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:31:02 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Consumpt-Zone.",
++      "category": "info",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "🚑 Forced Reboot complete. Medical fee: ₡247. Remaining cycle time forfeited.",
++      "category": "warning",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "⚠️ BURNOUT DETECTED: AI Opponent's Sanity has collapsed. Emergency Trauma Team dispatched.",
++      "category": "error",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Consumpt-Zone\"}",
++      "category": "info",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:31:01 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:31:00 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:31:00 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:31:00 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:31:00 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:30:59 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:30:59 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:30:59 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:30:59 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:30:58 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:30:58 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:30:58 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:30:58 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:30:57 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "9:30:57 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "9:30:57 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:30:57 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:30:44 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "9:30:44 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "9:30:44 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of ₡80.",
++      "category": "expense",
++      "timestamp": "9:30:44 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
++      "category": "danger",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent charged ₡22 in subscription-debt interest.",
++      "category": "warning",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent paid weekly Burn Rate of ₡115.",
++      "category": "expense",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:50 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:49 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:29:49 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:29:49 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:49 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:48 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "9:29:48 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "9:29:48 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:48 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:47 PM"
++    },
++    {
++      "text": "AI Opponent bought Real-Meat Burger! Sanity increased by 10.",
++      "category": "success",
++      "timestamp": "9:29:47 PM"
++    },
++    {
++      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Real-Meat Burger\"}",
++      "category": "info",
++      "timestamp": "9:29:47 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:47 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:46 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Sustenance Hub.",
++      "category": "info",
++      "timestamp": "9:29:46 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Sustenance Hub\"}",
++      "category": "info",
++      "timestamp": "9:29:46 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:46 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:45 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ₡67.",
++      "category": "success",
++      "timestamp": "9:29:45 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "9:29:45 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:45 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "9:29:44 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "9:29:44 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "9:29:44 PM"
++    },
++    {
++      "text": "🤔 AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "9:29:44 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:00:25 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "9:00:25 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "9:00:25 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of â¡80.",
++      "category": "expense",
++      "timestamp": "9:00:25 PM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "9:00:12 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:59:59 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:59:34 PM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "8:59:27 PM"
++    },
++    {
++      "text": "Player 1 bought Real-Meat Burger! Sanity increased by 10.",
++      "category": "success",
++      "timestamp": "8:59:19 PM"
++    },
++    {
++      "text": "Player 1 relocated to Sustenance Hub.",
++      "category": "info",
++      "timestamp": "8:58:32 PM"
++    },
++    {
++      "text": "Event: Transit Strike - choice recorded.",
++      "category": "info",
++      "timestamp": "8:57:56 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
++      "category": "danger",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent charged â¡20 in subscription-debt interest.",
++      "category": "warning",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent failed to cover full Burn Rate. Paid â¡1, â¡114 added to debt.",
++      "category": "warning",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent bypasses cycle action.",
++      "category": "info",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:44 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:43 PM"
++    },
++    {
++      "text": "AI Opponent bought Uniform-Patch! Sanity increased by 20.",
++      "category": "success",
++      "timestamp": "8:57:43 PM"
++    },
++    {
++      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Uniform-Patch\"}",
++      "category": "info",
++      "timestamp": "8:57:43 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:43 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:42 PM"
++    },
++    {
++      "text": "AI Opponent bought Filtered-Respirator! Sanity increased by 0.",
++      "category": "success",
++      "timestamp": "8:57:42 PM"
++    },
++    {
++      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Filtered-Respirator\"}",
++      "category": "info",
++      "timestamp": "8:57:42 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:42 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:41 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Consumpt-Zone.",
++      "category": "info",
++      "timestamp": "8:57:41 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Consumpt-Zone\"}",
++      "category": "info",
++      "timestamp": "8:57:41 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:41 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:40 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡67.",
++      "category": "success",
++      "timestamp": "8:57:40 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:57:40 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:40 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:39 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡67.",
++      "category": "success",
++      "timestamp": "8:57:39 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:57:39 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:39 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:38 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡67.",
++      "category": "success",
++      "timestamp": "8:57:38 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:57:38 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:38 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:57:37 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "8:57:37 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "8:57:37 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:57:37 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "8:23:00 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "8:23:00 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "8:23:00 PM"
++    },
++    {
++      "text": "Player 1: Cognitive Decline active.",
++      "category": "danger",
++      "timestamp": "8:23:00 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of â¡80.",
++      "category": "expense",
++      "timestamp": "8:23:00 PM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "8:22:49 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:22:32 PM"
++    },
++    {
++      "text": "Event: Crushing Burnout - choice recorded.",
++      "category": "info",
++      "timestamp": "8:21:56 PM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "8:21:34 PM"
++    },
++    {
++      "text": "Event: Panic Attack on the Mag-Lev - choice recorded.",
++      "category": "info",
++      "timestamp": "8:21:03 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent is in SUBSCRIPTION DEFAULT. Services limited.",
++      "category": "danger",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent charged â¡8 in subscription-debt interest.",
++      "category": "warning",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent failed to cover full Burn Rate. Paid â¡24, â¡81 added to debt.",
++      "category": "warning",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent bypasses cycle action.",
++      "category": "info",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:35 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:34 PM"
++    },
++    {
++      "text": "AI Opponent bought Thermal-Regulator! Sanity increased by 10.",
++      "category": "success",
++      "timestamp": "8:20:34 PM"
++    },
++    {
++      "text": "AI Protocol: buyItem | Params: {\"itemName\":\"Thermal-Regulator\"}",
++      "category": "info",
++      "timestamp": "8:20:34 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:34 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:33 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Consumpt-Zone.",
++      "category": "info",
++      "timestamp": "8:20:33 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Consumpt-Zone\"}",
++      "category": "info",
++      "timestamp": "8:20:33 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:33 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:32 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:20:32 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:20:32 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:32 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:31 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:20:31 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:20:31 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:31 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:30 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: â¡84.",
++      "category": "success",
++      "timestamp": "8:20:30 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "8:20:30 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:30 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "8:20:29 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "8:20:29 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "8:20:29 PM"
++    },
++    {
++      "text": "ð¤ AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "8:20:29 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "7:35:31 PM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "7:35:31 PM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "7:35:31 PM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of Ã¢ÂÂ¡80.",
++      "category": "expense",
++      "timestamp": "7:35:31 PM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "7:35:12 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:34:45 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:34:43 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:34:27 PM"
++    },
++    {
++      "text": "Event: Shady Fixer Courier Job - choice recorded.",
++      "category": "info",
++      "timestamp": "7:34:01 PM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "7:33:37 PM"
++    },
++    {
++      "text": "Event: Network Stimulus Drop - choice recorded.",
++      "category": "info",
++      "timestamp": "7:32:44 PM"
++    },
++    {
++      "text": "AI Opponent returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "AI Opponent recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "AI Opponent experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "AI Opponent paid weekly Burn Rate of Ã¢ÂÂ¡80.",
++      "category": "expense",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "AI Opponent bypasses cycle action.",
++      "category": "info",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:09 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "7:32:08 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:32:08 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "7:32:08 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:08 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "7:32:07 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:32:07 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "7:32:07 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:07 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "7:32:06 PM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: Ã¢ÂÂ¡84.",
++      "category": "success",
++      "timestamp": "7:32:06 PM"
++    },
++    {
++      "text": "AI Protocol: workShift",
++      "category": "info",
++      "timestamp": "7:32:06 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:06 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "7:32:05 PM"
++    },
++    {
++      "text": "Ã¢ÂÂ Position Secured: Sanitation-T3. Productivity tier updated.",
++      "category": "success",
++      "timestamp": "7:32:05 PM"
++    },
++    {
++      "text": "AI Protocol: applyForJob | Params: {\"jobLevel\":1}",
++      "category": "info",
++      "timestamp": "7:32:05 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:05 PM"
++    },
++    {
++      "text": "AI Opponent optimizing next sequence...",
++      "category": "info",
++      "timestamp": "7:32:04 PM"
++    },
++    {
++      "text": "AI Opponent relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "7:32:04 PM"
++    },
++    {
++      "text": "AI Protocol: travel | Params: {\"destination\":\"Labor Sector\"}",
++      "category": "info",
++      "timestamp": "7:32:04 PM"
++    },
++    {
++      "text": "Ã°ÂÂ¤Â AI Opponent is calculating optimal protocols...",
++      "category": "info",
++      "timestamp": "7:32:04 PM"
++    },
++    {
++      "text": "Player 1 returned to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "7:38:49 AM"
++    },
++    {
++      "text": "Player 1 recovered 5 Sanity during cycle recovery.",
++      "category": "success",
++      "timestamp": "7:38:49 AM"
++    },
++    {
++      "text": "Player 1 experienced 10 Sanity loss from ambient stress.",
++      "category": "warning",
++      "timestamp": "7:38:49 AM"
++    },
++    {
++      "text": "Player 1 paid weekly Burn Rate of ÃÂ¢ÃÂÃÂ¡80.",
++      "category": "expense",
++      "timestamp": "7:38:49 AM"
++    },
++    {
++      "text": "Player 1 relocated to Hab-Pod 404.",
++      "category": "info",
++      "timestamp": "7:38:39 AM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ÃÂ¢ÃÂÃÂ¡84.",
++      "category": "success",
++      "timestamp": "7:38:13 AM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ÃÂ¢ÃÂÃÂ¡84.",
++      "category": "success",
++      "timestamp": "7:38:07 AM"
++    },
++    {
++      "text": "Shift Completed: Sanitation-T3. Yield: ÃÂ¢ÃÂÃÂ¡84.",
++      "category": "success",
++      "timestamp": "7:37:55 AM"
++    },
++    {
++      "text": "ÃÂ¢ÃÂÃÂ Position Secured: Sanitation-T3. Productivity tier updated.",
++      "category": "success",
++      "timestamp": "7:37:23 AM"
++    },
++    {
++      "text": "Player 1 relocated to Labor Sector.",
++      "category": "info",
++      "timestamp": "7:37:17 AM"
++    }
++  ],
++  "isPlayer2AI": true,
++  "pendingTurnSummary": {
++    "player": 1,
++    "playerName": "Player 1",
++    "week": 7,
++    "events": [
++      {
++        "type": "income",
++        "label": "Yield: Cycles",
++        "value": 252,
++        "unit": "₡",
++        "icon": "payments"
++      },
++      {
++        "type": "expense",
++        "label": "Outflow: Logistics",
++        "value": -20,
++        "unit": "₡",
++        "icon": "shopping_cart"
++      },
++      {
++        "type": "expense",
++        "label": "Burn Rate",
++        "value": -80,
++        "unit": "₡",
++        "icon": "home"
++      },
++      {
++        "type": "warning",
++        "label": "Ambient Stress",
++        "value": -10,
++        "unit": "Sanity",
++        "icon": "psychology"
++      },
++      {
++        "type": "success",
++        "label": "Cycle Recovery",
++        "value": 5,
++        "unit": "Sanity",
++        "icon": "bedtime"
++      }
++    ],
++    "totals": {
++      "creditsChange": 152,
++      "sanityChange": -5
++    }
++  },
++  "activeScreenId": "city",
++  "activeLocationDashboard": null,
++  "activeChoiceContext": null,
++  "activeEvent": null,
++  "activeGraduation": null,
++  "isAIThinking": false,
++  "eventHistory": [
++    "global_stimulus_windfall",
++    "local_shady_courier",
++    "global_maglev_panic",
++    "state_low_sanity_burnout",
++    "global_transit_strike",
++    "local_fastfood_glitch"
++  ]
++}
+diff --git a/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md
+new file mode 100644
+index 0000000..2610981
+--- /dev/null
++++ b/home/silwerdivan/code/jones-vibes/docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-06.md
+@@ -0,0 +1,47 @@
++# Phase 11 Slice Log
++
++## Metadata
++- **Persona:** Persona A: The Safe Grinder
++- **Slice Date:** 2026-03-21
++- **Week Covered:** Week 6
++- **Canonical Status:** authoritative
++- **Source Session:** `phase11-safe-grinder`
++
++## Start State
++- **Checkpoint:** Continued directly from the authoritative Week 5 summary/checkpoint state already loaded in `phase11-safe-grinder`; no checkpoint import was needed before play.
++- **Summary Anchor:** `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`
++- **Playable Start After Handoff:** Clicking `START NEXT WEEK` returned Persona A to manual control at the same practical baseline, without the Week 5-style degradation: `₡464 / Hunger 20% / Sanity 20 / Sore Legs 54h`.
++- **Education:** `0`
++- **Conditions:** `Sore Legs (54h remaining)` at manual start
++
++## Decisions & Path
++1. Advanced the Week 5 summary, verified the live Week 6 start matched the checkpoint anchor, and confirmed the lighter `Sore Legs` tax reduced city travel to `3CH` per move.
++2. Traveled to `Labor Sector`, where entering the dashboard immediately triggered `BROKEN AUTO-CHEF`; Safe Grinder chose the safe `₡20` protein-bar branch instead of gambling on the free calories.
++3. Verified the safe event branch reset hunger to `0%`, then kept the existing `Sanitation-T3` position and completed `Work Shift x3`.
++4. Closed the Labor Sector dashboard, returned to `Hab-Pod 404` on the last `3CH`, and let the trip home auto-finalize the week into the authoritative summary modal.
++
++## Telemetry
++- **Forced Transition:** Week-start summary handoff returned directly to Persona A without additional AI-side degradation
++- **Opening Event:** `BROKEN AUTO-CHEF`
++- **Event Spend:** `₡20` on the safe sealed protein bar branch
++- **Gross Labor Yield:** `₡252`
++- **Burn Rate:** `₡80`
++- **End Cash:** `₡616`
++- **End Debt:** `₡0`
++- **End Hunger:** `20%`
++- **End Sanity:** `15`
++- **Education:** `0`
++- **Time Efficiency:** With `Sore Legs` down to `54h`, each city trip cost `3CH`, which finally reopened the full `Hab-Pod 404 -> Labor Sector -> Work Shift x3 -> Hab-Pod 404` line exactly on the clock.
++- **Net Credits:** `+₡152`
++- **Observed Sanity Delta:** `-5`
++- **Reported Summary Sanity Delta:** `-5`
++
++## High-Signal Findings
++- Week 6 is the first restarted slice where the shorter remaining `Sore Legs` timer reopens the old three-shift labor baseline. The bottleneck was not permanent; it was tied to how many taxed travel hours remained.
++- `BROKEN AUTO-CHEF` slots neatly into the Safe Grinder economy. The safe `₡20` branch is strictly cheaper than the Week 4-5 `Real-Meat Burger` detour and restores enough hunger headroom to preserve full throughput.
++- The summary continues the Week 5 reconciliation improvement. `pendingTurnSummary.events` lists `Ambient Stress -10` plus `Cycle Recovery +5`, `pendingTurnSummary.totals.sanityChange` reports `-5`, and the live end state lands at `15` sanity from a `20` start.
++
++## Blockers / Follow-Ups
++- **Checkpoint Export:** `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json`.
++- **Evidence:** Week 6 summary screenshot at `tmp/phase11-evidence/persona-a-week06-summary.png`.
++- **Next Slice:** Resume from the authoritative Week 6 summary/checkpoint at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15 / Sore Legs 6h`, then verify whether the almost-expired condition preserves the restored three-shift route into Week 7 without needing an event-assisted food detour.

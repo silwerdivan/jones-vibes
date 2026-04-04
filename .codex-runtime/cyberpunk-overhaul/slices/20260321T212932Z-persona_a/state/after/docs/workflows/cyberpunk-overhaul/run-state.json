@@ -1,0 +1,56 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-07-meta.json",
+    "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+    "last_exported_at": "2026-03-21T21:32:57.934Z",
+    "last_restored_at": "2026-03-21T20:09:17.994Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json"
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+      "docs/workflows/cyberpunk-overhaul/external-fixes.md"
+    ],
+    "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+    "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+  },
+  "next_slice": "Resume Persona A from the authoritative Week 7 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 7 summary anchor `₡286 / Debt ₡0 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`, confirm whether the AI handoff remains stable, and verify whether any deterministic labor route survives while `TRAUMA_REBOOT` is active. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md` before exporting the Week 8 checkpoint.",
+  "last_run": {
+    "at": "2026-03-21",
+    "outcome": "phase11_persona_a_week_07_complete",
+    "summary": "Persona A resumed directly from the authoritative Week 6 summary state at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15 / Sore Legs 6h`, kept stable manual control after the AI handoff, then immediately hit the forced `PANIC ATTACK ON THE MAG-LEV` opener. The only available branch triggered burnout, charged an emergency `₡250` medical fee, forfeited the full cycle, and closed authoritative Week 7 at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35` with `TRAUMA_REBOOT (312h)`. The Week 7 checkpoint had to be rewritten directly from the live session because the helper export path still read a stale shadow save."
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

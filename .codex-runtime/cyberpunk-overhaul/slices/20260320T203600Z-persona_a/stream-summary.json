@@ -1,0 +1,59 @@
+{
+  "slice_id": "20260320T203600Z-persona_a",
+  "persona": "The Safe Grinder",
+  "started_at": "2026-03-20T20:36:00.661Z",
+  "ended_at": "2026-03-20T20:42:25.236Z",
+  "wall_time_ms": 384575,
+  "usage": {
+    "input_tokens": 2109461,
+    "cached_input_tokens": 1996416,
+    "output_tokens": 13472
+  },
+  "counts": {
+    "commands_total": 57,
+    "commands_failed": 0,
+    "agent_browser_commands": 45,
+    "startup_reads": 9,
+    "git_diff_commands": 1,
+    "checkpoints": 27,
+    "retries": 0,
+    "fallbacks": 0
+  },
+  "debug": {
+    "escalated": false,
+    "reasons": [],
+    "retry_threshold": 2
+  },
+  "timings": {
+    "slowest_commands": [
+      {
+        "command": "/bin/bash -lc 'agent-browser --args \"--no-sandbox\" wait 4000'",
+        "duration_ms": 4008,
+        "exit_code": 0
+      },
+      {
+        "command": "/bin/bash -lc 'agent-browser --args \"--no-sandbox\" wait 3000'",
+        "duration_ms": 3005,
+        "exit_code": 0
+      },
+      {
+        "command": "/bin/bash -lc 'npm run workflow:phase11:checkpoint:status'",
+        "duration_ms": 2180,
+        "exit_code": 0
+      },
+      {
+        "command": "/bin/bash -lc 'npm run workflow:phase11:checkpoint:status'",
+        "duration_ms": 827,
+        "exit_code": 0
+      },
+      {
+        "command": "/bin/bash -lc 'npm run workflow:phase11:checkpoint:export -- --label week-02'",
+        "duration_ms": 540,
+        "exit_code": 0
+      }
+    ]
+  },
+  "failure_candidates": [],
+  "fallback_messages": [],
+  "retry_messages": []
+}

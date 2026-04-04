@@ -1,0 +1,188 @@
+{
+  "generated_at": "2026-03-23T07:59:20.119Z",
+  "runner_context_version": 3,
+  "startup_policy": {
+    "canonical_sources": [
+      "docs/workflows/cyberpunk-overhaul/run-state.json",
+      "/home/silwerdivan/code/jones-vibes/.codex-runtime/cyberpunk-overhaul/slices/20260323T075919Z-persona_a/startup-context.json"
+    ],
+    "read_more_only_when": [
+      "startup context is stale or ambiguous",
+      "a UI path fails",
+      "gameplay evidence contradicts the checkpoint handoff"
+    ],
+    "action_verification_policy": [
+      "Do not trust click success by itself for gameplay actions.",
+      "Capture the minimum relevant before/after state for the action you are taking.",
+      "Treat missing intended state mutation as an action failure and use the recipe fallback before continuing."
+    ]
+  },
+  "paths": {
+    "run_state": "docs/workflows/cyberpunk-overhaul/run-state.json",
+    "current_phase": "docs/workflows/cyberpunk-overhaul/current-phase.md",
+    "phase_progress": "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+    "external_handoff": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "structured_phase_brief": "docs/workflows/cyberpunk-overhaul/phase-11-brief.json",
+    "structured_browser_recipes": "docs/workflows/cyberpunk-overhaul/agent-browser-recipes.json",
+    "continuity": "/home/silwerdivan/code/jones-vibes/.codex-runtime/cyberpunk-overhaul/slices/20260323T075919Z-persona_a/continuity.json"
+  },
+  "persona": {
+    "name": "The Safe Grinder",
+    "id": "persona_a",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "slice_dir": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a",
+    "latest_slice_file": "docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md",
+    "session_name": "phase11-safe-grinder"
+  },
+  "app": {
+    "url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpoint": {
+    "directory": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a",
+    "latest_save_file": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json",
+    "last_authoritative_checkpoint": {
+      "at": "2026-03-22",
+      "outcome": "phase11_persona_a_week_08_complete",
+      "week": 8
+    },
+    "continuity": {
+      "ok": true,
+      "outcome": "live_continuity",
+      "restored": false,
+      "latest_checkpoint_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json"
+    }
+  },
+  "authoritative_state": {
+    "next_action": "Resume Persona A from the authoritative Week 8 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 8 summary anchor `₡458 / Debt ₡0 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`, and verify whether the restored `Sanitation-T3` plus `Work Shift x3` route still survives from the harsher hunger floor. Treat GitHub issues #7, #8, and #9 as fixed baseline behavior unless a fresh Week 9 run again shows a one-choice week opener after requirement filtering, `workflow:phase11:checkpoint:status` / `workflow:phase11:checkpoint:export` stop reporting `browser_state_source: live_session` while the live browser page is already authoritative, or visible onboarding is still misclassified as `live_continuity` instead of forcing checkpoint recovery.",
+    "latest_week": 8,
+    "latest_end_state": {
+      "cash": "₡458",
+      "debt": "₡0",
+      "hunger": "60%",
+      "sanity": "25",
+      "net_credits": "+₡172",
+      "net_sanity": ""
+    },
+    "active_findings": [
+      "`TRAUMA_REBOOT` does not remove the deterministic low-risk labor route by itself. Safe Grinder still recovers the full `Work Shift x3` line immediately in Week 8 once the week opens without the old f…",
+      "The live build did not reproduce GitHub issue `#7` during this slice. Advancing from the Week 7 summary led to direct Persona A control instead of another one-choice global opener.",
+      "The Week 8 closing summary reconciles cleanly again. The visible sanity rows total `-10`, `pendingTurnSummary.totals.sanityChange` also reports `-10`, and the live end state lands at `25` sanity."
+    ],
+    "followups": [
+      "**Checkpoint Recovery:** Startup continuity verification was a false positive for this slice. Preserve the Week 7 checkpoint as the recovery anchor until the runner/browser continuity layer stops reo…",
+      "**Checkpoint Export:** Authoritative Week 8 state exported to `docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json` with metadata at `docs/workflows/cyberpunk-overhaul/checkpoin…",
+      "**Evidence:** Week 8 screenshots at `tmp/phase11-evidence/persona-a-week08-start.png`, `tmp/phase11-evidence/persona-a-week08-poststart.png`, and `tmp/phase11-evidence/persona-a-week08-summary.png`."
+    ]
+  },
+  "trusted_ui_workarounds": [
+    "Use stable action-card selectors first for jobs and shopping; verify state changed before assuming success.",
+    "If onboarding or a reset appears unexpectedly, capture a screenshot and run a short body-text probe before clicking through.",
+    "If live continuity is missing but a checkpoint file exists, restore it before replaying from onboarding.",
+    "For travel, apply, shopping, and work-shift clicks, compare the relevant before/after state instead of trusting the click response alone."
+  ],
+  "browser_recipes": {
+    "global_rules": [
+      "Prefer targeted eval probes that return compact JSON over document-wide text dumps.",
+      "Prefer stable data-testid selectors first; verify the resulting game state after any job application or purchase.",
+      "Do not trust a successful click response by itself; confirm the intended before/after gameplay mutation for travel, apply, shopping, and work-shift actions."
+    ],
+    "compact_recipes": {
+      "session_recovery": {
+        "goal": "Recover authoritative play when the named browser session opens on onboarding or has no save state.",
+        "selectors": [],
+        "actions": [],
+        "verify": [],
+        "fallbacks": [],
+        "probe": []
+      },
+      "travel_city": {
+        "goal": "Move between city locations.",
+        "selectors": [
+          "[data-testid=\"city-travel-card-labor-sector\"]",
+          "[data-testid=\"city-travel-card-sustenance-hub\"]"
+        ],
+        "actions": [
+          "Click the named city button by its `data-testid` first; city travel cards are now semantic `<button>` controls rather than custom clickable divs.",
+          "Use the location-specific `city-travel-card-*` selector instead of broad text scans or full DOM dumps whenever the destination is known.",
+          "Only fall back to targeted DOM evaluation if the expected `city-travel-card-*` control is absent or the post-click state verification fails."
+        ],
+        "verify": [
+          "Check the active location label or dashboard title.",
+          "Check player time after travel when the destination should cost time.",
+          "Treat a successful click response without location or time change as a failed travel attempt."
+        ],
+        "fallbacks": [],
+        "probe": []
+      },
+      "apply_job": {
+        "goal": "Secure a labor shift job such as Sanitation-T3.",
+        "selectors": [
+          "[data-testid=\"action-card-btn-jobs-level-1-sanitation-t3\"]",
+          "[data-testid=\"action-card-jobs-level-1-sanitation-t3\"]"
+        ],
+        "actions": [
+          "Call `agent-browser scrollintoview` on the targeted job button before any direct click so the pointer action lands on an in-viewport control.",
+          "Click the button selector first once it is in view; only fall back to the card selector if the button is absent.",
+          "Immediately verify CURRENT SHIFT or persisted `careerLevel` before continuing the slice."
+        ],
+        "verify": [
+          "Check CURRENT SHIFT or the persisted game state for the selected job id.",
+          "Treat a successful click response without state mutation as a failed apply attempt."
+        ],
+        "fallbacks": [
+          "Re-query the specific job card and button only, not the whole DOM.",
+          "If the first direct click reports success without state change, re-run `scrollintoview`, click once more, and verify `careerLevel` or CURRENT SHIFT again before escalating to targeted DOM evaluation."
+        ],
+        "probe": []
+      },
+      "buy_food": {
+        "goal": "Buy food in Sustenance Hub.",
+        "selectors": [
+          "[data-testid=\"action-card-btn-shopping-sustenance-hub-real-meat-burger\"]",
+          "[data-testid=\"action-card-shopping-sustenance-hub-real-meat-burger\"]"
+        ],
+        "actions": [],
+        "verify": [
+          "Confirm credits changed by the expected amount.",
+          "Confirm hunger or sanity moved in the expected direction.",
+          "Treat a successful click response without the expected stat deltas as a failed purchase attempt."
+        ],
+        "fallbacks": [],
+        "probe": []
+      },
+      "work_shift": {
+        "goal": "Execute a labor shift once the current job is active.",
+        "selectors": [],
+        "actions": [
+          "Find the visible WORK SHIFT control only after the Labor Sector dashboard is confirmed active.",
+          "After each shift, re-check credits, time, hunger, sanity, and whether a turn summary or event modal interrupted the route."
+        ],
+        "verify": [
+          "Credits increase by the shift yield.",
+          "Time drops by the expected shift cost.",
+          "Any forced event or summary modal is detected immediately."
+        ],
+        "fallbacks": [],
+        "probe": []
+      },
+      "turn_summary_probe": {
+        "goal": "Capture the authoritative end-of-week state with minimal context cost.",
+        "selectors": [],
+        "actions": [],
+        "verify": [],
+        "fallbacks": [],
+        "probe": [
+          "turn",
+          "hasPendingTurnSummary",
+          "credits",
+          "debt",
+          "hunger",
+          "sanity"
+        ]
+      }
+    }
+  }
+}

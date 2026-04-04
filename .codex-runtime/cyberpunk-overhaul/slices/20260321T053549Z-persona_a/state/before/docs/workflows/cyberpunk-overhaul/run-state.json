@@ -1,0 +1,54 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "",
+    "latest_metadata_path": "",
+    "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+    "last_exported_at": ""
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+      "docs/workflows/cyberpunk-overhaul/external-fixes.md"
+    ],
+    "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+    "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+  },
+  "next_slice": "Restart Persona A from onboarding in `phase11-safe-grinder`, redo Week 1 from first principles, treat `Work Shift x3` as the default Safe Grinder baseline whenever time and hunger allow, write the corrected authoritative `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-01.md`, and export a new durable checkpoint immediately after the week closes.",
+  "last_run": {
+    "at": "2026-03-21",
+    "outcome": "phase11_persona_a_restart_chain_invalidated",
+    "summary": "The restarted Persona A Week 1 control surface was invalidated after review because Safe Grinder ended the week after one `Sanitation-T3` shift despite a deterministic three-shift baseline still being available. The active workflow now requires a Week 1 redo from onboarding before any Week 2 continuation."
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

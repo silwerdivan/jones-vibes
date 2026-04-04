@@ -1,0 +1,56 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-meta.json",
+    "strategy": "After each authoritative completed week, export the live session state to disk via `workflow:phase11:checkpoint:export`, which now prefers `window.__JONES_FASTLANE_SESSION__` and falls back to `localStorage.jones_fastlane_save` only when no live bridge is present. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+    "last_exported_at": "2026-03-22T04:32:15.434Z",
+    "last_restored_at": "2026-03-23T03:05:10.127Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-08-save.json"
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+      "docs/workflows/cyberpunk-overhaul/external-fixes.md"
+    ],
+    "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+    "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+  },
+  "next_slice": "Resume Persona A from the authoritative Week 8 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 8 summary anchor `₡458 / Debt ₡0 / Hunger 60% / Sanity 25 / Trauma Reboot 266h`, and verify whether the restored `Sanitation-T3` plus `Work Shift x3` route still survives from the harsher hunger floor. Treat GitHub issues #7, #8, and #9 as fixed baseline behavior unless a fresh Week 9 run again shows a one-choice week opener after requirement filtering, `workflow:phase11:checkpoint:status` / `workflow:phase11:checkpoint:export` stop reporting `browser_state_source: live_session` while the live browser page is already authoritative, or visible onboarding is still misclassified as `live_continuity` instead of forcing checkpoint recovery.",
+  "last_run": {
+    "at": "2026-03-22",
+    "outcome": "phase11_persona_a_week_08_complete",
+    "summary": "Persona A's named browser session reopened on onboarding despite the startup continuity artifact claiming `live_continuity`, so the slice recovered by importing the authoritative Week 7 checkpoint. From the restored Week 7 summary anchor at `₡286 / Debt ₡0 / Hunger 40% / Sanity 35 / Trauma Reboot 312h`, the live Week 8 build returned direct manual control, did not reproduce the old one-choice opener, and still supported the deterministic `Sanitation-T3` plus `Work Shift x3` route under `TRAUMA_REBOOT`. The authoritative Week 8 summary closed at `₡458 / Debt ₡0 / Hunger 60% / Sanity 25` with `TRAUMA_REBOOT (266h)`, and the exported checkpoint correctly reported `browser_state_source: live_session`."
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

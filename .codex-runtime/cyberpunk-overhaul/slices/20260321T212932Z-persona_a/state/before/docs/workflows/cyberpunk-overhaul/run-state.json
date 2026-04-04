@@ -1,0 +1,56 @@
+{
+  "workflow": "cyberpunk-overhaul",
+  "phase": 11,
+  "fresh_context_required": true,
+  "status": "in_progress",
+  "needs_human": false,
+  "blocker": "",
+  "current_task": "task_2_persona_a_safe_grinder",
+  "current_persona": {
+    "id": "persona_a",
+    "name": "The Safe Grinder",
+    "log_path": "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+    "agent_browser_session_name": "phase11-safe-grinder"
+  },
+  "runtime": {
+    "app_url": "http://127.0.0.1:5173/jones-vibes/",
+    "browser_args": [
+      "--no-sandbox"
+    ]
+  },
+  "checkpointing": {
+    "root": "docs/workflows/cyberpunk-overhaul/checkpoints",
+    "latest_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-save.json",
+    "latest_metadata_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-06-meta.json",
+    "strategy": "After each authoritative completed week, export localStorage.jones_fastlane_save to disk. If browser continuity fails, restore the latest checkpoint into the named session before replaying from onboarding.",
+    "last_exported_at": "2026-03-21T20:18:41.069Z",
+    "last_restored_at": "2026-03-21T20:09:17.994Z",
+    "last_restored_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-05-save.json"
+  },
+  "slice_policy": {
+    "default_goal": "Advance exactly one completed in-game week for the active persona unless a major blocker or especially high-signal audit event happens first.",
+    "update_paths": [
+      "docs/workflows/cyberpunk-overhaul/current-phase.md",
+      "docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md",
+      "docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md",
+      "docs/workflows/cyberpunk-overhaul/external-fixes.md"
+    ],
+    "detail_log_root": "docs/workflows/cyberpunk-overhaul/phase-11-slices",
+    "detail_log_policy": "Write one canonical per-slice detail file per completed week and keep the progress report concise."
+  },
+  "next_slice": "Resume Persona A from the authoritative Week 6 checkpoint or live summary state in `phase11-safe-grinder`, advance exactly one completed in-game week, start from the Week 6 summary anchor `₡616 / Debt ₡0 / Hunger 20% / Sanity 15 / Sore Legs 6h`, confirm whether the AI handoff remains stable, and verify whether the restored `Work Shift x3` route holds once `Sore Legs` is almost gone. Write the canonical `docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-07.md` before exporting the Week 7 checkpoint.",
+  "last_run": {
+    "at": "2026-03-21",
+    "outcome": "phase11_persona_a_week_06_complete",
+    "summary": "Persona A resumed directly from the authoritative Week 5 summary state at `₡464 / Debt ₡0 / Hunger 20% / Sanity 20 / Sore Legs 54h`, kept the same baseline after the AI handoff, and hit `BROKEN AUTO-CHEF` on entry to Labor Sector. Safe Grinder paid `₡20` for the safe protein-bar branch, restored the full `Sanitation-T3` plus `Work Shift x3` line, and closed authoritative Week 6 at `₡616 / Debt ₡0 / Hunger 20% / Sanity 15` with a fresh Week 6 checkpoint. The earlier two-shift cap was duration-bound rather than permanent, and the Week 6 summary again reconciled correctly at `-5` sanity."
+  },
+  "runner": {
+    "sleep_seconds": 5,
+    "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
+    "codex_exec_strategy": "dangerous",
+    "stop_on_statuses": [
+      "blocked",
+      "complete"
+    ]
+  }
+}

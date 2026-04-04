@@ -1,0 +1,5 @@
+docs/workflows/cyberpunk-overhaul/audit-log-persona-a.md
+docs/workflows/cyberpunk-overhaul/current-phase.md
+docs/workflows/cyberpunk-overhaul/phase-11-audit-progress.md
+docs/workflows/cyberpunk-overhaul/phase-11-slices/persona-a/week-08.md
+docs/workflows/cyberpunk-overhaul/run-state.json

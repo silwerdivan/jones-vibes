@@ -25,8 +25,8 @@ Clean up ignored paths that belong to the old agents.
 ## Phase 4: Skills Directory Migration
 Move the skills directory to an agent-agnostic or pi-specific location.
 
-- [ ] Rename the `.codex/skills` directory to `.pi/skills` (or use `git mv .codex .pi` if `.codex` only contains skills).
-- [ ] **Commit:** `git add . && git commit -m "chore: move skills directory to .pi/skills/"`
+- [x] Rename the `.codex/skills` directory to `.pi/skills` (or use `git mv .codex .pi` if `.codex` only contains skills).
+- [x] **Commit:** `git add . && git commit -m "chore: move skills directory to .pi/skills/"`
 
 ## Phase 5: Scrub Legacy References in Skills
 Update the skill descriptions to remove specific mentions of Codex/Gemini or context-mode MCP.

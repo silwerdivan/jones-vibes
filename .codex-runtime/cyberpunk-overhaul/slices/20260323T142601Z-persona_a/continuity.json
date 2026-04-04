@@ -1,0 +1,347 @@
+{
+  "type": "continuity_preflight",
+  "checked_at": "2026-03-23T16:26:01+02:00",
+  "outcome": "live_continuity",
+  "ok": true,
+  "restored": false,
+  "session_name": "phase11-safe-grinder",
+  "latest_checkpoint_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-save.json",
+  "before": {
+    "action": "status",
+    "session_name": "phase11-safe-grinder",
+    "continuity_status": "ok",
+    "continuity_ok": true,
+    "has_browser_save": true,
+    "onboarding_visible": false,
+    "has_persisted_browser_save": true,
+    "has_live_browser_bridge": true,
+    "browser_state_source": "live_session",
+    "latest_checkpoint_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-save.json",
+    "browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "live_browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "persisted_browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "checkpoint_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "matches_latest_checkpoint": true
+  },
+  "after": {
+    "action": "status",
+    "session_name": "phase11-safe-grinder",
+    "continuity_status": "ok",
+    "continuity_ok": true,
+    "has_browser_save": true,
+    "onboarding_visible": false,
+    "has_persisted_browser_save": true,
+    "has_live_browser_bridge": true,
+    "browser_state_source": "live_session",
+    "latest_checkpoint_save_path": "docs/workflows/cyberpunk-overhaul/checkpoints/persona_a/week-09-save.json",
+    "browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "live_browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "persisted_browser_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "checkpoint_summary": {
+      "turn": 10,
+      "currentPlayerIndex": 0,
+      "gameOver": false,
+      "activeScreenId": "city",
+      "activeLocationDashboard": null,
+      "hasPendingTurnSummary": false,
+      "isAIThinking": false,
+      "playerCount": 2,
+      "currentPlayer": {
+        "id": 1,
+        "name": "Player 1",
+        "credits": 380,
+        "savings": 0,
+        "debt": 0,
+        "loan": 0,
+        "hunger": 80,
+        "sanity": 45,
+        "educationLevel": 0,
+        "careerLevel": 1,
+        "time": 16,
+        "location": "Hab-Pod 404",
+        "activeConditions": [
+          {
+            "id": "TRAUMA_REBOOT",
+            "name": "Trauma Reboot",
+            "description": "Severe mental collapse. Max Energy reduced by 20% during recovery.",
+            "remainingDuration": 282,
+            "effects": [
+              {
+                "type": "MAX_ENERGY",
+                "value": 0.8
+              }
+            ],
+            "icon": "🧠"
+          }
+        ]
+      }
+    },
+    "matches_latest_checkpoint": true
+  }
+}
