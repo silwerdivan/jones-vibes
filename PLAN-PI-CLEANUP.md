@@ -31,7 +31,7 @@ Move the skills directory to an agent-agnostic or pi-specific location.
 ## Phase 5: Scrub Legacy References in Skills
 Update the skill descriptions to remove specific mentions of Codex/Gemini or context-mode MCP.
 
-- [ ] Open `.pi/skills/agent-browser/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
+- [x] Open `.pi/skills/agent-browser/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [ ] Open `.pi/skills/cyberpunk-overhaul/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [ ] Open `.pi/skills/game-tester/SKILL.md` (if it exists) and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [ ] Scan all files in `.pi/skills/` for mentions of `context-mode` or `mcp__context-mode__` and remove/rewrite those sections.

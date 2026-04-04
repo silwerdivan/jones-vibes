@@ -1,6 +1,6 @@
 ---
 name: agent-browser
-description: Browser automation with the agent-browser CLI for opening sites, inspecting pages, clicking elements, filling forms, taking screenshots, extracting page data, reproducing UI issues, and handling authenticated browser sessions. Use when Codex needs to automate web interaction in Chrome or Chromium, test a web app through the browser, scrape structured page content, capture screenshots, or drive a login flow with saved session state.
+description: Browser automation with the agent-browser CLI for opening sites, inspecting pages, clicking elements, filling forms, taking screenshots, extracting page data, reproducing UI issues, and handling authenticated browser sessions. Use when the agent needs to automate web interaction in Chrome or Chromium, test a web app through the browser, scrape structured page content, capture screenshots, or drive a login flow with saved session state.
 ---
 
 # Agent Browser
