@@ -1,6 +1,6 @@
 ---
 name: cyberpunk-overhaul
-description: Plan, execute, validate, and summarize phased cyberpunk redesign work for Jones in the Fast Lane. Use when Codex needs to turn the game's cyberpunk direction into the next phase plan, continue the current overhaul phase, implement a scoped phase task, update workflow state docs, or roll lessons from completed work into overhaul history.
+description: Plan, execute, validate, and summarize phased cyberpunk redesign work for Jones in the Fast Lane. Use when the agent needs to turn the game's cyberpunk direction into the next phase plan, continue the current overhaul phase, implement a scoped phase task, update workflow state docs, or roll lessons from completed work into overhaul history.
 ---
 
 # Cyberpunk Overhaul

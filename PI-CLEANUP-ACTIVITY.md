@@ -5,3 +5,4 @@
 - 2026-04-04: Audited `.gitignore`, removing references to `.serena`, `.gemini`, and `.codex-runtime` (Phase 3).
 - 2026-04-04: Migrated `.codex` to `.pi` directory using `git mv` (Phase 4).
 - 2026-04-04: Updated description in `.pi/skills/agent-browser/SKILL.md` to be agent-agnostic (Phase 5).
+- 2026-04-04: Updated description in `.pi/skills/cyberpunk-overhaul/SKILL.md` to be agent-agnostic (Phase 5).
