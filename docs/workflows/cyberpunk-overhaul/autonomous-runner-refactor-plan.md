@@ -197,7 +197,7 @@ Definition of done for Task D:
 ### Task A checklist
 
 - [ ] Inspect current runner output path and log-writing flow in `scripts/cyberpunk-overhaul-phase11-once.sh`.
-- [ ] Decide artifact layout under `.codex-runtime/cyberpunk-overhaul/`.
+- [ ] Decide artifact layout under `.pi-runtime/cyberpunk-overhaul/`.
 - [ ] Add compact per-slice event log format.
 - [ ] Add final summary artifact per slice.
 - [ ] Add final diff artifact per slice.
@@ -238,7 +238,7 @@ Definition of done for Task D:
 
 ### Be careful about these
 
-- If compact logging depends on `codex exec --json`, make sure the resulting artifacts are still easy to inspect after a failed unattended run.
+- If compact logging depends on `pi exec --json`, make sure the resulting artifacts are still easy to inspect after a failed unattended run.
 - If diff output is suppressed in the live transcript, store the final diff somewhere deterministic.
 - If raw trace retention is conditional, make the trigger rules explicit and conservative.
 
@@ -291,5 +291,5 @@ Deliverables:
 ## Progress Notes
 
 - 2026-03-18: Initial refactor plan created from review of the Week 7 autonomous slice log. Plan favors compact default logging plus automatic debug preservation instead of a blanket reduction in output.
-- 2026-03-19: Task C completed. `autonomous-runner.md` now documents the compact-by-default logging model, automatic debug escalation triggers, the slice artifact layout under `.codex-runtime/cyberpunk-overhaul/`, blocked-slice triage order, and the new `AUTONOMOUS_FORCE_VERBOSE=1` override for always retaining raw debug artifacts.
+- 2026-03-19: Task C completed. `autonomous-runner.md` now documents the compact-by-default logging model, automatic debug escalation triggers, the slice artifact layout under `.pi-runtime/cyberpunk-overhaul/`, blocked-slice triage order, and the new `AUTONOMOUS_FORCE_VERBOSE=1` override for always retaining raw debug artifacts.
 - 2026-03-19: Task D completed as a deliberately small selector-hardening pass. The shared `ActionCard` surface now emits stable `data-testid` selectors for job, shopping, college, and hustle cards/buttons, the Phase 11 runner's trusted UI notes now point fresh-context slices at those selectors first, and `agent-browser-learnings.md` was aligned with the new selector convention. No additional runner-side wait replacement landed because the current Phase 11 path already depends on explicit state verification (`CURRENT SHIFT`, `credits`, `hunger`, `sanity`) rather than a reusable blind-wait helper.

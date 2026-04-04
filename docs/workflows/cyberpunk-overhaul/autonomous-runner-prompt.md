@@ -17,7 +17,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 ## Operating rules
 - Respect `run-state.json` as the bounded control surface for this run.
 - Prefer exact paths, compact checkpoint state, compact recipe notes, and expected next action from `startup-context.json` over reconstructing state from older slice files.
-- Treat runner startup continuity verification as authoritative. The Phase 11 entrypoint now checks the named browser session against the latest checkpoint before Codex starts; if the session is missing its save, the runner restores it automatically, and if the live save disagrees with the checkpoint the runner should fail before gameplay begins.
+- Treat runner startup continuity verification as authoritative. The Phase 11 entrypoint now checks the named browser session against the latest checkpoint before pi starts; if the session is missing its save, the runner restores it automatically, and if the live save disagrees with the checkpoint the runner should fail before gameplay begins.
 - Treat checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/` as the authoritative recovery layer when a named browser session reopens without the expected save.
 - Treat the external baseline handoff as out-of-band context, not as new Phase 11 evidence. Only log it again if the live build contradicts that handoff.
 - Reuse the existing app and browser state from the environment. `AGENT_BROWSER_SESSION_NAME` is already set for the active persona.
@@ -60,7 +60,7 @@ Do not scan `docs/workflows/cyberpunk-overhaul/phase-11-slices/` or probe altern
 - After every authoritative completed week, export the live `jones_fastlane_save` payload to a new checkpoint file with `npm run workflow:phase11:checkpoint:export -- --label week-NN` and update the workflow docs accordingly.
 
 ## Token discipline
-- Keep normal successful slices compact. Preserve audit quality without repeatedly feeding bulky tool output back into one long Codex turn.
+- Keep normal successful slices compact. Preserve audit quality without repeatedly feeding bulky tool output back into one long pi turn.
 - Save rich evidence to files, not to the live model context. Use workflow markdown files, checkpoints, screenshots, and runtime artifacts as the durable record.
 - Prefer targeted probes over broad dumps. For gameplay verification, request only the fields you need, such as `screen`, `credits`, `debt`, `hunger`, `sanity`, `time`, `current shift`, `hasPendingTurnSummary`, or a short action result.
 - Do not print full edited file contents after writing them. Report the updated path and a short summary of what changed.

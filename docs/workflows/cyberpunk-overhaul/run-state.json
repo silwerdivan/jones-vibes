@@ -47,7 +47,7 @@
   "runner": {
     "sleep_seconds": 5,
     "external_handoff_path": "docs/workflows/cyberpunk-overhaul/external-fixes.md",
-    "codex_exec_strategy": "dangerous",
+    "pi_exec_strategy": "dangerous",
     "stop_on_statuses": [
       "blocked",
       "complete"

@@ -1,6 +1,6 @@
 # Autonomous Runner
 
-This workflow can keep running with a fresh Codex context on every pass. Continuity lives in:
+This workflow can keep running with a fresh pi context on every pass. Continuity lives in:
 
 - `docs/workflows/cyberpunk-overhaul/run-state.json`
 - `docs/workflows/cyberpunk-overhaul/current-phase.md`
@@ -11,7 +11,7 @@ This workflow can keep running with a fresh Codex context on every pass. Continu
 - durable checkpoint exports under `docs/workflows/cyberpunk-overhaul/checkpoints/`
 - persistent `agent-browser` session state
 
-The runner now keeps stdout compact by default and moves the higher-detail evidence into per-slice artifacts under `.codex-runtime/cyberpunk-overhaul/`.
+The runner now keeps stdout compact by default and moves the higher-detail evidence into per-slice artifacts under `.pi-runtime/cyberpunk-overhaul/`.
 
 ## Commands
 
@@ -27,7 +27,7 @@ One bounded fresh-context slice with an automatic git commit at the end:
 npm run workflow:phase11:once:commit
 ```
 
-Continuous loop with a fresh Codex process each iteration:
+Continuous loop with a fresh pi process each iteration:
 
 ```bash
 npm run workflow:phase11:loop
@@ -66,10 +66,10 @@ npm run workflow:phase11:checkpoint:import
 ## How It Works
 
 1. `workflow:phase11:ensure-dev` restores `node_modules` if missing and starts Vite at `http://127.0.0.1:5173/jones-vibes/` when needed.
-2. `workflow:phase11:once` starts a brand-new `codex exec --ephemeral` run.
-3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh Codex runs when the session profile remains healthy.
+2. `workflow:phase11:once` starts a brand-new `pi exec --ephemeral` run.
+3. The runner exports `AGENT_BROWSER_SESSION_NAME` from `run-state.json`, so browser localStorage survives across fresh pi runs when the session profile remains healthy.
 4. Durable continuity now also lives in exported checkpoint JSON files under `docs/workflows/cyberpunk-overhaul/checkpoints/`. The browser session is a convenience layer, not the only recovery path.
-5. The Codex prompt is intentionally small and points the agent at one generated `startup-context.json` artifact inside the slice directory. That file carries the canonical slice paths, latest checkpoint handoff, compact brief findings, expected next action, compact browser tactics, and the runner's action-verification policy so the repeated prompt stays small while the handoff stays explicit.
+5. The pi prompt is intentionally small and points the agent at one generated `startup-context.json` artifact inside the slice directory. That file carries the canonical slice paths, latest checkpoint handoff, compact brief findings, expected next action, compact browser tactics, and the runner's action-verification policy so the repeated prompt stays small while the handoff stays explicit.
 6. The live stream is compacted through `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`:
    - meaningful milestones are written to structured JSONL artifacts,
    - repeated `git diff` output is suppressed from the live stream,
@@ -84,12 +84,12 @@ npm run workflow:phase11:checkpoint:import
 Each slice gets its own artifact directory:
 
 ```text
-.codex-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/
+.pi-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/
 ```
 
 Normal successful runs keep the operator-facing stream small:
 
-- `.codex-runtime/cyberpunk-overhaul/autonomous-runner.log`
+- `.pi-runtime/cyberpunk-overhaul/autonomous-runner.log`
   Append-only top-level runner log with slice headers plus the compact live stream.
 - `events.jsonl`
   Structured milestone/event log for the slice.
@@ -106,7 +106,7 @@ Normal successful runs keep the operator-facing stream small:
 - `prompt.md`
   Exact prompt used for that slice.
 - `last-message.txt`
-  Final Codex message captured with `codex exec -o`.
+  Final pi message captured with `pi exec -o`.
 - `state/before/` and `state/after/`
   Snapshots of the bounded control-surface files listed in `run-state.json`.
 
@@ -118,7 +118,7 @@ Normal slices are expected to stay lean. The authoritative audit record still li
 
 The runner automatically keeps raw debug artifacts when a slice looks suspicious or stops in trouble. Debug preservation turns on when any of these happen:
 
-- `codex exec` exits nonzero.
+- `pi exec` exits nonzero.
 - `run-state.json` ends the slice with `status = "blocked"`.
 - `run-state.json` ends the slice with `needs_human = true`.
 - A tool command exits nonzero.
@@ -129,8 +129,8 @@ When debug escalation is off, the runner deletes the temporary raw event files a
 
 When debug escalation is on, raw failure traces live here:
 
-- `debug/raw-codex-events.jsonl`
-  Full raw JSONL event stream emitted by `codex exec --json` for that slice.
+- `debug/raw-pi-events.jsonl`
+  Full raw JSONL event stream emitted by `pi exec --json` for that slice.
 - `debug/suspicious-commands.jsonl`
   Full command payloads for failed commands or commands whose output looked suspicious enough to preserve.
 
@@ -157,9 +157,9 @@ This does not disable the compact live stream. It forces the slice to retain the
 - `docs/workflows/cyberpunk-overhaul/run-state.json`
   Machine-readable handoff state for autonomous slices.
 - `docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md`
-  The reusable fresh-context prompt for each `codex exec` call.
-- `.codex-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/startup-context.json`
-  Slice-local compact handoff artifact generated before Codex starts.
+  The reusable fresh-context prompt for each `pi exec` call.
+- `.pi-runtime/cyberpunk-overhaul/slices/<timestamp>-<persona>/startup-context.json`
+  Slice-local compact handoff artifact generated before pi starts.
 - `docs/workflows/cyberpunk-overhaul/external-fixes.md`
   Out-of-band baseline changes from ad hoc fixes that the next audit slice must know about.
 - `docs/workflows/cyberpunk-overhaul/checkpoints/`
@@ -175,11 +175,11 @@ This does not disable the compact live stream. It forces the slice to retain the
 
 ## Environment Overrides
 
-- `CODEX_MODEL`
-  Optional model override for `codex exec`.
-- `CODEX_EXEC_STRATEGY`
+- `PI_MODEL`
+  Optional model override for `pi exec`.
+- `PI_EXEC_STRATEGY`
   `dangerous` by default for unattended local automation.
-  Set to `full-auto` if you want the Codex CLI's sandboxed mode instead.
+  Set to `full-auto` if you want the pi CLI's sandboxed mode instead.
 - `AUTONOMOUS_SLEEP_SECONDS`
   Override the delay between loop iterations.
 - `AUTONOMOUS_MAX_ITERATIONS`
@@ -195,7 +195,7 @@ This does not disable the compact live stream. It forces the slice to retain the
   loop iteration when the git worktree is already dirty, so automation commits
   only ever happen from a clean-start run.
 - `DRY_RUN=1`
-  Show the resolved prompt and runner configuration without launching Codex.
+  Show the resolved prompt and runner configuration without launching pi.
 - `AGENT_BROWSER_SESSION_NAME`
   Optional manual override for the browser session name. By default the runner
   exports the value from `run-state.json`.
@@ -217,10 +217,10 @@ More durable option: run the loop under a `systemd --user` service with this rep
 
 After a blocked slice, read the artifacts in this order:
 
-1. Open the newest slice `summary.json` under `.codex-runtime/cyberpunk-overhaul/slices/` to see status, debug reasons, timings, changed files, and the exact artifact paths.
+1. Open the newest slice `summary.json` under `.pi-runtime/cyberpunk-overhaul/slices/` to see status, debug reasons, timings, changed files, and the exact artifact paths.
 2. Open `startup-context.json` if you need the compact runner handoff that the slice started from.
 3. Open `checkpoints.jsonl` to reconstruct the last known state transition and where the run stopped.
-4. If `summary.json` shows `debug.escalated = true`, open `debug/suspicious-commands.jsonl` first for the failing command chain, then `debug/raw-codex-events.jsonl` only if you need the full raw transcript.
+4. If `summary.json` shows `debug.escalated = true`, open `debug/suspicious-commands.jsonl` first for the failing command chain, then `debug/raw-pi-events.jsonl` only if you need the full raw transcript.
 5. Compare `state/before/` and `state/after/` if you need to confirm what the slice changed in the bounded control surface.
 6. Use `final.diff` and `changed-files.txt` only after you understand the blocker; they are for code/doc output review, not for reconstructing the runtime failure.
 

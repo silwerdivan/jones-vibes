@@ -6,7 +6,7 @@ Archived here:
 
 - prior active Persona A audit log
 - prior Persona A week slice files and screenshots
-- prior Persona A runtime slice artifacts from `.codex-runtime/cyberpunk-overhaul/slices/*persona_a`
+- prior Persona A runtime slice artifacts from `.pi-runtime/cyberpunk-overhaul/slices/*persona_a`
 
 Reason for archive:
 

@@ -50,6 +50,6 @@ Update the primary instruction file for the Pi agent.
 ## Phase 7: Verification & Final Polish
 Ensure no legacy references were missed.
 
-- [ ] Run `git grep -iE "codex|gemini|context-mode"` in the terminal.
-- [ ] Review the output. If there are any unintended matches in active code, configuration, or documentation files, fix them.
-- [ ] **Commit** (if any fixes were made): `git add . && git commit -m "chore: fix final straggling legacy agent references"`
+- [x] Run `git grep -iE "codex|gemini|context-mode"` in the terminal.
+- [x] Review the output. If there are any unintended matches in active code, configuration, or documentation files, fix them.
+- [x] **Commit** (if any fixes were made): `git add . && git commit -m "chore: fix final straggling legacy agent references"`

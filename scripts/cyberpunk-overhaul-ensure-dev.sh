@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-RUNTIME_DIR="${ROOT_DIR}/.codex-runtime/cyberpunk-overhaul"
+RUNTIME_DIR="${ROOT_DIR}/.pi-runtime/cyberpunk-overhaul"
 PID_FILE="${RUNTIME_DIR}/vite.pid"
 LOG_FILE="${RUNTIME_DIR}/vite.log"
 APP_HOST="${APP_HOST:-127.0.0.1}"

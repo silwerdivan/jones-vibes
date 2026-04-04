@@ -82,7 +82,7 @@
 ### B. "State-Aware" Tool Proxy
 - **Investigation**: Can we build a tiny helper tool that "remembers" the game state, so the LLM only has to ask for *changes* rather than re-reading the whole world every turn?
 - **Status**: COMPLETE. Implemented `scripts/lib/state-proxy.mjs`.
-- **Outcome**: The agent now uses `node scripts/lib/state-proxy.mjs get` which caches state in `.codex-runtime/cyberpunk-overhaul/last-state-proxy.json` and returns only diffs + compact summary. This prevents ~56KB JSON dumps from entering the history.
+- **Outcome**: The agent now uses `node scripts/lib/state-proxy.mjs get` which caches state in `.pi-runtime/cyberpunk-overhaul/last-state-proxy.json` and returns only diffs + compact summary. This prevents ~56KB JSON dumps from entering the history.
 
 ### C. Checkpoint Import Redundancy
 - **Investigation:** Is the `npm run workflow:phase11:checkpoint:import` command returning too much output when called by the agent?

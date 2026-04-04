@@ -31,7 +31,7 @@ const payload = {
 console.log(`[MILESTONE_SUMMARY] ${payload.message}`);
 
 // Optionally, we could also append to a local file in the current slice directory
-// if we knew where it was. But since we are likely running under codex exec,
+// if we knew where it was. But since we are likely running under pi exec,
 // we might not have the SLICE_DIR environment variable unless we pass it.
 
 process.exit(0);

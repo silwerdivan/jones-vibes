@@ -7,14 +7,14 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-RUNTIME_DIR="${ROOT_DIR}/.codex-runtime/cyberpunk-overhaul"
+RUNTIME_DIR="${ROOT_DIR}/.pi-runtime/cyberpunk-overhaul"
 RUN_STATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/run-state.json"
 PROMPT_TEMPLATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/autonomous-runner-prompt.md"
 ENSURE_DEV="${ROOT_DIR}/scripts/cyberpunk-overhaul-ensure-dev.sh"
 LOG_STREAM_HELPER="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-log-stream.mjs"
 LOG_FILE="${RUNTIME_DIR}/autonomous-runner.log"
-LAST_MESSAGE_FILE="${RUNTIME_DIR}/last-codex-message.txt"
-PROMPT_FILE="${RUNTIME_DIR}/current-codex-prompt.md"
+LAST_MESSAGE_FILE="${RUNTIME_DIR}/last-pi-message.txt"
+PROMPT_FILE="${RUNTIME_DIR}/current-pi-prompt.md"
 SLICE_ROOT_DIR="${RUNTIME_DIR}/slices"
 BRIEF_SCRIPT="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-brief.mjs"
 BRIEF_FILE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/phase-11-brief.json"
@@ -25,7 +25,7 @@ usage() {
   cat <<'EOF'
 Usage: bash scripts/cyberpunk-overhaul-phase11-once.sh [--dry-run] [--commit] [--allow-pending-issues]
 
-Runs exactly one fresh-context Codex slice for the active Phase 11 workflow.
+Runs exactly one fresh-context pi slice for the active Phase 11 workflow.
 Refuses to start if the git worktree is dirty.
 Refuses to start if a newer slice has not been triaged into the issue ledger yet,
 or if the active slice issue ledger still has unresolved follow-up items.
@@ -718,7 +718,7 @@ const summary = {
   ...base,
   status: 'blocked',
   needs_human: true,
-  codex_exit_code: -1,
+  pi_exit_code: -1,
   worktree_dirty_at_start: false,
   changed_files: [],
   continuity,
@@ -733,7 +733,7 @@ const summary = {
     changed_files: path.join(sliceDir, 'changed-files.txt'),
     final_diff: path.join(sliceDir, 'final.diff'),
     startup_context: path.join(sliceDir, 'startup-context.json'),
-    raw_codex_events: '',
+    raw_pi_events: '',
     suspicious_commands: '',
   },
   diff_bytes: 0,
@@ -754,10 +754,10 @@ write_slice_summary() {
     "${status_after}" \
     "${needs_human_after}" \
     "${pre_run_dirty}" \
-    "${codex_exit}" \
+    "${pi_exit}" \
     "${debug_preserved}" \
     "${FORCE_VERBOSE}" \
-    "${DEBUG_DIR}/raw-codex-events.jsonl" \
+    "${DEBUG_DIR}/raw-pi-events.jsonl" \
     "${DEBUG_DIR}/suspicious-commands.jsonl" \
     "${CHANGED_FILES_FILE}" \
     "${FINAL_DIFF_FILE}" \
@@ -774,7 +774,7 @@ const [
   statusAfter,
   needsHumanAfter,
   preRunDirty,
-  codexExit,
+  piExit,
   debugPreserved,
   forceVerbose,
   rawTracePath,
@@ -807,7 +807,7 @@ const summary = {
   persona: personaName,
   status: statusAfter,
   needs_human: needsHumanAfter === 'true',
-  codex_exit_code: Number(codexExit),
+  pi_exit_code: Number(piExit),
   worktree_dirty_at_start: preRunDirty === '1',
   changed_files: changedFiles,
   continuity,
@@ -822,7 +822,7 @@ const summary = {
     changed_files: changedFilesPath,
     final_diff: finalDiffPath,
     startup_context: path.join(sliceDir, 'startup-context.json'),
-    raw_codex_events: debugPreserved === '1' ? rawTracePath : '',
+    raw_pi_events: debugPreserved === '1' ? rawTracePath : '',
     suspicious_commands: debugPreserved === '1' ? suspiciousPath : '',
   },
   diff_bytes: diffBytes,
@@ -846,10 +846,10 @@ if (summary.needs_human) {
   summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'needs_human'])];
 }
 
-if (Number(codexExit) !== 0) {
+if (Number(piExit) !== 0) {
   summary.debug = summary.debug || {};
   summary.debug.escalated = true;
-  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'codex_exec_failed'])];
+  summary.debug.reasons = [...new Set([...(summary.debug.reasons || []), 'pi_exec_failed'])];
 }
 
 fs.writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`);
@@ -931,7 +931,7 @@ persona_slice_dir="${detail_log_root}/${persona_slice_dir}"
 latest_slice_file="$(latest_persona_slice_file "${detail_log_root}" "${persona_log}")"
 persona_checkpoint_dir="${checkpoint_root}/${persona_slug}"
 latest_checkpoint_file="$(latest_persona_checkpoint_file "${checkpoint_root}" "${persona_slug}")"
-exec_strategy="${CODEX_EXEC_STRATEGY:-$(json_get_or_default runner.codex_exec_strategy dangerous)}"
+exec_strategy="${PI_EXEC_STRATEGY:-$(json_get_or_default runner.pi_exec_strategy dangerous)}"
 
 if [[ "${ALLOW_PENDING_ISSUES}" != "1" ]]; then
   enforce_issue_followup_gate "${latest_slice_file}"
@@ -951,7 +951,7 @@ CHECKPOINT_LOG_FILE="${SLICE_DIR}/checkpoints.jsonl"
 STREAM_SUMMARY_FILE="${SLICE_DIR}/stream-summary.json"
 SUMMARY_FILE="${SLICE_DIR}/summary.json"
 CONTINUITY_FILE="${SLICE_DIR}/continuity.json"
-RAW_JSONL_TEMP="${SLICE_DIR}/raw-codex-events.tmp.jsonl"
+RAW_JSONL_TEMP="${SLICE_DIR}/raw-pi-events.tmp.jsonl"
 DEBUG_CANDIDATES_TEMP="${SLICE_DIR}/suspicious-commands.tmp.jsonl"
 CHANGED_FILES_FILE="${SLICE_DIR}/changed-files.txt"
 FINAL_DIFF_FILE="${SLICE_DIR}/final.diff"
@@ -986,12 +986,12 @@ cp "${SLICE_PROMPT_FILE}" "${PROMPT_FILE}"
 
 snapshot_control_surface before
 
-AGENT_EXEC="${AGENT_EXEC:-codex}"
+AGENT_EXEC="${AGENT_EXEC:-pi}"
 
 case "${AGENT_EXEC}" in
-  codex)
-    codex_args=(
-      codex
+  pi)
+    pi_args=(
+      pi
       exec
       --ephemeral
       --json
@@ -1000,19 +1000,11 @@ case "${AGENT_EXEC}" in
     )
     ;;
   opencode)
-    codex_args=(
+    pi_args=(
       bash
       -c
       'opencode run --dir "${@:1:1}" --format json "$(cat "${@:2:1}")"'
       -- "${ROOT_DIR}" "${SLICE_PROMPT_FILE}"
-    )
-    ;;
-  gemini)
-    codex_args=(
-      gemini
-      --approval-mode=yolo
-      --output-format stream-json
-      -p ""
     )
     ;;
   *)
@@ -1021,20 +1013,20 @@ case "${AGENT_EXEC}" in
     ;;
 esac
 
-if [[ "${AGENT_EXEC}" == "codex" ]]; then
+if [[ "${AGENT_EXEC}" == "pi" ]]; then
   case "${exec_strategy}" in
     dangerous)
-      codex_args+=(--dangerously-bypass-approvals-and-sandbox)
+      pi_args+=(--dangerously-bypass-approvals-and-sandbox)
       ;;
     full-auto)
-      codex_args+=(--full-auto)
+      pi_args+=(--full-auto)
       ;;
     *)
       ;;
   esac
 
-  if [[ -n "${CODEX_MODEL:-}" ]]; then
-    codex_args+=(-m "${CODEX_MODEL}")
+  if [[ -n "${PI_MODEL:-}" ]]; then
+    pi_args+=(-m "${PI_MODEL}")
   fi
 fi
 
@@ -1055,62 +1047,36 @@ fi
 if [[ "${DRY_RUN}" == "1" ]]; then
   echo "[phase11-once] dry run"
   echo "[phase11-once] prompt file: ${SLICE_PROMPT_FILE}"
-  echo "[phase11-once] codex args: ${codex_args[*]} -"
+  echo "[phase11-once] pi args: ${pi_args[*]} -"
   cat "${SLICE_PROMPT_FILE}"
   exit 0
 fi
 
-codex_exit=0
+pi_exit=0
 parser_exit=0
 tee_exit=0
 
 set +e
-if [[ "${AGENT_EXEC}" == "codex" ]]; then
-  "${codex_args[@]}" - <"${SLICE_PROMPT_FILE}" \
-    | node "${LOG_STREAM_HELPER}" \
-        --slice-id "${SLICE_ID}" \
-        --persona "${persona_name}" \
-        --retry-threshold "${RETRY_THRESHOLD}" \
-        --event-log "${EVENT_LOG_FILE}" \
-        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
-        --summary "${STREAM_SUMMARY_FILE}" \
-        --raw-jsonl "${RAW_JSONL_TEMP}" \
-        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
-    | tee -a "${LOG_FILE}"
-elif [[ "${AGENT_EXEC}" == "gemini" ]]; then
-  "${codex_args[@]}" <"${SLICE_PROMPT_FILE}" \
-    | node "${LOG_STREAM_HELPER}" \
-        --slice-id "${SLICE_ID}" \
-        --persona "${persona_name}" \
-        --retry-threshold "${RETRY_THRESHOLD}" \
-        --event-log "${EVENT_LOG_FILE}" \
-        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
-        --summary "${STREAM_SUMMARY_FILE}" \
-        --raw-jsonl "${RAW_JSONL_TEMP}" \
-        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
-    | tee -a "${LOG_FILE}"
-else
-  "${codex_args[@]}" \
-    | node "${LOG_STREAM_HELPER}" \
-        --slice-id "${SLICE_ID}" \
-        --persona "${persona_name}" \
-        --retry-threshold "${RETRY_THRESHOLD}" \
-        --event-log "${EVENT_LOG_FILE}" \
-        --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
-        --summary "${STREAM_SUMMARY_FILE}" \
-        --raw-jsonl "${RAW_JSONL_TEMP}" \
-        --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
-    | tee -a "${LOG_FILE}"
-fi
+"${pi_args[@]}" - <"${SLICE_PROMPT_FILE}" \
+  | node "${LOG_STREAM_HELPER}" \
+      --slice-id "${SLICE_ID}" \
+      --persona "${persona_name}" \
+      --retry-threshold "${RETRY_THRESHOLD}" \
+      --event-log "${EVENT_LOG_FILE}" \
+      --checkpoint-log "${CHECKPOINT_LOG_FILE}" \
+      --summary "${STREAM_SUMMARY_FILE}" \
+      --raw-jsonl "${RAW_JSONL_TEMP}" \
+      --debug-candidates "${DEBUG_CANDIDATES_TEMP}" \
+  | tee -a "${LOG_FILE}"
 pipeline_status=("${PIPESTATUS[@]}")
 set -e
 
-codex_exit="${pipeline_status[0]}"
+pi_exit="${pipeline_status[0]}"
 parser_exit="${pipeline_status[1]}"
 tee_exit="${pipeline_status[2]}"
 
 if [[ "${parser_exit}" != "0" || "${tee_exit}" != "0" ]]; then
-  echo "[phase11-once] logging pipeline failed: codex_exit=${codex_exit} parser_exit=${parser_exit} tee_exit=${tee_exit}" | tee -a "${LOG_FILE}"
+  echo "[phase11-once] logging pipeline failed: pi_exit=${pi_exit} parser_exit=${parser_exit} tee_exit=${tee_exit}" | tee -a "${LOG_FILE}"
   exit 1
 fi
 
@@ -1124,7 +1090,7 @@ snapshot_control_surface after
 write_changed_file_artifacts
 
 debug_preserved=0
-if [[ "${FORCE_VERBOSE}" == "1" || "${codex_exit}" != "0" || "${status_after}" == "blocked" || "${needs_human_after}" == "true" ]]; then
+if [[ "${FORCE_VERBOSE}" == "1" || "${pi_exit}" != "0" || "${status_after}" == "blocked" || "${needs_human_after}" == "true" ]]; then
   debug_preserved=1
 fi
 
@@ -1135,7 +1101,7 @@ if [[ "${debug_preserved}" == "0" && -f "${STREAM_SUMMARY_FILE}" ]]; then
 fi
 
 if [[ "${debug_preserved}" == "1" ]]; then
-  mv "${RAW_JSONL_TEMP}" "${DEBUG_DIR}/raw-codex-events.jsonl"
+  mv "${RAW_JSONL_TEMP}" "${DEBUG_DIR}/raw-pi-events.jsonl"
   if [[ -s "${DEBUG_CANDIDATES_TEMP}" ]]; then
     mv "${DEBUG_CANDIDATES_TEMP}" "${DEBUG_DIR}/suspicious-commands.jsonl"
   else
@@ -1149,15 +1115,15 @@ fi
 write_slice_summary
 
 metrics_line="$(node -e 'const fs = require("fs"); const data = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); const parts = []; parts.push(`input_tokens=${data.usage?.input_tokens ?? 0}`); parts.push(`cached_tokens=${data.usage?.cached_input_tokens ?? 0}`); parts.push(`output_tokens=${data.usage?.output_tokens ?? 0}`); parts.push(`wall_time_ms=${data.wall_time_ms ?? 0}`); parts.push(`commands=${data.counts?.commands_total ?? 0}`); parts.push(`changed_files=${(data.changed_files || []).length}`); parts.push(`debug=${data.debug?.escalated ? "on" : "off"}`); if (data.debug?.escalated && Array.isArray(data.debug.reasons) && data.debug.reasons.length > 0) { parts.push(`debug_reasons=${data.debug.reasons.join(",")}`); } process.stdout.write(parts.join(" "));' "${SUMMARY_FILE}")"
-echo "[phase11-once] post-run status=${status_after} needs_human=${needs_human_after} codex_exit=${codex_exit} ${metrics_line}" | tee -a "${LOG_FILE}"
+echo "[phase11-once] post-run status=${status_after} needs_human=${needs_human_after} pi_exit=${pi_exit} ${metrics_line}" | tee -a "${LOG_FILE}"
 
 if [[ "${AUTO_COMMIT}" != "1" ]]; then
-  exit "${codex_exit}"
+  exit "${pi_exit}"
 fi
 
 if ! worktree_is_dirty; then
   echo "[phase11-once] auto-commit skipped: slice produced no git changes" | tee -a "${LOG_FILE}"
-  exit "${codex_exit}"
+  exit "${pi_exit}"
 fi
 
 last_run_at="$(json_get_or_default last_run.at "$(date -Iseconds)")"
@@ -1166,4 +1132,4 @@ commit_message="Phase 11 slice: ${persona_slug} (${status_after}) ${last_run_at}
 git -C "${ROOT_DIR}" add -A
 git -C "${ROOT_DIR}" commit -m "${commit_message}" | tee -a "${LOG_FILE}"
 echo "[phase11-once] auto-commit created: ${commit_message}" | tee -a "${LOG_FILE}"
-exit "${codex_exit}"
+exit "${pi_exit}"

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-RUNTIME_DIR="${ROOT_DIR}/.codex-runtime/cyberpunk-overhaul"
+RUNTIME_DIR="${ROOT_DIR}/.pi-runtime/cyberpunk-overhaul"
 RUN_STATE="${ROOT_DIR}/docs/workflows/cyberpunk-overhaul/run-state.json"
 ONCE_SCRIPT="${ROOT_DIR}/scripts/cyberpunk-overhaul-phase11-once.sh"
 LOG_FILE="${RUNTIME_DIR}/autonomous-runner.log"
@@ -13,7 +13,7 @@ usage() {
 Usage: bash scripts/cyberpunk-overhaul-phase11-loop.sh [--commit]
 
 Runs the active Phase 11 workflow continuously, but each iteration launches a
-brand-new `codex exec --ephemeral` process to guarantee fresh context.
+brand-new `pi exec --ephemeral` process to guarantee fresh context.
 Refuses to start a new iteration if the git worktree is dirty.
 Pass --commit to let each clean-start iteration auto-commit its slice changes.
 EOF

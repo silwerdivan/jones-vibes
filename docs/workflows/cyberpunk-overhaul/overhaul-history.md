@@ -51,7 +51,7 @@
 ## Phase 8: Game Math Reviewer & Simulation Pipeline (COMPLETE)
 - **Objective:** Structural reinforcement of the design workflow. Stop "feel-based" quick fixes by introducing a mathematical review skill and headless economy simulation.
 - **Key Deliverables:**
-  - .gemini/skills/game-math-reviewer/SKILL.md (Formalizing the mathematician role).
+  - .pi/skills/game-math-reviewer/SKILL.md (Formalizing the mathematician role).
   - Mandatory math review step in cyberpunk-overhaul skill.
   - npm run simulate:economy (Headless human-player simulation).
   - Balance Testing mode in game-tester skill.

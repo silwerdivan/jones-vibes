@@ -9,7 +9,7 @@ import { runAgentBrowserBatch } from './agent-browser-wrapper.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '../..');
-const RUNTIME_DIR = path.join(ROOT_DIR, '.codex-runtime/cyberpunk-overhaul');
+const RUNTIME_DIR = path.join(ROOT_DIR, '.pi-runtime/cyberpunk-overhaul');
 const CACHE_FILE = path.join(RUNTIME_DIR, 'last-state-proxy.json');
 const RUN_STATE_FILE = path.join(ROOT_DIR, 'docs/workflows/cyberpunk-overhaul/run-state.json');
 
