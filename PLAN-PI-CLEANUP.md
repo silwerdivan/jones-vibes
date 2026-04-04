@@ -34,18 +34,18 @@ Update the skill descriptions to remove specific mentions of Codex/Gemini or con
 - [x] Open `.pi/skills/agent-browser/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Open `.pi/skills/cyberpunk-overhaul/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Open `.pi/skills/game-tester/SKILL.md` (if it exists) and replace "Use when Codex needs to..." with "Use when the agent needs to...".
-- [ ] Scan all files in `.pi/skills/` for mentions of `context-mode` or `mcp__context-mode__` and remove/rewrite those sections.
-- [ ] **Commit:** `git add .pi/skills/ && git commit -m "refactor: scrub legacy agent references from skills"`
+- [x] Scan all files in `.pi/skills/` for mentions of `context-mode` or `mcp__context-mode__` and remove/rewrite those sections.
+- [x] **Commit:** `git add .pi/skills/ && git commit -m "refactor: scrub legacy agent references from skills"`
 
 ## Phase 6: Refactor `AGENTS.md`
 Update the primary instruction file for the Pi agent.
 
-- [ ] Open `AGENTS.md`.
-- [ ] Locate and **delete** the entire section titled `# context-mode — MANDATORY routing rules` and all its subsections.
-- [ ] Locate the "Overview" section and replace "This repository uses Codex for iterative game design" with "This repository uses the Pi agent for iterative game design".
-- [ ] Update the file paths in the "Available skills" section to point to `./.pi/skills/...` instead of `./.codex/skills/...`.
-- [ ] Remove any other remaining rules or instructions specifically tailored to Codex, Gemini, or `context-mode`.
-- [ ] **Commit:** `git add AGENTS.md && git commit -m "docs: update AGENTS.md for pi agent and remove context-mode rules"`
+- [x] Open `AGENTS.md`.
+- [x] Locate and **delete** the entire section titled `# context-mode — MANDATORY routing rules` and all its subsections.
+- [x] Locate the "Overview" section and replace "This repository uses Codex for iterative game design" with "This repository uses the Pi agent for iterative game design".
+- [x] Update the file paths in the "Available skills" section to point to `./.pi/skills/...` instead of `./.codex/skills/...`.
+- [x] Remove any other remaining rules or instructions specifically tailored to Codex, Gemini, or `context-mode`.
+- [x] **Commit:** `git add AGENTS.md && git commit -m "docs: update AGENTS.md for pi agent and remove context-mode rules"`
 
 ## Phase 7: Verification & Final Polish
 Ensure no legacy references were missed.

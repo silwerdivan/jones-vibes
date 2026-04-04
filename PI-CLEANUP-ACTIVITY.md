@@ -7,3 +7,5 @@
 - 2026-04-04: Updated description in `.pi/skills/agent-browser/SKILL.md` to be agent-agnostic (Phase 5).
 - 2026-04-04: Updated description in `.pi/skills/cyberpunk-overhaul/SKILL.md` to be agent-agnostic (Phase 5).
 - 2026-04-04: Updated description in `.pi/skills/game-tester/SKILL.md` to be agent-agnostic (Phase 5).
+- 2026-04-04: Scanned all files in `.pi/skills/` for `context-mode` and legacy references; confirmed clean (Phase 5).
+- 2026-04-04: Refactored `AGENTS.md` to remove `context-mode` rules, updated Overview, added all available skills, and pointed paths to `.pi/skills/` (Phase 6).
