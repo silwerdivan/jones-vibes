@@ -1,6 +1,6 @@
 ---
 name: game-tester
-description: Reproduce bugs, run focused gameplay regressions, verify fixes, and document test findings for Jones in the Fast Lane. Use when Codex needs to investigate a reported game issue, perform exploratory testing on a feature, confirm whether a change broke expected behavior, map failures to likely code areas, or write a structured bug report or QA summary.
+description: Reproduce bugs, run focused gameplay regressions, verify fixes, and document test findings for Jones in the Fast Lane. Use when the agent needs to investigate a reported game issue, perform exploratory testing on a feature, confirm whether a change broke expected behavior, map failures to likely code areas, or write a structured bug report or QA summary.
 ---
 
 # Game Tester
