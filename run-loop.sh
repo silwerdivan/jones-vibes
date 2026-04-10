@@ -2,17 +2,37 @@
 
 const { spawn } = require("child_process");
 const { StringDecoder } = require("string_decoder");
+const fs = require("fs");
 
-const PROMPT = `read \`PRD-PI-CLEANUP.md\` and \`PLAN-PI-CLEANUP.md\`
+const args = process.argv.slice(2);
+let runOnce = false;
+let prdFile = "PRD-PI-CLEANUP.md";
+let planFile = "PLAN-PI-CLEANUP.md";
+let activityFile = "PI-CLEANUP-ACTIVITY.md";
+
+for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--once") {
+        runOnce = true;
+    } else if (args[i] === "--prd" && args[i+1]) {
+        prdFile = args[++i];
+    } else if (args[i] === "--plan" && args[i+1]) {
+        planFile = args[++i];
+    } else if (args[i] === "--activity" && args[i+1]) {
+        activityFile = args[++i];
+    }
+}
+
+const PROMPT = `read \`${prdFile}\` and \`${planFile}\`
 
 Instructions:
-1. Pick the SINGLE highest priority unchecked task in \`PLAN-PI-CLEANUP.md\`.
+1. Pick the SINGLE highest priority unchecked task in \`${planFile}\`.
 2. Implement it.
-3. Mark [x] in \`PLAN-PI-CLEANUP.md\` and append a summary to \`PI-CLEANUP-ACTIVITY.md\`.
+3. Mark [x] in \`${planFile}\` and append a summary to \`${activityFile}\`.
 4. Commit your changes.
 5. **CRITICAL:** Complete ONLY ONE task at a time. After committing, exit.`;
 
 console.log("(chuckles) I'm in danger.\n");
+console.log(`Config:\n  PRD: ${prdFile}\n  PLAN: ${planFile}\n  ACTIVITY: ${activityFile}\n  Run once: ${runOnce}\n`);
 
 function attachJsonlReader(stream, onLine) {
     const decoder = new StringDecoder("utf8");
@@ -109,7 +129,24 @@ function runAgent() {
 
 async function loop() {
     while (true) {
+        if (fs.existsSync(planFile)) {
+            const plan = fs.readFileSync(planFile, "utf8");
+            if (!plan.includes("- [ ]")) {
+                console.log(`\nAll tasks in ${planFile} are complete. Exiting.`);
+                process.exit(0);
+            }
+        } else {
+            console.log(`\nPlan file ${planFile} not found. Exiting.`);
+            process.exit(1);
+        }
+
         await runAgent();
+
+        if (runOnce) {
+            console.log("\nTask complete. Exiting due to --once flag.\n");
+            process.exit(0);
+        }
+
         console.log("\nTask complete. Starting next task in 5 seconds (Press Ctrl+C to abort)...\n");
         await new Promise((r) => setTimeout(r, 5000));
     }
