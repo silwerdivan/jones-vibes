@@ -19,6 +19,7 @@ Identify and safely delete files that are purely historical noise or belong to o
 *   **Backups & Duplicates**: `AGENTS (codex).md`, `AGENTS (codex).md.bak`, `AGENTS-2.md.bak`, `AGENTS.md.bak`.
 *   **Old Prompts/Configs**: `gemini-system-prompt-cmds.md`, `gemini-prompt-for-ux-designer.md`, `my-system-prompt.md`.
 *   **Alternative Agents**: Files and scripts in the `ralph/` directory, `tmp-ralph-log.txt`, `ralph-cyberpunk.ps1`.
+*   **OpenCode Artifacts**: Any files, directories, or skills specifically related to "opencode" that should not be retained.
 *   **Obsolete Scripts**: Scripts related to old runners if no longer needed (e.g., `scripts/cyberpunk-overhaul-phase11-log-stream.mjs`, `scripts/task-runner.sh`).
 *   **Context-Mode Reverts**: Revert or remove instructions introduced by the `context-mode` setup (e.g., checking git history around commit `2b70a03` and `974ad3f`).
 
@@ -34,10 +35,10 @@ The skills folder should be renamed (e.g., to `.pi/skills/`, `agent/skills/`, or
 *   **`agent-browser/SKILL.md`**: Remove "Use when Codex needs to automate..." -> "Use when the agent needs to automate...".
 *   **`cyberpunk-overhaul/SKILL.md`**: Remove "Use when Codex needs to turn..." -> "Use when the agent needs to turn...".
 *   **`game-tester/SKILL.md`**: Remove "Use when Codex needs to investigate..." -> "Use when the agent needs to investigate...".
-*   **General**: Verify no specific `context-mode` or `mcp__context-mode__` commands are enforced in these skills unless supported natively by Pi.
+*   **General**: Verify no specific `context-mode`, `mcp__context-mode__` or `opencode` commands are enforced in these skills unless supported natively by Pi, and remove any `opencode`-specific skills or references.
 
 ### 3. Verification
-*   Ensure that running `git grep -iE "codex|gemini|context-mode"` returns zero unintended matches in the active codebase.
+*   Ensure that running `git grep -iE "codex|gemini|context-mode|opencode"` returns zero unintended matches in the active codebase.
 *   Verify that Pi agent recognizes and can read the updated skills directory/files.
 
 ## Implementation Steps (Proposed)

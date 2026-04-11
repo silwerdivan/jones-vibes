@@ -12,6 +12,7 @@ Delete unused files and old toolchain artifacts. After deleting these files, cre
 - [x] Delete backup and duplicate agent files: `rm -f "AGENTS (codex).md" "AGENTS (codex).md.bak" AGENTS-2.md.bak AGENTS.md.bak`
 - [x] Delete old prompt/config files: `rm -f gemini-system-prompt-cmds.md gemini-prompt-for-ux-designer.md my-system-prompt.md`
 - [x] Delete `ralph` agent files: `rm -rf ralph/ tmp-ralph-log.txt ralph-cyberpunk.ps1`
+- [ ] Delete `opencode` related files and directories: `rm -rf <opencode_directories_here> <opencode_files_here>` (Agent will need to identify these)
 - [x] Delete obsolete scripts: `rm -f scripts/cyberpunk-overhaul-phase11-log-stream.mjs scripts/task-runner.sh` (verify they are not used by anything else before deleting).
 - [x] **Commit:** `git add . && git commit -m "chore: remove old agent artifacts and backup files"`
 
@@ -35,6 +36,7 @@ Update the skill descriptions to remove specific mentions of Codex/Gemini or con
 - [x] Open `.pi/skills/cyberpunk-overhaul/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Open `.pi/skills/game-tester/SKILL.md` (if it exists) and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Scan all files in `.pi/skills/` for mentions of `context-mode` or `mcp__context-mode__` and remove/rewrite those sections.
+- [ ] Scan all files in `.pi/skills/` for mentions of `opencode` and remove/rewrite those sections, or delete entire skills that are solely `opencode`-specific.
 - [x] **Commit:** `git add .pi/skills/ && git commit -m "refactor: scrub legacy agent references from skills"`
 
 ## Phase 6: Refactor `AGENTS.md`
@@ -50,6 +52,6 @@ Update the primary instruction file for the Pi agent.
 ## Phase 7: Verification & Final Polish
 Ensure no legacy references were missed.
 
-- [x] Run `git grep -iE "codex|gemini|context-mode"` in the terminal.
+- [x] Run `git grep -iE "codex|gemini|context-mode|opencode"` in the terminal.
 - [x] Review the output. If there are any unintended matches in active code, configuration, or documentation files, fix them.
 - [x] **Commit** (if any fixes were made): `git add . && git commit -m "chore: fix final straggling legacy agent references"`
