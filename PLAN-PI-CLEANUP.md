@@ -12,7 +12,7 @@ Delete unused files and old toolchain artifacts. After deleting these files, cre
 - [x] Delete backup and duplicate agent files: `rm -f "AGENTS (codex).md" "AGENTS (codex).md.bak" AGENTS-2.md.bak AGENTS.md.bak`
 - [x] Delete old prompt/config files: `rm -f gemini-system-prompt-cmds.md gemini-prompt-for-ux-designer.md my-system-prompt.md`
 - [x] Delete `ralph` agent files: `rm -rf ralph/ tmp-ralph-log.txt ralph-cyberpunk.ps1`
-- [ ] Delete `opencode` related files and directories: `rm -rf <opencode_directories_here> <opencode_files_here>` (Agent will need to identify these)
+- [x] Delete `opencode` related files and directories: `rm -rf .opencode opencode.json` (Identified and deleted `.opencode/` directory and `opencode.json` file)
 - [x] Delete obsolete scripts: `rm -f scripts/cyberpunk-overhaul-phase11-log-stream.mjs scripts/task-runner.sh` (verify they are not used by anything else before deleting).
 - [x] **Commit:** `git add . && git commit -m "chore: remove old agent artifacts and backup files"`
 
