@@ -36,7 +36,7 @@ Update the skill descriptions to remove specific mentions of Codex/Gemini or con
 - [x] Open `.pi/skills/cyberpunk-overhaul/SKILL.md` and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Open `.pi/skills/game-tester/SKILL.md` (if it exists) and replace "Use when Codex needs to..." with "Use when the agent needs to...".
 - [x] Scan all files in `.pi/skills/` for mentions of `context-mode` or `mcp__context-mode__` and remove/rewrite those sections.
-- [x] Scan all files in `.pi/skills/` for mentions of `opencode` and remove/rewrite those sections, or delete entire skills that are solely `opencode`-specific. (Verified no references exist)
+- [ ] Scan all files in `.pi/skills/` for mentions of `opencode` and remove/rewrite those sections, or delete entire skills that are solely `opencode`-specific.
 - [x] **Commit:** `git add .pi/skills/ && git commit -m "refactor: scrub legacy agent references from skills"`
 
 ## Phase 6: Refactor `AGENTS.md`
